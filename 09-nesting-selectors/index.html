@@ -761,6 +761,79 @@ input:not(:placeholder-shown):not(:focus) {
   &.alert-error { /* ... */ }
   &.alert-warning { /* ... */ }
 }</code></pre>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="alert alert-success">
+  <button class="alert-close">&times;</button>
+  <div class="alert-title">Success</div>
+  <div class="alert-message">Your changes have been saved successfully.</div>
+</div>
+
+<div class="alert alert-error">
+  <button class="alert-close">&times;</button>
+  <div class="alert-title">Error</div>
+  <div class="alert-message">Something went wrong. Please try again.</div>
+</div>
+
+<div class="alert alert-warning">
+  <button class="alert-close">&times;</button>
+  <div class="alert-title">Warning</div>
+  <div class="alert-message">Your session is about to expire.</div>
+</div>
+        </template>
+        <template class="starter-css">
+/* Refactor this into nested CSS */
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid;
+  margin-bottom: 1rem;
+
+  & .alert-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  & .alert-message {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  & .alert-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &.alert-success {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+  }
+
+  &.alert-error {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+    color: #991b1b;
+  }
+
+  &.alert-warning {
+    background-color: #fffbeb;
+    border-color: #fcd34d;
+    color: #92400e;
+  }
+}
+        </template>
+      </div>
     </section>
 
     <!-- ==================== Challenge ==================== -->
@@ -832,6 +905,129 @@ input:not(:placeholder-shown):not(:focus) {
     pointer-events: none;
   }
 }</code></pre>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<form class="smart-form">
+  <div class="smart-field">
+    <input type="text" id="sf-name" placeholder=" " required minlength="2">
+    <label for="sf-name">Full Name</label>
+    <span class="smart-field-check">&#10003;</span>
+    <span class="smart-field-error">Required (min 2 chars)</span>
+  </div>
+  <div class="smart-field">
+    <input type="email" id="sf-email" placeholder=" " required>
+    <label for="sf-email">Email Address</label>
+    <span class="smart-field-check">&#10003;</span>
+    <span class="smart-field-error">Valid email required</span>
+  </div>
+  <div class="smart-field">
+    <input type="password" id="sf-pass" placeholder=" " required minlength="8">
+    <label for="sf-pass">Password (min 8 chars)</label>
+    <span class="smart-field-check">&#10003;</span>
+    <span class="smart-field-error">Min 8 characters</span>
+  </div>
+  <button type="submit" class="smart-submit">Create Account</button>
+</form>
+        </template>
+        <template class="starter-css">
+.smart-form {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  & .smart-field {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    & input {
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    & label {
+      position: absolute;
+      top: 50%;
+      left: 0.75rem;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+      transition: all 0.2s;
+      pointer-events: none;
+      background: #fff;
+      padding: 0 0.25rem;
+    }
+
+    & .smart-field-check {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #10b981;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    & .smart-field-error {
+      display: none;
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Float label when input has content or is focused */
+    &:has(input:not(:placeholder-shown)) label,
+    &:has(input:focus) label {
+      top: 0;
+      font-size: 0.75rem;
+      transform: translateY(-50%);
+      color: #6366f1;
+    }
+
+    /* Valid state */
+    &:has(input:valid:not(:placeholder-shown)) {
+      & .smart-field-check { opacity: 1; }
+      & label { color: #10b981; }
+      & input { border-color: #10b981; }
+    }
+
+    /* Invalid state after interaction */
+    &:has(input:invalid:not(:placeholder-shown)) {
+      & .smart-field-error { display: block; }
+      & label { color: #ef4444; }
+      & input { border-color: #ef4444; }
+    }
+  }
+
+  & .smart-submit {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, background 0.2s;
+  }
+
+  /* Submit button disabled when form has invalid inputs */
+  &:has(input:invalid) .smart-submit {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -839,5 +1035,6 @@ input:not(:placeholder-shown):not(:focus) {
     <a href="../08-transitions-animations/index.html">&larr; Previous</a>
     <a href="../10-container-queries-subgrid/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>

@@ -602,6 +602,132 @@
   }
 }</code></pre>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="layout">
+  <div class="sidebar" style="width: 250px">
+    <h4>Sidebar</h4>
+    <div class="product-card">
+      <div class="product-card__img"></div>
+      <div class="product-card__body">
+        <h3 class="product-card__title">Wireless Headphones</h3>
+        <p class="product-card__desc">Premium noise-cancelling headphones with 30-hour battery life and crystal-clear audio.</p>
+        <span class="product-card__price">$149.99</span>
+        <button class="product-card__cta">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h4>Main Content</h4>
+    <div class="product-card">
+      <div class="product-card__img"></div>
+      <div class="product-card__body">
+        <h3 class="product-card__title">Wireless Headphones</h3>
+        <p class="product-card__desc">Premium noise-cancelling headphones with 30-hour battery life and crystal-clear audio. Featuring adaptive EQ, spatial audio, and a comfortable over-ear design for all-day listening.</p>
+        <span class="product-card__price">$149.99</span>
+        <button class="product-card__cta">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.layout {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.sidebar, .main-content {
+  container-type: inline-size;
+}
+
+.sidebar {
+  flex: 0 0 250px;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 300px;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.layout h4 { margin-bottom: 1rem; color: #64748b; font-size: 0.875rem; text-transform: uppercase; }
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.product-card__img {
+  height: 120px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.product-card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.product-card__title {
+  font-size: clamp(1rem, 4cqi, 1.5rem);
+  color: #1e293b;
+}
+
+.product-card__desc {
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: none;
+}
+
+.product-card__price {
+  font-weight: 700;
+  color: #6366f1;
+  font-size: 1.125rem;
+}
+
+.product-card__cta {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Show description when container is 300px+ */
+@container (width >= 300px) {
+  .product-card__desc { display: block; }
+}
+
+/* Switch to horizontal layout when container is 500px+ */
+@container (width >= 500px) {
+  .product-card {
+    flex-direction: row;
+  }
+  .product-card__img {
+    width: 200px;
+    height: auto;
+    min-height: 180px;
+  }
+}
+        </template>
+      </div>
     </section>
 
     <!-- ==================== Challenge ==================== -->
@@ -632,6 +758,144 @@
           <li>Test by resizing the viewport &mdash; as columns wrap, each widget's container query breakpoints fire independently.</li>
         </ul>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="dashboard">
+  <div class="widget" style="--widget-theme: light">
+    <div class="widget__header">Revenue</div>
+    <div class="widget__body">
+      <div class="widget__stats">
+        <div class="widget__stat">
+          <span class="stat-value">$48.2K</span>
+          <span class="stat-label">This Month</span>
+        </div>
+        <div class="widget__stat">
+          <span class="stat-value">+12%</span>
+          <span class="stat-label">Growth</span>
+        </div>
+      </div>
+      <p class="widget__detail">Revenue exceeded projections by 8% this quarter.</p>
+    </div>
+    <div class="widget__footer">Updated 2 min ago</div>
+  </div>
+
+  <div class="widget" style="--widget-theme: dark">
+    <div class="widget__header">Users</div>
+    <div class="widget__body">
+      <div class="widget__stats">
+        <div class="widget__stat">
+          <span class="stat-value">1,847</span>
+          <span class="stat-label">Online</span>
+        </div>
+        <div class="widget__stat">
+          <span class="stat-value">23.4K</span>
+          <span class="stat-label">Daily Avg</span>
+        </div>
+      </div>
+      <p class="widget__detail">User engagement is trending upward across all platforms.</p>
+    </div>
+    <div class="widget__footer">Real-time</div>
+  </div>
+
+  <div class="widget" style="--widget-theme: light">
+    <div class="widget__header">Performance</div>
+    <div class="widget__body">
+      <div class="widget__stats">
+        <div class="widget__stat">
+          <span class="stat-value">98.7%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="widget__stat">
+          <span class="stat-value">42ms</span>
+          <span class="stat-label">Latency</span>
+        </div>
+      </div>
+      <p class="widget__detail">All systems operating within normal parameters.</p>
+    </div>
+    <div class="widget__footer">Last 24 hours</div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-auto-rows: auto;
+  gap: 1.5rem;
+}
+
+.widget {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  container: widget / inline-size;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.widget__header {
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  font-size: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.widget__body {
+  padding: 1.25rem;
+}
+
+.widget__stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.widget__stat { display: flex; flex-direction: column; }
+.stat-value { font-size: 1.5rem; font-weight: 700; }
+.stat-label { font-size: 0.8rem; color: #64748b; }
+
+.widget__detail {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+  display: none;
+}
+
+.widget__footer {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Light theme (default) */
+.widget { background: #fff; color: #1e293b; }
+
+/* Dark theme via style queries */
+@container style(--widget-theme: dark) {
+  .widget__header { background: #1e293b; color: #f1f5f9; border-color: #334155; }
+  .widget__body { background: #0f172a; color: #e2e8f0; }
+  .widget__footer { background: #1e293b; color: #94a3b8; border-color: #334155; }
+  .stat-label { color: #94a3b8; }
+}
+
+/* Container query: compact view below 300px */
+@container widget (width < 300px) {
+  .widget__stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stat-value { font-size: 1.25rem; }
+}
+
+/* Container query: show detail above 400px */
+@container widget (width >= 400px) {
+  .widget__detail { display: block; }
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -640,5 +904,6 @@
     <a href="../09-nesting-selectors/index.html">&larr; Previous</a>
     <a href="../11-modern-colors/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>

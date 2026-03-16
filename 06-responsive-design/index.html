@@ -775,6 +775,33 @@ p {
 /* Your styles here... add breakpoints for tablet and desktop */
 &lt;/style&gt;</code></pre>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="dashboard">
+  <header class="dash-header">Dashboard</header>
+  <aside class="dash-sidebar">
+    <nav>Menu items...</nav>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-panel">Panel 1</div>
+    <div class="dash-panel">Panel 2</div>
+    <div class="dash-panel">Panel 3</div>
+    <div class="dash-panel">Panel 4</div>
+  </main>
+</div>
+        </template>
+        <template class="starter-css">
+/* Mobile: single column */
+.dashboard { display: flex; flex-direction: column; gap: 1rem; }
+.dash-header { background: #6366f1; color: #fff; padding: 1rem; text-align: center; font-size: 1.25rem; }
+.dash-sidebar { background: #1e293b; color: #e2e8f0; padding: 1rem; }
+.dash-main { display: grid; gap: 1rem; }
+.dash-panel { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; text-align: center; }
+
+/* Your styles here... add breakpoints for tablet and desktop */
+        </template>
+      </div>
     </section>
 
     <!-- ============================================================
@@ -797,6 +824,112 @@ p {
         <li>Ensure text remains readable (45&ndash;75 characters per line) at all widths.</li>
         <li>Test at 320px, 375px, 768px, 1024px, 1440px, 1920px, and 2560px.</li>
       </ul>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<nav class="landing-nav">
+  <div class="logo">Brand</div>
+  <div class="nav-links">
+    <a href="#">Features</a>
+    <a href="#">Pricing</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Build Something Amazing</h1>
+  <p>The modern platform for teams that ship fast.</p>
+  <div class="hero-cta">
+    <button class="btn-primary">Get Started</button>
+    <button class="btn-secondary">Learn More</button>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature">
+    <h3>Fast</h3>
+    <p>Optimized for speed on every device.</p>
+  </div>
+  <div class="feature">
+    <h3>Secure</h3>
+    <p>Enterprise-grade security built in.</p>
+  </div>
+  <div class="feature">
+    <h3>Scalable</h3>
+    <p>Grows with your team.</p>
+  </div>
+  <div class="feature">
+    <h3>Reliable</h3>
+    <p>99.9% uptime guaranteed.</p>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div class="testimonial-card">
+    <p>"Amazing product that changed how we work."</p>
+    <span>- Alex C.</span>
+  </div>
+  <div class="testimonial-card">
+    <p>"Best tool our team has ever used."</p>
+    <span>- Jordan M.</span>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-col">
+    <h4>Product</h4>
+    <a href="#">Features</a>
+    <a href="#">Pricing</a>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+        </template>
+        <template class="starter-css">
+/* Mobile-first base styles */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.landing-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #1e293b;
+  color: #fff;
+  gap: 0.5rem;
+}
+.logo { font-size: 1.25rem; font-weight: 700; }
+.nav-links { display: flex; flex-direction: column; gap: 0.5rem; }
+.nav-links a { color: #94a3b8; text-decoration: none; }
+
+.hero {
+  min-height: 80svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: #fff;
+}
+.hero h1 { font-size: clamp(1.75rem, 1rem + 3vw, 3.5rem); }
+.hero p { font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem); margin: 1rem 0; }
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 2rem 1rem;
+}
+.feature { background: #f8fafc; padding: 1.5rem; border-radius: 8px; }
+
+/* Add your responsive breakpoints below */
+        </template>
+      </div>
     </section>
   </main>
 
@@ -804,5 +937,6 @@ p {
     <a href="../05-grid/index.html">&larr; Previous</a>
     <a href="../07-custom-properties-cascade/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>

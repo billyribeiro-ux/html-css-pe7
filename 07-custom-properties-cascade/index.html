@@ -590,6 +590,63 @@
 
 /* ... add more variants */</code></pre>
 
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="button-demo">
+  <div class="btn-row">
+    <button class="btn btn-primary">Primary</button>
+    <button class="btn btn-secondary">Secondary</button>
+    <button class="btn btn-danger">Danger</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary btn-outline">Primary Outline</button>
+    <button class="btn btn-secondary btn-outline">Secondary Outline</button>
+    <button class="btn btn-danger btn-outline">Danger Outline</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary btn-sm">Small</button>
+    <button class="btn btn-primary">Default</button>
+    <button class="btn btn-primary btn-lg">Large</button>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+:root {
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-secondary: #64748b;
+  --color-secondary-dark: #475569;
+  --color-danger: #ef4444;
+  --color-danger-dark: #dc2626;
+  /* ... add more tokens */
+}
+
+.button-demo { display: flex; flex-direction: column; gap: 1rem; }
+.btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+.btn {
+  /* Use ONLY var() references here */
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: 2px solid var(--btn-border, var(--btn-bg));
+  border-radius: var(--btn-radius, 6px);
+  padding: var(--btn-py, 0.5rem) var(--btn-px, 1rem);
+  font-size: var(--btn-font-size, 1rem);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+  --btn-bg: var(--color-primary);
+  --btn-text: #ffffff;
+  /* ... redefine other variables */
+}
+
+/* ... add more variants */
+        </template>
+      </div>
+
       <div class="demo" id="exercise-demo">
         <h4>Your Target Result:</h4>
         <div class="exercise-target-buttons">
@@ -664,6 +721,148 @@
   --token-primary: #ec4899;
   /* Smoothly transitions because the browser knows it's a &lt;color&gt; */
 }</code></pre>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="token-palette">
+  <h3>Design Token Palette</h3>
+  <div class="token-grid">
+    <div class="token-swatch token-primary">
+      <span class="token-name">--token-primary</span>
+      <span class="token-type">&lt;color&gt;</span>
+    </div>
+    <div class="token-swatch token-secondary">
+      <span class="token-name">--token-secondary</span>
+      <span class="token-type">&lt;color&gt;</span>
+    </div>
+    <div class="token-swatch token-accent">
+      <span class="token-name">--token-accent</span>
+      <span class="token-type">&lt;color&gt;</span>
+    </div>
+    <div class="token-swatch token-surface">
+      <span class="token-name">--token-surface</span>
+      <span class="token-type">&lt;color&gt;</span>
+    </div>
+    <div class="token-swatch token-text">
+      <span class="token-name">--token-text</span>
+      <span class="token-type">&lt;color&gt;</span>
+    </div>
+    <div class="token-swatch token-error">
+      <span class="token-name">--token-error</span>
+      <span class="token-type">&lt;color&gt;</span>
+    </div>
+  </div>
+
+  <div class="token-demo-card">
+    <h4>Hover to transition theme</h4>
+    <p>This card uses @property-registered tokens for smooth color transitions.</p>
+    <button class="token-btn">Action</button>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+@property --token-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #6366f1;
+}
+
+@property --token-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #64748b;
+}
+
+@property --token-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ec4899;
+}
+
+@property --token-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f8fafc;
+}
+
+@property --token-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1e293b;
+}
+
+@property --token-error {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ef4444;
+}
+
+@property --token-space-md {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 1rem;
+}
+
+@property --token-radius {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 8px;
+}
+
+.token-palette { padding: 1rem; }
+.token-palette h3 { margin-bottom: 1rem; color: var(--token-text); }
+
+.token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.token-swatch {
+  padding: 1.5rem 0.75rem 0.75rem;
+  border-radius: var(--token-radius);
+  color: #fff;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.token-primary { background: var(--token-primary); }
+.token-secondary { background: var(--token-secondary); }
+.token-accent { background: var(--token-accent); }
+.token-surface { background: var(--token-surface); color: var(--token-text); border: 1px solid #e2e8f0; }
+.token-text { background: var(--token-text); }
+.token-error { background: var(--token-error); }
+
+.token-demo-card {
+  background: var(--token-surface);
+  color: var(--token-text);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--token-radius);
+  padding: var(--token-space-md);
+  transition: --token-primary 0.6s ease, --token-surface 0.6s ease, --token-text 0.6s ease;
+}
+
+.token-demo-card:hover {
+  --token-primary: #ec4899;
+  --token-surface: #1e293b;
+  --token-text: #f1f5f9;
+}
+
+.token-btn {
+  background: var(--token-primary);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--token-radius);
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: background 0.6s ease;
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -671,5 +870,6 @@
     <a href="../06-responsive-design/index.html">&larr; Previous</a>
     <a href="../08-transitions-animations/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>
