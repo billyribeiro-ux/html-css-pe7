@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Every Screen Matters | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 06</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-2">Level 2 - Layout Mastery</span>
+    <h1>Every Screen Matters</h1>
+    <p class="subtitle">Master responsive design to build layouts that look great on every device &mdash; from the smallest phone to the widest monitor.</p>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         SECTION 1: Media Queries
+         ============================================================ -->
+    <section class="concept-section" id="media-queries">
+      <h2>1. Media Queries</h2>
+
+      <p>
+        Media queries are the foundation of responsive design. They let you apply CSS rules
+        conditionally, based on characteristics of the device or viewport. The <code>@media</code>
+        rule wraps a block of CSS that only takes effect when the specified condition is true.
+      </p>
+
+      <p>
+        The most common condition is viewport width. You test it with <code>min-width</code> (styles
+        apply when the viewport is <em>at least</em> this wide) or <code>max-width</code> (styles
+        apply when the viewport is <em>at most</em> this wide). You can combine conditions with
+        <code>and</code>, use <code>or</code> (comma-separated), and negate with <code>not</code>.
+      </p>
+
+      <p>
+        The choice between <code>min-width</code> and <code>max-width</code> determines your design
+        strategy. <code>min-width</code> queries add styles as the viewport grows &mdash; this is
+        the <strong>mobile-first</strong> approach. <code>max-width</code> queries override styles
+        as the viewport shrinks &mdash; the desktop-first approach. Modern best practice strongly
+        favors mobile-first with <code>min-width</code>.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Media queries are how you speak to different devices.
+        Without them, your layout is a one-size-fits-all solution that inevitably fails on some
+        screen size. They are the conditional logic of visual design &mdash; as fundamental as
+        <code>if</code> statements in programming.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Mobile-first: base styles for small screens */
+.box { background: coral; padding: 1rem; }
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .box { background: dodgerblue; }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+  .box { background: mediumseagreen; }
+}
+
+/* Combining conditions */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .box { border: 3px solid gold; }
+}
+
+/* Orientation, hover capability, color-scheme */
+@media (orientation: landscape) { /* ... */ }
+@media (hover: hover) { /* device has hover */ }
+@media (prefers-color-scheme: dark) { /* ... */ }</code></pre>
+      </div>
+
+      <p>
+        The demo below shows boxes that change color at different breakpoints. Resize your browser
+        window to see them transform.
+      </p>
+
+      <div class="demo" id="demo-media-queries">
+        <h3>Color-Changing Boxes</h3>
+        <p class="demo-note">Resize your browser to see colors change at 480px, 768px, and 1024px.</p>
+        <div class="mq-boxes">
+          <div class="mq-box mq-box-1">
+            <span class="mq-label">Box 1</span>
+            <span class="mq-bp">Watch me change</span>
+          </div>
+          <div class="mq-box mq-box-2">
+            <span class="mq-label">Box 2</span>
+            <span class="mq-bp">Watch me change</span>
+          </div>
+          <div class="mq-box mq-box-3">
+            <span class="mq-label">Box 3</span>
+            <span class="mq-bp">Watch me change</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: Mobile-First
+         ============================================================ -->
+    <section class="concept-section" id="mobile-first">
+      <h2>2. Mobile-First</h2>
+
+      <p>
+        Mobile-first means writing your base CSS for the smallest screens, then progressively
+        adding complexity for larger viewports using <code>min-width</code> media queries. This
+        is not just a technical pattern &mdash; it is a design philosophy. Start with the
+        essential content and functionality, then enhance.
+      </p>
+
+      <p>
+        The practical reason is performance. Mobile devices are slower and have less bandwidth.
+        If you start with desktop styles and override them for mobile, the mobile browser
+        downloads and parses CSS it will never use. With mobile-first, the smallest devices get
+        the simplest CSS. Larger devices, which are more powerful, handle the additional rules
+        with ease.
+      </p>
+
+      <p>
+        There is also a design clarity argument. Designing for a small screen forces you to
+        prioritize. You cannot fit everything on a 320px screen, so you have to decide what
+        truly matters. This constraint leads to cleaner, more focused interfaces at every
+        breakpoint.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Mobile traffic accounts for over 60% of web visits
+        worldwide. Building mobile-first ensures the majority of your users get an optimized
+        experience. It is also easier to add than to take away &mdash; progressive enhancement
+        is more maintainable than progressive degradation.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Base: single column, simple layout */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.sidebar { order: 2; }
+.content { order: 1; }
+
+/* Tablet: side-by-side */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+  .sidebar {
+    order: 0;
+    flex: 0 0 250px;
+  }
+  .content {
+    flex: 1;
+  }
+}
+
+/* Desktop: wider sidebar, more padding */
+@media (min-width: 1024px) {
+  .container {
+    gap: 2rem;
+    padding: 2rem;
+  }
+  .sidebar {
+    flex: 0 0 300px;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-mobile-first">
+        <h3>Progressive Enhancement</h3>
+        <p class="demo-note">Resize to see the layout evolve from stacked to side-by-side to spacious.</p>
+        <div class="mf-container">
+          <aside class="mf-sidebar">Sidebar</aside>
+          <main class="mf-content">Main Content Area</main>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: Common Breakpoints
+         ============================================================ -->
+    <section class="concept-section" id="common-breakpoints">
+      <h2>3. Common Breakpoints</h2>
+
+      <p>
+        While there is no universally "correct" set of breakpoints, the industry has converged
+        on a handful of commonly used values that align with device categories. These are not
+        magic numbers &mdash; they are practical defaults based on real-world device data.
+      </p>
+
+      <p>
+        <strong>480px</strong> &mdash; Large phones in portrait. Use this when your mobile layout
+        needs a minor adjustment for slightly wider phones. Not always necessary, but useful for
+        typography bumps or switching from single to two-column grids on small items.
+      </p>
+
+      <p>
+        <strong>768px</strong> &mdash; Tablets in portrait, small laptops. This is often the first
+        major layout shift. Sidebars appear, navigation expands, and multi-column layouts begin.
+        It is the most universally used breakpoint.
+      </p>
+
+      <p>
+        <strong>1024px</strong> &mdash; Tablets in landscape, standard laptops. Full desktop
+        layouts typically activate here. Navigation becomes horizontal, content widths increase,
+        and you can safely show more information side-by-side.
+      </p>
+
+      <p>
+        <strong>1280px</strong> &mdash; Large desktops and wide monitors. Use this for max-width
+        containers, extra whitespace, or showing additional columns of content. Beyond this, you
+        are typically just centering content with more margin.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Do not add breakpoints arbitrarily. Add a breakpoint
+        when your design breaks &mdash; when content becomes unreadable, layouts look awkward, or
+        whitespace becomes excessive. Let the content dictate the breakpoints, and use these
+        common values as sensible starting points.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Common breakpoint system */
+/* Base: 0 - 479px   (small phones) */
+/* sm:   480px+      (large phones) */
+/* md:   768px+      (tablets) */
+/* lg:   1024px+     (laptops/desktops) */
+/* xl:   1280px+     (large desktops) */
+
+@media (min-width: 480px)  { /* sm */ }
+@media (min-width: 768px)  { /* md */ }
+@media (min-width: 1024px) { /* lg */ }
+@media (min-width: 1280px) { /* xl */ }</code></pre>
+      </div>
+
+      <div class="demo" id="demo-breakpoints">
+        <h3>Breakpoint Indicator</h3>
+        <p class="demo-note">Resize your browser &mdash; the label below reflects the current breakpoint.</p>
+        <div class="bp-indicator">
+          <span class="bp-label bp-base">Base (&lt; 480px)</span>
+          <span class="bp-label bp-sm">sm (480px+)</span>
+          <span class="bp-label bp-md">md (768px+)</span>
+          <span class="bp-label bp-lg">lg (1024px+)</span>
+          <span class="bp-label bp-xl">xl (1280px+)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: Fluid Typography
+         ============================================================ -->
+    <section class="concept-section" id="fluid-typography">
+      <h2>4. Fluid Typography</h2>
+
+      <p>
+        Traditional responsive typography uses media queries to set different font sizes at
+        different breakpoints. This creates abrupt jumps. Fluid typography uses the
+        <code>clamp()</code> function to create text that scales smoothly and continuously
+        between a minimum and maximum size.
+      </p>
+
+      <p>
+        The syntax is <code>clamp(min, preferred, max)</code>. The browser uses the preferred
+        value but never goes below <code>min</code> or above <code>max</code>. The preferred
+        value typically uses viewport units (<code>vw</code>) so it scales with the browser
+        width. For example, <code>clamp(1rem, 2.5vw, 2rem)</code> means: "be 2.5% of the
+        viewport width, but never smaller than 1rem or larger than 2rem."
+      </p>
+
+      <p>
+        A practical formula for calculating fluid type: pick your minimum font size (e.g., 16px
+        at 320px viewport) and maximum (e.g., 24px at 1200px viewport). The preferred value
+        becomes a mix of a fixed value and a vw unit that interpolates between them. Tools like
+        <a href="https://utopia.fyi/type/calculator/" style="color: var(--pe7-accent-light)">Utopia</a>
+        automate this calculation.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Fluid typography eliminates awkward jumps between
+        breakpoints and reduces the number of media queries you need. It creates a more polished
+        user experience and works seamlessly across every viewport width, not just the ones you
+        explicitly designed for.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Fluid typography with clamp() */
+h1 {
+  font-size: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+}
+
+h2 {
+  font-size: clamp(1.25rem, 0.75rem + 2vw, 2.25rem);
+}
+
+p {
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
+}
+
+/* The three values mean: */
+/* min:       smallest the text will ever be */
+/* preferred: ideal size, scales with viewport */
+/* max:       largest the text will ever be */</code></pre>
+      </div>
+
+      <div class="demo" id="demo-fluid-type">
+        <h3>Fluid Typography Demo</h3>
+        <p class="demo-note">Resize your browser to see text scale smoothly &mdash; no jumps.</p>
+        <div class="fluid-type-demo">
+          <p class="ft-headline">This headline scales fluidly</p>
+          <p class="ft-subhead">And so does this subheading text</p>
+          <p class="ft-body">Body text also benefits from fluid sizing. It stays readable on phones and comfortable on desktops without a single media query. The clamp() function handles everything.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: Viewport Units
+         ============================================================ -->
+    <section class="concept-section" id="viewport-units">
+      <h2>5. Viewport Units</h2>
+
+      <p>
+        Viewport units let you size elements relative to the browser window itself.
+        <code>1vw</code> equals 1% of the viewport width; <code>1vh</code> equals 1% of the
+        viewport height. These are powerful for creating full-screen sections, hero banners,
+        and elements that scale with the window.
+      </p>
+
+      <p>
+        However, <code>vh</code> has a notorious problem on mobile browsers. When the address
+        bar is visible, the viewport is shorter. When you scroll and the address bar hides,
+        the viewport gets taller. Using <code>100vh</code> for a full-screen hero causes layout
+        jumps and content to be cut off behind the address bar on iOS and Android.
+      </p>
+
+      <p>
+        CSS introduced new viewport units to fix this: <code>dvh</code> (dynamic viewport
+        height) changes as the address bar shows/hides, <code>svh</code> (small viewport height)
+        uses the smallest possible viewport (address bar visible), and <code>lvh</code> (large
+        viewport height) uses the largest possible viewport (address bar hidden). For most
+        full-screen sections, <code>dvh</code> or <code>svh</code> is what you want.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The <code>100vh</code> mobile bug has frustrated
+        developers for years. Understanding the new viewport units and when to use each one
+        prevents a class of layout bugs that are hard to debug on desktop but obvious on phones.
+        Use <code>svh</code> for hero sections to guarantee content is never cut off.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Classic viewport units */
+.hero { height: 100vh; }              /* Buggy on mobile */
+.half-screen { height: 50vw; }
+
+/* New viewport units (use these!) */
+.hero { height: 100dvh; }             /* Dynamic: follows address bar */
+.hero { height: 100svh; }             /* Small: safest, always visible */
+.hero { height: 100lvh; }             /* Large: assumes bar is hidden */
+
+/* Mixing viewport units */
+.sidebar { width: 25vw; min-width: 200px; max-width: 400px; }
+.spacer  { margin-top: 5vh; }</code></pre>
+      </div>
+
+      <div class="demo" id="demo-viewport-units">
+        <h3>Viewport Units Demo</h3>
+        <div class="vu-grid">
+          <div class="vu-box vu-vw">
+            <strong>50vw</strong>
+            <span>Half viewport width</span>
+          </div>
+          <div class="vu-box vu-vh">
+            <strong>20vh</strong>
+            <span>20% viewport height</span>
+          </div>
+          <div class="vu-box vu-dvh">
+            <strong>20dvh</strong>
+            <span>Dynamic viewport height</span>
+          </div>
+          <div class="vu-box vu-svh">
+            <strong>15svh</strong>
+            <span>Small viewport height</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: Responsive Images
+         ============================================================ -->
+    <section class="concept-section" id="responsive-images">
+      <h2>6. Responsive Images</h2>
+
+      <p>
+        Images are one of the biggest challenges in responsive design. You need the right
+        resolution for each device (so phones do not download desktop-sized images), the right
+        aspect ratio for each layout, and proper scaling so images never overflow their
+        containers.
+      </p>
+
+      <p>
+        The <code>srcset</code> attribute on <code>&lt;img&gt;</code> lets you provide multiple
+        image files at different resolutions. The browser picks the most appropriate one based on
+        viewport size and device pixel ratio. The <code>sizes</code> attribute tells the browser
+        how wide the image will be rendered, which helps it make a smarter choice.
+      </p>
+
+      <p>
+        CSS properties <code>object-fit</code> and <code>object-position</code> control how an
+        image fills its box. <code>object-fit: cover</code> scales the image to fill the box
+        while maintaining aspect ratio (cropping the excess). <code>object-fit: contain</code>
+        scales to fit entirely within the box (leaving gaps). The <code>aspect-ratio</code>
+        property lets you set a box's proportions without padding hacks.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Images account for the majority of page weight on most
+        websites. Serving appropriately sized images can cut load times by 50% or more on mobile.
+        And using <code>object-fit</code> with <code>aspect-ratio</code> eliminates layout shift
+        as images load &mdash; a core Web Vital (CLS).
+      </div>
+
+      <div class="code-block">
+        <pre><code>&lt;!-- Responsive image with srcset --&gt;
+&lt;img
+  src="photo-800.jpg"
+  srcset="photo-400.jpg 400w,
+          photo-800.jpg 800w,
+          photo-1200.jpg 1200w"
+  sizes="(min-width: 1024px) 50vw, 100vw"
+  alt="Responsive photo"
+&gt;
+
+/* CSS for responsive image containers */
+.image-card {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-images">
+        <h3>object-fit Comparison</h3>
+        <div class="img-grid">
+          <div class="img-demo-panel">
+            <p class="demo-label">object-fit: cover</p>
+            <div class="img-box img-cover">
+              <div class="img-placeholder">Image</div>
+            </div>
+          </div>
+          <div class="img-demo-panel">
+            <p class="demo-label">object-fit: contain</p>
+            <div class="img-box img-contain">
+              <div class="img-placeholder img-placeholder-contain">Image</div>
+            </div>
+          </div>
+          <div class="img-demo-panel">
+            <p class="demo-label">object-fit: fill</p>
+            <div class="img-box img-fill">
+              <div class="img-placeholder img-placeholder-fill">Image</div>
+            </div>
+          </div>
+        </div>
+        <div class="img-aspect-demo">
+          <p class="demo-label">aspect-ratio examples</p>
+          <div class="ar-grid">
+            <div class="ar-box ar-16-9"><span>16 / 9</span></div>
+            <div class="ar-box ar-4-3"><span>4 / 3</span></div>
+            <div class="ar-box ar-1-1"><span>1 / 1</span></div>
+            <div class="ar-box ar-9-16"><span>9 / 16</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 7: Responsive Patterns
+         ============================================================ -->
+    <section class="concept-section" id="responsive-patterns">
+      <h2>7. Responsive Patterns</h2>
+
+      <p>
+        Certain layout patterns appear on nearly every responsive website. Mastering these
+        patterns gives you a toolkit of proven solutions that you can adapt to any project.
+        Below are three of the most essential: a responsive navigation, a card grid, and a
+        collapsible sidebar.
+      </p>
+
+      <h3>Pattern 1: Responsive Navigation</h3>
+      <p>
+        On mobile, navigation links typically stack vertically or hide behind a hamburger menu.
+        On desktop, they spread horizontally. The key is using <code>flex-direction</code> to
+        switch between column and row layouts at a breakpoint.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.nav {
+  display: flex;
+  flex-direction: column;   /* Mobile: stacked */
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    flex-direction: row;    /* Desktop: horizontal */
+    align-items: center;
+    gap: 2rem;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-responsive-nav">
+        <h3>Responsive Navigation</h3>
+        <p class="demo-note">Resize to see the nav switch from vertical to horizontal.</p>
+        <div class="resp-nav">
+          <div class="resp-nav-logo">Brand</div>
+          <div class="resp-nav-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 2: Responsive Card Grid</h3>
+      <p>
+        Cards should reflow based on available space. On mobile they stack, on tablet they form
+        two columns, and on desktop three or more. CSS Grid with <code>auto-fit</code> and
+        <code>minmax()</code> can handle this without any media queries.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-card-grid">
+        <h3>Responsive Card Grid</h3>
+        <p class="demo-note">Cards reflow automatically based on container width.</p>
+        <div class="resp-card-grid">
+          <div class="resp-card">
+            <div class="resp-card-img"></div>
+            <div class="resp-card-body">
+              <h4>Card Title</h4>
+              <p>Description text that explains what this card is about.</p>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-img"></div>
+            <div class="resp-card-body">
+              <h4>Card Title</h4>
+              <p>Another card with its own content and description.</p>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-img"></div>
+            <div class="resp-card-body">
+              <h4>Card Title</h4>
+              <p>A third card completing the set for the demo.</p>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-img"></div>
+            <div class="resp-card-body">
+              <h4>Card Title</h4>
+              <p>Fourth card to show how the grid reflows.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 3: Collapsible Sidebar</h3>
+      <p>
+        A sidebar that sits beside the content on desktop and collapses above or below it on
+        mobile. This is the classic two-panel layout that adapts gracefully with a single
+        flex-direction change.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-sidebar {
+  padding: 1rem;
+  background: var(--pe7-surface-2);
+}
+
+@media (min-width: 768px) {
+  .layout {
+    flex-direction: row;
+  }
+  .layout-sidebar {
+    flex: 0 0 250px;
+  }
+  .layout-main {
+    flex: 1;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-sidebar">
+        <h3>Collapsible Sidebar</h3>
+        <p class="demo-note">On narrow screens the sidebar stacks above the content.</p>
+        <div class="resp-layout">
+          <div class="resp-sidebar">
+            <h4>Sidebar</h4>
+            <ul>
+              <li>Dashboard</li>
+              <li>Analytics</li>
+              <li>Settings</li>
+              <li>Profile</li>
+            </ul>
+          </div>
+          <div class="resp-main">
+            <h4>Main Content</h4>
+            <p>This is the primary content area. On desktop it sits beside the sidebar. On mobile it stacks below.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 8: A Complete Responsive Page
+         ============================================================ -->
+    <section class="concept-section" id="complete-responsive-page">
+      <h2>8. A Complete Responsive Page</h2>
+
+      <p>
+        Everything comes together in a full page layout. A real responsive page combines media
+        queries, fluid typography, responsive images, and layout patterns into a cohesive whole
+        that transforms seamlessly across breakpoints. The demo below is a miniature landing
+        page that demonstrates all these techniques working together.
+      </p>
+
+      <p>
+        Notice how the layout shifts at each breakpoint: the hero section adjusts its padding
+        and text size, the features grid reflows from one column to two to three, the navigation
+        switches from stacked to horizontal, and spacing increases as more room becomes available.
+        Every transition is smooth and intentional.
+      </p>
+
+      <div class="code-block">
+        <pre><code>/* The recipe for a responsive page */
+/* 1. Mobile-first base styles */
+/* 2. Fluid typography with clamp() */
+/* 3. Flexible layout with flex/grid */
+/* 4. Breakpoints where the design needs them */
+/* 5. Responsive images with object-fit */
+/* 6. Viewport units for full-screen sections */
+
+.page { font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.1rem); }
+.hero { min-height: 80svh; }
+.features { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.nav { flex-direction: column; }
+@media (min-width: 768px) { .nav { flex-direction: row; } }</code></pre>
+      </div>
+
+      <div class="demo" id="demo-full-page">
+        <h3>Complete Responsive Landing Page</h3>
+        <p class="demo-note">Resize to see the full page transform across breakpoints.</p>
+        <div class="landing">
+          <!-- Landing Nav -->
+          <nav class="landing-nav">
+            <div class="landing-logo">Acme Co.</div>
+            <div class="landing-links">
+              <a href="#">Features</a>
+              <a href="#">Pricing</a>
+              <a href="#">About</a>
+              <a href="#">Contact</a>
+            </div>
+          </nav>
+
+          <!-- Landing Hero -->
+          <div class="landing-hero">
+            <h2 class="landing-hero-title">Build Something Amazing</h2>
+            <p class="landing-hero-sub">The modern platform for teams that ship fast.</p>
+            <div class="landing-hero-cta">
+              <span class="landing-btn landing-btn-primary">Get Started</span>
+              <span class="landing-btn landing-btn-secondary">Learn More</span>
+            </div>
+          </div>
+
+          <!-- Landing Features -->
+          <div class="landing-features">
+            <div class="landing-feature">
+              <div class="landing-feature-icon">&#9889;</div>
+              <h4>Lightning Fast</h4>
+              <p>Optimized for speed on every device and connection.</p>
+            </div>
+            <div class="landing-feature">
+              <div class="landing-feature-icon">&#128274;</div>
+              <h4>Secure</h4>
+              <p>Enterprise-grade security built into every layer.</p>
+            </div>
+            <div class="landing-feature">
+              <div class="landing-feature-icon">&#128640;</div>
+              <h4>Scalable</h4>
+              <p>Grows with your team from startup to enterprise.</p>
+            </div>
+          </div>
+
+          <!-- Landing Footer -->
+          <div class="landing-footer">
+            <p>&copy; 2026 Acme Co. &mdash; Responsive by design.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EXERCISE
+         ============================================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise</h2>
+      <p>
+        <strong>Make a dashboard responsive</strong> with the following layout requirements:
+      </p>
+      <ul>
+        <li><strong>Mobile (below 768px):</strong> Single column layout. All dashboard panels stack vertically.</li>
+        <li><strong>Tablet (768px &ndash; 1023px):</strong> Two-column grid. Panels fill two equal columns.</li>
+        <li><strong>Desktop (1024px+):</strong> Full grid layout with a sidebar, header spanning the top, and a main content area with a 2&times;2 panel grid.</li>
+      </ul>
+      <p>
+        Use mobile-first media queries, fluid typography for headings, and <code>gap</code> for
+        consistent spacing. Each panel should have a title and some placeholder content.
+      </p>
+      <div class="code-block">
+        <pre><code>&lt;!-- Starter HTML --&gt;
+&lt;div class="dashboard"&gt;
+  &lt;header class="dash-header"&gt;Dashboard&lt;/header&gt;
+  &lt;aside class="dash-sidebar"&gt;
+    &lt;nav&gt;Menu items...&lt;/nav&gt;
+  &lt;/aside&gt;
+  &lt;main class="dash-main"&gt;
+    &lt;div class="dash-panel"&gt;Panel 1&lt;/div&gt;
+    &lt;div class="dash-panel"&gt;Panel 2&lt;/div&gt;
+    &lt;div class="dash-panel"&gt;Panel 3&lt;/div&gt;
+    &lt;div class="dash-panel"&gt;Panel 4&lt;/div&gt;
+  &lt;/main&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+/* Mobile: single column */
+.dashboard { display: flex; flex-direction: column; gap: 1rem; }
+.dash-main { display: grid; gap: 1rem; }
+
+/* Your styles here... add breakpoints for tablet and desktop */
+&lt;/style&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHALLENGE
+         ============================================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge</h2>
+      <p>
+        <strong>Build a complete responsive landing page</strong> that works flawlessly from
+        320px to 2560px:
+      </p>
+      <ul>
+        <li>A responsive navigation bar that collapses on mobile.</li>
+        <li>A full-screen hero section using <code>svh</code> units with fluid typography.</li>
+        <li>A features grid that goes from 1 column to 2 to 3 to 4 columns.</li>
+        <li>A testimonials section with cards that reflow.</li>
+        <li>A two-column content + image section that stacks on mobile.</li>
+        <li>A footer with multi-column link lists that collapse.</li>
+        <li>Use <code>clamp()</code> for all font sizes and spacing.</li>
+        <li>Ensure text remains readable (45&ndash;75 characters per line) at all widths.</li>
+        <li>Test at 320px, 375px, 768px, 1024px, 1440px, 1920px, and 2560px.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../05-grid/index.html">&larr; Previous</a>
+    <a href="../07-custom-properties-cascade/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>
