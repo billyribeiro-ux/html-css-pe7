@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll-Powered Experiences | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 12</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-4">Level 4 - Advanced</span>
+    <h1>Scroll-Powered Experiences</h1>
+    <p class="subtitle">Harness scroll-driven animations, scroll snap, CSS-only carousels, and parallax effects to build immersive, performant pages &mdash; all without a single line of JavaScript.</p>
+  </header>
+
+  <!-- Scroll progress bar (fixed at top, fills as user scrolls) -->
+  <div class="scroll-progress-bar"></div>
+
+  <main>
+
+    <!-- ==================== Section 1: Why Scroll-Driven ==================== -->
+    <section class="concept" id="why-scroll-driven">
+      <h2>1. Why Scroll-Driven Animations</h2>
+
+      <p>Traditionally, creating animations tied to the user's scroll position required JavaScript &mdash; attaching a <code>scroll</code> event listener, reading <code>scrollTop</code>, and manually calculating how far through the page the user had scrolled. This approach has serious problems: the scroll event fires on the main thread (often dozens of times per second), each handler invocation triggers style recalculation and potential layout thrashing, and the animation jitters because the browser cannot guarantee when your JavaScript will run relative to the next paint.</p>
+
+      <p>CSS Scroll-Driven Animations solve all of these problems by moving the entire animation pipeline off the main thread. You declare an animation using standard <code>@keyframes</code>, then bind it to scroll progress instead of time using the <code>animation-timeline</code> property. The browser's compositor thread handles the interpolation, which means your animations run at a smooth 60fps even while the main thread is busy executing JavaScript, fetching data, or rendering other content.</p>
+
+      <p>There are two fundamental types of scroll-driven timelines. A <strong>scroll progress timeline</strong> (<code>scroll()</code>) tracks how far a scroll container has been scrolled &mdash; from 0% at the top to 100% at the bottom. A <strong>view progress timeline</strong> (<code>view()</code>) tracks an element's visibility within a scroll container &mdash; from 0% when it first enters the viewport to 100% when it fully exits. Together these two primitives can express virtually any scroll-based interaction.</p>
+
+      <div class="why">
+        <strong>Why This Matters:</strong> JavaScript scroll listeners block the main thread, cause jank under load, and require manual cleanup to avoid memory leaks. CSS scroll-driven animations run on the compositor thread, are automatically garbage-collected, respect <code>prefers-reduced-motion</code>, and are declarative &mdash; making them easier to write, debug, and maintain.
+      </div>
+
+      <div class="demo" id="demo-why">
+        <h4>Demo: JS Scroll Handler vs CSS Scroll Timeline</h4>
+        <div class="why-comparison">
+          <div class="why-box why-box--js">
+            <h5>JavaScript Approach</h5>
+            <pre><code>window.addEventListener('scroll', () => {
+  const pct = scrollY / (docH - winH);
+  bar.style.width = pct * 100 + '%';
+  // Runs on main thread
+  // Causes layout thrashing
+  // Jank under heavy load
+});</code></pre>
+            <ul class="why-list why-list--bad">
+              <li>Main thread blocking</li>
+              <li>Layout thrashing risk</li>
+              <li>Jank under CPU load</li>
+              <li>Manual event cleanup</li>
+            </ul>
+          </div>
+          <div class="why-box why-box--css">
+            <h5>CSS Scroll Timeline</h5>
+            <pre><code>.progress-bar {
+  animation: fill-bar linear;
+  animation-timeline: scroll();
+}
+@keyframes fill-bar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+/* Runs on compositor thread */</code></pre>
+            <ul class="why-list why-list--good">
+              <li>Off main thread</li>
+              <li>Zero layout thrashing</li>
+              <li>Butter-smooth 60fps</li>
+              <li>Declarative &amp; auto-managed</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 2: animation-timeline: scroll() ==================== -->
+    <section class="concept" id="scroll-timeline">
+      <h2>2. animation-timeline: scroll()</h2>
+
+      <p>The <code>scroll()</code> function creates a scroll progress timeline that maps an element's scroll position to animation progress. When the container is at the top (or left, for horizontal scrolling), the animation is at 0%. When the container is fully scrolled to the bottom (or right), the animation reaches 100%. You attach this timeline to any standard CSS animation using <code>animation-timeline: scroll()</code>.</p>
+
+      <p>The <code>scroll()</code> function accepts two optional arguments: a scroller and an axis. The scroller can be <code>nearest</code> (default &mdash; the nearest ancestor scroll container), <code>root</code> (the document viewport), or <code>self</code> (the element itself if it scrolls). The axis can be <code>block</code> (default), <code>inline</code>, <code>x</code>, or <code>y</code>. For a standard vertical page scroll progress bar, <code>scroll(root)</code> is the most common choice.</p>
+
+      <p>Because scroll-driven animations use standard <code>@keyframes</code>, you can animate any CSS property that is normally animatable &mdash; transforms, opacity, colors, clip-path, and even custom properties registered with <code>@property</code>. The key difference from time-based animations is that you typically omit <code>animation-duration</code> (or set it to <code>auto</code>) since the scroll position, not elapsed time, controls progress.</p>
+
+      <pre><code>/* A progress bar that fills as the page scrolls */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: #6366f1;
+  transform-origin: left;
+  animation: progress-fill linear;
+  animation-timeline: scroll(root);
+}
+
+@keyframes progress-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* scroll() arguments: scroller, axis */
+.horizontal-indicator {
+  animation: slide-across linear;
+  animation-timeline: scroll(nearest inline);
+}
+
+/* Self-scrolling container */
+.self-scroll-demo {
+  overflow-y: scroll;
+  animation: fade-bg linear;
+  animation-timeline: scroll(self block);
+}
+
+@keyframes fade-bg {
+  from { background: #1e293b; }
+  to   { background: #6366f1; }
+}</code></pre>
+
+      <div class="demo" id="demo-scroll-progress">
+        <h4>Demo: Scroll Progress Bar</h4>
+        <p class="demo-instruction">Scroll the page up and down. The colored bar at the very top of the viewport fills to show your scroll position. It uses <code>animation-timeline: scroll(root)</code> and runs entirely off the main thread.</p>
+        <div class="scroll-demo-visual">
+          <div class="scroll-demo-page">
+            <div class="scroll-demo-bar"></div>
+            <div class="scroll-demo-content">
+              <span>Scroll position drives the bar width</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 3: animation-timeline: view() ==================== -->
+    <section class="concept" id="view-timeline">
+      <h2>3. animation-timeline: view()</h2>
+
+      <p>While <code>scroll()</code> tracks how far a container has scrolled, <code>view()</code> tracks how far an individual element has progressed through its scroll container's visible area (the "scrollport"). This is the CSS equivalent of an Intersection Observer, but with the animation running on the compositor thread instead of firing JavaScript callbacks.</p>
+
+      <p>When an element first enters the scrollport from the bottom, its view progress is 0%. As it scrolls further into view, the progress increases. When it is fully visible and centered, it is around 50%. When it scrolls out the top, it reaches 100%. This makes <code>view()</code> perfect for "reveal on scroll" animations &mdash; fade-ins, slide-ups, scale effects, and progressive content disclosure.</p>
+
+      <p>The <code>view()</code> function accepts an axis argument (<code>block</code> or <code>inline</code>) and an optional inset that adjusts when the animation starts and ends relative to the scrollport edges. For example, <code>view(block 20% 20%)</code> starts the animation when the element is 20% inside the viewport edge and ends it 20% before the opposite edge, effectively shrinking the active zone.</p>
+
+      <pre><code>/* Cards fade and slide in when scrolling into view */
+.reveal-card {
+  animation: reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Using view() with inset to start animation earlier */
+.early-reveal {
+  animation: fade-in linear both;
+  animation-timeline: view(block 100px 0px);
+}</code></pre>
+
+      <div class="demo" id="demo-view-cards">
+        <h4>Demo: Fade-In Cards on Scroll</h4>
+        <p class="demo-instruction">Scroll down through this container. Each card fades and slides into view as it enters the visible area, powered by <code>animation-timeline: view()</code>.</p>
+        <div class="view-demo-scroller">
+          <div class="view-demo-card">
+            <div class="view-card-icon">&#9733;</div>
+            <h5>First Card</h5>
+            <p>I fade in as I enter the scrollport. No JavaScript needed.</p>
+          </div>
+          <div class="view-demo-card">
+            <div class="view-card-icon">&#9830;</div>
+            <h5>Second Card</h5>
+            <p>Each card independently tracks its own visibility progress.</p>
+          </div>
+          <div class="view-demo-card">
+            <div class="view-card-icon">&#9827;</div>
+            <h5>Third Card</h5>
+            <p>The animation runs on the compositor &mdash; silky smooth at 60fps.</p>
+          </div>
+          <div class="view-demo-card">
+            <div class="view-card-icon">&#9788;</div>
+            <h5>Fourth Card</h5>
+            <p>Scroll back up and I'll animate in reverse automatically.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 4: animation-range ==================== -->
+    <section class="concept" id="animation-range">
+      <h2>4. animation-range</h2>
+
+      <p>The <code>animation-range</code> property gives you fine-grained control over <em>which portion</em> of the scroll or view timeline drives your animation. Without it, the animation maps to the full 0%&ndash;100% of the timeline. With <code>animation-range</code>, you can restrict the animation to only a subset &mdash; for example, only the "entry" phase when an element is first scrolling into view, or only the "exit" phase when it is scrolling out.</p>
+
+      <p>For view timelines, there are four named range keywords: <code>entry</code> (the element is entering the scrollport), <code>exit</code> (it is leaving), <code>contain</code> (it is fully contained within the scrollport), and <code>cover</code> (the full range from first pixel entering to last pixel leaving &mdash; which is the default). Each keyword can be followed by a percentage to target a sub-range within that phase.</p>
+
+      <p>You can combine two range points to define a custom span. For example, <code>animation-range: entry 0% cover 50%</code> runs the animation from the moment the element starts entering until it is 50% through the full cover range. This level of control enables staggered, multi-phase animations &mdash; one animation for entry, another for the contained phase, and a third for exit.</p>
+
+      <pre><code>/* Only animate during entry (element scrolling into view) */
+.entry-only {
+  animation: slide-up linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+/* Only animate during exit (element scrolling out of view) */
+.exit-only {
+  animation: fade-out linear both;
+  animation-timeline: view();
+  animation-range: exit 0% exit 100%;
+}
+
+/* Animate while element is fully contained in viewport */
+.contain-phase {
+  animation: glow linear both;
+  animation-timeline: view();
+  animation-range: contain 0% contain 100%;
+}
+
+/* Full cover range (default behavior) */
+.full-cover {
+  animation: scale-rotate linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
+}</code></pre>
+
+      <div class="demo" id="demo-ranges">
+        <h4>Demo: Animation Range Phases</h4>
+        <p class="demo-instruction">Scroll this container to see four boxes, each responding to a different <code>animation-range</code>. Watch how each one animates during its specific phase.</p>
+        <div class="range-demo-scroller">
+          <div class="range-spacer">Scroll down to see the range demos</div>
+          <div class="range-item range-item--entry">
+            <span class="range-label">entry</span>
+            <p>Animates only while entering the scrollport.</p>
+          </div>
+          <div class="range-item range-item--exit">
+            <span class="range-label">exit</span>
+            <p>Animates only while leaving the scrollport.</p>
+          </div>
+          <div class="range-item range-item--contain">
+            <span class="range-label">contain</span>
+            <p>Animates while fully contained in view.</p>
+          </div>
+          <div class="range-item range-item--cover">
+            <span class="range-label">cover</span>
+            <p>Animates across the entire cover range.</p>
+          </div>
+          <div class="range-spacer">End of range demos</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 5: Scroll Snap ==================== -->
+    <section class="concept" id="scroll-snap">
+      <h2>5. Scroll Snap</h2>
+
+      <p>CSS Scroll Snap provides native, smooth snapping behavior for scrollable containers. When a user finishes a scroll gesture, the browser automatically snaps to a defined alignment point rather than stopping at an arbitrary position. This eliminates the need for JavaScript-based scroll snapping libraries and produces a smoother, more responsive result because the browser's scroll physics engine handles the deceleration and snap animation natively.</p>
+
+      <p>The parent scroll container uses <code>scroll-snap-type</code> to enable snapping. This property takes two values: an axis (<code>x</code>, <code>y</code>, <code>block</code>, <code>inline</code>, or <code>both</code>) and a strictness (<code>mandatory</code> or <code>proximity</code>). With <code>mandatory</code>, the scroll container always snaps to a snap point after scrolling. With <code>proximity</code>, it only snaps when the scroll position is near a snap point, allowing free scrolling in between.</p>
+
+      <p>Each child element that should act as a snap target uses <code>scroll-snap-align</code> to declare where it should align within the scrollport. Values include <code>start</code>, <code>center</code>, and <code>end</code>. The parent can also use <code>scroll-padding</code> to create an offset from the container edge, which is essential when you have a fixed header or navigation bar that would otherwise overlap snapped content.</p>
+
+      <pre><code>/* Parent: enable horizontal snapping */
+.image-gallery {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 1rem;
+  gap: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Children: snap to center */
+.gallery-slide {
+  flex: 0 0 80%;
+  scroll-snap-align: center;
+  border-radius: 12px;
+}
+
+/* Vertical snapping for full-page sections */
+.fullpage-container {
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  height: 100vh;
+}
+
+.fullpage-section {
+  height: 100vh;
+  scroll-snap-align: start;
+}</code></pre>
+
+      <div class="demo" id="demo-snap">
+        <h4>Demo: Horizontal Image Gallery with Snap</h4>
+        <p class="demo-instruction">Swipe or scroll horizontally through this gallery. Each image snaps cleanly into the center of the viewport.</p>
+        <div class="snap-gallery">
+          <div class="snap-slide snap-slide--1">
+            <div class="snap-slide-label">Slide 1 &mdash; Mountains</div>
+          </div>
+          <div class="snap-slide snap-slide--2">
+            <div class="snap-slide-label">Slide 2 &mdash; Ocean</div>
+          </div>
+          <div class="snap-slide snap-slide--3">
+            <div class="snap-slide-label">Slide 3 &mdash; Forest</div>
+          </div>
+          <div class="snap-slide snap-slide--4">
+            <div class="snap-slide-label">Slide 4 &mdash; Desert</div>
+          </div>
+          <div class="snap-slide snap-slide--5">
+            <div class="snap-slide-label">Slide 5 &mdash; Aurora</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 6: ::scroll-button() ==================== -->
+    <section class="concept" id="scroll-button">
+      <h2>6. ::scroll-button() &mdash; Native Carousel Buttons</h2>
+
+      <p>The <code>::scroll-button()</code> pseudo-element is a cutting-edge CSS feature that generates native navigation buttons for scroll containers. Instead of creating separate button elements and wiring up JavaScript click handlers to call <code>scrollBy()</code>, you can let the browser generate "previous" and "next" buttons automatically. These buttons scroll the container by one "page" (the width or height of the scrollport) in the specified direction.</p>
+
+      <p>The pseudo-element takes a direction keyword: <code>::scroll-button(left)</code>, <code>::scroll-button(right)</code>, <code>::scroll-button(up)</code>, or <code>::scroll-button(down)</code>. You can also use logical directions: <code>inline-start</code>, <code>inline-end</code>, <code>block-start</code>, <code>block-end</code>. The browser automatically disables the button (and applies the <code>:disabled</code> state) when there is no more content to scroll in that direction.</p>
+
+      <p>Because these are pseudo-elements, you style them with CSS just like <code>::before</code> or <code>::after</code>. You can set their <code>content</code>, positioning, colors, hover effects, and transitions. Combined with scroll snap, <code>::scroll-button()</code> creates a fully functional carousel with zero JavaScript.</p>
+
+      <pre><code>/* Generate prev/next buttons on a scroll container */
+.carousel {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.carousel::scroll-button(left) {
+  content: "\2039";  /* single left angle quote */
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  translate: 0 -50%;
+  font-size: 2rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.carousel::scroll-button(right) {
+  content: "\203A";  /* single right angle quote */
+  /* Same styling, positioned on right */
+}
+
+/* Auto-disabled when at scroll boundary */
+.carousel::scroll-button(left):disabled {
+  opacity: 0.3;
+  cursor: default;
+}</code></pre>
+
+      <div class="demo" id="demo-scroll-button">
+        <h4>Demo: Carousel with Prev/Next Buttons</h4>
+        <p class="demo-instruction">Use the arrow buttons on each side to navigate between slides. These buttons are generated by <code>::scroll-button()</code> and require no JavaScript.</p>
+        <div class="scrollbtn-carousel">
+          <div class="scrollbtn-slide scrollbtn-slide--1">
+            <h5>Slide 1</h5>
+            <p>Navigate with the arrows</p>
+          </div>
+          <div class="scrollbtn-slide scrollbtn-slide--2">
+            <h5>Slide 2</h5>
+            <p>Powered by ::scroll-button()</p>
+          </div>
+          <div class="scrollbtn-slide scrollbtn-slide--3">
+            <h5>Slide 3</h5>
+            <p>Zero JavaScript required</p>
+          </div>
+          <div class="scrollbtn-slide scrollbtn-slide--4">
+            <h5>Slide 4</h5>
+            <p>Auto-disables at boundaries</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 7: ::scroll-marker ==================== -->
+    <section class="concept" id="scroll-marker">
+      <h2>7. ::scroll-marker &mdash; Dot Indicators</h2>
+
+      <p>The <code>::scroll-marker</code> pseudo-element complements <code>::scroll-button()</code> by generating position indicator dots (or any shape you style) for each snap target in a scroll container. These markers automatically reflect which item is currently snapped into view, and clicking a marker scrolls the container to the corresponding item. Think of them as the dot indicators at the bottom of a mobile carousel.</p>
+
+      <p>Each child element inside the scroll container can generate a marker using the <code>::scroll-marker</code> pseudo-element. The parent scroll container uses the <code>::scroll-marker-group</code> pseudo-element to create a container for all the markers, which you can position and style as a flex or grid layout. The browser automatically handles the "active" state &mdash; the marker corresponding to the currently visible snap target receives an active style.</p>
+
+      <p>Markers are interactive: clicking a marker smoothly scrolls the container to the associated element. Combined with <code>scroll-snap-type</code>, this creates a complete navigation system. The <code>::scroll-marker</code> pseudo-element on each child defines its appearance, and you can use the <code>:target-current</code> pseudo-class to style the active marker differently.</p>
+
+      <pre><code>/* Create a marker group container below the carousel */
+.carousel::scroll-marker-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+/* Each slide generates a dot marker */
+.carousel-slide::scroll-marker {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Active marker (currently visible slide) */
+.carousel-slide::scroll-marker:target-current {
+  background: white;
+  border-color: white;
+  transform: scale(1.2);
+}</code></pre>
+
+      <div class="demo" id="demo-scroll-marker">
+        <h4>Demo: Carousel with Dot Indicators</h4>
+        <p class="demo-instruction">The dots below the carousel indicate the current slide. Click a dot to jump to that slide. The active dot is highlighted automatically.</p>
+        <div class="marker-carousel-wrapper">
+          <div class="marker-carousel">
+            <div class="marker-slide marker-slide--1">
+              <h5>Mountain Vista</h5>
+            </div>
+            <div class="marker-slide marker-slide--2">
+              <h5>City Lights</h5>
+            </div>
+            <div class="marker-slide marker-slide--3">
+              <h5>Tropical Beach</h5>
+            </div>
+            <div class="marker-slide marker-slide--4">
+              <h5>Northern Lights</h5>
+            </div>
+          </div>
+          <div class="marker-dots">
+            <span class="marker-dot marker-dot--active"></span>
+            <span class="marker-dot"></span>
+            <span class="marker-dot"></span>
+            <span class="marker-dot"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 8: Complete CSS-Only Carousel ==================== -->
+    <section class="concept" id="complete-carousel">
+      <h2>8. Complete CSS-Only Carousel</h2>
+
+      <p>Now we bring everything together: scroll snap for the sliding behavior, <code>::scroll-button()</code> for prev/next navigation, and <code>::scroll-marker</code> for position indicators. The result is a fully functional, accessible carousel component built entirely with CSS &mdash; no JavaScript, no external libraries, no ARIA hacks for custom controls.</p>
+
+      <p>The architecture is simple. The carousel container uses <code>overflow-x: auto</code> with <code>scroll-snap-type: x mandatory</code>. Each slide uses <code>scroll-snap-align: center</code> (or <code>start</code>). The <code>::scroll-button(left)</code> and <code>::scroll-button(right)</code> pseudo-elements provide arrow navigation. The <code>::scroll-marker-group</code> pseudo-element on the container hosts the dot indicators, and each slide's <code>::scroll-marker</code> pseudo-element defines a clickable dot.</p>
+
+      <p>This approach is a paradigm shift. Carousel components have traditionally been among the most complex UI patterns, requiring hundreds of lines of JavaScript for scrolling, snapping, button state management, active indicator tracking, touch handling, and keyboard navigation. The CSS-only version handles all of this natively, with better performance, full accessibility, and in roughly 50 lines of CSS.</p>
+
+      <pre><code>/* Complete CSS-only carousel */
+.full-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+/* Slides */
+.full-carousel .slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+
+/* Prev / Next buttons */
+.full-carousel::scroll-button(left) {
+  content: "\2039";
+  /* ... positioning and styling */
+}
+
+.full-carousel::scroll-button(right) {
+  content: "\203A";
+  /* ... positioning and styling */
+}
+
+/* Dot indicator group */
+.full-carousel::scroll-marker-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-block: 1rem;
+}
+
+/* Individual dot indicators */
+.full-carousel .slide::scroll-marker {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+}
+
+.full-carousel .slide::scroll-marker:target-current {
+  background: white;
+}</code></pre>
+
+      <div class="demo" id="demo-complete-carousel">
+        <h4>Demo: Complete CSS-Only Carousel</h4>
+        <p class="demo-instruction">This carousel combines scroll snap, navigation arrows, and dot indicators &mdash; all pure CSS. Swipe, click arrows, or click dots to navigate.</p>
+        <div class="complete-carousel-wrapper">
+          <div class="complete-carousel">
+            <div class="cc-slide cc-slide--1">
+              <div class="cc-content">
+                <h5>Explore the Mountains</h5>
+                <p>Majestic peaks reach for the sky in this alpine wonderland.</p>
+              </div>
+            </div>
+            <div class="cc-slide cc-slide--2">
+              <div class="cc-content">
+                <h5>Dive the Oceans</h5>
+                <p>Discover vibrant coral reefs and mysterious deep-sea creatures.</p>
+              </div>
+            </div>
+            <div class="cc-slide cc-slide--3">
+              <div class="cc-content">
+                <h5>Wander the Forests</h5>
+                <p>Ancient trees and dappled sunlight create a serene atmosphere.</p>
+              </div>
+            </div>
+            <div class="cc-slide cc-slide--4">
+              <div class="cc-content">
+                <h5>Chase the Aurora</h5>
+                <p>Nature's light show paints the Arctic sky in brilliant colors.</p>
+              </div>
+            </div>
+          </div>
+          <div class="cc-controls">
+            <button class="cc-btn cc-btn--prev" aria-label="Previous slide">&#8249;</button>
+            <div class="cc-dots">
+              <span class="cc-dot cc-dot--active"></span>
+              <span class="cc-dot"></span>
+              <span class="cc-dot"></span>
+              <span class="cc-dot"></span>
+            </div>
+            <button class="cc-btn cc-btn--next" aria-label="Next slide">&#8250;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 9: Parallax with Scroll ==================== -->
+    <section class="concept" id="parallax">
+      <h2>9. Parallax with Scroll Timeline</h2>
+
+      <p>Parallax scrolling &mdash; where background elements move at a different rate than foreground content &mdash; has traditionally required JavaScript to calculate offsets on every scroll event. With scroll-driven animations, you can achieve true parallax entirely in CSS by binding <code>transform: translateY()</code> animations to the scroll timeline at different rates for different layers.</p>
+
+      <p>The technique is straightforward: create multiple layers (background, midground, foreground) and give each a scroll-driven animation that translates it vertically, but with different keyframe values. The background layer moves slowly (small translate range), the midground moves at a medium rate, and the foreground moves at the normal scroll rate (or not at all). The visual result is a convincing depth effect.</p>
+
+      <p>You can also use <code>animation-timeline: view()</code> on individual elements to create localized parallax effects as sections scroll into view. This is perfect for hero sections, landing pages, and storytelling layouts where different elements &mdash; headings, images, decorative shapes &mdash; should move at different speeds relative to the viewport.</p>
+
+      <pre><code>/* Parallax background using scroll timeline */
+.parallax-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 60vh;
+}
+
+.parallax-bg {
+  position: absolute;
+  inset: -30% 0;
+  background-image: url('mountains.jpg');
+  background-size: cover;
+  animation: parallax-shift linear;
+  animation-timeline: view();
+}
+
+@keyframes parallax-shift {
+  from { transform: translateY(-15%); }
+  to   { transform: translateY(15%); }
+}
+
+/* Foreground content moves at normal rate */
+.parallax-content {
+  position: relative;
+  z-index: 1;
+}</code></pre>
+
+      <div class="demo" id="demo-parallax">
+        <h4>Demo: Parallax Layers</h4>
+        <p class="demo-instruction">Scroll this container to see the background, midground, and foreground layers move at different rates, creating a depth effect.</p>
+        <div class="parallax-demo-scroller">
+          <div class="parallax-scene">
+            <div class="parallax-layer parallax-layer--bg">
+              <div class="parallax-mountain parallax-mountain--far"></div>
+              <div class="parallax-mountain parallax-mountain--mid"></div>
+            </div>
+            <div class="parallax-layer parallax-layer--mg">
+              <div class="parallax-tree parallax-tree--1"></div>
+              <div class="parallax-tree parallax-tree--2"></div>
+              <div class="parallax-tree parallax-tree--3"></div>
+            </div>
+            <div class="parallax-layer parallax-layer--fg">
+              <div class="parallax-text-box">
+                <h5>Parallax Scrolling</h5>
+                <p>Layers move at different speeds &mdash; all driven by CSS scroll timelines.</p>
+              </div>
+            </div>
+          </div>
+          <div class="parallax-filler">
+            <p>Continue scrolling to see the parallax effect in action. The mountains in the background shift slowly, the trees in the midground move at a moderate pace, and the text stays anchored to the foreground.</p>
+          </div>
+          <div class="parallax-scene parallax-scene--end">
+            <div class="parallax-layer parallax-layer--bg">
+              <div class="parallax-stars"></div>
+            </div>
+            <div class="parallax-layer parallax-layer--fg">
+              <div class="parallax-text-box">
+                <h5>Pure CSS Magic</h5>
+                <p>No JavaScript. No libraries. Just <code>animation-timeline: view()</code>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Exercise ==================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Scroll Progress Bar &amp; Fade-In Sections</h2>
+
+      <p>Create a page with a <strong>scroll progress indicator</strong> at the top and multiple content sections that <strong>fade and slide in</strong> as they scroll into view.</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li>Add a fixed progress bar at the top of the page that fills from left to right as the user scrolls. Use <code>animation-timeline: scroll(root)</code> with a <code>scaleX</code> transform (set <code>transform-origin: left</code>).</li>
+        <li>Create at least 5 content sections with enough text to require scrolling.</li>
+        <li>Each section should fade in and slide up (from <code>opacity: 0; translateY(40px)</code>) when it enters the viewport. Use <code>animation-timeline: view()</code> with <code>animation-range: entry</code>.</li>
+        <li>Add a <code>prefers-reduced-motion</code> media query that disables all scroll-driven animations for users who prefer reduced motion.</li>
+        <li>Add staggered timing: even-numbered sections should slide in from the left and odd-numbered sections from the right.</li>
+        <li>Style the progress bar with a gradient background using at least two colors.</li>
+      </ol>
+
+      <h3>Starter Code:</h3>
+      <pre><code>.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 999;
+  /* Add animation-timeline here */
+}
+
+@keyframes fill-progress {
+  to { transform: scaleX(1); }
+}
+
+.content-section {
+  opacity: 0;
+  transform: translateY(40px);
+  /* Add view() timeline and animation-range here */
+}
+
+@keyframes reveal-section {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}</code></pre>
+    </section>
+
+    <!-- ==================== Challenge ==================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Storytelling Page with Scroll-Driven Scene Transitions</h2>
+
+      <p>Build an immersive storytelling page where scroll position drives <strong>scene transitions</strong>, creating a narrative that unfolds as the user scrolls. Each scene should transform, fade, or reveal content based on the scroll position.</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li>Create at least 4 "scenes" that transition as the user scrolls: a title scene, a narrative scene with parallax, an interactive data/infographic scene, and a conclusion scene.</li>
+        <li>Use <code>animation-timeline: scroll()</code> for at least one global effect (e.g., a background color that shifts across the entire page).</li>
+        <li>Use <code>animation-timeline: view()</code> with different <code>animation-range</code> values for per-element reveals. At least one element should animate on <code>entry</code>, one on <code>contain</code>, and one on <code>exit</code>.</li>
+        <li>Build a horizontal-scrolling "chapter" section using scroll snap with <code>::scroll-button()</code> and <code>::scroll-marker</code> indicators.</li>
+        <li>Include a parallax section with at least 3 layers moving at different rates.</li>
+        <li>Add a scroll-driven progress indicator that shows which scene the user is currently viewing.</li>
+        <li>Implement <code>prefers-reduced-motion</code> to gracefully degrade for accessibility.</li>
+      </ol>
+
+      <h3>Bonus:</h3>
+      <ul>
+        <li>Use <code>@property</code> to register a custom property for a hue value and animate it with <code>scroll()</code> to create a color-shifting background that smoothly transitions across the rainbow as the page scrolls.</li>
+        <li>Create a "scroll-jacking" effect for one section using <code>scroll-snap-type: y mandatory</code> where each sub-section occupies the full viewport height.</li>
+        <li>Add scroll-driven <code>clip-path</code> animations to reveal images in creative ways (circle wipe, diagonal reveal, etc.).</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../11-modern-colors/index.html">&larr; Previous</a>
+    <a href="../13-view-transitions-anchor/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

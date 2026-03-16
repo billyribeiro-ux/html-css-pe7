@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Bleeding Edge | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 14</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-5">Level 5 - PE7 Mastery</span>
+    <h1>The Bleeding Edge</h1>
+    <p class="subtitle">Explore the most cutting-edge CSS features arriving in 2026 and beyond: conditional logic with if(), sibling-aware styling, enhanced attr(), customizable selects, auto-sizing fields, custom CSS functions, and progressive enhancement strategies.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: CSS if() FUNCTION    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="css-if">
+      <h2>1. CSS if() Function</h2>
+      <p>The CSS <code>if()</code> function brings inline conditional logic to CSS property values. Instead of writing multiple rules or media queries to switch between values, you can embed the condition directly in the value declaration. This is a paradigm shift for CSS: logic right where values live.</p>
+
+      <h3>Syntax</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Basic syntax */
+property: if(condition: value-if-true; else: value-if-false);
+
+/* Real example: component variant switching */
+.card {
+  --variant: default;
+
+  width: if(style(--variant: compact): 200px; else: 400px);
+  padding: if(style(--variant: compact): 0.75rem; else: 1.5rem);
+  font-size: if(style(--variant: compact): 0.85rem; else: 1rem);
+}
+
+/* Compact variant */
+.sidebar .card {
+  --variant: compact;
+}</code></pre>
+      </div>
+
+      <h3>Condition Types</h3>
+      <p>The <code>if()</code> function supports several condition types, making it incredibly versatile:</p>
+
+      <div class="condition-types-grid">
+        <div class="condition-card">
+          <h4><code>style()</code></h4>
+          <p>Tests the value of a custom property on the element.</p>
+          <div class="code-block">
+            <pre><code>/* Changes based on custom property value */
+color: if(
+  style(--theme: dark): white;
+  else: black
+);
+
+/* Multiple conditions with chaining */
+background: if(
+  style(--status: success): #22c55e;
+  style(--status: warning): #f59e0b;
+  style(--status: error): #ef4444;
+  else: #6b7280
+);</code></pre>
+          </div>
+        </div>
+
+        <div class="condition-card">
+          <h4><code>media()</code></h4>
+          <p>Tests a media query inline, without a full <code>@media</code> block.</p>
+          <div class="code-block">
+            <pre><code>/* Responsive values inline */
+.container {
+  padding: if(
+    media(width >= 1024px): 3rem;
+    media(width >= 640px): 2rem;
+    else: 1rem
+  );
+
+  grid-template-columns: if(
+    media(width >= 768px): repeat(3, 1fr);
+    else: 1fr
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="condition-card">
+          <h4><code>supports()</code></h4>
+          <p>Tests for feature support inline.</p>
+          <div class="code-block">
+            <pre><code>/* Use modern features with fallback */
+.layout {
+  display: if(
+    supports(display: grid): grid;
+    else: flex
+  );
+
+  gap: if(
+    supports(gap: 1rem): 1rem;
+    else: 0
+  );
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Component Variant Switching with if()</h4>
+        <p class="demo-note">These cards demonstrate how <code>if()</code> with <code>style()</code> conditions can switch between component variants using a single custom property. The sidebar uses <code>--variant: compact</code>.</p>
+
+        <div class="if-demo-layout">
+          <div class="if-demo-main">
+            <h5 class="if-demo-label">Main Area (--variant: default)</h5>
+            <div class="if-card if-card--default">
+              <div class="if-card-img"></div>
+              <div class="if-card-body">
+                <h5>Project Dashboard</h5>
+                <p>Full-width card with generous padding, larger text, and prominent call-to-action. The <code>if()</code> function reads <code>--variant: default</code> and applies spacious styles.</p>
+                <button class="if-card-btn">View Details</button>
+              </div>
+            </div>
+          </div>
+          <div class="if-demo-sidebar">
+            <h5 class="if-demo-label">Sidebar (--variant: compact)</h5>
+            <div class="if-card if-card--compact">
+              <div class="if-card-img"></div>
+              <div class="if-card-body">
+                <h5>Project Dashboard</h5>
+                <p>Same component, compact variant. Smaller text, tighter padding.</p>
+                <button class="if-card-btn if-card-btn--compact">View</button>
+              </div>
+            </div>
+            <div class="if-card if-card--compact">
+              <div class="if-card-img"></div>
+              <div class="if-card-body">
+                <h5>Analytics Report</h5>
+                <p>Automatically adapts to the compact context.</p>
+                <button class="if-card-btn if-card-btn--compact">View</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>if()</code> function does NOT replace <code>@media</code>, <code>@container</code>, or <code>@supports</code> at-rules. Those remain essential for controlling which rules apply. <code>if()</code> is for switching individual values within a single declaration. Think of it as a ternary operator for CSS values.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: SIBLING FUNCTIONS    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="sibling-functions">
+      <h2>2. Sibling Functions</h2>
+      <p>CSS finally has awareness of an element's position among its siblings. The <code>sibling-index()</code> and <code>sibling-count()</code> functions eliminate the need for nth-child hacks and JavaScript-set variables for positional styling.</p>
+
+      <h3>sibling-index()</h3>
+      <p>Returns the 0-based index of an element among its siblings. The first child has index 0, the second has index 1, and so on.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Staggered animation delays */
+.card-list .card {
+  animation: fade-in 0.5s ease backwards;
+  animation-delay: calc(sibling-index() * 0.1s);
+}
+
+/* Progressive opacity */
+.breadcrumb li {
+  opacity: calc(0.4 + (sibling-index() * 0.15));
+}
+
+/* Dynamic hue rotation */
+.color-swatch {
+  background: oklch(0.7 0.15 calc(sibling-index() * 30));
+}</code></pre>
+      </div>
+
+      <h3>sibling-count()</h3>
+      <p>Returns the total number of siblings (including the element itself). This is incredibly powerful for dynamic layouts.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Auto-calculate grid columns based on item count */
+.dynamic-grid > * {
+  grid-column: span calc(12 / sibling-count());
+}
+
+/* Adjust font size when there are many items */
+.tag-list .tag {
+  font-size: if(
+    style(sibling-count() > 10): 0.75rem;
+    else: 0.9rem
+  );
+}
+
+/* Equal-width flex items */
+.nav-items > * {
+  flex-basis: calc(100% / sibling-count());
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Staggered Card Entrance</h4>
+        <p class="demo-note">Each card enters with a delay calculated from its <code>sibling-index()</code>. The hue also shifts progressively. Scroll down or reload to see the animation.</p>
+
+        <div class="stagger-demo">
+          <div class="stagger-card">
+            <div class="stagger-icon">&#9733;</div>
+            <h5>Design</h5>
+            <p>Create beautiful interfaces with modern CSS tools and methodologies.</p>
+          </div>
+          <div class="stagger-card">
+            <div class="stagger-icon">&#9878;</div>
+            <h5>Develop</h5>
+            <p>Build robust, scalable applications with clean architecture.</p>
+          </div>
+          <div class="stagger-card">
+            <div class="stagger-icon">&#9881;</div>
+            <h5>Configure</h5>
+            <p>Fine-tune performance and optimize for production deployment.</p>
+          </div>
+          <div class="stagger-card">
+            <div class="stagger-icon">&#9889;</div>
+            <h5>Deploy</h5>
+            <p>Ship confidently with CI/CD pipelines and monitoring.</p>
+          </div>
+          <div class="stagger-card">
+            <div class="stagger-icon">&#10004;</div>
+            <h5>Iterate</h5>
+            <p>Continuously improve with data-driven design decisions.</p>
+          </div>
+          <div class="stagger-card">
+            <div class="stagger-icon">&#9829;</div>
+            <h5>Delight</h5>
+            <p>Exceed user expectations with thoughtful, polished details.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Dynamic Color Palette</h4>
+        <p class="demo-note">Each swatch's hue is calculated from its <code>sibling-index()</code> using OKLCH color space. The number label and width adapt using <code>sibling-count()</code>.</p>
+
+        <div class="palette-demo">
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+          <div class="palette-swatch"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: ENHANCED attr()      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="enhanced-attr">
+      <h2>3. Enhanced attr()</h2>
+      <p>The <code>attr()</code> function has been dramatically upgraded. Previously, it could only return strings (for use in <code>content</code> property). Now it supports <strong>typed values</strong>: numbers, lengths, colors, and more. This means HTML data attributes can directly drive CSS values.</p>
+
+      <h3>New Syntax</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Old attr() - strings only, only in content */
+.badge::after {
+  content: attr(data-count);
+}
+
+/* NEW attr() - typed values in any property! */
+
+/* Read a number */
+.grid {
+  grid-template-columns: repeat(attr(data-cols type(&lt;number&gt;), 3), 1fr);
+}
+
+/* Read a length */
+.spacer {
+  height: attr(data-height type(&lt;length&gt;), 1rem);
+}
+
+/* Read a color */
+.tag {
+  background-color: attr(data-color type(&lt;color&gt;), #6366f1);
+}
+
+/* Read a percentage */
+.progress-bar {
+  width: attr(data-progress type(&lt;percentage&gt;), 0%);
+}</code></pre>
+      </div>
+
+      <h3>The Syntax Breakdown</h3>
+      <div class="code-block">
+        <pre><code>attr(attribute-name type(&lt;css-type&gt;), fallback-value)
+     ^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+     HTML attribute  CSS type hint     Default value
+                     to parse as       if missing</code></pre>
+      </div>
+
+      <h3>Supported Types</h3>
+      <div class="type-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Syntax</th>
+              <th>Example HTML</th>
+              <th>Example CSS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Number</td>
+              <td><code>type(&lt;number&gt;)</code></td>
+              <td><code>data-cols="4"</code></td>
+              <td><code>grid-template-columns: repeat(attr(data-cols type(&lt;number&gt;), 3), 1fr)</code></td>
+            </tr>
+            <tr>
+              <td>Length</td>
+              <td><code>type(&lt;length&gt;)</code></td>
+              <td><code>data-gap="2rem"</code></td>
+              <td><code>gap: attr(data-gap type(&lt;length&gt;), 1rem)</code></td>
+            </tr>
+            <tr>
+              <td>Color</td>
+              <td><code>type(&lt;color&gt;)</code></td>
+              <td><code>data-bg="#f43f5e"</code></td>
+              <td><code>background: attr(data-bg type(&lt;color&gt;), gray)</code></td>
+            </tr>
+            <tr>
+              <td>Percentage</td>
+              <td><code>type(&lt;percentage&gt;)</code></td>
+              <td><code>data-width="75%"</code></td>
+              <td><code>width: attr(data-width type(&lt;percentage&gt;), 100%)</code></td>
+            </tr>
+            <tr>
+              <td>Integer</td>
+              <td><code>type(&lt;integer&gt;)</code></td>
+              <td><code>data-order="2"</code></td>
+              <td><code>order: attr(data-order type(&lt;integer&gt;), 0)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Data-Driven Grid</h4>
+        <p class="demo-note">The grid below reads its column count from the <code>data-cols</code> attribute. Each item reads its span from <code>data-span</code>. Change the attributes in HTML and the grid adapts automatically.</p>
+
+        <div class="attr-grid-demo" data-cols="4">
+          <div class="attr-grid-item" data-span="2" data-bg="#6366f1">
+            <span class="attr-label">span 2</span>
+            <code>data-span="2"</code>
+          </div>
+          <div class="attr-grid-item" data-span="1" data-bg="#8b5cf6">
+            <span class="attr-label">span 1</span>
+            <code>data-span="1"</code>
+          </div>
+          <div class="attr-grid-item" data-span="1" data-bg="#a78bfa">
+            <span class="attr-label">span 1</span>
+            <code>data-span="1"</code>
+          </div>
+          <div class="attr-grid-item" data-span="3" data-bg="#c084fc">
+            <span class="attr-label">span 3</span>
+            <code>data-span="3"</code>
+          </div>
+          <div class="attr-grid-item" data-span="1" data-bg="#e879f9">
+            <span class="attr-label">span 1</span>
+            <code>data-span="1"</code>
+          </div>
+        </div>
+
+        <div class="code-block" style="margin-top: 1rem;">
+          <h4>HTML</h4>
+          <pre><code>&lt;div class="grid" data-cols="4"&gt;
+  &lt;div class="item" data-span="2"&gt;Wide item&lt;/div&gt;
+  &lt;div class="item" data-span="1"&gt;Normal&lt;/div&gt;
+  &lt;div class="item" data-span="1"&gt;Normal&lt;/div&gt;
+  &lt;div class="item" data-span="3"&gt;Extra wide&lt;/div&gt;
+  &lt;div class="item" data-span="1"&gt;Normal&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Attribute-Driven Progress Bars</h4>
+        <p class="demo-note">Each progress bar reads its width from <code>data-progress</code> and color from <code>data-color</code>.</p>
+
+        <div class="attr-progress-demo">
+          <div class="attr-progress-item">
+            <div class="attr-progress-label">
+              <span>HTML</span>
+              <span>95%</span>
+            </div>
+            <div class="attr-progress-track">
+              <div class="attr-progress-bar" data-progress="95" data-color="#22c55e"></div>
+            </div>
+          </div>
+          <div class="attr-progress-item">
+            <div class="attr-progress-label">
+              <span>CSS</span>
+              <span>90%</span>
+            </div>
+            <div class="attr-progress-track">
+              <div class="attr-progress-bar" data-progress="90" data-color="#6366f1"></div>
+            </div>
+          </div>
+          <div class="attr-progress-item">
+            <div class="attr-progress-label">
+              <span>JavaScript</span>
+              <span>80%</span>
+            </div>
+            <div class="attr-progress-track">
+              <div class="attr-progress-bar" data-progress="80" data-color="#f59e0b"></div>
+            </div>
+          </div>
+          <div class="attr-progress-item">
+            <div class="attr-progress-label">
+              <span>TypeScript</span>
+              <span>70%</span>
+            </div>
+            <div class="attr-progress-track">
+              <div class="attr-progress-bar" data-progress="70" data-color="#06b6d4"></div>
+            </div>
+          </div>
+          <div class="attr-progress-item">
+            <div class="attr-progress-label">
+              <span>Rust</span>
+              <span>40%</span>
+            </div>
+            <div class="attr-progress-track">
+              <div class="attr-progress-bar" data-progress="40" data-color="#ef4444"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: CUSTOMIZABLE SELECT  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="customizable-select">
+      <h2>4. Customizable Select</h2>
+      <p>Native <code>&lt;select&gt;</code> elements have been notoriously difficult to style. The new <code>appearance: base-select</code> value opts into a fully-customizable select that retains all native behavior (keyboard navigation, accessibility, form participation) while giving you complete CSS control.</p>
+
+      <h3>Opting In</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Opt into customizable select */
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+/* Now you can style everything */
+select {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+/* Style the dropdown picker */
+select::picker(select) {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  background: white;
+}
+
+/* Style individual options */
+option {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+option:hover {
+  background: #f1f5f9;
+}
+
+/* Style the selected option checkmark */
+option::checkmark {
+  color: #6366f1;
+  font-weight: bold;
+}
+
+/* Style the dropdown arrow */
+select::picker-icon {
+  content: "\25BC";
+  font-size: 0.7em;
+  color: #64748b;
+  transition: rotate 0.2s;
+}
+
+select:open::picker-icon {
+  rotate: 180deg;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Beautifully Styled Select</h4>
+        <p class="demo-note">This select element uses <code>appearance: base-select</code> to enable full CSS customization. It behaves exactly like a native select (keyboard navigation, form submission) but looks completely custom.</p>
+
+        <div class="select-demo-area">
+          <div class="select-demo-group">
+            <label class="select-label" for="framework-select">Choose a Framework</label>
+            <select id="framework-select" class="custom-select">
+              <option value="" disabled selected>Select a framework...</option>
+              <option value="react">React</option>
+              <option value="vue">Vue.js</option>
+              <option value="svelte">Svelte</option>
+              <option value="angular">Angular</option>
+              <option value="solid">SolidJS</option>
+              <option value="qwik">Qwik</option>
+            </select>
+          </div>
+
+          <div class="select-demo-group">
+            <label class="select-label" for="color-select">Choose a Color</label>
+            <select id="color-select" class="custom-select custom-select--colors">
+              <option value="" disabled selected>Pick a color...</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+              <option value="purple">Purple</option>
+              <option value="orange">Orange</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Progressive Enhancement:</strong> Use <code>@supports (appearance: base-select)</code> to conditionally apply custom select styles. In browsers without support, the native select renders normally. This is the perfect progressive enhancement story.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: FIELD-SIZING         -->
+    <!-- ============================== -->
+    <section class="concept-section" id="field-sizing">
+      <h2>5. field-sizing</h2>
+      <p>The <code>field-sizing: content</code> property makes form fields automatically grow or shrink to fit their content. No more JavaScript auto-resize hacks for textareas, and no more oversized input fields for short values.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Auto-growing textarea */
+textarea {
+  field-sizing: content;
+  min-height: 3rem;     /* Minimum one line */
+  max-height: 300px;    /* Cap the growth */
+}
+
+/* Input that fits its content */
+input[type="text"] {
+  field-sizing: content;
+  min-width: 100px;
+  max-width: 100%;
+}
+
+/* Even number inputs benefit */
+input[type="number"] {
+  field-sizing: content;
+  min-width: 60px;
+}</code></pre>
+      </div>
+
+      <h3>Values</h3>
+      <ul class="feature-list">
+        <li><code>field-sizing: fixed</code> — Default behavior. Field uses its specified or default size.</li>
+        <li><code>field-sizing: content</code> — Field grows and shrinks with its content. Respects <code>min-width</code>/<code>max-width</code> and <code>min-height</code>/<code>max-height</code>.</li>
+      </ul>
+
+      <div class="demo-container">
+        <h4>Demo: Auto-Growing Fields</h4>
+        <p class="demo-note">Type in the fields below. The textarea grows taller as you add lines. The input grows wider as you type longer text. No JavaScript involved.</p>
+
+        <div class="field-sizing-demo">
+          <div class="field-group">
+            <label class="field-label" for="auto-textarea">Auto-growing Textarea</label>
+            <textarea id="auto-textarea" class="auto-field auto-textarea" placeholder="Start typing... I'll grow with your content. Try adding multiple lines to see the height expand automatically."></textarea>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="auto-input">Auto-sizing Input</label>
+            <input type="text" id="auto-input" class="auto-field auto-input" placeholder="Type here..." value="Short">
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label" for="auto-number">Number</label>
+              <input type="number" id="auto-number" class="auto-field auto-number" value="42">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="auto-email">Email</label>
+              <input type="email" id="auto-email" class="auto-field auto-email" placeholder="you@example.com">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-comparison">
+          <div class="field-compare-col">
+            <h5>Without field-sizing (fixed)</h5>
+            <textarea class="compare-textarea compare-fixed" rows="3" placeholder="I'm a fixed-size textarea. I don't grow."></textarea>
+          </div>
+          <div class="field-compare-col">
+            <h5>With field-sizing: content</h5>
+            <textarea class="compare-textarea compare-content" placeholder="I grow with content! Try typing multiple lines here to see me expand smoothly."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: @FUNCTION            -->
+    <!-- ============================== -->
+    <section class="concept-section" id="css-functions">
+      <h2>6. @function (Custom CSS Functions)</h2>
+      <p>Custom CSS functions via <code>@function</code> let you define reusable value computations — similar to functions in programming languages. They accept parameters, perform calculations, and return CSS values. This is one of the most anticipated CSS features ever.</p>
+
+      <h3>Syntax</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Define a spacing scale function */
+@function --spacing(--level) {
+  result: calc(var(--level) * 0.25rem);
+}
+
+/* Use it throughout your stylesheet */
+.card {
+  padding: --spacing(4);        /* = 1rem */
+  margin-bottom: --spacing(6);  /* = 1.5rem */
+  gap: --spacing(3);            /* = 0.75rem */
+}
+
+.section {
+  padding: --spacing(8) --spacing(4); /* = 2rem 1rem */
+}</code></pre>
+      </div>
+
+      <h3>Advanced Examples</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Fluid typography function */
+@function --fluid-size(--min, --max) {
+  result: clamp(
+    var(--min),
+    calc(var(--min) + (var(--max) - var(--min)) * ((100vw - 320px) / (1200 - 320))),
+    var(--max)
+  );
+}
+
+h1 { font-size: --fluid-size(1.75rem, 3.5rem); }
+h2 { font-size: --fluid-size(1.5rem, 2.5rem); }
+p  { font-size: --fluid-size(1rem, 1.125rem); }
+
+/* Color palette generator */
+@function --brand-color(--lightness) {
+  result: oklch(var(--lightness) 0.18 265);
+}
+
+.primary   { color: --brand-color(0.55); }
+.secondary { color: --brand-color(0.70); }
+.muted     { color: --brand-color(0.85); }
+
+/* Container-width percentage */
+@function --col-width(--cols, --total) {
+  result: calc((var(--cols) / var(--total)) * 100%);
+}
+
+.sidebar { width: --col-width(3, 12); }   /* 25% */
+.main    { width: --col-width(9, 12); }   /* 75% */</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Spacing Utility System</h4>
+        <p class="demo-note">This design system uses a custom <code>@function --spacing()</code> to generate consistent spacing throughout. Each box shows the spacing level and computed value.</p>
+
+        <div class="spacing-demo">
+          <div class="spacing-item" data-level="1">
+            <div class="spacing-visual spacing-1"></div>
+            <div class="spacing-info">
+              <code>--spacing(1)</code>
+              <span>0.25rem (4px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="2">
+            <div class="spacing-visual spacing-2"></div>
+            <div class="spacing-info">
+              <code>--spacing(2)</code>
+              <span>0.5rem (8px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="3">
+            <div class="spacing-visual spacing-3"></div>
+            <div class="spacing-info">
+              <code>--spacing(3)</code>
+              <span>0.75rem (12px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="4">
+            <div class="spacing-visual spacing-4"></div>
+            <div class="spacing-info">
+              <code>--spacing(4)</code>
+              <span>1rem (16px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="6">
+            <div class="spacing-visual spacing-6"></div>
+            <div class="spacing-info">
+              <code>--spacing(6)</code>
+              <span>1.5rem (24px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="8">
+            <div class="spacing-visual spacing-8"></div>
+            <div class="spacing-info">
+              <code>--spacing(8)</code>
+              <span>2rem (32px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="12">
+            <div class="spacing-visual spacing-12"></div>
+            <div class="spacing-info">
+              <code>--spacing(12)</code>
+              <span>3rem (48px)</span>
+            </div>
+          </div>
+          <div class="spacing-item" data-level="16">
+            <div class="spacing-visual spacing-16"></div>
+            <div class="spacing-info">
+              <code>--spacing(16)</code>
+              <span>4rem (64px)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Color Function System</h4>
+        <p class="demo-note">A <code>@function --brand()</code> generates consistent brand colors at different lightness levels from a single hue.</p>
+
+        <div class="color-fn-demo">
+          <div class="color-fn-row">
+            <div class="color-fn-swatch" style="--l: 0.95; --c: 0.03;">
+              <span>50</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.88; --c: 0.06;">
+              <span>100</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.80; --c: 0.10;">
+              <span>200</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.72; --c: 0.14;">
+              <span>300</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.63; --c: 0.18;">
+              <span>400</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.55; --c: 0.22;">
+              <span>500</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.47; --c: 0.20;">
+              <span>600</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.39; --c: 0.18;">
+              <span>700</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.31; --c: 0.15;">
+              <span>800</span>
+            </div>
+            <div class="color-fn-swatch" style="--l: 0.23; --c: 0.10;">
+              <span>900</span>
+            </div>
+          </div>
+          <p class="color-fn-label">Generated from: <code>@function --brand(--level) { result: oklch(calc(0.95 - var(--level) * 0.08) 0.18 265); }</code></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: FEATURE DETECTION    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="feature-detection">
+      <h2>7. Feature Detection</h2>
+      <p>With so many cutting-edge features, <strong>progressive enhancement</strong> is essential. Use <code>@supports</code> to detect feature availability and provide fallbacks. Your CSS should always work without the newest features and enhance when they are available.</p>
+
+      <h3>Detection Patterns</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Detect CSS if() support */
+@supports (width: if(style(--x: 1): 1px; else: 2px)) {
+  .card {
+    width: if(style(--variant: compact): 200px; else: 400px);
+  }
+}
+
+/* Detect sibling functions */
+@supports (animation-delay: calc(sibling-index() * 1s)) {
+  .list-item {
+    animation-delay: calc(sibling-index() * 0.1s);
+  }
+}
+
+/* Detect enhanced attr() with type */
+@supports (width: attr(data-w type(&lt;length&gt;), 0px)) {
+  .data-driven {
+    width: attr(data-w type(&lt;length&gt;), auto);
+  }
+}
+
+/* Detect customizable select */
+@supports (appearance: base-select) {
+  select, ::picker(select) {
+    appearance: base-select;
+  }
+  /* Custom select styles... */
+}
+
+/* Detect field-sizing */
+@supports (field-sizing: content) {
+  textarea {
+    field-sizing: content;
+    min-height: 2.5rem;
+    max-height: 400px;
+  }
+}
+
+/* Detect @function (via a resulting value) */
+@supports (--custom: --spacing(1)) {
+  .component {
+    padding: --spacing(4);
+  }
+}
+
+/* Combine multiple checks */
+@supports (field-sizing: content) and (appearance: base-select) {
+  .modern-form {
+    /* Use both features together */
+  }
+}</code></pre>
+      </div>
+
+      <h3>Progressive Enhancement Strategy</h3>
+
+      <div class="enhancement-steps">
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">1</div>
+          <div class="enhancement-step-content">
+            <h4>Baseline</h4>
+            <p>Write CSS that works in all browsers. Use standard properties and values. This is your foundation that every user gets.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">2</div>
+          <div class="enhancement-step-content">
+            <h4>Detect</h4>
+            <p>Wrap cutting-edge features in <code>@supports</code> blocks. Test for the exact property-value pair you intend to use.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">3</div>
+          <div class="enhancement-step-content">
+            <h4>Enhance</h4>
+            <p>Inside the <code>@supports</code> block, apply the modern feature. Override or augment the baseline styles. The experience improves for capable browsers.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">4</div>
+          <div class="enhancement-step-content">
+            <h4>Test</h4>
+            <p>Verify both paths: confirm the baseline works without the feature, and the enhancement works with it. Use browser DevTools to toggle feature flags.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Feature Detection Dashboard</h4>
+        <p class="demo-note">This panel shows which cutting-edge features are supported in your current browser. Green indicates support; gray indicates the feature is not yet available.</p>
+
+        <div class="feature-dashboard">
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--if"></div>
+            <div>
+              <strong>CSS if()</strong>
+              <p>Conditional values in property declarations</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--sibling"></div>
+            <div>
+              <strong>sibling-index() / sibling-count()</strong>
+              <p>Sibling-aware positional styling</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--attr"></div>
+            <div>
+              <strong>Enhanced attr()</strong>
+              <p>Typed attribute values beyond strings</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--select"></div>
+            <div>
+              <strong>appearance: base-select</strong>
+              <p>Fully customizable native select elements</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--fieldsizing"></div>
+            <div>
+              <strong>field-sizing: content</strong>
+              <p>Auto-sizing form fields</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--function"></div>
+            <div>
+              <strong>@function</strong>
+              <p>Custom CSS function definitions</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--popover"></div>
+            <div>
+              <strong>Popover API</strong>
+              <p>Native popover with :popover-open</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--anchor"></div>
+            <div>
+              <strong>CSS Anchor Positioning</strong>
+              <p>Declarative floating element positioning</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Staggered Card List</h2>
+      <p>Create a staggered card list where animation delays are automatically calculated using <code>sibling-index()</code>, and card columns adapt using <code>attr()</code>.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create a grid container that reads its column count from a <code>data-cols</code> attribute using enhanced <code>attr()</code>.</li>
+          <li>Add at least 8 cards to the grid, each with a fade-and-slide-up entrance animation.</li>
+          <li>Use <code>sibling-index()</code> to calculate each card's <code>animation-delay</code> as <code>calc(sibling-index() * 0.1s)</code>.</li>
+          <li>Each card should show its index number (use a CSS counter or <code>sibling-index()</code> in content).</li>
+          <li>Cards that span multiple columns should use <code>data-span</code> with <code>attr()</code>.</li>
+          <li>Include a <code>@supports</code> fallback: if <code>sibling-index()</code> is not supported, use <code>:nth-child()</code> with hardcoded delays.</li>
+          <li>Add hover effects that scale the card and increase box-shadow.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <pre><code>&lt;div class="stagger-grid" data-cols="3"&gt;
+  &lt;article class="stagger-item"&gt;
+    &lt;h3&gt;Card Title&lt;/h3&gt;
+    &lt;p&gt;Description text...&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;!-- Repeat for 8+ cards --&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.stagger-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    attr(data-cols type(&lt;number&gt;), 3), 1fr
+  );
+  gap: 1.5rem;
+}
+
+.stagger-item {
+  animation: stagger-in 0.5s ease backwards;
+  animation-delay: calc(sibling-index() * 0.1s);
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Fallback for browsers without sibling-index() */
+@supports not (animation-delay: calc(sibling-index() * 1s)) {
+  .stagger-item:nth-child(1) { animation-delay: 0s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.2s; }
+  /* ...etc */
+}
+&lt;/style&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="exercise-demo">
+        <h3>Expected Result</h3>
+        <div class="exercise-stagger-demo">
+          <div class="ex-stagger-card" style="--i: 0;">
+            <span class="ex-stagger-num">1</span>
+            <h5>Research</h5>
+            <p>Understand the problem space and user needs.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 1;">
+            <span class="ex-stagger-num">2</span>
+            <h5>Ideate</h5>
+            <p>Brainstorm solutions and explore possibilities.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 2;">
+            <span class="ex-stagger-num">3</span>
+            <h5>Prototype</h5>
+            <p>Build quick mockups to test concepts.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 3;">
+            <span class="ex-stagger-num">4</span>
+            <h5>Test</h5>
+            <p>Validate assumptions with real users.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 4;">
+            <span class="ex-stagger-num">5</span>
+            <h5>Build</h5>
+            <p>Develop the production-ready solution.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 5;">
+            <span class="ex-stagger-num">6</span>
+            <h5>Launch</h5>
+            <p>Deploy and monitor in production.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 6;">
+            <span class="ex-stagger-num">7</span>
+            <h5>Measure</h5>
+            <p>Track metrics and gather feedback.</p>
+          </div>
+          <div class="ex-stagger-card" style="--i: 7;">
+            <span class="ex-stagger-num">8</span>
+            <h5>Iterate</h5>
+            <p>Refine based on data and insights.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Data-Driven Dashboard</h2>
+      <p>Build a data-driven dashboard using CSS logic only: use <code>if()</code> for conditional layouts, sibling functions for dynamic styling, custom selects for filters, and auto-sizing textareas for notes.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Layout:</strong> Use CSS <code>if()</code> with a <code>--layout</code> custom property to toggle between grid and list views. A custom <code>&lt;select&gt;</code> (with <code>appearance: base-select</code>) switches the layout.</li>
+          <li><strong>Metric Cards:</strong> At least 4 KPI cards with progress bars driven by <code>data-progress</code> using enhanced <code>attr()</code>. Color the bars conditionally: green for 70%+, yellow for 40-69%, red for below 40% using <code>if()</code>.</li>
+          <li><strong>Activity Feed:</strong> A list of recent activities where each item has a staggered entrance animation using <code>sibling-index()</code>.</li>
+          <li><strong>Notes Panel:</strong> A sidebar with <code>field-sizing: content</code> textareas that grow as users type notes.</li>
+          <li><strong>Filters:</strong> Use customizable <code>&lt;select&gt;</code> dropdowns for date range and category filters.</li>
+          <li><strong>Feature Detection:</strong> Wrap all cutting-edge features in <code>@supports</code> with reasonable fallbacks.</li>
+          <li><strong>Responsive:</strong> The dashboard should work from 320px to 2560px using fluid typography and responsive grids.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Use a CSS custom property <code>--layout: grid</code> on the container and switch it via JavaScript when the select changes: <code>el.style.setProperty('--layout', 'list')</code>.</li>
+          <li>For the conditional progress bar colors, use nested <code>if()</code> checks against data attributes.</li>
+          <li>Create a <code>@function --status-color(--progress)</code> that returns the right color for a progress value.</li>
+          <li>Use <code>@layer</code> to organize your dashboard styles into base, layout, and components.</li>
+          <li>Test with Chrome DevTools "Experimental Web Platform Features" flag enabled.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../13-view-transitions-anchor/index.html">&larr; Previous</a>
+    <a href="../15-capstone-project/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

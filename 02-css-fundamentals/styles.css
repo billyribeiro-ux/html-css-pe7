@@ -18,9 +18,9 @@
   background: rgba(108, 99, 255, 0.15);
   color: var(--accent, #6c63ff);
   font-weight: 700;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .specificity-table td:first-child {
@@ -56,38 +56,40 @@
 .hover-target {
   padding: 1rem 1.5rem;
   background: rgba(108, 99, 255, 0.1);
-  border: 2px solid rgba(108, 99, 255, 0.3);
+  border: 2px solid rgba(108, 99, 255, 0.2);
   border-radius: 8px;
   text-align: center;
+  font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .hover-target:hover {
-  background: rgba(108, 99, 255, 0.3);
+  background: var(--accent, #6c63ff);
+  color: #fff;
   border-color: var(--accent, #6c63ff);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.35);
 }
 
 /* :focus demo */
 .focus-target {
-  padding: 0.6rem 1rem;
+  width: 100%;
+  max-width: 400px;
+  padding: 0.7rem 1rem;
   border: 2px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.05);
   color: inherit;
   font-family: inherit;
   font-size: 0.95rem;
-  width: 100%;
-  max-width: 400px;
   transition: all 0.2s;
 }
 
 .focus-target:focus {
   outline: none;
   border-color: #2ecc71;
-  box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.3);
+  box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.25);
   background: rgba(46, 204, 113, 0.05);
 }
 
@@ -117,24 +119,26 @@
 /* ::before & ::after demo */
 .pseudo-demo {
   position: relative;
-  padding: 0.75rem 2rem;
+  padding: 1rem 2rem;
+  background: rgba(108, 99, 255, 0.08);
+  border-radius: 8px;
   font-style: italic;
 }
 
 .pseudo-demo::before {
   content: "\201C";
   position: absolute;
-  left: 0;
-  top: 0;
-  font-size: 2.5rem;
+  top: -10px;
+  left: 8px;
+  font-size: 3rem;
   color: var(--accent, #6c63ff);
+  opacity: 0.5;
   line-height: 1;
-  font-family: Georgia, serif;
 }
 
 .pseudo-demo::after {
   content: " \2728";
-  font-size: 1.2rem;
+  font-style: normal;
 }
 
 /* ::first-line demo */
@@ -153,7 +157,7 @@
 /* --- Color Palette --- */
 .color-palette {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
 }
 
@@ -162,7 +166,7 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent, #6c63ff);
+  opacity: 0.8;
 }
 
 .color-swatch {
@@ -180,23 +184,22 @@
 }
 
 .color-swatch span {
-  font-family: 'Courier New', monospace;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-family: 'Courier New', monospace;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  font-weight: 600;
 }
 
-/* Hue Wheel */
+/* Hue wheel */
 .hue-wheel {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 4px;
   margin-top: 0.5rem;
 }
 
 .hue-slice {
-  flex: 1 1 80px;
   padding: 0.75rem 0.5rem;
   text-align: center;
   font-size: 0.75rem;
@@ -223,7 +226,7 @@
   font-family: 'Courier New', monospace;
   font-size: 0.85rem;
   font-weight: 700;
-  min-width: 80px;
+  min-width: 70px;
   text-align: right;
   color: var(--accent, #6c63ff);
 }
@@ -236,9 +239,9 @@
   transition: width 0.3s ease;
 }
 
-.unit-bar.unit-rem { background: linear-gradient(90deg, #2ecc71, #6bcb77); }
-.unit-bar.unit-pct { background: linear-gradient(90deg, #f39c12, #ffd93d); }
-.unit-bar.unit-vw { background: linear-gradient(90deg, #e74c3c, #ff6b6b); }
+.unit-bar.unit-rem { background: linear-gradient(90deg, #2ecc71, #82e0aa); }
+.unit-bar.unit-pct { background: linear-gradient(90deg, #e74c3c, #f1948a); }
+.unit-bar.unit-vw  { background: linear-gradient(90deg, #f39c12, #f9d976); }
 
 /* --- Typography Specimens --- */
 .type-specimens {
@@ -248,8 +251,8 @@
 }
 
 .type-specimen {
+  padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding-bottom: 1rem;
 }
 
 .type-specimen:last-child {
@@ -259,27 +262,31 @@
 
 .type-meta {
   display: block;
+  margin-top: 0.5rem;
   font-size: 0.75rem;
   font-family: 'Courier New', monospace;
   color: var(--accent, #6c63ff);
-  margin-top: 0.35rem;
   opacity: 0.8;
 }
 
-/* Line Height Comparison */
+/* Line height comparison */
 .line-height-comparison {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .lh-sample {
   padding: 1rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lh-sample strong {
+  color: var(--accent, #6c63ff);
 }
 
 /* --- Gradient Cards --- */
@@ -300,39 +307,40 @@
 
 .gradient-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
 }
 
 .gradient-label {
-  font-family: 'Courier New', monospace;
   font-size: 0.7rem;
+  font-family: 'Courier New', monospace;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  font-weight: 600;
   word-break: break-all;
 }
 
-/* --- Border Radius Examples --- */
+/* --- Border Examples --- */
 .border-examples {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
-  align-items: center;
-  justify-content: center;
 }
 
 .border-box {
-  width: 80px;
-  height: 80px;
-  background: var(--accent, #6c63ff);
+  width: 100px;
+  height: 100px;
+  background: rgba(108, 99, 255, 0.2);
+  border: 2px solid var(--accent, #6c63ff);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
   font-weight: 700;
-  color: #fff;
-  transition: transform 0.2s;
+  margin: 0 auto;
+  transition: background 0.2s;
 }
 
 .border-box:hover {
-  transform: scale(1.1);
+  background: rgba(108, 99, 255, 0.35);
 }

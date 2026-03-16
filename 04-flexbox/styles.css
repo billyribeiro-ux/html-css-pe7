@@ -47,7 +47,54 @@
 }
 
 /* ============================================================
-   SECTION 1: flex-direction Demo
+   SECTION 1: What is Flexbox — Axis Demo
+   ============================================================ */
+.axis-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  min-height: 160px;
+  position: relative;
+}
+
+.axis-column {
+  flex-direction: column;
+  padding-left: 2.5rem;
+}
+
+.axis-arrow {
+  position: absolute;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6366f1;
+  white-space: nowrap;
+}
+
+.axis-main-arrow {
+  top: 0.5rem;
+  left: 1rem;
+}
+
+.axis-cross-arrow {
+  top: 0.5rem;
+  right: 1rem;
+}
+
+.axis-main-arrow-col {
+  top: 0.5rem;
+  left: 0.5rem;
+  writing-mode: vertical-lr;
+}
+
+.axis-cross-arrow-col {
+  top: 0.5rem;
+  left: 2.5rem;
+}
+
+/* ============================================================
+   SECTION 2: flex-direction Demo
    ============================================================ */
 .flex-dir-demo {
   display: flex;
@@ -58,13 +105,13 @@
   min-height: 200px;
 }
 
-.dir-row { flex-direction: row; }
-.dir-row-reverse { flex-direction: row-reverse; }
-.dir-column { flex-direction: column; }
+.dir-row           { flex-direction: row; }
+.dir-row-reverse   { flex-direction: row-reverse; }
+.dir-column        { flex-direction: column; }
 .dir-column-reverse { flex-direction: column-reverse; }
 
 /* ============================================================
-   SECTION 2: justify-content Demo
+   SECTION 3: justify-content Demo
    ============================================================ */
 .justify-demos {
   display: flex;
@@ -89,7 +136,7 @@
 .jc-evenly  { justify-content: space-evenly; }
 
 /* ============================================================
-   SECTION 3: align-items Demo
+   SECTION 4: align-items Demo
    ============================================================ */
 .align-demos {
   display: flex;
@@ -113,9 +160,9 @@
 .ai-center   { align-items: center; }
 .ai-baseline { align-items: baseline; }
 
-.box-tall   { height: auto; padding-top: 2rem; padding-bottom: 2rem; }
-.box-short  { height: auto; padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.box-medium { height: auto; padding-top: 1rem; padding-bottom: 1rem; }
+.box-tall   { padding-top: 2rem; padding-bottom: 2rem; }
+.box-short  { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.box-medium { padding-top: 1rem; padding-bottom: 1rem; }
 
 .ai-stretch .box-tall,
 .ai-stretch .box-short,
@@ -130,28 +177,12 @@
   align-self: flex-end;
 }
 
-/* ============================================================
-   SECTION 4: flex-grow / flex-shrink Demo
-   ============================================================ */
-.flex-props-demo {
-  display: flex;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: #f1f5f9;
-  border-radius: 8px;
-  min-height: 60px;
+.align-self-start {
+  align-self: flex-start;
 }
 
-.fp-equal       { flex: 1; }
-.fp-one         { flex: 1; }
-.fp-two         { flex: 2; }
-.fp-three       { flex: 3; }
-.fp-fixed       { flex: 0 0 150px; }
-.fp-basis-zero  { flex: 1 1 0; }
-.fp-basis-auto  { flex: 1 1 auto; }
-
 /* ============================================================
-   SECTION 5: Wrapping & Gap Demo
+   SECTION 5: flex-wrap & gap Demo
    ============================================================ */
 .wrap-demo {
   display: flex;
@@ -182,7 +213,27 @@
 .card-item.box-d { background-color: #f39c12; }
 
 /* ============================================================
-   SECTION 6: Order Demo
+   SECTION 6: flex-grow / flex-shrink Demo
+   ============================================================ */
+.flex-props-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  min-height: 60px;
+}
+
+.fp-equal       { flex: 1; }
+.fp-one         { flex: 1; }
+.fp-two         { flex: 2; }
+.fp-three       { flex: 3; }
+.fp-fixed       { flex: 0 0 150px; }
+.fp-basis-zero  { flex: 1 1 0; }
+.fp-basis-auto  { flex: 1 1 auto; }
+
+/* ============================================================
+   SECTION 7: align-self & order Demo
    ============================================================ */
 .order-demo {
   display: flex;
@@ -194,22 +245,27 @@
 
 .order-default .box { flex: 1; }
 
-.order-custom .box { flex: 1; }
+.order-custom .box  { flex: 1; }
 .order-custom .order-neg1 { order: -1; }
 .order-custom .order-0    { order: 0; }
 .order-custom .order-1    { order: 1; }
 
 /* ============================================================
-   SECTION 7: Common Patterns
+   SECTION 8: Pattern — Perfect Centering
    ============================================================ */
-
-/* --- Pattern: Flex Center --- */
 .pattern-center {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
+  height: 220px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+}
+
+.pattern-center-auto {
+  display: flex;
+  height: 220px;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
   border-radius: 8px;
 }
 
@@ -223,10 +279,16 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* --- Pattern: Navbar --- */
+.centered-box-auto {
+  margin: auto;
+  color: #3b82f6;
+}
+
+/* ============================================================
+   SECTION 9: Pattern — Navigation Bar
+   ============================================================ */
 .pattern-navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   background: #1e293b;
@@ -235,13 +297,16 @@
 }
 
 .navbar-logo {
+  flex: 0 0 auto;
   font-weight: 800;
   font-size: 1.25rem;
   color: #38bdf8;
 }
 
 .navbar-links {
+  flex: 1;
   display: flex;
+  justify-content: center;
   gap: 1.5rem;
   list-style: none;
   padding: 0;
@@ -259,7 +324,12 @@
   color: #fff;
 }
 
+.navbar-links-end {
+  justify-content: flex-end;
+}
+
 .navbar-cta {
+  flex: 0 0 auto;
   padding: 0.5rem 1.25rem;
   background: #38bdf8;
   color: #0f172a;
@@ -267,33 +337,16 @@
   border-radius: 6px;
   font-size: 0.9rem;
   cursor: pointer;
+  border: none;
 }
 
-/* --- Pattern: Card Row --- */
-.pattern-card-row {
-  display: flex;
-  gap: 1.5rem;
+.navbar-variant {
+  gap: 1rem;
 }
 
-.pattern-card {
-  flex: 1;
-  padding: 1.5rem;
-  border-radius: 8px;
-  color: #fff;
-}
-
-.pattern-card h4 {
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-}
-
-.pattern-card p {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  line-height: 1.5;
-}
-
-/* --- Pattern: Holy Grail --- */
+/* ============================================================
+   SECTION 10: Pattern — Holy Grail Layout
+   ============================================================ */
 .pattern-holy-grail {
   display: flex;
   flex-direction: column;
@@ -344,10 +397,6 @@
     flex-direction: column;
   }
 
-  .pattern-card-row {
-    flex-direction: column;
-  }
-
   .pattern-navbar {
     flex-direction: column;
     gap: 1rem;
@@ -361,5 +410,14 @@
   .hg-sidebar-left,
   .hg-sidebar-right {
     flex: 0 0 auto;
+  }
+
+  .align-demos {
+    flex-direction: column;
+  }
+
+  .ai-demo {
+    min-width: auto;
+    width: 100%;
   }
 }
