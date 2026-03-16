@@ -1,194 +1,304 @@
-/* ===== Module 01: HTML Foundations - Module-Specific Styles ===== */
+/* ===== Module 01: The Building Blocks - Module-Specific Styles ===== */
 
-/* --- Semantic Layout Diagram --- */
-.semantic-diagram {
+/* ── Layout Diagram (Semantic Elements section) ── */
+.layout-diagram {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 1rem;
-  background: #1a1a2e;
-  border-radius: 12px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  color: #fff;
+  font-family: var(--pe7-font-mono);
+  font-size: 0.8rem;
 }
 
-.semantic-diagram span {
-  display: block;
-  padding: 4px 8px;
-  font-weight: bold;
-}
-
-.sem-header {
-  background: #e94560;
-  border-radius: 8px;
-  padding: 8px;
-}
-
-.sem-nav {
-  background: #c73e54;
+.layout-box {
+  padding: 0.75rem;
   border-radius: 6px;
-  margin-top: 6px;
-  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.sem-body {
+.layout-header {
+  background: rgba(233, 69, 96, 0.2);
+  border-color: rgba(233, 69, 96, 0.4);
+  color: #f07178;
+}
+
+.layout-nav {
+  background: rgba(233, 69, 96, 0.15);
+  border-color: rgba(233, 69, 96, 0.3);
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.layout-body {
   display: flex;
   gap: 6px;
 }
 
-.sem-main {
+.layout-main {
   flex: 3;
-  background: #0f3460;
-  border-radius: 8px;
-  padding: 8px;
+  background: rgba(15, 52, 96, 0.3);
+  border-color: rgba(9, 132, 227, 0.4);
+  color: #82aaff;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.sem-article {
-  background: #16498a;
-  border-radius: 6px;
-  padding: 12px 8px;
+.layout-article {
+  background: rgba(9, 132, 227, 0.15);
+  border-color: rgba(9, 132, 227, 0.3);
+  padding: 1rem 0.75rem;
 }
 
-.sem-section {
-  background: #1a5599;
-  border-radius: 6px;
-  padding: 12px 8px;
+.layout-section {
+  background: rgba(9, 132, 227, 0.1);
+  border-color: rgba(9, 132, 227, 0.25);
+  padding: 1rem 0.75rem;
 }
 
-.sem-aside {
+.layout-aside {
   flex: 1;
-  background: #533483;
-  border-radius: 8px;
-  padding: 8px;
+  background: rgba(108, 92, 231, 0.2);
+  border-color: rgba(108, 92, 231, 0.4);
+  color: #a29bfe;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  min-height: 80px;
 }
 
-.sem-footer {
-  background: #e94560;
-  border-radius: 8px;
-  padding: 8px;
+.layout-footer {
+  background: rgba(233, 69, 96, 0.2);
+  border-color: rgba(233, 69, 96, 0.4);
+  color: #f07178;
 }
 
-/* --- Lists Grid --- */
-.lists-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+/* ── Demo Headings (Text Content section) ── */
+.demo-h1,
+.demo-h2,
+.demo-h3,
+.demo-h4,
+.demo-h5,
+.demo-h6 {
+  border: none !important;
+  display: block !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0.25rem !important;
 }
 
-.lists-grid h4 {
-  margin-bottom: 0.5rem;
-  color: var(--accent, #6c63ff);
-  font-size: 1rem;
+.demo-h1 { font-size: 1.8rem; }
+.demo-h2 { font-size: 1.5rem; }
+.demo-h3 { font-size: 1.25rem; color: var(--pe7-text) !important; }
+.demo-h4 { font-size: 1.1rem; }
+.demo-h5 { font-size: 0.95rem; }
+.demo-h6 { font-size: 0.85rem; color: var(--pe7-text-muted); }
+
+/* ── Demo Blockquote ── */
+.demo-blockquote {
+  border-left: 3px solid var(--pe7-accent-light);
+  padding-left: 1rem;
+  margin: 0 0 1rem 0;
+  color: var(--pe7-text-muted);
+  font-style: italic;
 }
 
-.lists-grid ul,
-.lists-grid ol {
+.demo-blockquote p {
+  margin-bottom: 0.25rem !important;
+}
+
+.demo-blockquote cite {
+  font-size: 0.85rem;
+  font-style: normal;
+  display: block;
+  opacity: 0.8;
+}
+
+/* ── Demo Pre/Code ── */
+.demo-pre {
+  background: var(--pe7-code-bg);
+  padding: 1rem;
+  border-radius: var(--pe7-radius);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.demo-pre code {
+  font-size: 0.875rem;
+}
+
+/* ── Demo Lists ── */
+.demo-list {
   padding-left: 1.5rem;
   margin: 0;
 }
 
-.lists-grid li {
+.demo-list li {
   margin-bottom: 0.35rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-.lists-grid ul ul {
+.demo-list ul {
+  padding-left: 1.5rem;
   margin-top: 0.35rem;
 }
 
-.lists-grid dl {
+.demo-dl {
   margin: 0;
 }
 
-.lists-grid dt {
+.demo-dl dt {
   font-weight: 700;
-  color: var(--accent, #6c63ff);
+  color: var(--pe7-accent-light);
   margin-top: 0.75rem;
 }
 
-.lists-grid dt:first-child {
+.demo-dl dt:first-child {
   margin-top: 0;
 }
 
-.lists-grid dd {
-  margin-left: 0;
+.demo-dl dd {
+  margin-left: 1.5rem;
   padding-left: 1rem;
-  border-left: 2px solid var(--accent, #6c63ff);
+  border-left: 2px solid var(--pe7-accent);
   margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
-/* --- External Link Icon --- */
-.external-icon {
-  font-size: 0.75em;
-  vertical-align: super;
+/* ── Demo Links ── */
+.demo-link {
+  color: var(--pe7-accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* --- Data Table --- */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
+.demo-link:hover {
+  color: var(--pe7-level-1);
 }
 
-.data-table caption {
+/* ── Demo Nav ── */
+.demo-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 0.25rem;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.demo-nav a {
+  display: block;
+  padding: 0.5rem 1.25rem;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  color: var(--pe7-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all var(--pe7-transition);
+}
+
+.demo-nav a:hover {
+  color: var(--pe7-accent-light);
+  border-color: var(--pe7-accent);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, var(--pe7-surface-2));
+}
+
+/* ── Demo Figure ── */
+.demo-figure {
+  margin: 0;
+  text-align: center;
+}
+
+.img-placeholder {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe, #fd79a8);
+  border-radius: var(--pe7-radius);
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  gap: 0.5rem;
+}
+
+.img-placeholder span {
   font-weight: 700;
   font-size: 1.1rem;
+}
+
+.img-placeholder small {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  max-width: 300px;
+}
+
+.demo-figure figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+}
+
+/* ── Styled Table ── */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.styled-table caption {
+  font-weight: 700;
+  font-size: 1.05rem;
   margin-bottom: 0.75rem;
   text-align: left;
-  color: var(--accent, #6c63ff);
+  color: var(--pe7-accent-light);
 }
 
-.data-table th,
-.data-table td {
-  padding: 0.75rem 1rem;
+.styled-table th,
+.styled-table td {
+  padding: 0.7rem 1rem;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--pe7-border);
 }
 
-.data-table thead th {
-  background: rgba(108, 99, 255, 0.15);
-  color: var(--accent, #6c63ff);
+.styled-table thead th {
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  color: var(--pe7-accent-light);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 0.05em;
 }
 
-.data-table tbody tr:hover {
-  background: rgba(108, 99, 255, 0.06);
-}
-
-.data-table tbody tr:nth-child(even) {
+.styled-table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.02);
 }
 
-.data-table tbody tr:nth-child(even):hover {
-  background: rgba(108, 99, 255, 0.08);
+.styled-table tbody tr:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
 }
 
-/* --- Registration Form --- */
-.registration-form {
-  max-width: 600px;
+.styled-table tbody th {
+  font-weight: 600;
+  color: var(--pe7-text);
 }
 
-.registration-form fieldset {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+/* ── Demo Form ── */
+.demo-form {
+  max-width: 640px;
+}
+
+.demo-form fieldset {
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
-.registration-form legend {
+.demo-form legend {
   font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--accent, #6c63ff);
+  font-size: 1.05rem;
+  color: var(--pe7-accent-light);
   padding: 0 0.5rem;
 }
 
@@ -200,12 +310,13 @@
   margin-bottom: 0;
 }
 
-.form-group label,
-.form-group .label-text {
+.form-group > label,
+.form-group-label {
   display: block;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
   font-weight: 600;
   font-size: 0.9rem;
+  color: var(--pe7-text);
 }
 
 .form-group input[type="text"],
@@ -217,37 +328,80 @@
 .form-group textarea {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--pe7-border);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
-  color: inherit;
-  font-family: inherit;
+  color: var(--pe7-text);
+  font-family: var(--pe7-font);
   font-size: 0.95rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color var(--pe7-transition), box-shadow var(--pe7-transition);
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--accent, #6c63ff);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+  border-color: var(--pe7-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--pe7-accent) 25%, transparent);
 }
 
-.checkbox-label,
-.radio-label {
+.form-group input[type="range"] {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.form-group input[type="file"] {
+  font-size: 0.9rem;
+  color: var(--pe7-text-muted);
+}
+
+.form-group input[type="file"]::file-selector-button {
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--pe7-border);
+  border-radius: 6px;
+  background: var(--pe7-surface-2);
+  color: var(--pe7-text);
+  font-family: var(--pe7-font);
+  cursor: pointer;
+  margin-right: 0.75rem;
+  transition: background var(--pe7-transition);
+}
+
+.form-group input[type="file"]::file-selector-button:hover {
+  background: var(--pe7-accent);
+  color: white;
+  border-color: var(--pe7-accent);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.radio-label,
+.checkbox-label {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin-right: 1rem;
-  margin-top: 0.35rem;
-  font-weight: 400;
   cursor: pointer;
+  font-weight: 400;
+  font-size: 0.9rem;
 }
 
 .form-actions {
   display: flex;
   gap: 1rem;
+  margin-top: 0.5rem;
 }
 
 .form-actions button {
@@ -256,52 +410,52 @@
   border-radius: 6px;
   font-size: 0.95rem;
   font-weight: 600;
+  font-family: var(--pe7-font);
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: background var(--pe7-transition), transform 0.1s ease;
 }
 
 .form-actions button[type="submit"] {
-  background: var(--accent, #6c63ff);
-  color: #fff;
+  background: var(--pe7-accent);
+  color: white;
 }
 
 .form-actions button[type="submit"]:hover {
-  background: #5a52e0;
+  background: color-mix(in oklch, var(--pe7-accent) 85%, black);
   transform: translateY(-1px);
 }
 
 .form-actions .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: inherit;
+  background: var(--pe7-surface-2);
+  color: var(--pe7-text-muted);
+  border: 1px solid var(--pe7-border);
 }
 
 .form-actions .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--pe7-border);
+  color: var(--pe7-text);
 }
 
-/* --- Blockquote in demos --- */
-.demo-box blockquote {
-  border-left: 3px solid var(--accent, #6c63ff);
-  padding-left: 1rem;
-  margin: 1rem 0;
-  font-style: italic;
-}
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .layout-body {
+    flex-direction: column;
+  }
 
-.demo-box blockquote cite {
-  display: block;
-  margin-top: 0.5rem;
-  font-style: normal;
-  font-size: 0.9rem;
-  opacity: 0.7;
-}
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 
-/* --- Headings demo reset --- */
-#headings-demo .demo-box h1,
-#headings-demo .demo-box h2,
-#headings-demo .demo-box h3,
-#headings-demo .demo-box h4,
-#headings-demo .demo-box h5,
-#headings-demo .demo-box h6 {
-  border: none;
-  padding: 0;
+  .demo-nav ul {
+    flex-direction: column;
+  }
+
+  .styled-table {
+    font-size: 0.8rem;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 0.5rem;
+  }
 }

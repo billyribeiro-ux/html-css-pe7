@@ -1,13 +1,14 @@
 /* ============================================
-   Module 14: The Bleeding Edge
-   Cutting-edge CSS features (2026+)
+   Module 14: The Bleeding Edge (Cutting Edge 2026)
+   CSS if(), Sibling Functions, Enhanced attr(),
+   Customizable Select, field-sizing, @function
    ============================================ */
 
 /* ---- Section Spacing ---- */
 .concept-section {
   margin-bottom: 4rem;
   padding-bottom: 3rem;
-  border-bottom: 1px solid color-mix(in oklch, currentColor 12%, transparent);
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
 }
 
 .concept-section:last-of-type {
@@ -15,12 +16,26 @@
 }
 
 .concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
   margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
 }
 
 .concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
 }
 
 /* ---- Feature List ---- */
@@ -33,13 +48,15 @@
 .feature-list li {
   padding: 0.75rem 0 0.75rem 2rem;
   position: relative;
+  line-height: 1.7;
+  color: var(--pe7-text);
 }
 
 .feature-list li::before {
   content: "\2713";
   position: absolute;
   left: 0;
-  color: var(--color-primary, #6366f1);
+  color: var(--pe7-accent);
   font-weight: 700;
 }
 
@@ -48,18 +65,64 @@
   padding: 1.25rem 1.5rem;
   border-radius: 10px;
   margin: 2rem 0;
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 8%, transparent);
-  border-left: 4px solid var(--color-primary, #6366f1);
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
   font-size: 0.95rem;
   line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
 }
 
 /* ---- Demo Note ---- */
 .demo-note {
   font-size: 0.85rem;
-  color: #64748b;
+  color: var(--pe7-text-muted);
   font-style: italic;
   margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block (module overrides) ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
 }
 
 /* =============================================
@@ -73,16 +136,21 @@
 }
 
 .condition-card {
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 4%, white);
-  border: 1px solid color-mix(in oklch, var(--color-primary, #6366f1) 12%, transparent);
-  border-radius: 14px;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
   padding: 1.5rem;
+  transition: border-color var(--pe7-transition);
+}
+
+.condition-card:hover {
+  border-color: var(--pe7-accent);
 }
 
 .condition-card h4 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-  color: var(--color-primary, #6366f1);
+  color: var(--pe7-accent-light);
 }
 
 .condition-card h4 code {
@@ -94,7 +162,7 @@
 .condition-card > p {
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  opacity: 0.8;
+  color: var(--pe7-text-muted);
 }
 
 /* ---- if() Demo: Variant Switching ---- */
@@ -105,26 +173,44 @@
   align-items: start;
 }
 
+.if-demo-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.if-demo-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .if-demo-label {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #64748b;
+  color: var(--pe7-text-muted);
   margin-bottom: 0.75rem;
   font-weight: 700;
 }
 
 .if-card {
-  border-radius: 14px;
+  border-radius: var(--pe7-radius-lg);
   overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e2e8f0;
+  background: var(--pe7-surface-2);
+  box-shadow: var(--pe7-shadow);
+  border: 1px solid var(--pe7-border);
+  transition: transform var(--pe7-transition), box-shadow var(--pe7-transition);
+}
+
+.if-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .if-card--default .if-card-img {
   height: 160px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+  background: linear-gradient(135deg, var(--pe7-accent), #8b5cf6, var(--pe7-accent-light));
 }
 
 .if-card--default .if-card-body {
@@ -134,13 +220,14 @@
 .if-card--default .if-card-body h5 {
   font-size: 1.2rem;
   margin-bottom: 0.6rem;
+  color: var(--pe7-text);
 }
 
 .if-card--default .if-card-body p {
   font-size: 0.95rem;
   line-height: 1.7;
   margin-bottom: 1.25rem;
-  color: #475569;
+  color: var(--pe7-text-muted);
 }
 
 .if-card--compact {
@@ -149,7 +236,7 @@
 
 .if-card--compact .if-card-img {
   height: 70px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--pe7-accent), #8b5cf6);
 }
 
 .if-card--compact .if-card-body {
@@ -159,29 +246,30 @@
 .if-card--compact .if-card-body h5 {
   font-size: 0.9rem;
   margin-bottom: 0.3rem;
+  color: var(--pe7-text);
 }
 
 .if-card--compact .if-card-body p {
   font-size: 0.78rem;
   line-height: 1.5;
   margin-bottom: 0.6rem;
-  color: #64748b;
+  color: var(--pe7-text-muted);
 }
 
 .if-card-btn {
   padding: 0.6rem 1.5rem;
-  background: var(--color-primary, #6366f1);
+  background: var(--pe7-accent);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--pe7-radius);
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: filter 0.2s;
+  transition: background var(--pe7-transition);
 }
 
 .if-card-btn:hover {
-  filter: brightness(1.1);
+  background: var(--pe7-accent-light);
 }
 
 .if-card-btn--compact {
@@ -200,6 +288,14 @@
    Section 2: Sibling Functions
    ============================================= */
 
+/* ---- Stagger Animation Keyframes ---- */
+@keyframes stagger-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.95);
+  }
+}
+
 /* ---- Staggered Card Demo ---- */
 .stagger-demo {
   display: grid;
@@ -208,19 +304,18 @@
 }
 
 .stagger-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
   padding: 1.5rem;
   text-align: center;
   animation: stagger-entrance 0.6s ease backwards;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform var(--pe7-transition), box-shadow var(--pe7-transition);
 }
 
 .stagger-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Staggered delays using nth-child as fallback for sibling-index() */
@@ -249,33 +344,27 @@
 .stagger-icon {
   font-size: 2rem;
   margin-bottom: 0.75rem;
-  color: oklch(0.6 0.2 var(--hue, 265));
+  color: oklch(0.7 0.2 var(--hue, 265));
 }
 
 .stagger-card h5 {
   font-size: 1rem;
   margin-bottom: 0.4rem;
   font-weight: 700;
+  color: var(--pe7-text);
 }
 
 .stagger-card p {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--pe7-text-muted);
   line-height: 1.5;
-}
-
-@keyframes stagger-entrance {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.95);
-  }
 }
 
 /* ---- Dynamic Color Palette Demo ---- */
 .palette-demo {
   display: flex;
   gap: 4px;
-  border-radius: 12px;
+  border-radius: var(--pe7-radius-lg);
   overflow: hidden;
   height: 80px;
 }
@@ -305,6 +394,12 @@
 .palette-swatch:nth-child(11) { background: oklch(0.65 0.2 300); }
 .palette-swatch:nth-child(12) { background: oklch(0.65 0.2 330); }
 
+@supports (animation-delay: calc(sibling-index() * 0.1s)) {
+  .palette-swatch {
+    background: oklch(0.65 0.2 calc(sibling-index() * 30));
+  }
+}
+
 /* =============================================
    Section 3: Enhanced attr() Demos
    ============================================= */
@@ -325,11 +420,12 @@
 .type-table td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid color-mix(in oklch, currentColor 10%, transparent);
+  border-bottom: 1px solid var(--pe7-border);
+  color: var(--pe7-text);
 }
 
 .type-table th {
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 10%, transparent);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
   font-weight: 600;
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -338,7 +434,7 @@
 }
 
 .type-table td code {
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 10%, transparent);
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
   padding: 0.15em 0.4em;
   border-radius: 4px;
   font-size: 0.82em;
@@ -354,7 +450,7 @@
 
 .attr-grid-item {
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--pe7-radius-lg);
   color: white;
   display: flex;
   flex-direction: column;
@@ -363,6 +459,11 @@
   gap: 0.35rem;
   min-height: 80px;
   text-align: center;
+  transition: transform var(--pe7-transition);
+}
+
+.attr-grid-item:hover {
+  transform: scale(1.03);
 }
 
 /* Fallback: manually set spans since attr() type support may not be available */
@@ -388,6 +489,7 @@
   background: rgba(255, 255, 255, 0.2);
   padding: 0.2em 0.5em;
   border-radius: 4px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 @media (max-width: 600px) {
@@ -417,16 +519,17 @@
   justify-content: space-between;
   font-size: 0.9rem;
   font-weight: 600;
+  color: var(--pe7-text);
 }
 
 .attr-progress-label span:last-child {
-  color: #64748b;
+  color: var(--pe7-text-muted);
   font-weight: 500;
 }
 
 .attr-progress-track {
   height: 10px;
-  background: #e2e8f0;
+  background: var(--pe7-surface-2);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -470,6 +573,9 @@
 .select-demo-group {
   flex: 1;
   min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .select-label {
@@ -477,30 +583,38 @@
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #374151;
+  color: var(--pe7-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .custom-select {
   width: 100%;
   padding: 0.8rem 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  border: 2px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
   font-size: 0.95rem;
-  background: white;
-  color: #1e293b;
+  background: var(--pe7-surface-2);
+  color: var(--pe7-text);
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: inherit;
+  transition: border-color var(--pe7-transition), box-shadow var(--pe7-transition);
+  font-family: var(--pe7-font);
 }
 
 .custom-select:hover {
-  border-color: #cbd5e1;
+  border-color: var(--pe7-accent);
 }
 
 .custom-select:focus {
   outline: none;
-  border-color: var(--color-primary, #6366f1);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary, #6366f1) 15%, transparent);
+  border-color: var(--pe7-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--pe7-accent) 20%, transparent);
+}
+
+.custom-select option {
+  background: var(--pe7-surface-2);
+  color: var(--pe7-text);
+  padding: 0.5rem;
 }
 
 /* Enhanced styling when base-select is supported */
@@ -511,25 +625,25 @@
   }
 
   .custom-select::picker(select) {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    border: 1px solid var(--pe7-border);
+    border-radius: var(--pe7-radius-lg);
     padding: 0.5rem;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-    background: white;
+    box-shadow: var(--pe7-shadow);
+    background: var(--pe7-surface);
   }
 
   .custom-select option {
     padding: 0.65rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--pe7-radius);
     transition: background 0.15s;
   }
 
   .custom-select option:hover {
-    background: #f1f5f9;
+    background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
   }
 
   .custom-select option:checked {
-    background: color-mix(in oklch, var(--color-primary, #6366f1) 10%, transparent);
+    background: color-mix(in oklch, var(--pe7-accent) 20%, transparent);
     font-weight: 600;
   }
 }
@@ -554,7 +668,9 @@
 .field-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--pe7-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .field-row {
@@ -570,19 +686,24 @@
 
 .auto-field {
   padding: 0.75rem 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  border: 2px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
   font-size: 0.95rem;
-  font-family: inherit;
-  color: #1e293b;
-  background: white;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: var(--pe7-font);
+  color: var(--pe7-text);
+  background: var(--pe7-surface-2);
+  transition: border-color var(--pe7-transition), box-shadow var(--pe7-transition);
 }
 
 .auto-field:focus {
   outline: none;
-  border-color: var(--color-primary, #6366f1);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary, #6366f1) 15%, transparent);
+  border-color: var(--pe7-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--pe7-accent) 20%, transparent);
+}
+
+.auto-field::placeholder {
+  color: var(--pe7-text-muted);
+  opacity: 0.6;
 }
 
 .auto-textarea {
@@ -627,37 +748,43 @@
   font-size: 0.85rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--pe7-text-muted);
 }
 
 .compare-textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  border: 2px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
   font-size: 0.9rem;
-  font-family: inherit;
-  color: #1e293b;
+  font-family: var(--pe7-font);
+  color: var(--pe7-text);
+  background: var(--pe7-surface-2);
   line-height: 1.6;
   resize: none;
-  transition: border-color 0.2s;
+  transition: border-color var(--pe7-transition);
 }
 
 .compare-textarea:focus {
   outline: none;
-  border-color: var(--color-primary, #6366f1);
+  border-color: var(--pe7-accent);
+}
+
+.compare-textarea::placeholder {
+  color: var(--pe7-text-muted);
+  opacity: 0.6;
 }
 
 .compare-fixed {
-  background: color-mix(in oklch, #ef4444 5%, white);
-  border-color: color-mix(in oklch, #ef4444 20%, transparent);
+  background: color-mix(in oklch, var(--pe7-danger) 8%, var(--pe7-surface-2));
+  border-color: color-mix(in oklch, var(--pe7-danger) 30%, var(--pe7-border));
 }
 
 .compare-content {
   min-height: 3rem;
   max-height: 200px;
-  background: color-mix(in oklch, #22c55e 5%, white);
-  border-color: color-mix(in oklch, #22c55e 20%, transparent);
+  background: color-mix(in oklch, var(--pe7-success) 8%, var(--pe7-surface-2));
+  border-color: color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
 }
 
 @supports (field-sizing: content) {
@@ -673,7 +800,7 @@
 }
 
 /* =============================================
-   Section 6: @function - Spacing Demo
+   Section 6: @function - Spacing & Color Demos
    ============================================= */
 
 .spacing-demo {
@@ -689,7 +816,7 @@
 }
 
 .spacing-visual {
-  background: linear-gradient(90deg, var(--color-primary, #6366f1), #8b5cf6);
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-accent-light));
   height: 24px;
   border-radius: 6px;
   min-width: 4px;
@@ -714,15 +841,16 @@
 }
 
 .spacing-info code {
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 10%, transparent);
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
   padding: 0.2em 0.5em;
   border-radius: 4px;
   font-size: 0.82em;
   font-weight: 600;
+  color: var(--pe7-accent-light);
 }
 
 .spacing-info span {
-  color: #64748b;
+  color: var(--pe7-text-muted);
 }
 
 /* ---- Color Function Demo ---- */
@@ -732,7 +860,7 @@
 
 .color-fn-row {
   display: flex;
-  border-radius: 12px;
+  border-radius: var(--pe7-radius-lg);
   overflow: hidden;
   height: 70px;
 }
@@ -762,20 +890,20 @@
   opacity: 1;
 }
 
-/* Text color based on lightness */
-.color-fn-swatch:nth-child(-n+4) span { color: #1e293b; }
+/* Text color based on lightness: light bg gets dark text, dark bg gets light text */
+.color-fn-swatch:nth-child(-n+4) span { color: var(--pe7-bg); }
 .color-fn-swatch:nth-child(n+5) span { color: white; }
 
 .color-fn-label {
   margin-top: 0.75rem;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--pe7-text-muted);
   text-align: center;
 }
 
 .color-fn-label code {
   font-size: 0.75rem;
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 8%, transparent);
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
   padding: 0.15em 0.4em;
   border-radius: 3px;
 }
@@ -797,15 +925,20 @@
   gap: 1.25rem;
   align-items: flex-start;
   padding: 1.25rem;
-  background: color-mix(in oklch, var(--color-primary, #6366f1) 4%, transparent);
-  border-radius: 12px;
-  border: 1px solid color-mix(in oklch, var(--color-primary, #6366f1) 10%, transparent);
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius-lg);
+  border: 1px solid var(--pe7-border);
+  transition: border-color var(--pe7-transition);
+}
+
+.enhancement-step:hover {
+  border-color: var(--pe7-accent);
 }
 
 .enhancement-step-num {
   width: 2.5rem;
   height: 2.5rem;
-  background: var(--color-primary, #6366f1);
+  background: var(--pe7-accent);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -820,12 +953,14 @@
   font-size: 1rem;
   margin-bottom: 0.3rem;
   font-weight: 700;
+  color: var(--pe7-text);
 }
 
 .enhancement-step-content p {
   font-size: 0.9rem;
   line-height: 1.6;
-  color: #475569;
+  color: var(--pe7-text-muted);
+  margin: 0;
 }
 
 /* ---- Feature Detection Dashboard ---- */
@@ -840,14 +975,15 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  transition: box-shadow 0.2s;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  transition: border-color var(--pe7-transition), box-shadow var(--pe7-transition);
 }
 
 .feature-check:hover {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  border-color: var(--pe7-accent);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .feature-indicator {
@@ -856,41 +992,100 @@
   border-radius: 50%;
   flex-shrink: 0;
   margin-top: 0.35rem;
-  background: #cbd5e1;
+  background: var(--pe7-text-muted);
+  opacity: 0.4;
+  transition: all var(--pe7-transition);
 }
 
 .feature-check strong {
   font-size: 0.9rem;
   display: block;
   margin-bottom: 0.15rem;
+  color: var(--pe7-text);
 }
 
 .feature-check p {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--pe7-text-muted);
   line-height: 1.4;
+  margin: 0;
 }
 
-/* Feature detection for indicator colors */
+/* Feature detection indicator colors via @supports */
 @supports (field-sizing: content) {
-  .feature-indicator--fieldsizing { background: #22c55e; }
+  .feature-indicator--fieldsizing {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
 }
 
 @supports selector(:popover-open) {
-  .feature-indicator--popover { background: #22c55e; }
+  .feature-indicator--popover {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
 }
 
 @supports (anchor-name: --x) {
-  .feature-indicator--anchor { background: #22c55e; }
+  .feature-indicator--anchor {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
 }
 
 @supports (appearance: base-select) {
-  .feature-indicator--select { background: #22c55e; }
+  .feature-indicator--select {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+@supports (width: if(style(--x: 1): 1px; else: 2px)) {
+  .feature-indicator--if {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+@supports (animation-delay: calc(sibling-index() * 1s)) {
+  .feature-indicator--sibling {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+@supports (width: attr(data-w type(<length>), 0px)) {
+  .feature-indicator--attr {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+@supports (--custom: --spacing(1)) {
+  .feature-indicator--function {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
 }
 
 /* =============================================
    Exercise: Staggered Card Demo
    ============================================= */
+
+@keyframes ex-stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
 
 .exercise-stagger-demo {
   display: grid;
@@ -900,20 +1095,20 @@
 }
 
 .ex-stagger-card {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
   padding: 1.25rem;
   text-align: center;
   animation: ex-stagger-in 0.5s ease backwards;
   animation-delay: calc(var(--i) * 0.1s);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform var(--pe7-transition), box-shadow var(--pe7-transition);
   position: relative;
 }
 
 .ex-stagger-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
 .ex-stagger-num {
@@ -922,7 +1117,7 @@
   right: -6px;
   width: 28px;
   height: 28px;
-  background: var(--color-primary, #6366f1);
+  background: var(--pe7-accent);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -936,19 +1131,14 @@
   font-size: 0.95rem;
   margin-bottom: 0.3rem;
   font-weight: 700;
+  color: var(--pe7-text);
 }
 
 .ex-stagger-card p {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--pe7-text-muted);
   line-height: 1.5;
-}
-
-@keyframes ex-stagger-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+  margin: 0;
 }
 
 /* Dynamic hues for exercise cards */
@@ -965,28 +1155,6 @@
    Exercise & Challenge Sections
    ============================================= */
 
-.exercise,
-.challenge {
-  margin-top: 4rem;
-  padding: 2.5rem;
-  border-radius: 16px;
-}
-
-.exercise {
-  background: color-mix(in oklch, #10b981 7%, transparent);
-  border: 2px solid color-mix(in oklch, #10b981 25%, transparent);
-}
-
-.challenge {
-  background: color-mix(in oklch, #f59e0b 7%, transparent);
-  border: 2px solid color-mix(in oklch, #f59e0b 25%, transparent);
-}
-
-.exercise h2,
-.challenge h2 {
-  margin-bottom: 1rem;
-}
-
 .exercise-requirements,
 .challenge-requirements {
   margin: 1.5rem 0;
@@ -1000,6 +1168,7 @@
   font-size: 1rem;
   margin-bottom: 0.75rem;
   font-weight: 700;
+  color: var(--pe7-text);
 }
 
 .exercise-requirements ul,
@@ -1014,6 +1183,7 @@
 .challenge-hints li {
   margin-bottom: 0.5rem;
   font-size: 0.925rem;
+  color: var(--pe7-text);
 }
 
 .exercise-starter {
@@ -1024,22 +1194,25 @@
   margin-top: 2rem;
 }
 
+.challenge-hints {
+  margin: 1.5rem 0;
+}
+
 /* =============================================
    Responsive
    ============================================= */
 
 @media (max-width: 768px) {
-  .exercise,
-  .challenge {
-    padding: 1.5rem;
-  }
-
   .condition-types-grid {
     grid-template-columns: 1fr;
   }
 
   .feature-dashboard {
     grid-template-columns: 1fr;
+  }
+
+  .select-demo-area {
+    flex-direction: column;
   }
 }
 
