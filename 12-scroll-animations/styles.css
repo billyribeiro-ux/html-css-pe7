@@ -1,0 +1,1032 @@
+/* ============================================
+   Module 12: Scroll-Powered Experiences
+   Scroll-Driven Animations, Scroll Snap,
+   CSS Carousels, and Parallax
+   ============================================ */
+
+/* ── Global Scroll Progress Bar ── */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-danger), var(--pe7-warning));
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 200;
+  animation: scroll-progress-fill linear;
+  animation-timeline: scroll(root);
+}
+
+@keyframes scroll-progress-fill {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ── Section 1: Why Scroll-Driven ── */
+
+.why-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.why-box {
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--pe7-border);
+}
+
+.why-box h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.why-box pre {
+  font-family: var(--pe7-font-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  background: var(--pe7-code-bg);
+  padding: 1rem;
+  border-radius: var(--pe7-radius);
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.why-box--js {
+  background: color-mix(in oklch, var(--pe7-danger) 8%, var(--pe7-surface));
+  border-color: color-mix(in oklch, var(--pe7-danger) 30%, var(--pe7-border));
+}
+
+.why-box--js h5 {
+  color: var(--pe7-danger);
+}
+
+.why-box--css {
+  background: color-mix(in oklch, var(--pe7-success) 8%, var(--pe7-surface));
+  border-color: color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
+}
+
+.why-box--css h5 {
+  color: var(--pe7-success);
+}
+
+.why-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.why-list li {
+  padding: 0.35rem 0 0.35rem 1.5rem;
+  position: relative;
+  font-size: 0.9rem;
+}
+
+.why-list li::before {
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+
+.why-list--bad li::before {
+  content: "\2717";
+  color: var(--pe7-danger);
+}
+
+.why-list--good li::before {
+  content: "\2713";
+  color: var(--pe7-success);
+}
+
+/* ── Section 2: Scroll Progress Demo ── */
+
+.scroll-demo-visual {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.scroll-demo-page {
+  width: 200px;
+  height: 280px;
+  background: var(--pe7-code-bg);
+  border-radius: var(--pe7-radius);
+  border: 1px solid var(--pe7-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-demo-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--pe7-accent), #ec4899);
+  width: 45%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0 2px 2px 0;
+  animation: bar-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes bar-pulse {
+  0% { width: 10%; }
+  100% { width: 90%; }
+}
+
+.scroll-demo-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1rem;
+  text-align: center;
+  color: var(--pe7-text-muted);
+  font-size: 0.8rem;
+}
+
+/* ── Section 3: View Timeline Demo ── */
+
+.view-demo-scroller {
+  height: 360px;
+  overflow-y: auto;
+  border-radius: var(--pe7-radius);
+  padding: 1rem;
+  background: var(--pe7-code-bg);
+  border: 1px solid var(--pe7-border);
+  scroll-behavior: smooth;
+}
+
+.view-demo-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  animation: view-reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+.view-demo-card:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes view-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.view-card-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  border-radius: var(--pe7-radius);
+  color: var(--pe7-accent-light);
+}
+
+.view-demo-card h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.view-demo-card p {
+  color: var(--pe7-text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Section 4: Animation Range Demo ── */
+
+.range-demo-scroller {
+  height: 400px;
+  overflow-y: auto;
+  border-radius: var(--pe7-radius);
+  padding: 1.5rem;
+  background: var(--pe7-code-bg);
+  border: 1px solid var(--pe7-border);
+  scroll-behavior: smooth;
+}
+
+.range-spacer {
+  height: 200px;
+  display: grid;
+  place-items: center;
+  color: var(--pe7-text-muted);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.range-item {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.range-label {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.range-item p {
+  color: var(--pe7-text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.range-item--entry {
+  animation: range-slide-in linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+.range-item--entry .range-label {
+  background: color-mix(in oklch, var(--pe7-success) 20%, transparent);
+  color: var(--pe7-success);
+}
+
+.range-item--exit {
+  animation: range-fade-out linear both;
+  animation-timeline: view();
+  animation-range: exit 0% exit 100%;
+}
+
+.range-item--exit .range-label {
+  background: color-mix(in oklch, var(--pe7-danger) 20%, transparent);
+  color: var(--pe7-danger);
+}
+
+.range-item--contain {
+  animation: range-glow linear both;
+  animation-timeline: view();
+  animation-range: contain 0% contain 100%;
+}
+
+.range-item--contain .range-label {
+  background: color-mix(in oklch, var(--pe7-accent) 20%, transparent);
+  color: var(--pe7-accent-light);
+}
+
+.range-item--cover {
+  animation: range-scale linear both;
+  animation-timeline: view();
+  animation-range: cover 0% cover 100%;
+}
+
+.range-item--cover .range-label {
+  background: color-mix(in oklch, var(--pe7-warning) 20%, transparent);
+  color: var(--pe7-warning);
+}
+
+@keyframes range-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes range-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes range-glow {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+    border-color: var(--pe7-border);
+  }
+  50% {
+    box-shadow: 0 0 30px color-mix(in oklch, var(--pe7-accent) 40%, transparent);
+    border-color: var(--pe7-accent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    border-color: var(--pe7-border);
+  }
+}
+
+@keyframes range-scale {
+  0% {
+    transform: scale(0.8) rotate(-2deg);
+  }
+  50% {
+    transform: scale(1.02) rotate(0deg);
+  }
+  100% {
+    transform: scale(0.8) rotate(2deg);
+  }
+}
+
+/* ── Section 5: Scroll Snap Gallery ── */
+
+.snap-gallery {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-radius: var(--pe7-radius);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pe7-accent) var(--pe7-code-bg);
+}
+
+.snap-slide {
+  flex: 0 0 85%;
+  height: 250px;
+  border-radius: var(--pe7-radius-lg);
+  scroll-snap-align: center;
+  display: grid;
+  place-items: end start;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.snap-slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);
+  z-index: 1;
+}
+
+.snap-slide--1 {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.snap-slide--2 {
+  background: linear-gradient(135deg, #06b6d4, #0284c7);
+}
+
+.snap-slide--3 {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.snap-slide--4 {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.snap-slide--5 {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.snap-slide-label {
+  position: relative;
+  z-index: 2;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* ── Section 6: Scroll Button Carousel ── */
+
+.scrollbtn-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-radius: var(--pe7-radius);
+  position: relative;
+  scrollbar-width: none;
+}
+
+.scrollbtn-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbtn-slide {
+  flex: 0 0 100%;
+  height: 220px;
+  border-radius: var(--pe7-radius-lg);
+  scroll-snap-align: center;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 2rem;
+  color: white;
+}
+
+.scrollbtn-slide h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.scrollbtn-slide p {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.scrollbtn-slide--1 {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.scrollbtn-slide--2 {
+  background: linear-gradient(135deg, #ec4899, #be185d);
+}
+
+.scrollbtn-slide--3 {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+.scrollbtn-slide--4 {
+  background: linear-gradient(135deg, #f59e0b, #b45309);
+}
+
+/* scroll-button pseudo-elements */
+.scrollbtn-carousel::scroll-button(left),
+.scrollbtn-carousel::scroll-button(right) {
+  font-size: 1.75rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  z-index: 5;
+}
+
+.scrollbtn-carousel::scroll-button(left) {
+  content: "\2039";
+}
+
+.scrollbtn-carousel::scroll-button(right) {
+  content: "\203A";
+}
+
+.scrollbtn-carousel::scroll-button(left):hover,
+.scrollbtn-carousel::scroll-button(right):hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.scrollbtn-carousel::scroll-button(left):disabled,
+.scrollbtn-carousel::scroll-button(right):disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ── Section 7: Scroll Marker Demo ── */
+
+.marker-carousel-wrapper {
+  margin-top: 1rem;
+}
+
+.marker-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  border-radius: var(--pe7-radius-lg);
+  scrollbar-width: none;
+}
+
+.marker-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.marker-slide {
+  flex: 0 0 100%;
+  height: 200px;
+  border-radius: var(--pe7-radius-lg);
+  scroll-snap-align: center;
+  display: grid;
+  place-items: center;
+  color: white;
+}
+
+.marker-slide h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.marker-slide--1 {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.marker-slide--2 {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+
+.marker-slide--3 {
+  background: linear-gradient(135deg, #f43f5e, #be123c);
+}
+
+.marker-slide--4 {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+}
+
+/* scroll-marker pseudo-elements */
+.marker-carousel::scroll-marker-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.marker-slide::scroll-marker {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--pe7-text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.marker-slide::scroll-marker:target-current {
+  background: var(--pe7-accent-light);
+  border-color: var(--pe7-accent-light);
+  transform: scale(1.25);
+}
+
+/* Fallback dots (for browsers without ::scroll-marker support) */
+.marker-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.marker-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid var(--pe7-text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.marker-dot--active {
+  background: var(--pe7-accent-light);
+  border-color: var(--pe7-accent-light);
+  transform: scale(1.25);
+}
+
+/* ── Section 8: Complete CSS-Only Carousel ── */
+
+.complete-carousel-wrapper {
+  margin-top: 1rem;
+}
+
+.complete-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  border-radius: var(--pe7-radius-lg);
+  scrollbar-width: none;
+}
+
+.complete-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.cc-slide {
+  flex: 0 0 100%;
+  min-height: 300px;
+  scroll-snap-align: center;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.cc-slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.cc-slide--1 {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.3), transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(236, 72, 153, 0.2), transparent 50%);
+}
+
+.cc-slide--2 {
+  background: linear-gradient(135deg, #0c4a6e, #164e63);
+  background-image:
+    radial-gradient(ellipse at 70% 30%, rgba(6, 182, 212, 0.3), transparent 60%),
+    radial-gradient(ellipse at 30% 80%, rgba(34, 197, 94, 0.2), transparent 50%);
+}
+
+.cc-slide--3 {
+  background: linear-gradient(135deg, #1c1917, #292524);
+  background-image:
+    radial-gradient(ellipse at 50% 30%, rgba(16, 185, 129, 0.3), transparent 60%),
+    radial-gradient(ellipse at 20% 70%, rgba(245, 158, 11, 0.2), transparent 50%);
+}
+
+.cc-slide--4 {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  background-image:
+    radial-gradient(ellipse at 40% 40%, rgba(139, 92, 246, 0.3), transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(244, 63, 94, 0.25), transparent 50%);
+}
+
+.cc-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 400px;
+  color: white;
+}
+
+.cc-content h5 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.cc-content p {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Carousel controls (fallback for browsers without pseudo-element support) */
+.cc-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.cc-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--pe7-border);
+  background: var(--pe7-surface-2);
+  color: var(--pe7-text);
+  font-size: 1.5rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cc-btn:hover {
+  background: var(--pe7-accent);
+  color: white;
+  border-color: var(--pe7-accent);
+}
+
+.cc-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pe7-border);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cc-dot--active {
+  background: var(--pe7-accent-light);
+  transform: scale(1.3);
+}
+
+/* scroll-button and scroll-marker for complete carousel */
+.complete-carousel::scroll-button(left),
+.complete-carousel::scroll-button(right) {
+  font-size: 1.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.complete-carousel::scroll-button(left) {
+  content: "\2039";
+}
+
+.complete-carousel::scroll-button(right) {
+  content: "\203A";
+}
+
+.complete-carousel::scroll-button(left):hover,
+.complete-carousel::scroll-button(right):hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.complete-carousel::scroll-button(left):disabled,
+.complete-carousel::scroll-button(right):disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.complete-carousel::scroll-marker-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+}
+
+.cc-slide::scroll-marker {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pe7-border);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cc-slide::scroll-marker:target-current {
+  background: var(--pe7-accent-light);
+  transform: scale(1.3);
+}
+
+/* ── Section 9: Parallax Demo ── */
+
+.parallax-demo-scroller {
+  height: 500px;
+  overflow-y: auto;
+  border-radius: var(--pe7-radius-lg);
+  background: linear-gradient(to bottom, #0f172a, #1e293b, #0f172a);
+  border: 1px solid var(--pe7-border);
+  position: relative;
+}
+
+.parallax-scene {
+  position: relative;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.parallax-layer--bg {
+  animation: parallax-bg-shift linear;
+  animation-timeline: view();
+}
+
+.parallax-layer--mg {
+  animation: parallax-mg-shift linear;
+  animation-timeline: view();
+}
+
+.parallax-layer--fg {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 400px;
+  z-index: 3;
+}
+
+@keyframes parallax-bg-shift {
+  from { transform: translateY(-20%); }
+  to   { transform: translateY(20%); }
+}
+
+@keyframes parallax-mg-shift {
+  from { transform: translateY(-10%); }
+  to   { transform: translateY(10%); }
+}
+
+/* Mountains */
+.parallax-mountain {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+}
+
+.parallax-mountain--far {
+  left: 10%;
+  border-left: 140px solid transparent;
+  border-right: 140px solid transparent;
+  border-bottom: 200px solid color-mix(in oklch, var(--pe7-accent) 25%, var(--pe7-surface));
+  opacity: 0.6;
+}
+
+.parallax-mountain--mid {
+  right: 15%;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-bottom: 160px solid color-mix(in oklch, var(--pe7-accent) 35%, var(--pe7-surface));
+  opacity: 0.8;
+}
+
+/* Trees */
+.parallax-tree {
+  position: absolute;
+  bottom: 20%;
+  width: 0;
+  height: 0;
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 50px solid var(--pe7-success);
+  opacity: 0.7;
+}
+
+.parallax-tree--1 { left: 20%; }
+.parallax-tree--2 { left: 50%; bottom: 25%; opacity: 0.5; }
+.parallax-tree--3 { left: 75%; bottom: 15%; }
+
+/* Stars */
+.parallax-stars {
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, white, transparent),
+    radial-gradient(1px 1px at 30% 50%, white, transparent),
+    radial-gradient(1px 1px at 50% 15%, white, transparent),
+    radial-gradient(1px 1px at 70% 40%, white, transparent),
+    radial-gradient(1px 1px at 90% 25%, white, transparent),
+    radial-gradient(2px 2px at 25% 70%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 60% 80%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 80% 60%, white, transparent),
+    radial-gradient(1px 1px at 45% 35%, white, transparent),
+    radial-gradient(1px 1px at 15% 85%, white, transparent);
+}
+
+.parallax-text-box {
+  background: color-mix(in oklch, var(--pe7-surface) 85%, transparent);
+  padding: 2rem;
+  border-radius: var(--pe7-radius-lg);
+  border: 1px solid var(--pe7-border);
+  text-align: center;
+  max-width: 350px;
+  backdrop-filter: blur(8px);
+}
+
+.parallax-text-box h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-accent-light);
+}
+
+.parallax-text-box p {
+  color: var(--pe7-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.parallax-filler {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.parallax-filler p {
+  color: var(--pe7-text-muted);
+  font-size: 0.9rem;
+  max-width: 450px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.parallax-scene--end {
+  min-height: 350px;
+}
+
+/* ── Demo Instruction Text ── */
+.demo-instruction {
+  color: var(--pe7-text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* ── Code Blocks inside concept sections ── */
+.concept pre {
+  background: var(--pe7-code-bg);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  padding: 1.25rem;
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+}
+
+.concept pre code {
+  font-family: var(--pe7-font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .why-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .snap-slide {
+    flex: 0 0 92%;
+    height: 200px;
+  }
+
+  .scrollbtn-slide {
+    height: 180px;
+    padding: 1.5rem;
+  }
+
+  .cc-slide {
+    min-height: 240px;
+    padding: 1.5rem;
+  }
+
+  .cc-content h5 {
+    font-size: 1.2rem;
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar,
+  .view-demo-card,
+  .range-item--entry,
+  .range-item--exit,
+  .range-item--contain,
+  .range-item--cover,
+  .parallax-layer--bg,
+  .parallax-layer--mg {
+    animation: none;
+  }
+
+  .scroll-progress-bar {
+    transform: scaleX(1);
+  }
+
+  .view-demo-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .range-item--entry,
+  .range-item--exit,
+  .range-item--contain,
+  .range-item--cover {
+    opacity: 1;
+    transform: none;
+  }
+}

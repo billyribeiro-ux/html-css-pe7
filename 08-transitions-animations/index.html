@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motion &amp; Interaction | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 08</a>
+  </nav>
+  <header class="lesson-header">
+    <span class="level-badge level-3">Level 3 - Modern CSS</span>
+    <h1>Motion &amp; Interaction</h1>
+    <p class="subtitle">Master CSS transitions, keyframe animations, and cutting-edge motion APIs to bring interfaces to life with purpose and polish.</p>
+  </header>
+  <main>
+
+    <!-- ==================== Section 1: CSS Transitions ==================== -->
+    <section class="concept" id="transitions">
+      <h2>1. CSS Transitions</h2>
+
+      <p>CSS transitions are the simplest way to add motion to your interfaces. A transition smoothly interpolates a CSS property from one value to another over a specified duration, triggered by a state change such as <code>:hover</code>, <code>:focus</code>, or a class toggle. Instead of values snapping instantly, they animate fluidly, giving users visual feedback that something is happening.</p>
+
+      <p>Transitions are controlled by four sub-properties. <code>transition-property</code> specifies which CSS property (or properties) to animate. <code>transition-duration</code> sets how long the animation takes, typically in milliseconds or seconds. <code>transition-timing-function</code> controls the acceleration curve &mdash; whether the animation starts fast and slows down, moves at a constant speed, or follows a custom curve. <code>transition-delay</code> adds a pause before the transition begins, which is useful for staggering multiple animations or preventing accidental triggers on quick mouse movements.</p>
+
+      <p>The shorthand <code>transition</code> property combines all four values in a single declaration. You can also transition multiple properties by comma-separating them. Using <code>transition: all</code> is convenient but can cause performance issues because the browser will attempt to transition every changed property, including ones you might not intend to animate. Best practice is to list specific properties explicitly.</p>
+
+      <div class="why">
+        <strong>Why Transitions Matter:</strong> Without transitions, state changes are jarring &mdash; a button color snapping from blue to dark blue on hover feels broken. Transitions make your UI feel responsive, polished, and intentional. They provide continuity, helping users track what changed and why. A well-chosen 200ms transition can be the difference between an interface feeling cheap and feeling premium.
+      </div>
+
+      <pre class="code-block"><code>/* Individual transition properties */
+.button {
+  background-color: #6366f1;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+
+  transition-property: background-color, transform, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+.button:hover {
+  background-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Shorthand - property duration timing delay */
+.button-shorthand {
+  transition: background-color 200ms ease,
+              transform 150ms ease-out,
+              box-shadow 300ms ease;
+}
+
+/* Multiple properties with different timings */
+.card {
+  transition: transform 200ms ease,
+              box-shadow 300ms ease 50ms,
+              border-color 150ms ease;
+}</code></pre>
+
+      <div class="demo" id="demo-transitions">
+        <h4>Demo: Button Hover Transitions</h4>
+        <p class="demo-instruction">Hover over each button to see different transition configurations. Notice how duration and timing function change the feel.</p>
+        <div class="transition-btn-grid">
+          <button class="trans-btn trans-btn-fast">Fast (100ms)</button>
+          <button class="trans-btn trans-btn-medium">Medium (250ms)</button>
+          <button class="trans-btn trans-btn-slow">Slow (600ms)</button>
+          <button class="trans-btn trans-btn-lift">Lift Effect</button>
+          <button class="trans-btn trans-btn-glow">Glow Effect</button>
+          <button class="trans-btn trans-btn-fill">Border Fill</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 2: Timing Functions ==================== -->
+    <section class="concept" id="timing-functions">
+      <h2>2. Timing Functions</h2>
+
+      <p>The timing function (also called an easing function) defines the rate of change over the duration of a transition or animation. It determines whether motion starts slowly and accelerates, moves at a constant speed, or decelerates at the end. Choosing the right timing function is critical &mdash; it is often the difference between motion that feels natural and motion that feels robotic or jarring.</p>
+
+      <p>CSS provides several built-in keyword timing functions. <code>ease</code> (the default) starts slowly, accelerates in the middle, and decelerates at the end &mdash; it works well for most UI interactions. <code>linear</code> moves at a constant speed with no acceleration, which can feel mechanical but is perfect for things like progress bars or continuous rotations. <code>ease-in</code> starts slowly and accelerates, making it good for elements exiting the screen. <code>ease-out</code> starts fast and decelerates, ideal for elements entering the screen. <code>ease-in-out</code> combines both, creating a symmetrical acceleration curve.</p>
+
+      <p>For precise control, <code>cubic-bezier(x1, y1, x2, y2)</code> lets you define a custom curve using two control points. The curve maps time (x-axis) to progress (y-axis). Values outside the 0&ndash;1 range on the y-axis create overshoot effects, like a bouncy spring. Tools like cubic-bezier.com help you visualize and craft custom curves.</p>
+
+      <p>CSS now also supports the <code>linear()</code> function (not to be confused with the <code>linear</code> keyword). This powerful new addition lets you define arbitrary easing curves by specifying a series of output values at specific progress points. The browser linearly interpolates between these points, enabling complex curves like bounce, elastic, or spring effects that were previously impossible without JavaScript.</p>
+
+      <div class="why">
+        <strong>Why Timing Functions Matter:</strong> In the physical world, nothing moves at a constant speed. Objects accelerate due to force and decelerate due to friction. When UI elements move with proper easing, they feel like they have weight and substance. The wrong timing function makes motion feel "off" in a way users sense even if they cannot articulate it.
+      </div>
+
+      <pre class="code-block"><code>/* Built-in timing functions */
+.ease       { transition-timing-function: ease; }
+.linear     { transition-timing-function: linear; }
+.ease-in    { transition-timing-function: ease-in; }
+.ease-out   { transition-timing-function: ease-out; }
+.ease-in-out { transition-timing-function: ease-in-out; }
+
+/* Custom cubic-bezier - a snappy, slightly bouncy curve */
+.snappy {
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Overshoot effect */
+.overshoot {
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* New linear() function for complex curves */
+/* A bounce effect */
+.bounce {
+  transition-timing-function: linear(
+    0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141, 0.191,
+    0.25, 0.316, 0.391, 0.473, 0.563, 0.66, 0.766, 0.879,
+    1, 0.955, 0.922, 0.9, 0.891, 0.9, 0.922, 0.955,
+    1, 0.984, 0.975, 0.975, 0.984, 1
+  );
+}
+
+/* Spring effect with linear() */
+.spring {
+  transition-timing-function: linear(
+    0, 0.009, 0.035, 0.078, 0.141, 0.223, 0.326, 0.45,
+    0.594, 0.757, 0.938, 1.1, 1.2, 1.2, 1.15, 1.08,
+    1.03, 1, 0.985, 0.98, 0.985, 1
+  );
+}</code></pre>
+
+      <div class="demo" id="demo-timing">
+        <h4>Demo: Timing Function Comparison</h4>
+        <p class="demo-instruction">Click the "Race!" button to see all balls move simultaneously with different timing functions. Watch how each one accelerates and decelerates differently.</p>
+        <button class="race-btn" id="race-btn">Race!</button>
+        <div class="timing-track-container">
+          <div class="timing-row">
+            <span class="timing-label">ease</span>
+            <div class="timing-track"><div class="timing-ball ball-ease">ease</div></div>
+          </div>
+          <div class="timing-row">
+            <span class="timing-label">linear</span>
+            <div class="timing-track"><div class="timing-ball ball-linear">linear</div></div>
+          </div>
+          <div class="timing-row">
+            <span class="timing-label">ease-in</span>
+            <div class="timing-track"><div class="timing-ball ball-ease-in">ease-in</div></div>
+          </div>
+          <div class="timing-row">
+            <span class="timing-label">ease-out</span>
+            <div class="timing-track"><div class="timing-ball ball-ease-out">ease-out</div></div>
+          </div>
+          <div class="timing-row">
+            <span class="timing-label">ease-in-out</span>
+            <div class="timing-track"><div class="timing-ball ball-ease-in-out">ease-in-out</div></div>
+          </div>
+          <div class="timing-row">
+            <span class="timing-label">cubic-bezier</span>
+            <div class="timing-track"><div class="timing-ball ball-bezier">bouncy</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 3: @keyframes ==================== -->
+    <section class="concept" id="keyframes">
+      <h2>3. @keyframes</h2>
+
+      <p>While transitions animate between two states (a starting value and an ending value), <code>@keyframes</code> let you define animations with any number of intermediate steps. A keyframe animation can loop indefinitely, reverse direction, pause and resume, and control timing at each step independently. This makes keyframes far more powerful than transitions for complex, multi-step animations.</p>
+
+      <p>You define a keyframe animation using the <code>@keyframes</code> rule followed by a name. Inside the block, you specify keyframe selectors that represent points along the animation timeline. The simplest form uses <code>from</code> (equivalent to <code>0%</code>) and <code>to</code> (equivalent to <code>100%</code>). For multi-step animations, you use percentage values like <code>0%</code>, <code>25%</code>, <code>50%</code>, <code>75%</code>, <code>100%</code>. The browser interpolates between each keyframe according to the timing function.</p>
+
+      <p>A single keyframe block can animate multiple properties simultaneously. You can also assign the same styles to multiple keyframe selectors by comma-separating them (e.g., <code>0%, 100%</code>). This is useful for creating animations that return to their starting state, like a pulse or a bounce.</p>
+
+      <div class="why">
+        <strong>Why @keyframes Matter:</strong> Transitions are limited to two states and require a trigger. Keyframe animations can run automatically on page load, loop forever, go through multiple stages, and create effects that would be impossible with transitions alone &mdash; loading spinners, attention-grabbing pulses, skeleton screens, and complex choreographed sequences.
+      </div>
+
+      <pre class="code-block"><code>/* Simple from/to animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Multi-step animation with percentages */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+/* Loading spinner with rotation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Complex bounce */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  20%      { transform: translateY(-30px); }
+  40%      { transform: translateY(-15px); }
+  60%      { transform: translateY(-5px); }
+  80%      { transform: translateY(-2px); }
+}</code></pre>
+
+      <div class="demo" id="demo-keyframes">
+        <h4>Demo: Loading Spinner</h4>
+        <p class="demo-instruction">These spinners use <code>@keyframes</code> with the <code>spin</code> animation at different speeds and styles.</p>
+        <div class="spinner-row">
+          <div class="spinner-item">
+            <div class="spinner spinner-border"></div>
+            <span>Border Spin</span>
+          </div>
+          <div class="spinner-item">
+            <div class="spinner spinner-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span>Dot Pulse</span>
+          </div>
+          <div class="spinner-item">
+            <div class="spinner spinner-ring"></div>
+            <span>Ring Sweep</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 4: Animation Properties ==================== -->
+    <section class="concept" id="animation-properties">
+      <h2>4. Animation Properties</h2>
+
+      <p>Once you have defined a <code>@keyframes</code> rule, you apply it to an element using the <code>animation</code> property (or its individual sub-properties). There are eight animation sub-properties, each controlling a different aspect of how the animation plays.</p>
+
+      <p><code>animation-name</code> references the <code>@keyframes</code> rule to use. <code>animation-duration</code> sets how long one cycle takes. <code>animation-timing-function</code> controls the easing curve, just like transitions. <code>animation-delay</code> postpones the start &mdash; negative values cause the animation to begin partway through its cycle, which is great for staggered effects.</p>
+
+      <p><code>animation-iteration-count</code> sets how many times the animation repeats. Use a number for a fixed count or <code>infinite</code> for continuous animation. <code>animation-direction</code> controls playback direction: <code>normal</code> plays forward, <code>reverse</code> plays backward, <code>alternate</code> ping-pongs between forward and backward, and <code>alternate-reverse</code> starts backward then alternates. <code>animation-fill-mode</code> determines what styles apply before the animation starts and after it ends &mdash; <code>forwards</code> retains the final keyframe values, <code>backwards</code> applies the first keyframe during the delay, and <code>both</code> does both. <code>animation-play-state</code> lets you pause and resume with <code>paused</code> and <code>running</code>.</p>
+
+      <div class="why">
+        <strong>Why Understanding All Animation Properties Matters:</strong> Most developers learn <code>animation-name</code> and <code>animation-duration</code> but overlook the rest. Mastering <code>fill-mode</code> prevents the jarring snap-back when an animation ends. Understanding negative delays enables staggered reveals. <code>play-state</code> lets you pause animations for accessibility (prefers-reduced-motion) without removing them entirely.
+      </div>
+
+      <pre class="code-block"><code>/* All animation sub-properties */
+.element {
+  animation-name: bounce;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-fill-mode: both;
+  animation-play-state: running;
+}
+
+/* Shorthand: name duration timing delay count direction fill play */
+.element-short {
+  animation: bounce 1s ease-in-out 0s infinite alternate both running;
+}
+
+/* Practical: staggered list items with negative delays */
+.item:nth-child(1) { animation: fadeIn 0.5s ease both; }
+.item:nth-child(2) { animation: fadeIn 0.5s ease 0.1s both; }
+.item:nth-child(3) { animation: fadeIn 0.5s ease 0.2s both; }
+.item:nth-child(4) { animation: fadeIn 0.5s ease 0.3s both; }
+
+/* Pause animation for reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .element {
+    animation-play-state: paused;
+    animation-delay: -1s; /* Jump to final state */
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-animation-props">
+        <h4>Demo: Bouncing Ball &amp; Pulsing Dot</h4>
+        <p class="demo-instruction">The ball bounces using <code>alternate</code> direction with ease-in timing. The dot pulses using <code>infinite</code> iteration with a scale + shadow keyframe.</p>
+        <div class="anim-demo-row">
+          <div class="anim-demo-item">
+            <div class="bounce-area">
+              <div class="bounce-ball"></div>
+              <div class="bounce-shadow"></div>
+            </div>
+            <span>Bouncing Ball</span>
+          </div>
+          <div class="anim-demo-item">
+            <div class="pulse-area">
+              <div class="pulse-dot"></div>
+            </div>
+            <span>Pulsing Dot</span>
+          </div>
+          <div class="anim-demo-item">
+            <div class="pulse-area">
+              <div class="pulse-ring"></div>
+            </div>
+            <span>Expanding Ring</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 5: @starting-style ==================== -->
+    <section class="concept" id="starting-style">
+      <h2>5. @starting-style</h2>
+
+      <p><code>@starting-style</code> is a game-changing CSS feature that solves a long-standing problem: how do you animate an element's initial appearance when it first enters the DOM or first becomes visible? Previously, elements would simply appear with their final styles &mdash; there was no "before" state for the browser to transition from. You had to use JavaScript to add classes after a requestAnimationFrame, which was hacky and unreliable.</p>
+
+      <p><code>@starting-style</code> lets you define the styles an element should start with before its normal styles take effect. The browser applies the <code>@starting-style</code> values first, then transitions to the element's actual styles. This creates smooth entrance animations purely in CSS, without any JavaScript timing tricks.</p>
+
+      <p>You can use <code>@starting-style</code> either nested inside a rule or as a standalone block. The nested form is more readable and clearly associates the starting styles with their element. The browser uses these starting styles as the "from" state whenever the element first renders or transitions from <code>display: none</code> to visible.</p>
+
+      <div class="why">
+        <strong>Why @starting-style Changes Everything:</strong> Before this feature, entrance animations required JavaScript. You had to render the element, wait a frame, then add an "active" class to trigger the transition. This was fragile, created layout thrashing, and added complexity. <code>@starting-style</code> makes entrance animations a pure CSS concern, which is where they belong.
+      </div>
+
+      <pre class="code-block"><code>/* Before @starting-style: Required JavaScript */
+/* JS: element.classList.add('visible'); after rAF */
+.card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* After: Pure CSS with @starting-style */
+.card {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Standalone syntax (equivalent) */
+@starting-style {
+  .card {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-starting-style">
+        <h4>Demo: Cards That Fade &amp; Slide In</h4>
+        <p class="demo-instruction">Click "Add Card" to insert new cards that smoothly fade and slide into view using <code>@starting-style</code>. Click "Reset" to clear and try again.</p>
+        <div class="starting-style-controls">
+          <button class="ss-btn" id="add-card-btn">Add Card</button>
+          <button class="ss-btn ss-btn-outline" id="reset-cards-btn">Reset</button>
+        </div>
+        <div class="starting-style-grid" id="starting-style-grid">
+          <div class="ss-card">
+            <div class="ss-card-icon">01</div>
+            <h5>First Card</h5>
+            <p>This card was in the initial HTML and animated on page load.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 6: interpolate-size ==================== -->
+    <section class="concept" id="interpolate-size">
+      <h2>6. interpolate-size</h2>
+
+      <p>One of the most requested CSS features for years has been the ability to transition <code>height: auto</code>. When you want to smoothly expand or collapse an element &mdash; like an accordion panel, a dropdown menu, or a details/summary disclosure &mdash; you need to transition between <code>height: 0</code> and the element's natural content height. But the browser cannot interpolate between <code>0</code> and <code>auto</code> because <code>auto</code> is a keyword, not a numeric value.</p>
+
+      <p>The <code>interpolate-size</code> property changes this. When set to <code>allow-keywords</code>, it tells the browser that keyword sizing values like <code>auto</code>, <code>min-content</code>, <code>max-content</code>, and <code>fit-content</code> should be treated as interpolatable for the purpose of transitions and animations. This means you can finally transition <code>height: 0</code> to <code>height: auto</code> and get a smooth animation.</p>
+
+      <p>The best practice is to set <code>interpolate-size: allow-keywords</code> on <code>:root</code> so it applies globally. Since it inherits, every element in your document will gain this capability. This is a progressive enhancement &mdash; browsers that do not support it will simply show the content without animation, which is an acceptable fallback.</p>
+
+      <div class="why">
+        <strong>Why This Is Huge:</strong> Developers have been using JavaScript's <code>scrollHeight</code>, max-height hacks (setting an absurdly large max-height), or CSS Grid tricks (grid-template-rows: 0fr to 1fr) to work around this limitation for over a decade. <code>interpolate-size</code> eliminates all of those workarounds with a single line of CSS. Accordions, FAQs, expandable sections, and disclosure widgets become trivially simple.
+      </div>
+
+      <pre class="code-block"><code>/* Enable globally - set once, works everywhere */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+/* Now height: auto transitions just work! */
+.accordion-panel {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+.accordion-item.open .accordion-panel {
+  height: auto;
+}
+
+/* Works with width too */
+.expandable-sidebar {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.expandable-sidebar.open {
+  width: auto;
+}
+
+/* Also works with min-content, max-content, fit-content */
+.flexible-box {
+  width: fit-content;
+  transition: width 0.3s ease;
+}
+
+.flexible-box.expanded {
+  width: auto;
+}</code></pre>
+
+      <div class="demo" id="demo-interpolate-size">
+        <h4>Demo: Smooth Accordion (No JavaScript Height Calculation)</h4>
+        <p class="demo-instruction">Click each accordion header to expand and collapse. The height transitions smoothly to <code>auto</code> thanks to <code>interpolate-size: allow-keywords</code>.</p>
+        <div class="accordion" id="accordion">
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false">
+              <span>What is interpolate-size?</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-panel">
+              <div class="accordion-content">
+                <p><code>interpolate-size</code> is a CSS property that enables transitions and animations on keyword sizing values like <code>auto</code>, <code>min-content</code>, <code>max-content</code>, and <code>fit-content</code>. It solves the decade-old problem of animating <code>height: auto</code>.</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false">
+              <span>How do I use it?</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-panel">
+              <div class="accordion-content">
+                <p>Add <code>interpolate-size: allow-keywords</code> to your <code>:root</code> selector. Then simply transition between <code>height: 0</code> and <code>height: auto</code> as you normally would. The browser handles the interpolation automatically. No JavaScript needed, no max-height hacks, no grid tricks.</p>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false">
+              <span>What about browser support?</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-panel">
+              <div class="accordion-content">
+                <p>As of 2025, <code>interpolate-size</code> is supported in Chrome/Edge 129+ and Safari 17.5+. Firefox support is in progress. Because it is a progressive enhancement, unsupported browsers simply show content without animation &mdash; nothing breaks.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 7: Display None Animations ==================== -->
+    <section class="concept" id="display-none-animations">
+      <h2>7. Display None Animations</h2>
+
+      <p>Historically, you could not animate or transition the <code>display</code> property at all. Toggling between <code>display: none</code> and <code>display: block</code> was an instantaneous switch &mdash; the element was either fully removed from the layout or fully present, with no in-between state. This forced developers to use <code>visibility</code>, <code>opacity</code>, <code>pointer-events</code>, and <code>position: absolute</code> hacks to simulate hiding while keeping elements in the DOM for animation purposes.</p>
+
+      <p>The <code>transition-behavior</code> property with the value <code>allow-discrete</code> changes this. It tells the browser that discrete properties like <code>display</code> and <code>overlay</code> should participate in transitions. Combined with <code>@starting-style</code>, you can now animate an element appearing (from <code>display: none</code> to visible) and disappearing (back to <code>display: none</code>) with smooth opacity, transform, or any other transitions.</p>
+
+      <p>The key insight is that when an element transitions <em>to</em> <code>display: none</code>, the browser keeps it visible long enough for exit transitions to complete. When transitioning <em>from</em> <code>display: none</code>, <code>@starting-style</code> provides the initial values to transition from. This two-part system gives you complete control over entrance and exit animations for elements that are truly removed from layout.</p>
+
+      <div class="why">
+        <strong>Why This Matters:</strong> Modals, popovers, dropdown menus, tooltips, and toast notifications all need to appear and disappear. Before <code>transition-behavior: allow-discrete</code>, you had to keep hidden elements in the DOM (wasting memory, creating accessibility issues) or use JavaScript animation libraries. Now the browser handles the entire lifecycle natively.
+      </div>
+
+      <pre class="code-block"><code>/* The complete pattern for display none animations */
+.modal {
+  /* Final visible state */
+  opacity: 1;
+  transform: scale(1);
+  display: block;
+
+  /* Transition all properties including display */
+  transition: opacity 0.3s ease,
+              transform 0.3s ease,
+              display 0.3s ease allow-discrete;
+
+  /* Starting state when appearing */
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Hidden state - exit animation plays, then display goes to none */
+.modal.hidden {
+  opacity: 0;
+  transform: scale(0.95);
+  display: none;
+}
+
+/* You can also use transition-behavior as a separate property */
+.tooltip {
+  transition-property: opacity, transform, display;
+  transition-duration: 0.2s;
+  transition-behavior: allow-discrete;
+}</code></pre>
+
+      <div class="demo" id="demo-display-none">
+        <h4>Demo: Modal Fade In/Out with Display Toggle</h4>
+        <p class="demo-instruction">Click "Open Modal" to show the modal with a fade-in. Click the close button or backdrop to dismiss it with a fade-out. The modal truly toggles <code>display: none</code> &mdash; it is not just hidden with opacity.</p>
+        <button class="modal-trigger-btn" id="open-modal-btn">Open Modal</button>
+        <div class="modal-backdrop" id="modal-backdrop">
+          <div class="modal-box" id="modal-box">
+            <button class="modal-close" id="close-modal-btn" aria-label="Close modal">&times;</button>
+            <h4>This Modal Uses display: none</h4>
+            <p>When closed, this modal is truly <code>display: none</code>, not just invisible. It transitions smoothly in and out using <code>transition-behavior: allow-discrete</code> combined with <code>@starting-style</code>.</p>
+            <p>Inspect the element in DevTools to verify &mdash; the <code>display</code> property changes between <code>none</code> and <code>grid</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 8: Practical Patterns ==================== -->
+    <section class="concept" id="practical-patterns">
+      <h2>8. Practical Patterns</h2>
+
+      <p>Theory is valuable, but the real power of CSS animations comes alive in practical, production-ready patterns. This section demonstrates four common UI patterns that combine the techniques covered in this module: toast notifications, card hover lifts, skeleton loading screens, and staggered list reveals. Each pattern is production-quality and can be copied directly into your projects.</p>
+
+      <p>These patterns share a common philosophy: motion should serve a purpose. Toast notifications need to grab attention and then disappear. Card hover lifts provide tactile feedback. Skeleton screens reduce perceived loading time by showing movement where content will appear. Staggered reveals create a sense of choreography that guides the user's eye through content in a deliberate order.</p>
+
+      <div class="why">
+        <strong>Why Practical Patterns:</strong> Knowing the syntax is not enough. Understanding <em>when</em> and <em>how</em> to apply each technique separates beginners from professionals. These patterns also demonstrate how multiple animation techniques compose together &mdash; a toast notification uses keyframes, transitions, fill-mode, and timing functions all at once.
+      </div>
+
+      <pre class="code-block"><code>/* Pattern: Card Hover Lift */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Pattern: Skeleton Loading */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* Pattern: Staggered List Reveal */
+.list-item {
+  animation: fadeSlideIn 0.4s ease both;
+}
+.list-item:nth-child(1) { animation-delay: 0s; }
+.list-item:nth-child(2) { animation-delay: 0.08s; }
+.list-item:nth-child(3) { animation-delay: 0.16s; }
+.list-item:nth-child(4) { animation-delay: 0.24s; }
+.list-item:nth-child(5) { animation-delay: 0.32s; }</code></pre>
+
+      <!-- Pattern A: Toast Notification -->
+      <div class="demo" id="demo-toast">
+        <h4>Demo: Toast Notification</h4>
+        <p class="demo-instruction">Click a button to trigger a toast notification. It slides in from the right, pauses, then slides out automatically.</p>
+        <div class="toast-btn-row">
+          <button class="toast-trigger" data-type="success" id="toast-success">Success Toast</button>
+          <button class="toast-trigger" data-type="error" id="toast-error">Error Toast</button>
+          <button class="toast-trigger" data-type="info" id="toast-info">Info Toast</button>
+        </div>
+        <div class="toast-container" id="toast-container"></div>
+      </div>
+
+      <!-- Pattern B: Card Hover Lift -->
+      <div class="demo" id="demo-card-lift">
+        <h4>Demo: Card Hover Lift</h4>
+        <p class="demo-instruction">Hover over each card to see the lift effect with a shadow transition.</p>
+        <div class="lift-card-grid">
+          <div class="lift-card">
+            <div class="lift-card-img" style="--hue: 240"></div>
+            <div class="lift-card-body">
+              <h5>Transitions</h5>
+              <p>Smooth state changes with simple property declarations.</p>
+            </div>
+          </div>
+          <div class="lift-card">
+            <div class="lift-card-img" style="--hue: 280"></div>
+            <div class="lift-card-body">
+              <h5>Keyframes</h5>
+              <p>Multi-step animations for complex, looping motion.</p>
+            </div>
+          </div>
+          <div class="lift-card">
+            <div class="lift-card-img" style="--hue: 320"></div>
+            <div class="lift-card-body">
+              <h5>Modern APIs</h5>
+              <p>Starting-style, interpolate-size, and more.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pattern C: Skeleton Loading -->
+      <div class="demo" id="demo-skeleton">
+        <h4>Demo: Skeleton Loading Screen</h4>
+        <p class="demo-instruction">This skeleton screen uses a shimmer animation to indicate loading. The animation runs continuously until content replaces it.</p>
+        <div class="skeleton-card">
+          <div class="skeleton-avatar skeleton"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-line skeleton" style="width: 60%"></div>
+            <div class="skeleton-line skeleton" style="width: 90%"></div>
+            <div class="skeleton-line skeleton" style="width: 75%"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-avatar skeleton"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-line skeleton" style="width: 80%"></div>
+            <div class="skeleton-line skeleton" style="width: 50%"></div>
+            <div class="skeleton-line skeleton" style="width: 85%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pattern D: Staggered List Reveal -->
+      <div class="demo" id="demo-stagger">
+        <h4>Demo: Staggered List Reveal</h4>
+        <p class="demo-instruction">Click "Reveal" to see list items animate in with staggered delays. Click "Reset" to try again.</p>
+        <div class="stagger-controls">
+          <button class="stagger-btn" id="stagger-reveal-btn">Reveal</button>
+          <button class="stagger-btn stagger-btn-outline" id="stagger-reset-btn">Reset</button>
+        </div>
+        <ul class="stagger-list" id="stagger-list">
+          <li class="stagger-item" style="--i: 0">Implement responsive layout</li>
+          <li class="stagger-item" style="--i: 1">Add CSS custom properties</li>
+          <li class="stagger-item" style="--i: 2">Create transition effects</li>
+          <li class="stagger-item" style="--i: 3">Build keyframe animations</li>
+          <li class="stagger-item" style="--i: 4">Test accessibility features</li>
+          <li class="stagger-item" style="--i: 5">Deploy to production</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==================== Exercise ==================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Animated Card Component</h2>
+
+      <p>Create an animated card component that combines multiple techniques from this module. Your card should fade in using <code>@starting-style</code> when it first appears, lift smoothly on hover with a shadow transition, and display a pulsing notification badge.</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li>The card fades in from <code>opacity: 0</code> and slides up from <code>translateY(30px)</code> on initial render using <code>@starting-style</code>.</li>
+        <li>On hover, the card lifts by <code>translateY(-6px)</code> with an enhanced <code>box-shadow</code>, using a transition duration of 250ms.</li>
+        <li>A small badge in the card's top-right corner continuously pulses using a <code>@keyframes</code> animation with <code>infinite</code> iteration.</li>
+        <li>The pulse animation uses <code>alternate</code> direction and <code>ease-in-out</code> timing.</li>
+        <li>Include <code>@media (prefers-reduced-motion: reduce)</code> that pauses all animations and removes transitions.</li>
+      </ol>
+
+      <pre class="code-block"><code>/* Starter code for your exercise */
+.animated-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  position: relative;
+  /* Add transition for hover lift */
+  /* Add @starting-style for entrance animation */
+}
+
+.animated-card:hover {
+  /* Add lift transform and enhanced shadow */
+}
+
+.card-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  border-radius: 50%;
+  /* Add pulse animation */
+}
+
+@keyframes pulse {
+  /* Define your pulse keyframes */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable or reduce all motion */
+}</code></pre>
+
+      <div class="demo" id="exercise-demo">
+        <h4>Your Target Result:</h4>
+        <div class="exercise-target">
+          <div class="exercise-card">
+            <span class="exercise-badge"></span>
+            <h5>Animated Card</h5>
+            <p>This card fades in with @starting-style, lifts on hover, and has a pulsing badge. Try hovering over it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Challenge ==================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Multi-Step Onboarding Flow</h2>
+
+      <p>Build a multi-step onboarding flow where each step transitions in with staggered entrance animations and the container smoothly adjusts its height as content changes. This challenge combines <code>@starting-style</code>, <code>interpolate-size</code>, staggered <code>animation-delay</code>, and <code>transition-behavior: allow-discrete</code>.</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li>Create a 3-step onboarding wizard (Welcome, Profile Setup, Confirmation).</li>
+        <li>Each step's content elements (heading, text, inputs, buttons) animate in with staggered delays using <code>@starting-style</code> or keyframe animations.</li>
+        <li>The container height transitions smoothly between steps using <code>interpolate-size: allow-keywords</code>.</li>
+        <li>Outgoing step content fades out before the incoming step fades in. Use <code>transition-behavior: allow-discrete</code> to handle the <code>display</code> toggle.</li>
+        <li>Add a progress bar at the top that smoothly fills between steps using a CSS transition.</li>
+        <li>Include step indicator dots that animate their active state with a scale + color transition.</li>
+      </ol>
+
+      <h3>Bonus:</h3>
+      <ul>
+        <li>Add directional awareness: content slides left when going forward and slides right when going back.</li>
+        <li>Use the <code>linear()</code> timing function to create a spring-like bounce when elements appear.</li>
+        <li>Implement a confetti animation on the final confirmation step using multiple <code>@keyframes</code> with randomized delays.</li>
+      </ul>
+
+      <pre class="code-block"><code>/* Challenge starter structure */
+.onboarding {
+  interpolate-size: allow-keywords;
+  /* Container that smoothly adjusts height */
+}
+
+.onboarding-step {
+  display: none;
+  transition: opacity 0.3s ease,
+              transform 0.3s ease,
+              display 0.3s ease allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+.onboarding-step.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger children within each step */
+.onboarding-step.active > * {
+  animation: fadeSlideUp 0.4s ease both;
+}
+.onboarding-step.active > *:nth-child(1) { animation-delay: 0.05s; }
+.onboarding-step.active > *:nth-child(2) { animation-delay: 0.1s; }
+.onboarding-step.active > *:nth-child(3) { animation-delay: 0.15s; }
+
+.progress-bar {
+  transition: width 0.4s ease;
+}</code></pre>
+    </section>
+
+  </main>
+  <footer class="lesson-footer">
+    <a href="../07-custom-properties-cascade/index.html">&larr; Previous</a>
+    <a href="../09-nesting-selectors/index.html">Next &rarr;</a>
+  </footer>
+
+  <script>
+    // === Timing Function Race ===
+    const raceBtn = document.getElementById('race-btn');
+    if (raceBtn) {
+      let racing = false;
+      raceBtn.addEventListener('click', () => {
+        const balls = document.querySelectorAll('.timing-ball');
+        if (!racing) {
+          balls.forEach(b => b.classList.add('go'));
+          racing = true;
+          raceBtn.textContent = 'Reset';
+        } else {
+          balls.forEach(b => b.classList.remove('go'));
+          racing = false;
+          raceBtn.textContent = 'Race!';
+        }
+      });
+    }
+
+    // === @starting-style Cards ===
+    let cardCount = 1;
+    const addBtn = document.getElementById('add-card-btn');
+    const resetBtn = document.getElementById('reset-cards-btn');
+    const grid = document.getElementById('starting-style-grid');
+    if (addBtn && grid) {
+      addBtn.addEventListener('click', () => {
+        cardCount++;
+        const card = document.createElement('div');
+        card.className = 'ss-card';
+        card.innerHTML = `
+          <div class="ss-card-icon">${String(cardCount).padStart(2, '0')}</div>
+          <h5>Card ${cardCount}</h5>
+          <p>Dynamically added card with @starting-style entrance animation.</p>
+        `;
+        grid.appendChild(card);
+      });
+      resetBtn.addEventListener('click', () => {
+        grid.innerHTML = '';
+        cardCount = 0;
+      });
+    }
+
+    // === Accordion ===
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const item = header.parentElement;
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.accordion-item').forEach(i => {
+          i.classList.remove('open');
+          i.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+          i.querySelector('.accordion-icon').textContent = '+';
+        });
+        // Toggle current
+        if (!isOpen) {
+          item.classList.add('open');
+          header.setAttribute('aria-expanded', 'true');
+          item.querySelector('.accordion-icon').textContent = '\u2212';
+        }
+      });
+    });
+
+    // === Modal ===
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const backdrop = document.getElementById('modal-backdrop');
+    const modalBox = document.getElementById('modal-box');
+    if (openModalBtn && backdrop) {
+      openModalBtn.addEventListener('click', () => {
+        backdrop.classList.add('modal-visible');
+      });
+      closeModalBtn.addEventListener('click', () => {
+        backdrop.classList.remove('modal-visible');
+      });
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          backdrop.classList.remove('modal-visible');
+        }
+      });
+    }
+
+    // === Toast Notifications ===
+    const toastContainer = document.getElementById('toast-container');
+    document.querySelectorAll('.toast-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        const messages = {
+          success: 'Changes saved successfully!',
+          error: 'Something went wrong. Please try again.',
+          info: 'New updates are available.'
+        };
+        const icons = { success: '\u2713', error: '\u2717', info: 'i' };
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+          <span class="toast-icon">${icons[type]}</span>
+          <span class="toast-msg">${messages[type]}</span>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add('toast-exit');
+          toast.addEventListener('animationend', () => toast.remove());
+        }, 3000);
+      });
+    });
+
+    // === Staggered List ===
+    const revealBtn = document.getElementById('stagger-reveal-btn');
+    const resetStaggerBtn = document.getElementById('stagger-reset-btn');
+    const staggerList = document.getElementById('stagger-list');
+    if (revealBtn && staggerList) {
+      revealBtn.addEventListener('click', () => {
+        staggerList.classList.add('revealed');
+      });
+      resetStaggerBtn.addEventListener('click', () => {
+        staggerList.classList.remove('revealed');
+      });
+    }
+  </script>
+</body>
+</html>

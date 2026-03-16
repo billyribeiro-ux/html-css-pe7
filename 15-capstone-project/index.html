@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PE7 Portfolio - Capstone | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       STICKY NAVIGATION
+       ═══════════════════════════════════════════════════ -->
+  <nav class="site-nav" aria-label="Portfolio navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Home">
+        <span class="logo-mark">PE7</span>
+        <span class="logo-text">Portfolio</span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Hire Me</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+       HERO SECTION
+       ═══════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Hello, I'm</p>
+      <h1 class="hero-title">
+        <span class="gradient-text">Creative</span>
+        <span class="gradient-text accent">Developer</span>
+      </h1>
+      <p class="hero-subtitle">
+        I craft beautiful, performant, and accessible web experiences
+        using modern CSS and semantic HTML.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+      </div>
+    </div>
+    <div class="scroll-indicator" aria-hidden="true">
+      <span></span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       ABOUT SECTION
+       ═══════════════════════════════════════════════════ -->
+  <section class="about section" id="about">
+    <div class="section-container">
+      <h2 class="section-heading">About Me</h2>
+      <div class="about-grid">
+        <div class="about-image">
+          <div class="image-placeholder" aria-label="Profile photo placeholder">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="100" cy="80" r="40" fill="currentColor" opacity="0.3"/>
+              <ellipse cx="100" cy="170" rx="60" ry="45" fill="currentColor" opacity="0.2"/>
+            </svg>
+          </div>
+          <div class="image-decoration" aria-hidden="true"></div>
+        </div>
+        <div class="about-text">
+          <h3>Passionate about the modern web</h3>
+          <p>
+            I'm a front-end developer who believes the web platform is more powerful
+            than ever. With modern CSS features like container queries, scroll-driven
+            animations, and OKLCH color spaces, we can build stunning experiences
+            without reaching for JavaScript.
+          </p>
+          <p>
+            My journey through PE7 has equipped me with deep knowledge of semantic HTML,
+            advanced CSS architecture, responsive design, and cutting-edge features that
+            push the boundaries of what's possible with stylesheets alone.
+          </p>
+          <ul class="about-highlights" role="list">
+            <li>CSS Architecture &amp; Design Systems</li>
+            <li>Responsive &amp; Fluid Design</li>
+            <li>Accessibility-First Development</li>
+            <li>Performance Optimization</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       PROJECTS GALLERY
+       ═══════════════════════════════════════════════════ -->
+  <section class="projects section" id="projects">
+    <div class="section-container">
+      <h2 class="section-heading">Featured Projects</h2>
+      <div class="projects-grid">
+
+        <article class="project-card">
+          <div class="card-header gradient-1">
+            <span class="card-number">01</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Design System</h3>
+            <p class="card-description">
+              A comprehensive design token system using custom properties,
+              OKLCH colors, and @layer architecture for scalable CSS.
+            </p>
+            <ul class="card-tags" role="list">
+              <li>Custom Properties</li>
+              <li>@layer</li>
+              <li>OKLCH</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="card-header gradient-2">
+            <span class="card-number">02</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Responsive Dashboard</h3>
+            <p class="card-description">
+              A fully responsive analytics dashboard built with CSS Grid,
+              container queries, and fluid typography.
+            </p>
+            <ul class="card-tags" role="list">
+              <li>CSS Grid</li>
+              <li>Container Queries</li>
+              <li>clamp()</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="card-header gradient-3">
+            <span class="card-number">03</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Animation Showcase</h3>
+            <p class="card-description">
+              Scroll-driven animations, @starting-style transitions, and
+              view-timeline effects — all pure CSS, zero JavaScript.
+            </p>
+            <ul class="card-tags" role="list">
+              <li>Scroll Animations</li>
+              <li>@starting-style</li>
+              <li>view()</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="card-header gradient-4">
+            <span class="card-number">04</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">E-Commerce UI</h3>
+            <p class="card-description">
+              A modern storefront with :has()-based interactivity, scroll-snap
+              carousels, and light-dark() theme support.
+            </p>
+            <ul class="card-tags" role="list">
+              <li>:has()</li>
+              <li>Scroll Snap</li>
+              <li>light-dark()</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="card-header gradient-5">
+            <span class="card-number">05</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Accessible Forms</h3>
+            <p class="card-description">
+              Production-quality form components with field-sizing, custom
+              validation UX, and full keyboard navigation.
+            </p>
+            <ul class="card-tags" role="list">
+              <li>field-sizing</li>
+              <li>:user-valid</li>
+              <li>Accessibility</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="card-header gradient-6">
+            <span class="card-number">06</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Portfolio Site</h3>
+            <p class="card-description">
+              This very site — a capstone project combining every technique
+              from the PE7 course into one cohesive experience.
+            </p>
+            <ul class="card-tags" role="list">
+              <li>Capstone</li>
+              <li>All Techniques</li>
+              <li>PE7</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       SKILLS SECTION
+       ═══════════════════════════════════════════════════ -->
+  <section class="skills section" id="skills">
+    <div class="section-container">
+      <h2 class="section-heading">Skills &amp; Expertise</h2>
+      <div class="skills-list">
+
+        <div class="skill-item" style="--i: 0; --fill: 95%;">
+          <div class="skill-info">
+            <span class="skill-name">Semantic HTML</span>
+            <span class="skill-pct">95%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill fill-1" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <div class="skill-item" style="--i: 1; --fill: 92%;">
+          <div class="skill-info">
+            <span class="skill-name">CSS Architecture</span>
+            <span class="skill-pct">92%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill fill-2" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <div class="skill-item" style="--i: 2; --fill: 90%;">
+          <div class="skill-info">
+            <span class="skill-name">Responsive Design</span>
+            <span class="skill-pct">90%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill fill-3" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <div class="skill-item" style="--i: 3; --fill: 88%;">
+          <div class="skill-info">
+            <span class="skill-name">CSS Animations</span>
+            <span class="skill-pct">88%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill fill-4" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <div class="skill-item" style="--i: 4; --fill: 85%;">
+          <div class="skill-info">
+            <span class="skill-name">Accessibility</span>
+            <span class="skill-pct">85%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill fill-5" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <div class="skill-item" style="--i: 5; --fill: 82%;">
+          <div class="skill-info">
+            <span class="skill-name">Performance Optimization</span>
+            <span class="skill-pct">82%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill fill-6" role="progressbar" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       TESTIMONIALS CAROUSEL
+       ═══════════════════════════════════════════════════ -->
+  <section class="testimonials section" id="testimonials">
+    <div class="section-container">
+      <h2 class="section-heading">What People Say</h2>
+      <div class="carousel" role="region" aria-label="Testimonials carousel">
+        <div class="carousel-track">
+
+          <blockquote class="testimonial-card" id="testimonial-1">
+            <p class="testimonial-text">
+              &ldquo;An exceptional developer who truly understands the power of
+              modern CSS. The attention to detail and commitment to accessibility
+              is outstanding.&rdquo;
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">JD</div>
+              <div class="author-info">
+                <cite class="author-name">Jane Doe</cite>
+                <span class="author-role">Senior Designer, TechCorp</span>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="testimonial-card" id="testimonial-2">
+            <p class="testimonial-text">
+              &ldquo;Working with someone who can build complex layouts using only
+              CSS Grid and Flexbox — no frameworks needed — is a breath of fresh
+              air. Highly recommend.&rdquo;
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">AS</div>
+              <div class="author-info">
+                <cite class="author-name">Alex Smith</cite>
+                <span class="author-role">Lead Engineer, WebFlow</span>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="testimonial-card" id="testimonial-3">
+            <p class="testimonial-text">
+              &ldquo;The portfolio site they built was stunning — scroll-driven
+              animations, fluid typography, and it loaded in under a second.
+              Pure CSS magic.&rdquo;
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">MK</div>
+              <div class="author-info">
+                <cite class="author-name">Maria Kim</cite>
+                <span class="author-role">Product Manager, StartupXYZ</span>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="testimonial-card" id="testimonial-4">
+            <p class="testimonial-text">
+              &ldquo;Deep knowledge of CSS architecture — layers, custom properties,
+              nesting. They brought our design system from chaotic to clean in
+              record time.&rdquo;
+            </p>
+            <footer class="testimonial-author">
+              <div class="author-avatar" aria-hidden="true">RP</div>
+              <div class="author-info">
+                <cite class="author-name">Ryan Patel</cite>
+                <span class="author-role">CTO, DesignLab</span>
+              </div>
+            </footer>
+          </blockquote>
+
+        </div>
+
+        <nav class="carousel-nav" aria-label="Testimonial navigation">
+          <a href="#testimonial-1" class="carousel-dot" aria-label="Testimonial 1"></a>
+          <a href="#testimonial-2" class="carousel-dot" aria-label="Testimonial 2"></a>
+          <a href="#testimonial-3" class="carousel-dot" aria-label="Testimonial 3"></a>
+          <a href="#testimonial-4" class="carousel-dot" aria-label="Testimonial 4"></a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       CONTACT FORM
+       ═══════════════════════════════════════════════════ -->
+  <section class="contact section" id="contact">
+    <div class="section-container">
+      <h2 class="section-heading">Get in Touch</h2>
+      <form class="contact-form" action="#" method="post" novalidate>
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required minlength="2"
+                 placeholder="Your full name" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required
+                 placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" required minlength="3"
+                 placeholder="Project inquiry">
+        </div>
+        <div class="form-group full-width">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required minlength="10"
+                    placeholder="Tell me about your project..."></textarea>
+        </div>
+        <div class="form-group full-width">
+          <button type="submit" class="btn btn-primary btn-submit">
+            Send Message
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="logo-mark">PE7</span>
+        <p>A capstone portfolio demonstrating mastery of modern HTML &amp; CSS techniques from the PE7 course.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul role="list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Modules</h4>
+        <ul role="list">
+          <li><a href="../index.html">Course Home</a></li>
+          <li><a href="../14-cutting-edge-2026/index.html">Previous Module</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul class="social-links" role="list">
+          <li><a href="#" aria-label="GitHub">GitHub</a></li>
+          <li><a href="#" aria-label="LinkedIn">LinkedIn</a></li>
+          <li><a href="#" aria-label="CodePen">CodePen</a></li>
+          <li><a href="#" aria-label="Twitter / X">Twitter / X</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 PE7 Portfolio. Built with pure HTML &amp; CSS.</p>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════
+       EXERCISE & CHALLENGE
+       ═══════════════════════════════════════════════════ -->
+  <section class="exercise-section section">
+    <div class="section-container">
+      <h2 class="section-heading">Practice</h2>
+
+      <div class="exercise-block">
+        <h3>Exercise</h3>
+        <p>
+          Extend the portfolio with a blog listing section using CSS Grid and
+          container queries. Each blog card should show a title, date, excerpt,
+          and category tag. The cards should adapt their layout based on their
+          container width — switching from a stacked layout in narrow containers
+          to a side-by-side layout in wide ones.
+        </p>
+      </div>
+
+      <div class="challenge-block">
+        <h3>Challenge</h3>
+        <p>
+          Add a project detail view with view transitions that morph the card
+          into a full page. Use <code>view-transition-name</code> on the card
+          elements (image, title, description) so they animate smoothly between
+          the gallery view and the detail page. Create a separate HTML page for
+          the detail view with a back button that transitions in reverse.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODULE NAVIGATION
+       ═══════════════════════════════════════════════════ -->
+  <nav class="module-nav" aria-label="Module navigation">
+    <a href="../14-cutting-edge-2026/index.html" class="module-nav-link prev">
+      <span class="nav-arrow">&larr;</span>
+      <span>Previous Module</span>
+    </a>
+    <a href="../index.html" class="module-nav-link next">
+      <span>Course Home</span>
+      <span class="nav-arrow">&rarr;</span>
+    </a>
+  </nav>
+
+</body>
+</html>
