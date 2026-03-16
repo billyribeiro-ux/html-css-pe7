@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seamless Navigation & Floating UI | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 13</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-5">Level 5 - PE7 Mastery</span>
+    <h1>Seamless Navigation &amp; Floating UI</h1>
+    <p class="subtitle">Master the View Transitions API, CSS Anchor Positioning, and the Popover API to create buttery-smooth page transitions, perfectly-placed tooltips, and accessible floating UI — all without JavaScript positioning libraries.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: VIEW TRANSITIONS API -->
+    <!-- ============================== -->
+    <section class="concept-section" id="view-transitions">
+      <h2>1. View Transitions API</h2>
+      <p>The View Transitions API lets you create smooth, animated transitions between different DOM states or page navigations. Instead of abrupt layout changes, elements can <strong>morph</strong> seamlessly from one position, size, or appearance to another. The browser captures "before" and "after" snapshots and animates between them.</p>
+
+      <h3>How It Works</h3>
+      <p>The key CSS property is <code>view-transition-name</code>. When you assign matching transition names to elements in the "old" and "new" states, the browser automatically creates a crossfade/morph animation between them.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Assign a unique transition name to an element */
+.hero-card {
+  view-transition-name: hero-card;
+}
+
+/* The browser generates pseudo-elements you can style */
+::view-transition-old(hero-card) {
+  animation-duration: 0.4s;
+}
+
+::view-transition-new(hero-card) {
+  animation-duration: 0.4s;
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <h4>JavaScript (for SPA transitions)</h4>
+        <pre><code>// Trigger a view transition in a single-page app
+document.startViewTransition(() => {
+  // Update the DOM here — swap layouts, change content
+  updateLayout();
+});</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Card Layout Morph</h4>
+        <p class="demo-note">Click the toggle button to switch between grid and list layout. The card "morphs" between positions using view-transition-name.</p>
+
+        <div class="vt-layout-toggle">
+          <button class="vt-toggle-btn" onclick="this.closest('.vt-layout-toggle').classList.toggle('list-mode')">Toggle Layout</button>
+        </div>
+
+        <div class="vt-card-grid">
+          <div class="vt-card vt-card-1">
+            <div class="vt-card-img"></div>
+            <div class="vt-card-body">
+              <h5>Mountain Trek</h5>
+              <p>An alpine adventure through rugged peaks and glacial valleys.</p>
+            </div>
+          </div>
+          <div class="vt-card vt-card-2">
+            <div class="vt-card-img"></div>
+            <div class="vt-card-body">
+              <h5>Ocean Depths</h5>
+              <p>Explore the mysterious world beneath the waves.</p>
+            </div>
+          </div>
+          <div class="vt-card vt-card-3">
+            <div class="vt-card-img"></div>
+            <div class="vt-card-body">
+              <h5>Desert Stars</h5>
+              <p>Witness the Milky Way from ancient sand dunes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Important:</strong> Each <code>view-transition-name</code> must be unique on the page at any given time. If two visible elements share the same name, the transition will fail. Think of it as a unique ID for animation purposes.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: @VIEW-TRANSITION RULE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="view-transition-rule">
+      <h2>2. @view-transition Rule</h2>
+      <p>For <strong>multi-page applications</strong> (traditional websites with full page navigations), the <code>@view-transition</code> at-rule enables cross-document transitions without any JavaScript.</p>
+
+      <div class="code-block">
+        <h4>CSS (on both pages)</h4>
+        <pre><code>/* Enable cross-document view transitions */
+@view-transition {
+  navigation: auto;
+}
+
+/* Elements with matching view-transition-names
+   across pages will morph automatically */
+.page-header {
+  view-transition-name: page-header;
+}
+
+.main-logo {
+  view-transition-name: main-logo;
+}
+
+.hero-image {
+  view-transition-name: hero-image;
+}</code></pre>
+      </div>
+
+      <h3>How MPA Transitions Work</h3>
+      <ol class="step-list">
+        <li><strong>User clicks a link</strong> — browser begins navigation to the new page.</li>
+        <li><strong>Old page snapshot</strong> — the browser captures the current visual state of all elements with <code>view-transition-name</code>.</li>
+        <li><strong>New page renders</strong> — the browser renders the new page off-screen and captures the new state of matching named elements.</li>
+        <li><strong>Animation</strong> — the browser animates from old snapshots to new positions/sizes/appearances.</li>
+        <li><strong>Cleanup</strong> — pseudo-elements are removed, the new page is fully interactive.</li>
+      </ol>
+
+      <div class="demo-container">
+        <h4>Demo: Cross-Document Transition Concept</h4>
+        <p class="demo-note">This demonstrates the concept. In a real MPA, navigating between pages with <code>@view-transition { navigation: auto; }</code> would animate shared elements automatically.</p>
+
+        <div class="mpa-demo">
+          <div class="mpa-page mpa-page-old">
+            <div class="mpa-header">
+              <div class="mpa-logo">LOGO</div>
+              <span>Home Page</span>
+            </div>
+            <div class="mpa-content">
+              <div class="mpa-card-preview">
+                <div class="mpa-card-thumb"></div>
+                <span>Project Alpha</span>
+              </div>
+            </div>
+            <div class="mpa-label">Page 1 (Old)</div>
+          </div>
+
+          <div class="mpa-arrow">&rarr;</div>
+
+          <div class="mpa-page mpa-page-new">
+            <div class="mpa-header">
+              <div class="mpa-logo">LOGO</div>
+              <span>Project Detail</span>
+            </div>
+            <div class="mpa-content">
+              <div class="mpa-card-full">
+                <div class="mpa-card-thumb-large"></div>
+                <h5>Project Alpha</h5>
+                <p>The logo stays in place, the card morphs into a full-width hero.</p>
+              </div>
+            </div>
+            <div class="mpa-label">Page 2 (New)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box warning">
+        <strong>Browser Support:</strong> Cross-document view transitions require both pages to be same-origin and both must include the <code>@view-transition</code> rule. As of 2026, Chrome and Edge support this fully; Firefox and Safari have partial support. Always design your site to work without transitions as a baseline.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: PSEUDO-ELEMENTS      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="view-transition-pseudos">
+      <h2>3. ::view-transition Pseudo-elements</h2>
+      <p>During a view transition, the browser creates a tree of pseudo-elements you can target to customize animations. Understanding this tree is key to creating unique transitions.</p>
+
+      <div class="code-block">
+        <h4>Pseudo-element Tree</h4>
+        <pre><code>::view-transition
+  └── ::view-transition-group(name)          /* Animates size & position */
+       └── ::view-transition-image-pair(name) /* Contains old & new */
+            ├── ::view-transition-old(name)    /* Snapshot of old state */
+            └── ::view-transition-new(name)    /* Snapshot of new state */</code></pre>
+      </div>
+
+      <h3>Customizing Transition Animations</h3>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Slow down all transitions */
+::view-transition-group(*) {
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide the old content out to the left */
+::view-transition-old(main-content) {
+  animation: slide-out-left 0.3s ease-in forwards;
+}
+
+/* Slide the new content in from the right */
+::view-transition-new(main-content) {
+  animation: slide-in-right 0.3s ease-out forwards;
+}
+
+@keyframes slide-out-left {
+  to { transform: translateX(-100%); opacity: 0; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+}
+
+/* A fancy "morph" for a hero image */
+::view-transition-group(hero-image) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Cross-fade with different timing */
+::view-transition-old(hero-image) {
+  animation: fade-out 0.25s ease forwards;
+}
+
+::view-transition-new(hero-image) {
+  animation: fade-in 0.25s 0.15s ease forwards;
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Custom Transition Styles</h4>
+        <p class="demo-note">These boxes show different transition animation concepts. Each has a distinct animation style applied to its view-transition pseudo-elements.</p>
+
+        <div class="transition-styles-grid">
+          <div class="transition-demo-card" data-style="crossfade">
+            <div class="td-icon">&#10697;</div>
+            <h5>Crossfade</h5>
+            <p>Default behavior. Old fades out, new fades in simultaneously.</p>
+          </div>
+          <div class="transition-demo-card" data-style="slide">
+            <div class="td-icon">&#10140;</div>
+            <h5>Slide</h5>
+            <p>Old slides out, new slides in from the opposite direction.</p>
+          </div>
+          <div class="transition-demo-card" data-style="scale">
+            <div class="td-icon">&#9678;</div>
+            <h5>Scale</h5>
+            <p>Old shrinks away, new grows into place from the center.</p>
+          </div>
+          <div class="transition-demo-card" data-style="flip">
+            <div class="td-icon">&#8635;</div>
+            <h5>Flip</h5>
+            <p>3D rotation revealing the new content on the "back."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: CSS ANCHOR POSITIONING -->
+    <!-- ============================== -->
+    <section class="concept-section" id="anchor-positioning">
+      <h2>4. CSS Anchor Positioning</h2>
+      <p>Before anchor positioning, placing a tooltip or dropdown relative to a trigger element required JavaScript to measure positions and handle edge cases. CSS Anchor Positioning solves this declaratively.</p>
+
+      <h3>The Core Concept</h3>
+      <p>You declare an element as an <strong>anchor</strong>, then position another element relative to that anchor using the <code>anchor()</code> function.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Step 1: Declare the anchor */
+.trigger-button {
+  anchor-name: --my-trigger;
+}
+
+/* Step 2: Position the floating element relative to the anchor */
+.tooltip {
+  /* Remove from normal flow */
+  position: fixed;
+
+  /* Link to the anchor */
+  position-anchor: --my-trigger;
+
+  /* Position below the anchor, centered horizontally */
+  top: anchor(bottom);
+  left: anchor(center);
+  translate: -50% 0;
+
+  /* Add some spacing */
+  margin-top: 8px;
+}</code></pre>
+      </div>
+
+      <h3>The anchor() Function</h3>
+      <p>The <code>anchor()</code> function accepts a side keyword that refers to the anchor element's edges:</p>
+
+      <div class="anchor-reference-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Value</th>
+              <th>Refers to</th>
+              <th>Use with property</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>anchor(top)</code></td><td>Top edge of the anchor</td><td><code>bottom</code></td></tr>
+            <tr><td><code>anchor(bottom)</code></td><td>Bottom edge of the anchor</td><td><code>top</code></td></tr>
+            <tr><td><code>anchor(left)</code></td><td>Left edge of the anchor</td><td><code>right</code></td></tr>
+            <tr><td><code>anchor(right)</code></td><td>Right edge of the anchor</td><td><code>left</code></td></tr>
+            <tr><td><code>anchor(center)</code></td><td>Center of the anchor (horizontal or vertical)</td><td><code>left</code>, <code>top</code>, or <code>justify-self</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Anchored Tooltip</h4>
+        <p class="demo-note">Hover the button below to see a tooltip anchored to it using pure CSS anchor positioning. No JavaScript positioning needed.</p>
+
+        <div class="anchor-demo-area">
+          <div class="anchor-button-wrapper">
+            <button class="anchor-trigger" id="anchor-btn-1">
+              Hover me for tooltip
+            </button>
+            <div class="anchor-tooltip" id="tooltip-1">
+              <div class="tooltip-arrow"></div>
+              This tooltip is positioned using CSS <code>anchor()</code>. It sits below the button and is horizontally centered.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h4>Tooltip Positioning CSS</h4>
+        <pre><code>.anchor-trigger {
+  anchor-name: --tooltip-anchor;
+}
+
+.anchor-tooltip {
+  position: fixed;
+  position-anchor: --tooltip-anchor;
+
+  /* Position below the button */
+  top: anchor(bottom);
+  left: anchor(center);
+  translate: -50% 0;
+  margin-top: 12px;
+
+  /* Styling */
+  background: var(--tooltip-bg, #1a1a2e);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  max-width: 280px;
+
+  /* Hidden by default */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.anchor-trigger:hover + .anchor-tooltip,
+.anchor-trigger:focus + .anchor-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: POSITION-TRY-FALLBACKS -->
+    <!-- ============================== -->
+    <section class="concept-section" id="position-try">
+      <h2>5. position-try-fallbacks</h2>
+      <p>What happens when your tooltip or dropdown is near the edge of the viewport and there is not enough space to display it in the preferred position? <code>position-try-fallbacks</code> tells the browser to automatically try alternative positions.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Tooltip prefers to appear below, but will flip above if needed */
+.smart-tooltip {
+  position: fixed;
+  position-anchor: --smart-anchor;
+
+  /* Preferred position: below */
+  top: anchor(bottom);
+  left: anchor(center);
+  translate: -50% 0;
+  margin-top: 8px;
+
+  /* Fallback positions to try */
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+}
+
+/* Or define custom fallback positions */
+@position-try --above {
+  bottom: anchor(top);
+  top: auto;
+  left: anchor(center);
+  translate: -50% 0;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+@position-try --right-side {
+  left: anchor(right);
+  top: anchor(center);
+  translate: 0 -50%;
+  margin-left: 8px;
+  margin-top: 0;
+}
+
+.smart-tooltip {
+  position-try-fallbacks: --above, --right-side;
+}</code></pre>
+      </div>
+
+      <h3>Built-in Flip Keywords</h3>
+      <ul class="feature-list">
+        <li><code>flip-block</code> — Flips in the block direction (top/bottom in horizontal writing modes).</li>
+        <li><code>flip-inline</code> — Flips in the inline direction (left/right).</li>
+        <li><code>flip-block flip-inline</code> — Flips in both directions (diagonally opposite).</li>
+      </ul>
+
+      <div class="demo-container">
+        <h4>Demo: Auto-Flipping Tooltip</h4>
+        <p class="demo-note">The tooltips below use <code>position-try-fallbacks: flip-block</code>. The top button's tooltip appears below it (default), while the bottom button's tooltip automatically flips above because there is not enough space below.</p>
+
+        <div class="flip-demo-area">
+          <div class="flip-demo-top">
+            <button class="flip-trigger" id="flip-btn-top">
+              Tooltip below (default)
+            </button>
+            <div class="flip-tooltip" id="flip-tip-top">
+              <div class="flip-arrow"></div>
+              I appear below because there is plenty of space here.
+            </div>
+          </div>
+
+          <div class="flip-demo-bottom">
+            <button class="flip-trigger" id="flip-btn-bottom">
+              Tooltip flips above
+            </button>
+            <div class="flip-tooltip" id="flip-tip-bottom">
+              <div class="flip-arrow"></div>
+              I flipped above! The browser detected no room below and auto-repositioned me.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: POPOVER API          -->
+    <!-- ============================== -->
+    <section class="concept-section" id="popover-api">
+      <h2>6. Popover API</h2>
+      <p>The Popover API is a built-in HTML feature that provides dismissible overlay elements — no JavaScript required for basic show/hide behavior. Combined with CSS <code>@starting-style</code>, you get animated entry and exit transitions.</p>
+
+      <h3>Core Attributes</h3>
+
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- The trigger button --&gt;
+&lt;button popovertarget="my-popover"&gt;Open Menu&lt;/button&gt;
+
+&lt;!-- The popover element --&gt;
+&lt;div id="my-popover" popover&gt;
+  &lt;h3&gt;Menu&lt;/h3&gt;
+  &lt;nav&gt;
+    &lt;a href="#"&gt;Profile&lt;/a&gt;
+    &lt;a href="#"&gt;Settings&lt;/a&gt;
+    &lt;a href="#"&gt;Logout&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <h3>Popover Types</h3>
+      <ul class="feature-list">
+        <li><code>popover</code> (or <code>popover="auto"</code>) — Light-dismiss: clicking outside or pressing Escape closes it. Only one auto popover can be open at a time.</li>
+        <li><code>popover="manual"</code> — Must be explicitly closed. Multiple manual popovers can coexist.</li>
+      </ul>
+
+      <h3>Styling with :popover-open and @starting-style</h3>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Base popover styles (hidden state) */
+[popover] {
+  padding: 1.5rem;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: white;
+
+  /* Enable transitions for open/close */
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    overlay 0.3s ease allow-discrete,
+    display 0.3s ease allow-discrete;
+}
+
+/* Open state */
+[popover]:popover-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Entry animation starting point */
+@starting-style {
+  [popover]:popover-open {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Animated Popover Menu</h4>
+        <p class="demo-note">Click the button to open a popover menu. It animates in using <code>@starting-style</code> and can be dismissed by clicking outside or pressing Escape.</p>
+
+        <div class="popover-demo-area">
+          <button class="popover-trigger-btn" popovertarget="demo-popover">
+            <span class="hamburger-icon">&#9776;</span>
+            Open Menu
+          </button>
+
+          <div id="demo-popover" popover class="popover-menu">
+            <h5 class="popover-menu-title">Navigation</h5>
+            <nav class="popover-nav">
+              <a href="#view-transitions" class="popover-link">
+                <span class="popover-link-icon">&#9672;</span>
+                View Transitions
+              </a>
+              <a href="#anchor-positioning" class="popover-link">
+                <span class="popover-link-icon">&#9875;</span>
+                Anchor Positioning
+              </a>
+              <a href="#popover-api" class="popover-link">
+                <span class="popover-link-icon">&#9733;</span>
+                Popover API
+              </a>
+              <a href="#combining" class="popover-link">
+                <span class="popover-link-icon">&#9830;</span>
+                Combined Demo
+              </a>
+            </nav>
+            <div class="popover-divider"></div>
+            <button class="popover-close-btn" popovertarget="demo-popover" popovertargetaction="hide">
+              Close Menu
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Accessibility Win:</strong> The Popover API automatically manages focus, provides Escape-to-close, and works with screen readers. It promotes the element to the <strong>top layer</strong>, so it always appears above other content without z-index hacks.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: COMBINING ALL THREE  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="combining">
+      <h2>7. Combining All Three</h2>
+      <p>The real power emerges when you combine View Transitions, Anchor Positioning, and the Popover API into a cohesive navigation system. Here is a complete example: a navigation bar with anchor-positioned dropdown menus, a popover mobile menu, and view-transition-enabled page morphs.</p>
+
+      <div class="code-block">
+        <h4>HTML + CSS Architecture</h4>
+        <pre><code>&lt;!-- Navigation with all three features --&gt;
+&lt;nav class="mega-nav"&gt;
+  &lt;!-- Logo morphs between pages via view-transition --&gt;
+  &lt;a href="/" class="mega-logo" style="view-transition-name: site-logo"&gt;
+    Brand
+  &lt;/a&gt;
+
+  &lt;!-- Desktop links with anchor-positioned dropdowns --&gt;
+  &lt;ul class="mega-links"&gt;
+    &lt;li&gt;
+      &lt;button class="mega-link" style="anchor-name: --products-anchor"&gt;
+        Products
+      &lt;/button&gt;
+      &lt;div class="mega-dropdown"
+           style="position-anchor: --products-anchor;
+                  top: anchor(bottom);
+                  left: anchor(left);
+                  position-try-fallbacks: flip-block;"&gt;
+        &lt;!-- Dropdown content --&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;!-- Mobile: popover hamburger menu --&gt;
+  &lt;button popovertarget="mobile-nav" class="mega-hamburger"&gt;
+    &#9776;
+  &lt;/button&gt;
+  &lt;div id="mobile-nav" popover class="mega-mobile-menu"&gt;
+    &lt;!-- Full mobile navigation --&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;style&gt;
+  /* Enable cross-page transitions */
+  @view-transition { navigation: auto; }
+
+  /* Anchor dropdown positioning */
+  .mega-dropdown {
+    position: fixed;
+    margin-top: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .mega-link:hover + .mega-dropdown,
+  .mega-link:focus + .mega-dropdown,
+  .mega-dropdown:hover {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Popover mobile menu with animation */
+  .mega-mobile-menu {
+    inset: 0;
+    transform: translateX(100%);
+    transition: transform 0.35s ease, display 0.35s allow-discrete;
+  }
+
+  .mega-mobile-menu:popover-open {
+    transform: translateX(0);
+  }
+
+  @starting-style {
+    .mega-mobile-menu:popover-open {
+      transform: translateX(100%);
+    }
+  }
+&lt;/style&gt;</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Combined Navigation System</h4>
+        <p class="demo-note">This mockup demonstrates all three APIs working together in a single navigation component.</p>
+
+        <div class="combined-nav-demo">
+          <nav class="combo-nav">
+            <div class="combo-logo">BRAND</div>
+
+            <div class="combo-links">
+              <div class="combo-link-group">
+                <button class="combo-link" id="combo-products">Products</button>
+                <div class="combo-dropdown" id="combo-products-dd">
+                  <a href="#" class="combo-dd-item">Analytics Platform</a>
+                  <a href="#" class="combo-dd-item">Design System</a>
+                  <a href="#" class="combo-dd-item">Developer Tools</a>
+                  <a href="#" class="combo-dd-item">Cloud Infrastructure</a>
+                </div>
+              </div>
+
+              <div class="combo-link-group">
+                <button class="combo-link" id="combo-resources">Resources</button>
+                <div class="combo-dropdown" id="combo-resources-dd">
+                  <a href="#" class="combo-dd-item">Documentation</a>
+                  <a href="#" class="combo-dd-item">Tutorials</a>
+                  <a href="#" class="combo-dd-item">Blog</a>
+                </div>
+              </div>
+
+              <a href="#" class="combo-link">Pricing</a>
+            </div>
+
+            <button class="combo-mobile-trigger" popovertarget="combo-mobile-menu">&#9776;</button>
+          </nav>
+
+          <div class="combo-page-content">
+            <div class="combo-hero">
+              <h3>Welcome to the Platform</h3>
+              <p>This entire navigation uses View Transitions for page morphs, Anchor Positioning for dropdowns, and Popover API for mobile menu.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="combo-mobile-menu" popover class="combo-mobile-popover">
+          <div class="combo-mobile-header">
+            <span>Menu</span>
+            <button popovertarget="combo-mobile-menu" popovertargetaction="hide" class="combo-mobile-close">&times;</button>
+          </div>
+          <nav class="combo-mobile-nav">
+            <a href="#">Products</a>
+            <a href="#">Resources</a>
+            <a href="#">Pricing</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Tooltip System</h2>
+      <p>Create a tooltip system using CSS anchor positioning that works on buttons, links, and icons with different positions (top, bottom, left, right).</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create at least 4 trigger elements: a button, a link, an icon, and an inline code snippet.</li>
+          <li>Each tooltip should appear in a different position (top, bottom, left, right) using <code>anchor()</code> functions.</li>
+          <li>Use <code>position-try-fallbacks: flip-block</code> so tooltips auto-flip near viewport edges.</li>
+          <li>Add smooth fade-in transitions with <code>opacity</code> and <code>transform</code>.</li>
+          <li>Style the tooltip arrow/caret to point toward the anchor element.</li>
+          <li>Ensure tooltips are accessible: visible on both <code>:hover</code> and <code>:focus</code>.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Template</h3>
+        <div class="code-block">
+          <pre><code>&lt;div class="tooltip-system"&gt;
+  &lt;button class="tip-trigger" style="anchor-name: --btn-anchor"
+          aria-describedby="tip-btn"&gt;
+    Save File
+  &lt;/button&gt;
+  &lt;div class="tip tip-bottom" id="tip-btn"
+       role="tooltip"
+       style="position-anchor: --btn-anchor;
+              top: anchor(bottom);
+              left: anchor(center);
+              translate: -50% 0;"&gt;
+    Save your current progress (Ctrl+S)
+  &lt;/div&gt;
+
+  &lt;a href="#" class="tip-trigger" style="anchor-name: --link-anchor"
+     aria-describedby="tip-link"&gt;
+    Learn more
+  &lt;/a&gt;
+  &lt;div class="tip tip-top" id="tip-link" role="tooltip"
+       style="position-anchor: --link-anchor;
+              bottom: anchor(top);
+              left: anchor(center);
+              translate: -50% 0;"&gt;
+    Opens the documentation in a new tab
+  &lt;/div&gt;
+
+  &lt;!-- Add left and right tooltip triggers... --&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="exercise-demo">
+        <h3>Expected Result</h3>
+        <div class="tooltip-system-demo">
+          <div class="tip-row">
+            <div class="tip-wrapper">
+              <button class="tip-demo-trigger tip-demo-trigger--btn" tabindex="0">Save File</button>
+              <div class="tip-demo tip-demo--bottom" role="tooltip">Save your current progress (Ctrl+S)</div>
+            </div>
+
+            <div class="tip-wrapper">
+              <a href="#" class="tip-demo-trigger tip-demo-trigger--link" tabindex="0">Learn more</a>
+              <div class="tip-demo tip-demo--top" role="tooltip">Opens the documentation</div>
+            </div>
+
+            <div class="tip-wrapper">
+              <span class="tip-demo-trigger tip-demo-trigger--icon" tabindex="0" aria-label="Settings">&#9881;</span>
+              <div class="tip-demo tip-demo--left" role="tooltip">Open settings panel</div>
+            </div>
+
+            <div class="tip-wrapper">
+              <code class="tip-demo-trigger tip-demo-trigger--code" tabindex="0">anchor()</code>
+              <div class="tip-demo tip-demo--right" role="tooltip">CSS anchor positioning function</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Multi-Page Portfolio Mockup</h2>
+      <p>Build a multi-page portfolio mockup with view transitions between sections, anchored tooltips for project details, and a popover contact form.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>View Transitions:</strong> Use <code>@view-transition { navigation: auto; }</code> and assign <code>view-transition-name</code> to the header, project cards, and page title so they morph between pages.</li>
+          <li><strong>Anchor Tooltips:</strong> Each project card has an info icon with an anchor-positioned tooltip showing technology stack, completion date, and links.</li>
+          <li><strong>Popover Contact Form:</strong> A "Contact Me" button opens a popover with a styled form. Animate entry with <code>@starting-style</code>.</li>
+          <li><strong>Mobile Responsive:</strong> Stack layouts on small screens, convert nav to a popover hamburger menu.</li>
+          <li><strong>At least 3 pages:</strong> Home, Projects, and a Project Detail page.</li>
+          <li><strong>Custom transition animations:</strong> Use <code>::view-transition-old</code> and <code>::view-transition-new</code> for at least one element with a non-default animation.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Hints</h3>
+        <ul>
+          <li>Give each project card a unique <code>view-transition-name</code> like <code>project-1</code>, <code>project-2</code>, etc.</li>
+          <li>On the detail page, the hero image should share the same <code>view-transition-name</code> as the card thumbnail for a morph effect.</li>
+          <li>Use <code>position-try-fallbacks</code> on tooltips so they work on cards near the page edges.</li>
+          <li>For the popover form, use <code>popover="manual"</code> so users do not accidentally dismiss it while filling out fields.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../12-scroll-animations/index.html">&larr; Previous</a>
+    <a href="../14-cutting-edge-2026/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

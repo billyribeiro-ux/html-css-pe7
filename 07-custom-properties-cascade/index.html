@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Power of Variables &amp; Layers | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 07</a>
+  </nav>
+  <header class="lesson-header">
+    <span class="level-badge level-3">Level 3 - Modern CSS</span>
+    <h1>The Power of Variables &amp; Layers</h1>
+    <p class="subtitle">Master CSS custom properties, cascade layers, and scoping to build maintainable, themeable design systems.</p>
+  </header>
+  <main>
+
+    <!-- ==================== Section 1: CSS Custom Properties ==================== -->
+    <section class="concept" id="custom-properties">
+      <h2>1. CSS Custom Properties</h2>
+
+      <p>CSS Custom Properties, often called "CSS variables," are one of the most transformative additions to the language. Unlike preprocessor variables from Sass or Less, custom properties are <strong>live values</strong> that exist in the browser at runtime. They participate in the cascade, can be inherited by child elements, and can be manipulated with JavaScript. This makes them fundamentally more powerful than any compile-time variable system.</p>
+
+      <p>You declare a custom property by prefixing its name with two dashes (<code>--</code>). The property name is case-sensitive, so <code>--primary-color</code> and <code>--Primary-Color</code> are two different variables. You read the value using the <code>var()</code> function. The naming convention of double dashes was chosen deliberately to avoid conflicts with future CSS properties and to make custom properties instantly recognizable in code.</p>
+
+      <p>Custom properties follow the same inheritance rules as any other inherited CSS property. When you set a custom property on an element, all of that element's descendants can use it. This is why <code>:root</code> is the most common place to declare global variables &mdash; since <code>:root</code> matches the <code>&lt;html&gt;</code> element, every element in the document inherits those values. However, you can also set custom properties on specific elements to create scoped overrides, which is a pattern we will use extensively for theming.</p>
+
+      <p>The <code>var()</code> function also accepts an optional second argument: a fallback value. If the custom property is not defined or is invalid, the fallback kicks in. You can even nest <code>var()</code> calls inside fallbacks, creating chains of fallback values. This makes your CSS more resilient and enables patterns where components work with sensible defaults even when no theme variables are provided.</p>
+
+      <div class="why">
+        <strong>Why Custom Properties Matter:</strong> Before custom properties, changing a color across a site meant updating dozens of declarations. Preprocessor variables helped at build time, but couldn't respond to runtime conditions like hover states, media queries, or JavaScript interactions. Custom properties solve all of these problems natively in CSS.
+      </div>
+
+      <pre><code>/* Declaring custom properties on :root for global access */
+:root {
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --surface: #ffffff;
+  --text: #1e293b;
+  --radius: 8px;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+}
+
+/* Using custom properties with var() */
+.button {
+  background-color: var(--primary);
+  color: var(--surface);
+  border-radius: var(--radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Fallback values - if --accent is undefined, use hotpink */
+.highlight {
+  color: var(--accent, hotpink);
+}
+
+/* Nested fallbacks */
+.card {
+  background: var(--card-bg, var(--surface, #fff));
+}</code></pre>
+
+      <h3>Scoping Custom Properties</h3>
+
+      <p>One of the most powerful patterns with custom properties is scoping. Because they inherit, you can redefine a variable on a specific element and all of its children will see the new value. This is the foundation of component-level theming.</p>
+
+      <pre><code>/* Global defaults */
+:root {
+  --btn-bg: #6366f1;
+  --btn-text: #ffffff;
+  --btn-radius: 6px;
+}
+
+/* Scoped override for a specific section */
+.danger-zone {
+  --btn-bg: #ef4444;
+  --btn-text: #ffffff;
+}
+
+/* The button always reads the same variables,
+   but gets different values depending on context */
+.button {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border-radius: var(--btn-radius);
+}</code></pre>
+
+      <div class="demo" id="demo-custom-props">
+        <h4>Demo: Theme Color Variables</h4>
+        <div class="cp-demo-grid">
+          <div class="cp-demo-card cp-theme-indigo">
+            <h5>Indigo Theme</h5>
+            <p>This card uses <code>--primary: #6366f1</code></p>
+            <button class="cp-demo-btn">Primary Button</button>
+            <button class="cp-demo-btn outline">Outline Button</button>
+          </div>
+          <div class="cp-demo-card cp-theme-emerald">
+            <h5>Emerald Theme</h5>
+            <p>This card uses <code>--primary: #10b981</code></p>
+            <button class="cp-demo-btn">Primary Button</button>
+            <button class="cp-demo-btn outline">Outline Button</button>
+          </div>
+          <div class="cp-demo-card cp-theme-amber">
+            <h5>Amber Theme</h5>
+            <p>This card uses <code>--primary: #f59e0b</code></p>
+            <button class="cp-demo-btn">Primary Button</button>
+            <button class="cp-demo-btn outline">Outline Button</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 2: Dynamic Properties ==================== -->
+    <section class="concept" id="dynamic-properties">
+      <h2>2. Dynamic Properties</h2>
+
+      <p>What makes CSS custom properties truly special is that they are <strong>live</strong>. Unlike Sass variables that are resolved at compile time and baked into static CSS, custom properties exist as real values in the browser's style engine. This means you can change them at any point &mdash; on hover, on focus, inside a media query, or even from JavaScript &mdash; and every declaration that references them will update automatically.</p>
+
+      <p>This reactivity opens up patterns that were previously impossible without JavaScript. You can define a component's entire visual appearance through a set of variables, and then swap the entire theme by redefining those variables in a different context. Hover states become trivially simple: instead of overriding six different properties, you override one or two variables and everything updates.</p>
+
+      <p>Media queries become more elegant too. Instead of duplicating entire rule blocks inside <code>@media</code>, you can simply redefine the relevant variables. Your component declarations stay clean and context-free, while the media queries handle only the variable reassignments. This separation of "what uses the value" from "what the value is" leads to much more maintainable CSS.</p>
+
+      <div class="why">
+        <strong>Why Dynamic Properties Are Revolutionary:</strong> Traditional CSS requires you to re-declare every property you want to change in every context (hover, focus, media query). Custom properties let you change one value and have it propagate everywhere. This is the CSS equivalent of reactive state management in JavaScript frameworks.
+      </div>
+
+      <pre><code>/* The card's appearance is defined entirely through variables */
+.dynamic-card {
+  --card-bg: #ffffff;
+  --card-text: #1e293b;
+  --card-border: #e2e8f0;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --card-scale: 1;
+
+  background: var(--card-bg);
+  color: var(--card-text);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  transform: scale(var(--card-scale));
+  transition: all 0.3s ease;
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+/* On hover, we only redefine the variables */
+.dynamic-card:hover {
+  --card-bg: #6366f1;
+  --card-text: #ffffff;
+  --card-border: #4f46e5;
+  --card-shadow: 0 20px 40px rgba(99,102,241,0.3);
+  --card-scale: 1.02;
+}
+
+/* Responsive changes via variables */
+@media (prefers-color-scheme: dark) {
+  .dynamic-card {
+    --card-bg: #1e293b;
+    --card-text: #e2e8f0;
+    --card-border: #334155;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-dynamic">
+        <h4>Demo: Dynamic Card Theme on Hover</h4>
+        <p class="demo-instruction">Hover over these cards to see their theme change entirely through variable redefinition.</p>
+        <div class="dynamic-demo-grid">
+          <div class="dynamic-card">
+            <div class="dynamic-card-icon">&#9733;</div>
+            <h5>Hover Me</h5>
+            <p>My entire visual appearance is controlled by custom properties. On hover, the variables are redefined and everything transitions smoothly.</p>
+            <span class="dynamic-card-tag">Interactive</span>
+          </div>
+          <div class="dynamic-card dynamic-card-alt">
+            <div class="dynamic-card-icon">&#9830;</div>
+            <h5>Different Base</h5>
+            <p>This card starts with a different set of variable values, but uses the exact same CSS declarations for its appearance.</p>
+            <span class="dynamic-card-tag">Variant</span>
+          </div>
+          <div class="dynamic-card dynamic-card-dark">
+            <div class="dynamic-card-icon">&#9788;</div>
+            <h5>Dark Variant</h5>
+            <p>Custom properties make variant creation trivial. No duplicate CSS &mdash; just different variable values scoped to a modifier class.</p>
+            <span class="dynamic-card-tag">Dark Mode</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 3: @property Rule ==================== -->
+    <section class="concept" id="at-property">
+      <h2>3. The @property Rule</h2>
+
+      <p>Standard custom properties have a limitation: the browser treats their values as opaque strings. It doesn't know whether <code>--my-color</code> contains a color, a length, or a random string of text. This means the browser cannot interpolate (animate) between two values of a custom property, because it doesn't know <em>how</em> to interpolate them. It would be like asking someone to find the midpoint between "apple" and "orange" &mdash; without knowing these are colors or fruits, there's no meaningful answer.</p>
+
+      <p>The <code>@property</code> rule solves this by letting you register a custom property with a specific type (called "syntax"), an initial value, and whether it should inherit. Once the browser knows that <code>--gradient-angle</code> is an <code>&lt;angle&gt;</code>, it can smoothly animate between <code>0deg</code> and <code>360deg</code>. This unlocks animations that were previously impossible in pure CSS, such as animating gradient positions, individual color channels, or individual transform components.</p>
+
+      <p>The <code>@property</code> rule requires three descriptors: <code>syntax</code> defines the type (e.g., <code>'&lt;color&gt;'</code>, <code>'&lt;length&gt;'</code>, <code>'&lt;angle&gt;'</code>, <code>'&lt;number&gt;'</code>, <code>'&lt;percentage&gt;'</code>), <code>inherits</code> controls whether the property inherits from parent elements, and <code>initial-value</code> sets the default. With these three pieces of information, the browser can validate values, provide proper fallback behavior, and most importantly, animate the property.</p>
+
+      <p>Beyond animation, <code>@property</code> also provides type checking. If you declare a property with <code>syntax: '&lt;color&gt;'</code> and then try to set it to <code>banana</code>, the browser will ignore the invalid value and fall back to the initial value. This makes your custom properties more robust and self-documenting. Other developers can look at the <code>@property</code> declaration and immediately understand what type of value is expected.</p>
+
+      <div class="why">
+        <strong>Why @property Matters:</strong> Without <code>@property</code>, you cannot animate custom properties. The browser sees them as strings and can only do a hard swap between values. With <code>@property</code>, you unlock gradient animations, color transitions on custom properties, and typed design tokens that reject invalid values.
+      </div>
+
+      <pre><code>/* Register a typed custom property for angle values */
+@property --gradient-angle {
+  syntax: '&lt;angle&gt;';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --glow-color {
+  syntax: '&lt;color&gt;';
+  inherits: false;
+  initial-value: #6366f1;
+}
+
+/* Now we can animate the angle - impossible without @property! */
+.gradient-box {
+  --gradient-angle: 0deg;
+  background: linear-gradient(
+    var(--gradient-angle),
+    #6366f1,
+    #ec4899
+  );
+  animation: spin-gradient 3s linear infinite;
+}
+
+@keyframes spin-gradient {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* Animate a color custom property */
+.glow-box {
+  --glow-color: #6366f1;
+  box-shadow: 0 0 30px var(--glow-color);
+  animation: shift-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes shift-glow {
+  to {
+    --glow-color: #ec4899;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-at-property">
+        <h4>Demo: @property Gradient Animation</h4>
+        <p class="demo-instruction">The gradient angle below is animated using <code>@property</code>. Without type registration, the gradient would simply snap between values instead of smoothly rotating.</p>
+        <div class="at-property-demo-row">
+          <div class="gradient-spinner">
+            <span>@property<br>animated</span>
+          </div>
+          <div class="glow-box-demo">
+            <span>Color<br>animation</span>
+          </div>
+          <div class="typed-counter-demo">
+            <div class="counter-bar"></div>
+            <span>Typed &lt;percentage&gt;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 4: Cascade Layers ==================== -->
+    <section class="concept" id="cascade-layers">
+      <h2>4. Cascade Layers (@layer)</h2>
+
+      <p>The CSS cascade has always been the source of both great power and great frustration. When two rules target the same element, the cascade decides which one wins based on origin, specificity, and source order. In large projects, specificity wars become a real problem: developers start adding <code>!important</code>, using overly specific selectors, or resorting to inline styles just to make their rule "win." Cascade layers provide an elegant solution by adding a new tier to the cascade that sits between specificity and source order.</p>
+
+      <p>With <code>@layer</code>, you can group your CSS into named layers and explicitly define their priority order. A rule in a higher-priority layer will always beat a rule in a lower-priority layer, <strong>regardless of specificity</strong>. This means a simple <code>.btn</code> selector in the "components" layer can beat an <code>#sidebar .content div.wrapper .btn</code> selector in the "base" layer, if "components" is ordered after "base." This completely eliminates specificity wars between different concerns.</p>
+
+      <p>You declare layers and their order using <code>@layer</code> at the top of your stylesheet. The order of declaration determines priority: later layers have higher priority. You can then assign rules to layers using <code>@layer name { ... }</code> blocks. Rules that aren't in any layer (called "unlayered" styles) have the highest priority of all, which provides a convenient escape hatch and ensures backward compatibility with existing CSS.</p>
+
+      <p>A common layer architecture mirrors the Inverted Triangle CSS (ITCSS) methodology: reset, base, layout, components, utilities. Each layer has progressively higher priority, which matches the logical override order. Utility classes in the highest layer can always override component styles, and component styles can always override base styles, without any specificity tricks. Third-party CSS can be placed in its own low-priority layer, making it trivially easy to override.</p>
+
+      <div class="why">
+        <strong>Why Layers Solve Real Problems:</strong> Before <code>@layer</code>, integrating third-party CSS (like a date picker or rich text editor) often meant fighting its specificity. With layers, you wrap third-party styles in a low-priority layer and your overrides in a higher one. The specificity of the third-party selectors no longer matters. This alone saves hours of debugging.
+      </div>
+
+      <pre><code>/* Step 1: Declare layer order (later = higher priority) */
+@layer reset, base, layout, components, utilities;
+
+/* Step 2: Assign rules to layers */
+@layer reset {
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+@layer base {
+  /* Even with high specificity, this loses to components layer */
+  #app .main-content .sidebar .widget button.action {
+    background: gray;
+    color: white;
+    padding: 8px 16px;
+  }
+}
+
+@layer components {
+  /* Simple selector, but WINS because components &gt; base */
+  .btn {
+    background: #6366f1;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  /* Utilities always win over components */
+  .bg-red { background: #ef4444 !important; }
+  .text-center { text-align: center; }
+  .hidden { display: none; }
+}</code></pre>
+
+      <div class="demo" id="demo-layers">
+        <h4>Demo: Layer Priority Beats Specificity</h4>
+        <p class="demo-instruction">The button below is targeted by two rules. The "base" layer rule has very high specificity but the "components" layer rule wins because it's in a higher-priority layer.</p>
+        <div class="layer-demo-container">
+          <div class="layer-demo-wrapper">
+            <div class="layer-demo-zone" id="layer-app">
+              <div class="layer-demo-inner">
+                <div class="layer-demo-widget">
+                  <button class="layer-demo-btn">I'm styled by the components layer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="layer-demo-explanation">
+            <div class="layer-demo-rule layer-rule-loses">
+              <span class="layer-label">base layer</span>
+              <code>#layer-app .layer-demo-inner .layer-demo-widget button</code>
+              <span class="specificity-score">Specificity: 1-3-1</span>
+              <span class="layer-result">LOSES</span>
+            </div>
+            <div class="layer-demo-rule layer-rule-wins">
+              <span class="layer-label">components layer</span>
+              <code>.layer-demo-btn</code>
+              <span class="specificity-score">Specificity: 0-1-0</span>
+              <span class="layer-result">WINS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 5: @scope ==================== -->
+    <section class="concept" id="scope">
+      <h2>5. @scope</h2>
+
+      <p>CSS has always been global by nature. When you write <code>.title { font-size: 1.5rem; }</code>, it applies to every element with the class "title" across your entire document. While this global nature is sometimes useful, it frequently causes unintended side effects in component-based architectures. A style meant for a card title accidentally affects a modal title, or a sidebar link style bleeds into the main content area. The <code>@scope</code> rule provides native CSS scoping without the overhead of Shadow DOM or the naming conventions of BEM.</p>
+
+      <p>The <code>@scope</code> rule takes a scoping root (the element to scope to) and optionally a scoping limit (where to stop). Selectors inside a <code>@scope</code> block only match elements that are descendants of the scoping root. If a limit is specified, the styles won't apply to elements that are descendants of the limit element. This "donut" scoping pattern is perfect for components that contain other components.</p>
+
+      <p>The syntax is <code>@scope (.card) { ... }</code> for basic scoping, or <code>@scope (.card) to (.card-content)</code> to stop before a specific subtree. Inside the scope block, you can use the <code>&amp;</code> selector to reference the scoping root itself. This gives you surgical precision over where your styles apply, without adding extra specificity weight through long selector chains.</p>
+
+      <p>Scoping also affects the cascade. When two scoped rules conflict, the rule from the <em>closer</em> scope wins (proximity over specificity). This is particularly useful for nested components, where an inner component's scoped styles naturally take priority over an outer component's scoped styles, which is almost always the desired behavior.</p>
+
+      <div class="why">
+        <strong>Why @scope Is a Game-Changer:</strong> Before <code>@scope</code>, developers used BEM naming (<code>.card__title</code>), CSS Modules (build-tool hashing), or Shadow DOM (heavy API) to prevent style leakage. <code>@scope</code> provides native, zero-runtime scoping with an elegant syntax. Components can use simple class names like <code>.title</code> without fear of conflicts.
+      </div>
+
+      <pre><code>/* Basic scoping - styles only apply inside .card */
+@scope (.card) {
+  .title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--card-title-color, #1e293b);
+  }
+
+  .description {
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+}
+
+/* Donut scope - styles apply inside .card but NOT inside .card-footer */
+@scope (.card) to (.card-footer) {
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* The footer gets its own scope with different link styles */
+@scope (.card-footer) {
+  a {
+    color: #94a3b8;
+    font-size: 0.875rem;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-scope">
+        <h4>Demo: Scoped Card Component</h4>
+        <p class="demo-instruction">These two components both use simple class names like <code>.title</code> and <code>.description</code>, but their styles don't conflict because each is scoped to its own root.</p>
+        <div class="scope-demo-grid">
+          <div class="scope-card">
+            <div class="scope-card-header">
+              <h5 class="title">Card Component</h5>
+              <p class="description">Styles scoped to <code>.scope-card</code> don't leak out.</p>
+            </div>
+            <div class="scope-card-body">
+              <p>This paragraph uses the card's scoped typography. <a href="#">Links are indigo.</a></p>
+            </div>
+            <div class="scope-card-footer">
+              <a href="#">Footer link (different scope)</a>
+              <a href="#">Another footer link</a>
+            </div>
+          </div>
+          <div class="scope-alert">
+            <h5 class="title">Alert Component</h5>
+            <p class="description">Same class names, completely different styles via separate scope.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 6: Theming System ==================== -->
+    <section class="concept" id="theming-system">
+      <h2>6. Building a Complete Theming System</h2>
+
+      <p>Now let's bring everything together: custom properties for values, <code>@layer</code> for cascade management, and scoping for component isolation. A well-designed theming system separates <em>design tokens</em> (the raw values like colors and spacing) from <em>semantic tokens</em> (the meaningful names like "surface color" and "danger text") from <em>component tokens</em> (component-specific variables like "button background"). This three-tier approach allows you to change the entire visual appearance of your site by swapping just the first tier.</p>
+
+      <p>The layer architecture for a theme system typically has a "theme" layer at the base and a "components" layer above it. The theme layer defines all your design tokens and semantic mappings. The components layer consumes those tokens through <code>var()</code> references. When you switch themes (say, from light to dark), you only redefine the token values in the theme layer &mdash; the component layer doesn't change at all.</p>
+
+      <p>For a light/dark toggle, you define your light theme tokens on <code>:root</code> and your dark theme tokens on <code>[data-theme="dark"]</code> (or within a <code>prefers-color-scheme: dark</code> media query). A single line of JavaScript toggles the <code>data-theme</code> attribute, and every component updates instantly because they all reference the same semantic tokens. No class swapping, no style recalculation beyond what the browser does automatically.</p>
+
+      <p>This architecture scales beautifully. Adding a new theme (high contrast, sepia, brand-specific) is just another set of token overrides. Adding a new component means defining its styles once using semantic tokens. The system is also self-documenting: anyone can look at the token definitions and understand the design system's structure.</p>
+
+      <div class="why">
+        <strong>Why This Architecture Wins:</strong> A token-based theme system with layers means: (1) changing a brand color updates everything automatically, (2) dark mode is a simple token swap, (3) new components automatically support all themes, and (4) third-party CSS can never break your theme because it lives in a lower layer.
+      </div>
+
+      <pre><code>/* Layer order: theme tokens are foundation, components build on top */
+@layer theme, components, utilities;
+
+@layer theme {
+  :root {
+    /* Tier 1: Primitive tokens */
+    --indigo-50: #eef2ff;
+    --indigo-500: #6366f1;
+    --indigo-600: #4f46e5;
+    --slate-50: #f8fafc;
+    --slate-900: #0f172a;
+
+    /* Tier 2: Semantic tokens (light theme) */
+    --color-surface: var(--slate-50);
+    --color-surface-raised: #ffffff;
+    --color-text-primary: var(--slate-900);
+    --color-text-secondary: #64748b;
+    --color-accent: var(--indigo-500);
+    --color-accent-hover: var(--indigo-600);
+    --color-border: #e2e8f0;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  }
+
+  /* Dark theme: same semantic names, different values */
+  [data-theme="dark"] {
+    --color-surface: #0f172a;
+    --color-surface-raised: #1e293b;
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #94a3b8;
+    --color-accent: #818cf8;
+    --color-accent-hover: #a5b4fc;
+    --color-border: #334155;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+  }
+}
+
+@layer components {
+  .themed-card {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .themed-btn {
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .themed-btn:hover {
+    background: var(--color-accent-hover);
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-theming">
+        <h4>Demo: Light / Dark Theme Toggle</h4>
+        <p class="demo-instruction">Click the toggle to switch themes. All components update through variable reassignment &mdash; no CSS classes are changed on individual elements.</p>
+        <div class="theme-demo-area" id="themeDemoArea">
+          <div class="theme-toggle-bar">
+            <span>Theme:</span>
+            <button class="theme-toggle-btn" id="themeToggle" onclick="this.closest('.theme-demo-area').toggleAttribute('data-dark'); this.textContent = this.closest('.theme-demo-area').hasAttribute('data-dark') ? 'Dark' : 'Light'">Light</button>
+          </div>
+          <div class="theme-demo-cards">
+            <div class="theme-card">
+              <h5>Dashboard</h5>
+              <p>All elements respond to the theme change through custom property inheritance.</p>
+              <button class="theme-btn">Action</button>
+            </div>
+            <div class="theme-card">
+              <h5>Analytics</h5>
+              <p>No per-component class toggling needed. One attribute change updates everything.</p>
+              <div class="theme-stat">
+                <span class="theme-stat-number">2,847</span>
+                <span class="theme-stat-label">Active users</span>
+              </div>
+            </div>
+            <div class="theme-card">
+              <h5>Settings</h5>
+              <p>The same component code works in any theme context without modification.</p>
+              <div class="theme-tag-row">
+                <span class="theme-tag">Appearance</span>
+                <span class="theme-tag">Tokens</span>
+                <span class="theme-tag">Layers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Exercise ==================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Themeable Button System</h2>
+
+      <p>Create a themeable button component system with <strong>primary</strong>, <strong>secondary</strong>, and <strong>danger</strong> variants using <em>only</em> custom properties. The base <code>.btn</code> class should reference variables like <code>--btn-bg</code>, <code>--btn-text</code>, <code>--btn-border</code>, <code>--btn-hover-bg</code>, and <code>--btn-radius</code>. Each variant (<code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-danger</code>) should only redefine those variables &mdash; no direct property declarations.</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li>Define global design tokens on <code>:root</code> for your color palette (at least primary, secondary, danger colors with light/dark variants).</li>
+        <li>Create a <code>.btn</code> base class that uses only <code>var()</code> references for all visual properties (background, color, border, border-radius, padding, box-shadow).</li>
+        <li>Create three variant classes (<code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-danger</code>) that each only redefine the custom property values.</li>
+        <li>Add hover/focus states by redefining variables in pseudo-class selectors.</li>
+        <li>Add a <code>.btn-outline</code> modifier that inverts the button (transparent background, colored border and text).</li>
+        <li>Include size variants (<code>.btn-sm</code>, <code>.btn-lg</code>) that redefine spacing and font-size variables.</li>
+      </ol>
+
+      <h3>Starter Code:</h3>
+      <pre><code>:root {
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-secondary: #64748b;
+  --color-danger: #ef4444;
+  /* ... add more tokens */
+}
+
+.btn {
+  /* Use ONLY var() references here */
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  /* ... complete this */
+}
+
+.btn-primary {
+  --btn-bg: var(--color-primary);
+  /* ... redefine other variables */
+}
+
+/* ... add more variants */</code></pre>
+
+      <div class="demo" id="exercise-demo">
+        <h4>Your Target Result:</h4>
+        <div class="exercise-target-buttons">
+          <div class="exercise-btn-row">
+            <button class="ex-btn ex-btn-primary">Primary</button>
+            <button class="ex-btn ex-btn-secondary">Secondary</button>
+            <button class="ex-btn ex-btn-danger">Danger</button>
+          </div>
+          <div class="exercise-btn-row">
+            <button class="ex-btn ex-btn-primary ex-btn-outline">Primary Outline</button>
+            <button class="ex-btn ex-btn-secondary ex-btn-outline">Secondary Outline</button>
+            <button class="ex-btn ex-btn-danger ex-btn-outline">Danger Outline</button>
+          </div>
+          <div class="exercise-btn-row">
+            <button class="ex-btn ex-btn-primary ex-btn-sm">Small</button>
+            <button class="ex-btn ex-btn-primary">Default</button>
+            <button class="ex-btn ex-btn-primary ex-btn-lg">Large</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Challenge ==================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Typed Design Token System</h2>
+
+      <p>Build a complete design token system using <code>@property</code> with typed variables. Register every token with the appropriate syntax so that they can be animated and validated by the browser.</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li>Use <code>@property</code> to register at least 6 color tokens with <code>syntax: '&lt;color&gt;'</code>. Include primary, secondary, accent, surface, text, and error colors.</li>
+        <li>Register spacing tokens (<code>--space-xs</code> through <code>--space-xl</code>) with <code>syntax: '&lt;length&gt;'</code>.</li>
+        <li>Register border-radius tokens with <code>syntax: '&lt;length&gt;'</code>.</li>
+        <li>Create a demo component that animates between two color themes by transitioning the <code>@property</code>-registered tokens (this smooth transition is only possible because the properties are typed).</li>
+        <li>Add validation: demonstrate that setting a color token to an invalid value (like <code>banana</code>) gracefully falls back to the initial value instead of breaking.</li>
+        <li>Implement a "token palette" display that shows all registered tokens with their current values, types, and whether they inherit.</li>
+      </ol>
+
+      <h3>Bonus:</h3>
+      <ul>
+        <li>Register a <code>--shadow-elevation</code> token with <code>syntax: '&lt;number&gt;'</code> and use it to compute box-shadow dynamically with <code>calc()</code>.</li>
+        <li>Create a "token playground" where changing one primitive token cascades through all semantic tokens that reference it.</li>
+      </ul>
+
+      <pre><code>/* Example of what your system should include */
+@property --token-primary {
+  syntax: '&lt;color&gt;';
+  inherits: true;
+  initial-value: #6366f1;
+}
+
+@property --token-space-md {
+  syntax: '&lt;length&gt;';
+  inherits: true;
+  initial-value: 1rem;
+}
+
+@property --token-radius {
+  syntax: '&lt;length&gt;';
+  inherits: true;
+  initial-value: 8px;
+}
+
+/* Smooth theme transition - only works with @property! */
+.token-demo {
+  --token-primary: #6366f1;
+  background: var(--token-primary);
+  transition: --token-primary 0.6s ease;
+}
+
+.token-demo:hover {
+  --token-primary: #ec4899;
+  /* Smoothly transitions because the browser knows it's a &lt;color&gt; */
+}</code></pre>
+    </section>
+
+  </main>
+  <footer class="lesson-footer">
+    <a href="../06-responsive-design/index.html">&larr; Previous</a>
+    <a href="../08-transitions-animations/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>
