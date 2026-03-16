@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Science for the Web | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 11</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-4">Level 4 - Advanced</span>
+    <h1>Color Science for the Web</h1>
+    <p class="subtitle">Master modern CSS color spaces, perceptually uniform palettes with OKLCH, dynamic color mixing, relative color syntax, and accessible theming with light-dark() &mdash; building complete color systems from first principles.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: BEYOND sRGB         -->
+    <!-- ============================== -->
+    <section class="concept-section" id="beyond-srgb">
+      <h2>1. Beyond sRGB</h2>
+      <p>For decades, web colors were confined to the sRGB color space &mdash; a standard defined in 1996 that covers only about <strong>35% of visible colors</strong>. Modern displays (especially OLED and Apple's P3 screens) can render far more vivid, saturated colors than sRGB allows. CSS now gives us the tools to use them.</p>
+
+      <h3>Why New Color Spaces Matter</h3>
+      <p>Human color perception is non-linear. A change of 10 units in one part of HSL looks dramatically different from the same change in another part. Colors that appear "equally bright" in HSL often look wildly different to the human eye. New color spaces like OKLCH were designed to match how we <em>actually</em> perceive color.</p>
+
+      <div class="info-box why">
+        <strong>Perceptual Uniformity:</strong> In a perceptually uniform color space, equal numerical changes produce equal <em>perceived</em> changes. If you increase lightness by 10% in OKLCH, the result looks 10% lighter regardless of hue. In HSL, the same change might look barely different for yellows but dramatic for blues. This is why OKLCH is revolutionizing CSS color systems.
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: sRGB vs Human Perception</h4>
+        <p class="demo-note">Notice how HSL "50% lightness" produces vastly different perceived brightness across hues, while OKLCH maintains consistent perceived lightness.</p>
+
+        <div class="srgb-comparison">
+          <div class="comparison-row">
+            <div class="comparison-label">HSL at 50% lightness</div>
+            <div class="hsl-swatches">
+              <div class="swatch" style="background: hsl(0 100% 50%);" title="Red">Red</div>
+              <div class="swatch" style="background: hsl(60 100% 50%);" title="Yellow">Yellow</div>
+              <div class="swatch" style="background: hsl(120 100% 50%);" title="Green">Green</div>
+              <div class="swatch" style="background: hsl(240 100% 50%);" title="Blue">Blue</div>
+            </div>
+          </div>
+          <div class="comparison-row">
+            <div class="comparison-label">OKLCH at 70% lightness</div>
+            <div class="oklch-swatches">
+              <div class="swatch" style="background: oklch(0.7 0.15 25);" title="Red">Red</div>
+              <div class="swatch" style="background: oklch(0.7 0.15 90);" title="Yellow">Yellow</div>
+              <div class="swatch" style="background: oklch(0.7 0.15 145);" title="Green">Green</div>
+              <div class="swatch" style="background: oklch(0.7 0.15 265);" title="Blue">Blue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: OKLCH              -->
+    <!-- ============================== -->
+    <section class="concept-section" id="oklch">
+      <h2>2. OKLCH</h2>
+      <p>OKLCH stands for <strong>OK Lightness Chroma Hue</strong> &mdash; a perceptually uniform, cylindrical color space that is quickly becoming the recommended way to define colors in modern CSS.</p>
+
+      <div class="code-block">
+        <h4>Syntax</h4>
+        <pre><code>/* oklch(lightness chroma hue) */
+color: oklch(0.7 0.15 145);    /* a vivid green */
+color: oklch(0.5 0.2 25);      /* a saturated red */
+color: oklch(0.9 0.05 90);     /* a soft yellow */
+color: oklch(0.3 0.0 0);       /* dark gray (zero chroma = neutral) */
+
+/* With alpha */
+color: oklch(0.7 0.15 145 / 0.5);  /* 50% transparent */</code></pre>
+      </div>
+
+      <h3>The Three Channels</h3>
+      <ul class="feature-list">
+        <li><strong>Lightness (L):</strong> 0 (black) to 1 (white). Perceptually uniform &mdash; 0.5 truly looks "half bright."</li>
+        <li><strong>Chroma (C):</strong> 0 (gray) to ~0.4 (maximum saturation). Controls vividness without affecting perceived brightness.</li>
+        <li><strong>Hue (H):</strong> 0&ndash;360 degrees around the color wheel. Similar to HSL hue but perceptually spaced.</li>
+      </ul>
+
+      <div class="demo-container">
+        <h4>Demo: OKLCH Color Wheel &mdash; Perceptually Uniform Lightness</h4>
+        <p class="demo-note">Each ring below uses the same OKLCH lightness value across all hues. Unlike HSL, every color at the same lightness truly looks equally bright.</p>
+
+        <div class="oklch-wheel">
+          <div class="wheel-ring wheel-ring-light">
+            <span class="wheel-label">L = 0.85</span>
+            <div class="wheel-colors">
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 0);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 30);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 60);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 90);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 120);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 150);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 180);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 210);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 240);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 270);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 300);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.85 0.1 330);"></div>
+            </div>
+          </div>
+          <div class="wheel-ring wheel-ring-mid">
+            <span class="wheel-label">L = 0.65</span>
+            <div class="wheel-colors">
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 0);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 30);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 60);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 90);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 120);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 150);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 180);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 210);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 240);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 270);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 300);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.65 0.2 330);"></div>
+            </div>
+          </div>
+          <div class="wheel-ring wheel-ring-dark">
+            <span class="wheel-label">L = 0.45</span>
+            <div class="wheel-colors">
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 0);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 30);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 60);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 90);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 120);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 150);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 180);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 210);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 240);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 270);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 300);"></div>
+              <div class="wheel-swatch" style="background: oklch(0.45 0.2 330);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: HSL vs OKLCH Comparison</h4>
+        <p class="demo-note">Both rows use the same lightness value for every swatch. HSL produces inconsistent perceived brightness; OKLCH stays even.</p>
+
+        <div class="hsl-oklch-compare">
+          <div class="compare-group">
+            <h5>HSL &mdash; hsl(hue, 80%, 50%)</h5>
+            <div class="compare-swatches">
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: hsl(0 80% 50%);"></div>
+                <span>0&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: hsl(60 80% 50%);"></div>
+                <span>60&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: hsl(120 80% 50%);"></div>
+                <span>120&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: hsl(180 80% 50%);"></div>
+                <span>180&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: hsl(240 80% 50%);"></div>
+                <span>240&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: hsl(300 80% 50%);"></div>
+                <span>300&deg;</span>
+              </div>
+            </div>
+          </div>
+          <div class="compare-group">
+            <h5>OKLCH &mdash; oklch(0.65 0.2 hue)</h5>
+            <div class="compare-swatches">
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: oklch(0.65 0.2 25);"></div>
+                <span>25&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: oklch(0.65 0.2 90);"></div>
+                <span>90&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: oklch(0.65 0.2 145);"></div>
+                <span>145&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: oklch(0.65 0.2 195);"></div>
+                <span>195&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: oklch(0.65 0.2 265);"></div>
+                <span>265&deg;</span>
+              </div>
+              <div class="swatch-labeled">
+                <div class="swatch" style="background: oklch(0.65 0.2 325);"></div>
+                <span>325&deg;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: color-mix()         -->
+    <!-- ============================== -->
+    <section class="concept-section" id="color-mix">
+      <h2>3. color-mix()</h2>
+      <p>The <code>color-mix()</code> function blends two colors together in a specified color space. It eliminates the need for manually calculating intermediate colors and is the foundation for generating tints, shades, and tones programmatically in CSS.</p>
+
+      <div class="code-block">
+        <h4>Syntax</h4>
+        <pre><code>/* color-mix(in colorspace, color1 percentage, color2) */
+color: color-mix(in oklch, blue 70%, white);       /* 70% blue + 30% white */
+color: color-mix(in oklch, #e74c3c 50%, #3498db);  /* equal mix of red & blue */
+color: color-mix(in srgb, black 20%, currentColor); /* darken any color by 20% */
+
+/* Generate tints (mix with white) */
+--tint-10: color-mix(in oklch, var(--brand) 90%, white);
+--tint-30: color-mix(in oklch, var(--brand) 70%, white);
+--tint-50: color-mix(in oklch, var(--brand) 50%, white);
+
+/* Generate shades (mix with black) */
+--shade-10: color-mix(in oklch, var(--brand) 90%, black);
+--shade-30: color-mix(in oklch, var(--brand) 70%, black);
+--shade-50: color-mix(in oklch, var(--brand) 50%, black);</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Auto-Generate Tints &amp; Shades from a Brand Color</h4>
+        <p class="demo-note">All swatches below are generated from a single brand color using <code>color-mix(in oklch, ...)</code>. No manual hex codes needed.</p>
+
+        <div class="color-mix-demo">
+          <div class="mix-palette">
+            <h5>Tints (mixed with white)</h5>
+            <div class="mix-swatches">
+              <div class="mix-swatch mix-tint-90"><span>90%</span></div>
+              <div class="mix-swatch mix-tint-80"><span>80%</span></div>
+              <div class="mix-swatch mix-tint-70"><span>70%</span></div>
+              <div class="mix-swatch mix-tint-60"><span>60%</span></div>
+              <div class="mix-swatch mix-tint-50"><span>50%</span></div>
+            </div>
+          </div>
+          <div class="mix-palette">
+            <h5>Base Color</h5>
+            <div class="mix-swatches">
+              <div class="mix-swatch mix-base"><span>Brand</span></div>
+            </div>
+          </div>
+          <div class="mix-palette">
+            <h5>Shades (mixed with black)</h5>
+            <div class="mix-swatches">
+              <div class="mix-swatch mix-shade-90"><span>90%</span></div>
+              <div class="mix-swatch mix-shade-80"><span>80%</span></div>
+              <div class="mix-swatch mix-shade-70"><span>70%</span></div>
+              <div class="mix-swatch mix-shade-60"><span>60%</span></div>
+              <div class="mix-swatch mix-shade-50"><span>50%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: RELATIVE COLOR SYNTAX -->
+    <!-- ============================== -->
+    <section class="concept-section" id="relative-color">
+      <h2>4. Relative Color Syntax</h2>
+      <p>Relative color syntax lets you derive a new color from an existing one by adjusting individual channels. This is incredibly powerful for building entire palettes from a single base color, creating hover states, or manipulating opacity &mdash; all without JavaScript.</p>
+
+      <div class="code-block">
+        <h4>Syntax</h4>
+        <pre><code>/* oklch(from base-color lightness chroma hue) */
+--brand: oklch(0.6 0.2 250);
+
+/* Lighten by 20% */
+--brand-light: oklch(from var(--brand) calc(l * 1.2) c h);
+
+/* Desaturate */
+--brand-muted: oklch(from var(--brand) l calc(c * 0.5) h);
+
+/* Shift hue for complementary */
+--brand-complement: oklch(from var(--brand) l c calc(h + 180));
+
+/* Darken and increase saturation */
+--brand-dark: oklch(from var(--brand) calc(l * 0.7) calc(c * 1.3) h);
+
+/* Add transparency */
+--brand-faded: oklch(from var(--brand) l c h / 0.3);</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Full Palette from a Single Base Color</h4>
+        <p class="demo-note">Every color below is derived from one <code>--base</code> value using relative color syntax. Change the base and the entire palette updates.</p>
+
+        <div class="rcs-palette-demo">
+          <div class="rcs-row">
+            <h5>Lightness Variations</h5>
+            <div class="rcs-swatches">
+              <div class="rcs-swatch rcs-l-140"><span>L &times; 1.4</span></div>
+              <div class="rcs-swatch rcs-l-120"><span>L &times; 1.2</span></div>
+              <div class="rcs-swatch rcs-l-100"><span>Base</span></div>
+              <div class="rcs-swatch rcs-l-80"><span>L &times; 0.8</span></div>
+              <div class="rcs-swatch rcs-l-60"><span>L &times; 0.6</span></div>
+            </div>
+          </div>
+          <div class="rcs-row">
+            <h5>Chroma Variations</h5>
+            <div class="rcs-swatches">
+              <div class="rcs-swatch rcs-c-0"><span>C = 0</span></div>
+              <div class="rcs-swatch rcs-c-25"><span>C &times; 0.25</span></div>
+              <div class="rcs-swatch rcs-c-50"><span>C &times; 0.5</span></div>
+              <div class="rcs-swatch rcs-c-100"><span>Base</span></div>
+              <div class="rcs-swatch rcs-c-150"><span>C &times; 1.5</span></div>
+            </div>
+          </div>
+          <div class="rcs-row">
+            <h5>Hue Shifts</h5>
+            <div class="rcs-swatches">
+              <div class="rcs-swatch rcs-h-0"><span>Base</span></div>
+              <div class="rcs-swatch rcs-h-60"><span>+60&deg;</span></div>
+              <div class="rcs-swatch rcs-h-120"><span>+120&deg;</span></div>
+              <div class="rcs-swatch rcs-h-180"><span>+180&deg;</span></div>
+              <div class="rcs-swatch rcs-h-240"><span>+240&deg;</span></div>
+              <div class="rcs-swatch rcs-h-300"><span>+300&deg;</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: light-dark()        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="light-dark">
+      <h2>5. light-dark()</h2>
+      <p>The <code>light-dark()</code> function selects one of two color values based on the user's current color scheme preference. It requires <code>color-scheme: light dark</code> to be set, and then automatically resolves to the appropriate value.</p>
+
+      <div class="code-block">
+        <h4>Syntax</h4>
+        <pre><code>/* Required: declare supported color schemes */
+:root {
+  color-scheme: light dark;
+}
+
+/* light-dark(light-value, dark-value) */
+body {
+  color: light-dark(#333, #eee);
+  background: light-dark(#fff, #1a1a2e);
+}
+
+.card {
+  background: light-dark(#f8f9fa, #2d2d44);
+  border-color: light-dark(#dee2e6, #404060);
+  box-shadow: light-dark(
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.4)
+  );
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Automatic Theme Switching</h4>
+        <p class="demo-note">The card below uses <code>light-dark()</code> for all its colors. It responds automatically to your system's light/dark preference.</p>
+
+        <div class="light-dark-demo">
+          <div class="ld-card-wrapper ld-light">
+            <h5>Light Mode</h5>
+            <div class="ld-card">
+              <h6>Dashboard</h6>
+              <p>Revenue is up 12% this quarter with strong growth in the enterprise segment.</p>
+              <div class="ld-stats">
+                <div class="ld-stat">
+                  <span class="ld-stat-value">$2.4M</span>
+                  <span class="ld-stat-label">Revenue</span>
+                </div>
+                <div class="ld-stat">
+                  <span class="ld-stat-value">1,847</span>
+                  <span class="ld-stat-label">Users</span>
+                </div>
+                <div class="ld-stat">
+                  <span class="ld-stat-value">94%</span>
+                  <span class="ld-stat-label">Uptime</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ld-card-wrapper ld-dark">
+            <h5>Dark Mode</h5>
+            <div class="ld-card">
+              <h6>Dashboard</h6>
+              <p>Revenue is up 12% this quarter with strong growth in the enterprise segment.</p>
+              <div class="ld-stats">
+                <div class="ld-stat">
+                  <span class="ld-stat-value">$2.4M</span>
+                  <span class="ld-stat-label">Revenue</span>
+                </div>
+                <div class="ld-stat">
+                  <span class="ld-stat-value">1,847</span>
+                  <span class="ld-stat-label">Users</span>
+                </div>
+                <div class="ld-stat">
+                  <span class="ld-stat-value">94%</span>
+                  <span class="ld-stat-label">Uptime</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: COLOR SYSTEM        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="color-system">
+      <h2>6. Building a Color System</h2>
+      <p>With OKLCH and <code>color-mix()</code>, you can build a complete, systematic color palette from just a few base values. The approach: define base colors in OKLCH, then generate tint scales (10&ndash;90), semantic tokens, and surface colors &mdash; all derived mathematically.</p>
+
+      <div class="code-block">
+        <h4>Complete Palette Architecture</h4>
+        <pre><code>:root {
+  /* Base colors in OKLCH */
+  --primary:   oklch(0.55 0.2 250);
+  --secondary: oklch(0.6 0.15 160);
+  --accent:    oklch(0.65 0.22 30);
+
+  /* Tint scale: mix base with white */
+  --primary-10: color-mix(in oklch, var(--primary) 10%, white);
+  --primary-20: color-mix(in oklch, var(--primary) 20%, white);
+  --primary-30: color-mix(in oklch, var(--primary) 30%, white);
+  --primary-40: color-mix(in oklch, var(--primary) 40%, white);
+  --primary-50: color-mix(in oklch, var(--primary) 50%, white);
+  --primary-60: color-mix(in oklch, var(--primary) 60%, white);
+  --primary-70: color-mix(in oklch, var(--primary) 70%, white);
+  --primary-80: color-mix(in oklch, var(--primary) 80%, white);
+  --primary-90: color-mix(in oklch, var(--primary) 90%, white);
+
+  /* Semantic colors */
+  --success: oklch(0.6 0.18 145);
+  --warning: oklch(0.75 0.18 80);
+  --error:   oklch(0.55 0.22 25);
+  --info:    oklch(0.6 0.15 240);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Complete Color System</h4>
+        <p class="demo-note">A full design-system palette generated from three OKLCH base values using <code>color-mix()</code>.</p>
+
+        <div class="system-demo">
+          <div class="system-palette">
+            <h5>Primary Scale</h5>
+            <div class="system-swatches">
+              <div class="sys-swatch sys-primary-10"><span>10</span></div>
+              <div class="sys-swatch sys-primary-20"><span>20</span></div>
+              <div class="sys-swatch sys-primary-30"><span>30</span></div>
+              <div class="sys-swatch sys-primary-40"><span>40</span></div>
+              <div class="sys-swatch sys-primary-50"><span>50</span></div>
+              <div class="sys-swatch sys-primary-60"><span>60</span></div>
+              <div class="sys-swatch sys-primary-70"><span>70</span></div>
+              <div class="sys-swatch sys-primary-80"><span>80</span></div>
+              <div class="sys-swatch sys-primary-90"><span>90</span></div>
+              <div class="sys-swatch sys-primary-base"><span>Base</span></div>
+            </div>
+          </div>
+
+          <div class="system-palette">
+            <h5>Secondary Scale</h5>
+            <div class="system-swatches">
+              <div class="sys-swatch sys-secondary-10"><span>10</span></div>
+              <div class="sys-swatch sys-secondary-20"><span>20</span></div>
+              <div class="sys-swatch sys-secondary-30"><span>30</span></div>
+              <div class="sys-swatch sys-secondary-40"><span>40</span></div>
+              <div class="sys-swatch sys-secondary-50"><span>50</span></div>
+              <div class="sys-swatch sys-secondary-60"><span>60</span></div>
+              <div class="sys-swatch sys-secondary-70"><span>70</span></div>
+              <div class="sys-swatch sys-secondary-80"><span>80</span></div>
+              <div class="sys-swatch sys-secondary-90"><span>90</span></div>
+              <div class="sys-swatch sys-secondary-base"><span>Base</span></div>
+            </div>
+          </div>
+
+          <div class="system-palette">
+            <h5>Semantic Colors</h5>
+            <div class="system-swatches semantic-swatches">
+              <div class="sys-swatch sys-success"><span>Success</span></div>
+              <div class="sys-swatch sys-warning"><span>Warning</span></div>
+              <div class="sys-swatch sys-error"><span>Error</span></div>
+              <div class="sys-swatch sys-info"><span>Info</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: WIDE-GAMUT COLORS   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="wide-gamut">
+      <h2>7. Wide-Gamut Colors</h2>
+      <p>Display P3 covers about <strong>50% more colors</strong> than sRGB. With the <code>color()</code> function and the <code>@media (color-gamut: p3)</code> query, you can serve more vivid colors to capable displays while providing sRGB fallbacks for standard screens.</p>
+
+      <div class="code-block">
+        <h4>Using P3 Colors with Fallbacks</h4>
+        <pre><code>/* sRGB fallback first, then P3 override */
+.vibrant-button {
+  background: #e74c3c;  /* sRGB fallback */
+  background: color(display-p3 0.96 0.2 0.15);  /* P3 override */
+}
+
+/* Or use @supports for targeted enhancement */
+@supports (color: color(display-p3 1 0 0)) {
+  .vibrant-cta {
+    background: color(display-p3 1 0.15 0.3);
+  }
+}
+
+/* Media query for gamut detection */
+@media (color-gamut: p3) {
+  :root {
+    --accent: oklch(0.7 0.3 30);  /* higher chroma available */
+  }
+}
+
+@media (color-gamut: srgb) {
+  :root {
+    --accent: oklch(0.7 0.18 30);  /* clamp chroma for sRGB */
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: sRGB vs P3 Gamut Range</h4>
+        <p class="demo-note">On a P3-capable display, the bottom row will appear noticeably more vivid. On sRGB screens, both rows may look similar as the browser clamps the out-of-gamut colors.</p>
+
+        <div class="gamut-demo">
+          <div class="gamut-row">
+            <h5>sRGB Colors</h5>
+            <div class="gamut-swatches">
+              <div class="swatch gamut-srgb-red" title="sRGB Red"></div>
+              <div class="swatch gamut-srgb-green" title="sRGB Green"></div>
+              <div class="swatch gamut-srgb-blue" title="sRGB Blue"></div>
+              <div class="swatch gamut-srgb-cyan" title="sRGB Cyan"></div>
+              <div class="swatch gamut-srgb-magenta" title="sRGB Magenta"></div>
+              <div class="swatch gamut-srgb-orange" title="sRGB Orange"></div>
+            </div>
+          </div>
+          <div class="gamut-row">
+            <h5>Display P3 Colors (wider gamut)</h5>
+            <div class="gamut-swatches">
+              <div class="swatch gamut-p3-red" title="P3 Red"></div>
+              <div class="swatch gamut-p3-green" title="P3 Green"></div>
+              <div class="swatch gamut-p3-blue" title="P3 Blue"></div>
+              <div class="swatch gamut-p3-cyan" title="P3 Cyan"></div>
+              <div class="swatch gamut-p3-magenta" title="P3 Magenta"></div>
+              <div class="swatch gamut-p3-orange" title="P3 Orange"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 8: ACCESSIBILITY       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="accessibility">
+      <h2>8. Accessibility</h2>
+      <p>Modern color features must work hand-in-hand with accessibility. CSS provides <code>forced-colors</code> mode for users who need high-contrast system colors, and <code>prefers-contrast</code> for those who want more or less contrast than default.</p>
+
+      <div class="code-block">
+        <h4>Forced Colors &amp; Contrast Preferences</h4>
+        <pre><code>/* Respect forced-colors mode (Windows High Contrast, etc.) */
+@media (forced-colors: active) {
+  .card {
+    border: 2px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .button {
+    border: 2px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+    forced-color-adjust: none;  /* opt out selectively */
+  }
+}
+
+/* Respond to contrast preferences */
+@media (prefers-contrast: more) {
+  :root {
+    --text: oklch(0.1 0 0);
+    --bg: oklch(1 0 0);
+    --border-width: 2px;
+  }
+}
+
+@media (prefers-contrast: less) {
+  :root {
+    --text: oklch(0.35 0 0);
+    --bg: oklch(0.95 0 0);
+  }
+}
+
+/* Combine with color scheme awareness */
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root {
+    --text: oklch(0.95 0 0);
+    --bg: oklch(0.05 0 0);
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Contrast-Aware Components</h4>
+        <p class="demo-note">These components show how designs should adapt to different contrast preferences. The "more contrast" variant uses bolder borders, heavier text, and higher color contrast ratios.</p>
+
+        <div class="a11y-demo">
+          <div class="a11y-variant">
+            <h5>Default Contrast</h5>
+            <div class="a11y-card a11y-default">
+              <h6>Notification</h6>
+              <p>Your report has been generated and is ready for download.</p>
+              <div class="a11y-actions">
+                <button class="a11y-btn a11y-btn-primary">Download</button>
+                <button class="a11y-btn a11y-btn-secondary">Dismiss</button>
+              </div>
+            </div>
+          </div>
+          <div class="a11y-variant">
+            <h5>High Contrast (prefers-contrast: more)</h5>
+            <div class="a11y-card a11y-high-contrast">
+              <h6>Notification</h6>
+              <p>Your report has been generated and is ready for download.</p>
+              <div class="a11y-actions">
+                <button class="a11y-btn a11y-btn-primary">Download</button>
+                <button class="a11y-btn a11y-btn-secondary">Dismiss</button>
+              </div>
+            </div>
+          </div>
+          <div class="a11y-variant">
+            <h5>Forced Colors</h5>
+            <div class="a11y-card a11y-forced">
+              <h6>Notification</h6>
+              <p>Your report has been generated and is ready for download.</p>
+              <div class="a11y-actions">
+                <button class="a11y-btn a11y-btn-primary">Download</button>
+                <button class="a11y-btn a11y-btn-secondary">Dismiss</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Color Palette Generator</h2>
+      <p>Build a color palette generator from one brand color using <code>color-mix()</code>. Starting from a single OKLCH base value, create a complete set of tints, shades, and complementary colors &mdash; all derived automatically.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Define a single <code>--brand</code> custom property using <code>oklch()</code>.</li>
+          <li>Generate 5 tints using <code>color-mix(in oklch, var(--brand), white)</code> at 10%, 30%, 50%, 70%, and 90% brand percentage.</li>
+          <li>Generate 5 shades using <code>color-mix(in oklch, var(--brand), black)</code> at the same percentages.</li>
+          <li>Create a complementary color by mixing the brand color with its hue-shifted opposite.</li>
+          <li>Display all swatches in a labeled grid showing the <code>color-mix()</code> formula used for each.</li>
+          <li>Demonstrate practical usage: style a card, button, and badge using only the generated palette.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Template</h3>
+        <div class="code-block">
+          <pre><code>:root {
+  --brand: oklch(0.6 0.2 250);
+
+  --brand-tint-10: color-mix(in oklch, var(--brand) 10%, white);
+  --brand-tint-30: color-mix(in oklch, var(--brand) 30%, white);
+  /* ... continue for all tints and shades */
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+}
+
+.palette-swatch {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: end;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Complete Accessible Color System</h2>
+      <p>Build a fully accessible color system using <code>light-dark()</code> derived from 3 OKLCH base values. The system should automatically adapt to light and dark mode, respond to contrast preferences, and maintain WCAG AA contrast ratios throughout.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Define 3 OKLCH base colors: primary, secondary, and accent.</li>
+          <li>Generate a full tint/shade scale (10&ndash;90) for each base using <code>color-mix()</code>.</li>
+          <li>Use <code>light-dark()</code> for all color assignments so the entire UI adapts automatically.</li>
+          <li>Add <code>@media (prefers-contrast: more)</code> overrides that increase contrast ratios.</li>
+          <li>Add <code>@media (forced-colors: active)</code> support using system color keywords.</li>
+          <li>Build at least three components (card, button, alert) that demonstrate the full system.</li>
+          <li>All text must meet WCAG AA contrast ratio (4.5:1 for normal text, 3:1 for large text).</li>
+          <li>Include a visual contrast checker showing foreground/background pairings and their approximate ratios.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Hints</h3>
+        <ul>
+          <li>Set <code>color-scheme: light dark</code> on <code>:root</code> first &mdash; <code>light-dark()</code> will not work without it.</li>
+          <li>In OKLCH, a lightness difference of at least 0.4 between text and background typically satisfies WCAG AA.</li>
+          <li>Use <code>color-mix()</code> with <code>transparent</code> as the second color to create alpha variants.</li>
+          <li>For forced-colors mode, use system keywords: <code>Canvas</code>, <code>CanvasText</code>, <code>LinkText</code>, <code>ButtonFace</code>, <code>ButtonText</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../10-container-queries-subgrid/index.html">&larr; Previous</a>
+    <a href="../12-scroll-animations/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,565 @@
+/* Module 07: Custom Properties & Cascade Layers - Demo Styles */
+
+/* ── @property Registrations ── */
+@property --gradient-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --glow-color {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #6366f1;
+}
+
+@property --counter-value {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+/* ── Section 1: Custom Properties Demo ── */
+.cp-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.cp-demo-card {
+  --primary: #6366f1;
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+}
+
+.cp-demo-card h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.cp-demo-card p {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.cp-demo-btn {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 2px solid var(--primary);
+  background: var(--primary);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.cp-demo-btn.outline {
+  background: transparent;
+  color: var(--primary);
+}
+
+.cp-demo-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.cp-theme-indigo { --primary: #6366f1; }
+.cp-theme-emerald { --primary: #10b981; }
+.cp-theme-amber { --primary: #f59e0b; }
+
+/* ── Section 2: Dynamic Properties Demo ── */
+.dynamic-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.dynamic-card {
+  --card-bg: #1e293b;
+  --card-text: #e2e8f0;
+  --card-border: #334155;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --card-accent: #6366f1;
+  --card-scale: 1;
+
+  background: var(--card-bg);
+  color: var(--card-text);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  transform: scale(var(--card-scale));
+  transition: all 0.35s ease;
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.dynamic-card:hover {
+  --card-bg: #6366f1;
+  --card-text: #ffffff;
+  --card-border: #4f46e5;
+  --card-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+  --card-scale: 1.03;
+}
+
+.dynamic-card-alt {
+  --card-accent: #10b981;
+}
+
+.dynamic-card-alt:hover {
+  --card-bg: #10b981;
+  --card-border: #059669;
+  --card-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+}
+
+.dynamic-card-dark {
+  --card-bg: #0f172a;
+  --card-border: #1e293b;
+}
+
+.dynamic-card-dark:hover {
+  --card-bg: #ec4899;
+  --card-border: #db2777;
+  --card-shadow: 0 20px 40px rgba(236, 72, 153, 0.3);
+}
+
+.dynamic-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.dynamic-card h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dynamic-card p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+}
+
+.dynamic-card-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-instruction {
+  font-size: 0.9rem;
+  color: var(--pe7-text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+/* ── Section 3: @property Demos ── */
+.at-property-demo-row {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.gradient-spinner {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  --gradient-angle: 0deg;
+  background: linear-gradient(var(--gradient-angle), #6366f1, #ec4899, #f59e0b);
+  animation: spin-gradient 3s linear infinite;
+}
+
+@keyframes spin-gradient {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+.glow-box-demo {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  background: var(--pe7-surface-2);
+  --glow-color: #6366f1;
+  box-shadow: 0 0 30px var(--glow-color), 0 0 60px var(--glow-color);
+  animation: shift-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes shift-glow {
+  0% { --glow-color: #6366f1; }
+  50% { --glow-color: #ec4899; }
+  100% { --glow-color: #06b6d4; }
+}
+
+.typed-counter-demo {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.counter-bar {
+  width: 80px;
+  border-radius: 8px;
+  background: var(--pe7-surface-2);
+  overflow: hidden;
+  position: relative;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.counter-bar::after {
+  content: '';
+  display: block;
+  background: linear-gradient(to top, #6366f1, #818cf8);
+  border-radius: 6px 6px 0 0;
+  height: calc(var(--counter-value) * 1%);
+  transition: height 0.5s ease;
+  animation: fill-bar 2s ease forwards;
+}
+
+.counter-bar:nth-child(1) { --counter-value: 75; }
+.counter-bar:nth-child(2) { --counter-value: 50; }
+.counter-bar:nth-child(3) { --counter-value: 90; }
+.counter-bar:nth-child(4) { --counter-value: 30; }
+
+@keyframes fill-bar {
+  from { --counter-value: 0; }
+}
+
+.description {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  max-width: 300px;
+}
+
+/* ── Section 4: Cascade Layers Demo ── */
+.layer-demo-container {
+  background: var(--pe7-surface-2);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.layer-demo-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.layer-demo-zone {
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px dashed var(--pe7-border);
+}
+
+.layer-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.layer-demo-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.layer-demo-inner {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--pe7-surface);
+  border-radius: 6px;
+}
+
+.layer-demo-widget {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.layer-demo-explanation {
+  margin-top: 1rem;
+}
+
+.layer-demo-rule {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  font-family: var(--pe7-font-mono);
+  font-size: 0.8rem;
+}
+
+.layer-rule-wins {
+  background: color-mix(in oklch, #10b981 15%, var(--pe7-surface));
+  border: 1px solid #10b981;
+  color: #10b981;
+}
+
+.layer-rule-loses {
+  background: color-mix(in oklch, #ef4444 10%, var(--pe7-surface));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.layer-result {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  background: color-mix(in oklch, #6366f1 15%, var(--pe7-surface));
+  border: 1px solid #6366f1;
+  color: var(--pe7-text);
+  font-size: 0.85rem;
+}
+
+.specificity-score {
+  font-family: var(--pe7-font-mono);
+  font-weight: 700;
+  color: var(--pe7-accent-light);
+}
+
+/* ── Section 5: @scope Demo ── */
+.scope-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.scope-card {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--pe7-border);
+  background: var(--pe7-surface-2);
+}
+
+.scope-card-header {
+  padding: 1rem;
+  background: #6366f1;
+  color: white;
+  font-weight: 700;
+}
+
+.scope-card-body {
+  padding: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.scope-card-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--pe7-border);
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+}
+
+.scope-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid #f59e0b;
+  background: color-mix(in oklch, #f59e0b 10%, var(--pe7-surface));
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+
+/* ── Section 6: Theming System Demo ── */
+.theme-demo-area {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--pe7-border);
+}
+
+.theme-toggle-bar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--pe7-surface-2);
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.theme-toggle-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--pe7-border);
+  background: var(--pe7-surface);
+  color: var(--pe7-text);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--pe7-accent);
+  color: var(--pe7-accent-light);
+}
+
+.theme-demo-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--pe7-bg);
+}
+
+.theme-card {
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  transition: all 0.3s ease;
+}
+
+.theme-card .title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.theme-stat {
+  margin: 0.75rem 0;
+}
+
+.theme-stat-number {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--pe7-accent-light);
+}
+
+.theme-stat-label {
+  font-size: 0.75rem;
+  color: var(--pe7-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theme-tag-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.theme-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  color: var(--pe7-accent-light);
+}
+
+.theme-btn {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  background: var(--pe7-accent);
+  color: white;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+  background: var(--pe7-accent-light);
+}
+
+/* ── Exercise: Button System ── */
+.exercise-btn-row,
+.exercise-target-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0;
+}
+
+.ex-btn {
+  --btn-bg: #6366f1;
+  --btn-text: #ffffff;
+  --btn-size: 0.875rem;
+  --btn-padding: 0.5rem 1.25rem;
+  --btn-radius: 6px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: var(--btn-padding);
+  font-size: var(--btn-size);
+  font-weight: 600;
+  border-radius: var(--btn-radius);
+  border: 2px solid var(--btn-bg);
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ex-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.ex-btn-primary { --btn-bg: #6366f1; }
+.ex-btn-secondary { --btn-bg: #64748b; }
+.ex-btn-danger { --btn-bg: #ef4444; }
+
+.ex-btn-outline {
+  background: transparent;
+  color: var(--btn-bg);
+}
+
+.ex-btn-sm {
+  --btn-size: 0.75rem;
+  --btn-padding: 0.3rem 0.75rem;
+}
+
+.ex-btn-lg {
+  --btn-size: 1rem;
+  --btn-padding: 0.65rem 1.75rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .cp-demo-grid,
+  .dynamic-demo-grid,
+  .scope-demo-grid,
+  .layer-demo-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .at-property-demo-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

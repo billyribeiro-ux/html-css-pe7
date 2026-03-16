@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding Space | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 03</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-1">Level 1 - Foundations</span>
+    <h1>Understanding Space</h1>
+    <p class="subtitle">Master the box model, display types, positioning, and stacking to control how elements occupy and share space.</p>
+  </header>
+
+  <main>
+
+    <!-- ===== 1. THE BOX MODEL ===== -->
+    <section class="concept-section" id="box-model">
+      <h2>1. The Box Model</h2>
+
+      <p>Every element in CSS is a rectangular box. The <strong>box model</strong> describes how the size of that box is calculated using four layers: content, padding, border, and margin. Understanding this model is essential because it determines how much space every element occupies on the page and how elements relate to each other spatially.</p>
+
+      <p>The <strong>content</strong> area holds the actual text, images, or child elements. <strong>Padding</strong> is the space between the content and the border &mdash; it is inside the element and takes on the element's background color. <strong>Border</strong> wraps around the padding and content. <strong>Margin</strong> is the space outside the border that separates the element from its neighbors. Margins are transparent and can collapse (adjacent vertical margins merge into the larger of the two).</p>
+
+      <p>By default, CSS uses <code>content-box</code> sizing: when you set <code>width: 300px</code>, that is the width of the content only. Padding and border are added on top, making the total rendered width larger. This often catches beginners off guard. The <code>border-box</code> model changes this: <code>width: 300px</code> includes padding and border, so the content shrinks to fit. Most modern CSS resets apply <code>box-sizing: border-box</code> to all elements.</p>
+
+      <p>The difference between the two models becomes critical when building layouts. With <code>content-box</code>, adding padding to a 50% width element pushes it past 50% of its container, breaking side-by-side layouts. With <code>border-box</code>, padding is absorbed into the width, making percentage-based layouts predictable and reliable.</p>
+
+      <div class="demo" id="box-model-demo">
+        <h3>Box Model Visualization</h3>
+        <div class="demo-box">
+          <div class="box-model-visual">
+            <div class="bm-margin">
+              <span class="bm-label bm-label-margin">margin: 24px</span>
+              <div class="bm-border">
+                <span class="bm-label bm-label-border">border: 4px</span>
+                <div class="bm-padding">
+                  <span class="bm-label bm-label-padding">padding: 20px</span>
+                  <div class="bm-content">
+                    <span class="bm-label bm-label-content">Content<br>200 &times; 100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" id="box-sizing-demo">
+        <h3>box-sizing: content-box vs border-box</h3>
+        <div class="demo-box">
+          <p style="margin-bottom: 1rem; font-size: 0.9rem;">Both boxes below have <code>width: 300px</code> and <code>padding: 20px</code> and <code>border: 4px</code>.</p>
+          <div class="box-sizing-comparison">
+            <div class="sizing-example content-box-example">
+              <div class="sizing-label">content-box</div>
+              <div class="sizing-detail">Total width: 300 + 40 + 8 = <strong>348px</strong></div>
+            </div>
+            <div class="sizing-example border-box-example">
+              <div class="sizing-label">border-box</div>
+              <div class="sizing-detail">Total width: <strong>300px</strong> (content shrinks to 252px)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="why">
+        <h3>Why Use border-box?</h3>
+        <p>The <code>border-box</code> model makes CSS math intuitive. When you say an element is <code>width: 50%</code>, it is exactly 50% of its parent &mdash; padding and border included. This is why nearly every CSS framework and reset stylesheet includes <code>*, *::before, *::after { box-sizing: border-box; }</code>. It prevents countless layout bugs and makes responsive design far simpler.</p>
+      </div>
+
+      <div class="code-block">
+        <h3>Box Model Code</h3>
+        <pre><code>/* Apply border-box globally (recommended) */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Box model properties */
+.card {
+  width: 300px;           /* content width (or total with border-box) */
+  padding: 20px;          /* inner spacing */
+  border: 2px solid #ccc; /* visible border */
+  margin: 16px;           /* outer spacing */
+}
+
+/* Margin shorthand: top right bottom left */
+.element {
+  margin: 10px 20px 10px 20px;
+  /* Or: margin: 10px 20px; (vertical | horizontal) */
+  /* Or: margin: 10px; (all sides) */
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 2. DISPLAY TYPES ===== -->
+    <section class="concept-section" id="display-types">
+      <h2>2. Display Types</h2>
+
+      <p>The <code>display</code> property is one of the most important in CSS. It determines how an element participates in the document flow &mdash; whether it takes up a full row, sits beside other elements, or is removed from the flow entirely. The three foundational display values are <code>block</code>, <code>inline</code>, and <code>inline-block</code>.</p>
+
+      <p><strong>Block elements</strong> take up the full width available and start on a new line. They stack vertically. You can set width, height, margin, and padding on all sides. Examples include <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, and <code>&lt;section&gt;</code>. Block is the default display for most structural elements.</p>
+
+      <p><strong>Inline elements</strong> flow within text, taking up only as much width as their content. They sit side by side on the same line. You cannot set width or height on inline elements, and vertical margins have no effect. Horizontal padding and margins work but do not push other lines away vertically. Examples include <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>, and <code>&lt;em&gt;</code>.</p>
+
+      <p><strong>Inline-block</strong> is the hybrid: elements flow inline (sitting next to each other) but accept width, height, and vertical margins like block elements. This is useful for things like navigation links that need a set size and padding but should sit side by side.</p>
+
+      <div class="demo" id="display-demo">
+        <h3>Display Behavior Comparison</h3>
+        <div class="demo-box">
+          <h4 style="margin-bottom: 0.5rem;">display: block</h4>
+          <div class="display-row">
+            <div class="d-block">Block A</div>
+            <div class="d-block">Block B</div>
+            <div class="d-block">Block C</div>
+          </div>
+
+          <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">display: inline</h4>
+          <div class="display-row">
+            <span class="d-inline">Inline A</span>
+            <span class="d-inline">Inline B</span>
+            <span class="d-inline">Inline C</span>
+            <span class="d-inline">Inline D</span>
+            <span class="d-inline">Inline E</span>
+          </div>
+
+          <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">display: inline-block</h4>
+          <div class="display-row">
+            <div class="d-inline-block">Inline-Block A</div>
+            <div class="d-inline-block">Inline-Block B</div>
+            <div class="d-inline-block">Inline-Block C</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Display Types</h3>
+        <pre><code>/* Block: full width, stacks vertically */
+.container { display: block; }
+
+/* Inline: flows with text, no width/height */
+.tag { display: inline; }
+
+/* Inline-block: flows inline, but accepts dimensions */
+.nav-link {
+  display: inline-block;
+  width: 120px;
+  padding: 8px 16px;
+}
+
+/* None: completely removed from layout */
+.hidden { display: none; }</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 3. POSITIONING ===== -->
+    <section class="concept-section" id="positioning">
+      <h2>3. Positioning</h2>
+
+      <p>CSS positioning lets you take elements out of the normal document flow and place them precisely where you want. There are five positioning modes, each with different behavior. Understanding when to use each one is key to building complex layouts, overlays, tooltips, sticky headers, and more.</p>
+
+      <p><strong>Static</strong> is the default. Elements appear in the normal document flow in the order they appear in the HTML. The <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>, and <code>z-index</code> properties have no effect on statically positioned elements.</p>
+
+      <p><strong>Relative</strong> positioning keeps the element in the normal flow but lets you offset it from its original position using <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>. The space it originally occupied is preserved &mdash; other elements behave as if it had not moved. Relative positioning is most commonly used as a positioning context for absolutely positioned children.</p>
+
+      <p><strong>Absolute</strong> positioning removes the element from the normal flow entirely. It is positioned relative to its nearest positioned ancestor (any ancestor with a position value other than <code>static</code>). If no positioned ancestor exists, it is positioned relative to the initial containing block (usually the viewport). Other elements ignore its space.</p>
+
+      <p><strong>Fixed</strong> positioning is like absolute, but relative to the viewport. The element stays in the same position even when the page scrolls. This is perfect for navigation bars, back-to-top buttons, and floating action buttons. <strong>Sticky</strong> positioning is a hybrid: the element behaves like <code>relative</code> until it reaches a scroll threshold, then it sticks like <code>fixed</code> until its container scrolls past.</p>
+
+      <div class="demo" id="position-demo">
+        <h3>Positioning Modes</h3>
+        <div class="demo-box">
+          <div class="position-playground">
+            <div class="pos-container">
+              <div class="pos-label">Container (position: relative)</div>
+              <div class="pos-static">static (default)</div>
+              <div class="pos-relative">relative (offset 10px top, 20px left)</div>
+              <div class="pos-absolute">absolute (top: 10px, right: 10px)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" id="sticky-demo">
+        <h3>Sticky Positioning Demo</h3>
+        <p style="margin-bottom: 0.75rem; font-size: 0.9rem;">Scroll within the box below. The blue header sticks to the top of the scrollable area.</p>
+        <div class="demo-box">
+          <div class="sticky-scroll-container">
+            <div class="sticky-header">I am sticky! (position: sticky; top: 0)</div>
+            <div class="scroll-content">
+              <p>Scroll down to see the sticky header in action. It stays at the top of its container while you scroll through this content.</p>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+              <p>Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+              <p>Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem.</p>
+              <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Positioning Code</h3>
+        <pre><code>/* Relative: offset from normal position */
+.parent {
+  position: relative;  /* also creates positioning context */
+}
+
+/* Absolute: positioned within nearest positioned ancestor */
+.tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Fixed: stays in place during scroll */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* Sticky: sticks after scrolling past threshold */
+.sidebar-title {
+  position: sticky;
+  top: 0;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 4. OVERFLOW ===== -->
+    <section class="concept-section" id="overflow">
+      <h2>4. Overflow</h2>
+
+      <p>When content is larger than its container, the <code>overflow</code> property controls what happens. By default, content overflows visibly, spilling out of its box. This is often undesirable &mdash; you may want to clip the excess, add scrollbars, or show scrollbars only when needed.</p>
+
+      <p><strong>visible</strong> (default) lets content overflow the box without clipping. <strong>hidden</strong> clips content at the box boundary &mdash; anything beyond is invisible and unreachable. <strong>scroll</strong> always shows scrollbars, even when the content fits. <strong>auto</strong> shows scrollbars only when the content actually overflows, which is usually the best choice for scrollable containers.</p>
+
+      <p>You can control horizontal and vertical overflow independently with <code>overflow-x</code> and <code>overflow-y</code>. This is useful for wide tables that need horizontal scrolling but not vertical, or for chat windows that need vertical scrolling only.</p>
+
+      <p>Overflow also creates a new <strong>block formatting context</strong>, which prevents margin collapsing and contains floated children. Setting <code>overflow: hidden</code> on a parent is a classic technique for containing floats, though modern layout methods (flexbox and grid) have largely replaced this pattern.</p>
+
+      <div class="demo" id="overflow-demo">
+        <h3>Overflow Behaviors</h3>
+        <div class="demo-box">
+          <div class="overflow-grid">
+            <div class="overflow-example">
+              <h4>overflow: visible</h4>
+              <div class="overflow-box" style="overflow: visible;">
+                <p>This content is taller than its container. With overflow: visible, it spills out beyond the boundary of the box and overlaps whatever comes below it.</p>
+              </div>
+            </div>
+            <div class="overflow-example">
+              <h4>overflow: hidden</h4>
+              <div class="overflow-box" style="overflow: hidden;">
+                <p>This content is taller than its container. With overflow: hidden, the excess content is clipped and completely invisible. Users cannot scroll to see it.</p>
+              </div>
+            </div>
+            <div class="overflow-example">
+              <h4>overflow: scroll</h4>
+              <div class="overflow-box" style="overflow: scroll;">
+                <p>This content is taller than its container. With overflow: scroll, scrollbars always appear, even if the content fits. This can look odd on short content but guarantees scrollability.</p>
+              </div>
+            </div>
+            <div class="overflow-example">
+              <h4>overflow: auto</h4>
+              <div class="overflow-box" style="overflow: auto;">
+                <p>This content is taller than its container. With overflow: auto, scrollbars appear only when needed. This is the most common and user-friendly option for scrollable areas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Overflow Code</h3>
+        <pre><code>/* Hide overflow */
+.card-image {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Scrollable container */
+.chat-messages {
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+/* Horizontal scroll for wide content */
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 5. Z-INDEX & STACKING ===== -->
+    <section class="concept-section" id="z-index">
+      <h2>5. Z-Index &amp; Stacking</h2>
+
+      <p>While most CSS layout is two-dimensional (horizontal and vertical), the <code>z-index</code> property controls the third dimension: the stacking order of overlapping elements. Elements with higher z-index values appear in front of elements with lower values. But z-index only works on positioned elements (anything other than <code>position: static</code>).</p>
+
+      <p>The concept of <strong>stacking contexts</strong> is crucial. A stacking context is a three-dimensional conceptualization of HTML elements along an imaginary z-axis. When an element creates a new stacking context, all of its children are stacked within that context. A z-index of 9999 on a child will never appear above a sibling of its parent that has a higher stacking order.</p>
+
+      <p>Stacking contexts are created by several CSS properties: any positioned element with a z-index value other than <code>auto</code>, elements with <code>opacity</code> less than 1, elements with <code>transform</code>, <code>filter</code>, or <code>will-change</code> properties, and flex/grid children with z-index values. Understanding this prevents the common confusion of "why is my z-index: 99999 not working?"</p>
+
+      <p>In practice, use a structured z-index scale: define layers in your CSS (e.g., base content at 1, dropdowns at 100, modals at 200, tooltips at 300, notifications at 400). This prevents the arms race of ever-increasing z-index values and keeps your stacking predictable.</p>
+
+      <div class="demo" id="stacking-demo">
+        <h3>Stacking Order Demo</h3>
+        <div class="demo-box">
+          <div class="stacking-playground">
+            <div class="stack-card stack-card-1">
+              <span>z-index: 1</span>
+            </div>
+            <div class="stack-card stack-card-2">
+              <span>z-index: 2</span>
+            </div>
+            <div class="stack-card stack-card-3">
+              <span>z-index: 3</span>
+            </div>
+            <div class="stack-card stack-card-4">
+              <span>z-index: 4</span>
+            </div>
+            <div class="stack-card stack-card-5">
+              <span>z-index: 5 (top)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="why">
+        <h3>Why Z-Index Values Should Be Systematic</h3>
+        <p>Without a system, z-index values escalate wildly: one developer uses 10, another uses 100 to go above it, then someone uses 9999. Soon you have <code>z-index: 2147483647</code> (the max 32-bit integer) and nowhere to go. Define a layer system with clear ranges: base (1-9), navigation (10-19), dropdowns (20-29), modals (30-39), tooltips (40-49). This creates order and makes debugging effortless.</p>
+      </div>
+
+      <div class="code-block">
+        <h3>Z-Index System</h3>
+        <pre><code>/* Define z-index layers with custom properties */
+:root {
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-tooltip: 500;
+  --z-notification: 600;
+}
+
+.dropdown-menu {
+  position: absolute;
+  z-index: var(--z-dropdown);
+}
+
+.modal-overlay {
+  position: fixed;
+  z-index: var(--z-modal-backdrop);
+}
+
+.modal {
+  position: fixed;
+  z-index: var(--z-modal);
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== EXERCISE ===== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Fixed Nav &amp; Sticky Sidebar</h2>
+      <p>Build a page layout with the following features:</p>
+      <ul>
+        <li>A <strong>fixed navigation bar</strong> at the top of the page that stays visible when scrolling. It should have a background color, padding, and a z-index high enough to stay above all content.</li>
+        <li>Add enough <code>padding-top</code> to the body or main content so it is not hidden behind the fixed nav.</li>
+        <li>Create a two-column layout: a <strong>main content area</strong> (wider) and a <strong>sidebar</strong> (narrower).</li>
+        <li>Make the sidebar <strong>sticky</strong> so it stays visible as the user scrolls through the main content. Set <code>position: sticky</code> and <code>top</code> to the height of your fixed nav.</li>
+        <li>Add enough content in the main area (multiple paragraphs or sections) to enable scrolling.</li>
+        <li>Ensure the layout works with <code>box-sizing: border-box</code> applied globally.</li>
+      </ul>
+    </section>
+
+    <!-- ===== CHALLENGE ===== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Layered Card Stack</h2>
+      <p>Create a visually striking card stack effect:</p>
+      <ul>
+        <li>Create 5 cards that <strong>overlap</strong> each other, each offset slightly to the right and down from the one below it.</li>
+        <li>Each card should have an <strong>increasing z-index</strong> so the last card appears on top.</li>
+        <li>Give each card a different <strong>background color</strong> (use HSL with the same hue but varying lightness).</li>
+        <li>The <strong>top card</strong> (highest z-index) should have a prominent <code>box-shadow</code> to make it "pop" from the stack.</li>
+        <li>Use <code>position: absolute</code> for the cards within a <code>position: relative</code> container.</li>
+        <li>On <strong>hover</strong>, each card should increase its z-index and scale up slightly with a smooth transition, rising above the stack.</li>
+      </ul>
+      <p><strong>Bonus:</strong> Add a <code>transform: rotate()</code> to each card with slightly different angles (e.g., -3deg, -1.5deg, 0deg, 1.5deg, 3deg) to create a fanned-out effect.</p>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../02-css-fundamentals/index.html">&larr; Previous</a>
+    <a href="../04-flexbox/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

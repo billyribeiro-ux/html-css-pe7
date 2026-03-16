@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component-Aware Design | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 10</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-4">Level 4 - Advanced</span>
+    <h1>Component-Aware Design</h1>
+    <p class="subtitle">Container queries and subgrid let components adapt to their context, not the viewport &mdash; unlocking truly reusable, layout-aware UI.</p>
+  </header>
+
+  <main>
+
+    <!-- ==================== Section 1: Why Container Queries ==================== -->
+    <section class="concept" id="why-container-queries">
+      <h2>1. Why Container Queries</h2>
+
+      <p>For over a decade, responsive design has been synonymous with <strong>media queries</strong>. We test the <em>viewport</em> width and rearrange layouts accordingly. This works well for page-level layout decisions &mdash; switching from a single column on phones to a multi-column layout on desktops &mdash; but it falls apart at the component level.</p>
+
+      <p>Consider a product card component. That card might appear in a narrow sidebar, a medium-width content area, or a full-bleed hero section. With media queries alone, the card has no idea where it lives. A <code>@media (min-width: 768px)</code> rule fires based on the browser window, not the card's container. The sidebar card and the main-area card both receive the same styles, even though one has 250px of space and the other has 800px.</p>
+
+      <p>This mismatch has driven developers to create brittle workarounds: special modifier classes (<code>.card--sidebar</code>, <code>.card--main</code>), JavaScript resize observers, or duplicated component variants. Every workaround adds complexity and fights against the goal of truly reusable components.</p>
+
+      <div class="why">
+        <h3>Component-Driven Design</h3>
+        <p>Container queries flip the model: instead of asking "how wide is the viewport?", a component asks "how wide is <em>my container</em>?" This means a single card component can adapt its layout based on the space it actually has available. Drop it in a sidebar? It goes compact. Drop it in a wide content area? It goes horizontal. No modifier classes, no JavaScript, no duplication. The component is truly self-contained and context-aware.</p>
+        <p>This is the design philosophy behind every modern component framework &mdash; now CSS natively supports it.</p>
+      </div>
+
+      <p>Container queries landed in all major browsers in 2023 and have been stable since. Combined with container query units, they give components fine-grained control over their presentation based on the dimensions of their nearest containment context.</p>
+
+      <div class="demo" id="demo-problem">
+        <h4>The Problem Illustrated</h4>
+        <p>Below, the same <code>.card</code> component appears in two differently-sized containers. With only media queries, both cards would look identical. With container queries, each adapts to its available space:</p>
+        <div class="cq-problem-grid">
+          <div class="cq-narrow-container">
+            <p class="container-label">Sidebar (250px)</p>
+            <div class="cq-card">
+              <div class="cq-card-img"></div>
+              <div class="cq-card-body">
+                <h5>Product Title</h5>
+                <p>A compact vertical layout suited for narrow spaces.</p>
+                <span class="cq-card-price">$49.99</span>
+              </div>
+            </div>
+          </div>
+          <div class="cq-wide-container">
+            <p class="container-label">Main Content (600px)</p>
+            <div class="cq-card">
+              <div class="cq-card-img"></div>
+              <div class="cq-card-body">
+                <h5>Product Title</h5>
+                <p>A wider horizontal layout with more detail visible, utilizing the extra available space in the main content area.</p>
+                <span class="cq-card-price">$49.99</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 2: Container Setup ==================== -->
+    <section class="concept" id="container-setup">
+      <h2>2. Container Setup</h2>
+
+      <p>Before you can query a container, you must explicitly designate an element as a <strong>containment context</strong>. This is done with the <code>container-type</code> property. Without it, <code>@container</code> rules have nothing to measure against.</p>
+
+      <p>The <code>container-type</code> property accepts three values:</p>
+      <ul>
+        <li><code>inline-size</code> &mdash; enables containment on the inline axis (width in horizontal writing modes). This is the most common choice because we almost always want to query width, and it preserves intrinsic block-size behavior.</li>
+        <li><code>size</code> &mdash; enables containment on both inline and block axes. Use this when you also need to query height, but be aware it means the element's height can no longer depend on its content without explicit sizing.</li>
+        <li><code>normal</code> &mdash; the default. No containment, no container queries.</li>
+      </ul>
+
+      <p>You can also give a container a name with <code>container-name</code>, which lets nested components target a specific ancestor container rather than just the nearest one. The shorthand <code>container</code> combines both:</p>
+
+      <pre><code>/* Longhand */
+.sidebar {
+  container-type: inline-size;
+  container-name: sidebar;
+}
+
+/* Shorthand: name / type */
+.sidebar {
+  container: sidebar / inline-size;
+}
+
+/* Multiple names (rare but possible) */
+.widget-area {
+  container: widget panel / inline-size;
+}</code></pre>
+
+      <p>Once a container is established, any descendant can use <code>@container</code> rules to query its dimensions. The browser walks up the DOM tree to find the nearest ancestor with containment and measures against that element.</p>
+
+      <div class="demo" id="demo-container-setup">
+        <h4>Container Setup Demo</h4>
+        <p>The same card component inside three containers of different widths. Each container has <code>container-type: inline-size</code> set, and the card adapts automatically:</p>
+        <div class="setup-demo-row">
+          <div class="setup-container setup-small">
+            <p class="container-label">200px container</p>
+            <div class="setup-card">
+              <div class="setup-card-icon">&#128722;</div>
+              <div class="setup-card-info">
+                <strong>Widget</strong>
+                <span>$19</span>
+              </div>
+            </div>
+          </div>
+          <div class="setup-container setup-medium">
+            <p class="container-label">350px container</p>
+            <div class="setup-card">
+              <div class="setup-card-icon">&#128722;</div>
+              <div class="setup-card-info">
+                <strong>Widget Pro</strong>
+                <span>$39</span>
+                <p class="setup-card-desc">Enhanced features for professionals.</p>
+              </div>
+            </div>
+          </div>
+          <div class="setup-container setup-large">
+            <p class="container-label">500px container</p>
+            <div class="setup-card">
+              <div class="setup-card-icon">&#128722;</div>
+              <div class="setup-card-info">
+                <strong>Widget Enterprise</strong>
+                <span>$99</span>
+                <p class="setup-card-desc">Full-featured solution with priority support, team management, and advanced analytics dashboards.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 3: @container Queries ==================== -->
+    <section class="concept" id="container-queries">
+      <h2>3. @container Queries</h2>
+
+      <p>The <code>@container</code> at-rule works similarly to <code>@media</code> but tests the dimensions of a containment context rather than the viewport. The syntax supports the same comparison operators (<code>min-width</code>, <code>max-width</code>, or the modern range syntax):</p>
+
+      <pre><code>/* Classic syntax */
+@container (min-width: 400px) {
+  .card { flex-direction: row; }
+}
+
+/* Range syntax (preferred) */
+@container (width >= 400px) {
+  .card { flex-direction: row; }
+}
+
+/* Targeting a named container */
+@container sidebar (width < 300px) {
+  .card { font-size: 0.875rem; }
+}
+
+/* Combining conditions */
+@container (width >= 300px) and (width < 600px) {
+  .card { grid-template-columns: 1fr 2fr; }
+}</code></pre>
+
+      <p>Container queries also introduce a family of <strong>container query length units</strong> that resolve relative to the queried container's dimensions. These are invaluable for fluid sizing within components:</p>
+
+      <ul>
+        <li><code>cqw</code> &mdash; 1% of the container's width</li>
+        <li><code>cqh</code> &mdash; 1% of the container's height (requires <code>container-type: size</code>)</li>
+        <li><code>cqi</code> &mdash; 1% of the container's inline size</li>
+        <li><code>cqb</code> &mdash; 1% of the container's block size</li>
+        <li><code>cqmin</code> &mdash; the smaller of <code>cqi</code> and <code>cqb</code></li>
+        <li><code>cqmax</code> &mdash; the larger of <code>cqi</code> and <code>cqb</code></li>
+      </ul>
+
+      <p>These units let you create truly fluid component typography and spacing. A heading set to <code>font-size: clamp(1rem, 4cqi, 2rem)</code> scales with its container, not the viewport &mdash; perfect for reusable components.</p>
+
+      <pre><code>/* Fluid component typography */
+.card-title {
+  font-size: clamp(1rem, 4cqi, 1.75rem);
+}
+
+/* Responsive padding based on container */
+.card-body {
+  padding: clamp(0.75rem, 3cqi, 2rem);
+}
+
+/* Container-relative gaps */
+.card-grid {
+  gap: clamp(0.5rem, 2cqi, 1.5rem);
+}</code></pre>
+
+      <p>One key difference from media queries: container queries cannot test the container element <em>itself</em> &mdash; only its <em>descendants</em>. This prevents circular dependencies where changing a container's layout would change its size, which would change the query result, which would change the layout again. The containment model ensures a clean, one-directional flow of information.</p>
+
+      <div class="demo" id="demo-product-card">
+        <h4>Adaptive Product Card Demo</h4>
+        <p>Resize the browser or imagine these in different contexts. The card switches between vertical and horizontal layouts based on the container's inline size:</p>
+        <div class="product-demo-grid">
+          <div class="product-container product-container--narrow">
+            <div class="product-card">
+              <div class="product-card__image">
+                <span class="product-card__badge">Sale</span>
+              </div>
+              <div class="product-card__content">
+                <h5 class="product-card__title">Ergonomic Keyboard</h5>
+                <p class="product-card__description">Split mechanical keyboard with hot-swappable switches, per-key RGB, and sculpted keycaps for all-day comfort.</p>
+                <div class="product-card__meta">
+                  <span class="product-card__price">$189.00</span>
+                  <span class="product-card__rating">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                </div>
+                <button class="product-card__btn">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          <div class="product-container product-container--wide">
+            <div class="product-card">
+              <div class="product-card__image">
+                <span class="product-card__badge">Sale</span>
+              </div>
+              <div class="product-card__content">
+                <h5 class="product-card__title">Ergonomic Keyboard</h5>
+                <p class="product-card__description">Split mechanical keyboard with hot-swappable switches, per-key RGB, and sculpted keycaps for all-day comfort. Designed for programmers and writers who spend 8+ hours typing daily.</p>
+                <div class="product-card__meta">
+                  <span class="product-card__price">$189.00</span>
+                  <span class="product-card__rating">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                </div>
+                <button class="product-card__btn">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 4: Style Queries ==================== -->
+    <section class="concept" id="style-queries">
+      <h2>4. Style Queries</h2>
+
+      <p>Container queries aren't limited to dimensions. <strong>Style queries</strong> let you query the <em>computed value</em> of custom properties on a container. This opens up a powerful pattern: parent components can set a custom property, and child components can adapt their rendering based on that property's value.</p>
+
+      <p>The syntax uses the <code>style()</code> function inside a <code>@container</code> rule:</p>
+
+      <pre><code>/* Query a custom property value */
+@container style(--theme: dark) {
+  .card {
+    background: #1a1a2e;
+    color: #e0e0e0;
+  }
+}
+
+@container style(--theme: light) {
+  .card {
+    background: #ffffff;
+    color: #1a1a2e;
+  }
+}
+
+/* Query for any truthy custom property */
+@container style(--featured: true) {
+  .card {
+    border: 2px solid gold;
+    transform: scale(1.02);
+  }
+}</code></pre>
+
+      <p>Style queries are particularly powerful for building <strong>variant systems</strong>. Instead of adding modifier classes, you set a custom property on a container and let descendants respond. This keeps the component API clean and composable &mdash; you can combine multiple style flags without an explosion of class combinations.</p>
+
+      <p>Currently, style queries work with custom properties. The CSS Working Group is exploring support for querying standard properties in the future, but custom property queries alone are remarkably useful for theming, density controls, and variant switching.</p>
+
+      <p>Note that style queries do <strong>not</strong> require <code>container-type</code> to be set. Any element can serve as a style query container &mdash; containment is only needed for dimensional queries. This makes style queries zero-cost to adopt.</p>
+
+      <pre><code>/* No container-type needed for style queries */
+.panel {
+  --density: comfortable; /* or compact, spacious */
+}
+
+@container style(--density: compact) {
+  .panel-item {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+    gap: 0.25rem;
+  }
+}
+
+@container style(--density: spacious) {
+  .panel-item {
+    padding: 1rem 1.5rem;
+    font-size: 1.125rem;
+    gap: 1rem;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-style-queries">
+        <h4>Style Query Theming Demo</h4>
+        <p>These cards live inside containers with different <code>--theme</code> values. The card component adapts without any class changes:</p>
+        <div class="style-query-row">
+          <div class="sq-container sq-light">
+            <div class="sq-card">
+              <h5>Dashboard Widget</h5>
+              <p>Revenue is up 12% this quarter. Performance metrics are trending positive across all key indicators.</p>
+              <button class="sq-btn">View Details</button>
+            </div>
+          </div>
+          <div class="sq-container sq-dark">
+            <div class="sq-card">
+              <h5>Dashboard Widget</h5>
+              <p>Revenue is up 12% this quarter. Performance metrics are trending positive across all key indicators.</p>
+              <button class="sq-btn">View Details</button>
+            </div>
+          </div>
+          <div class="sq-container sq-brand">
+            <div class="sq-card">
+              <h5>Dashboard Widget</h5>
+              <p>Revenue is up 12% this quarter. Performance metrics are trending positive across all key indicators.</p>
+              <button class="sq-btn">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 5: CSS Subgrid ==================== -->
+    <section class="concept" id="subgrid">
+      <h2>5. CSS Subgrid</h2>
+
+      <p>CSS Grid revolutionized web layout, but it had a significant limitation: grid tracks were defined on the <em>grid container</em>, and only <em>direct children</em> participated in those tracks. Grandchildren and deeper descendants created their own independent grids, making it impossible to align nested content to the outer grid.</p>
+
+      <p>This caused a persistent visual problem. Imagine a row of cards, each containing a title, description, and button. If one card has a longer title, its description and button shift down &mdash; but the other cards' content doesn't follow suit. The cards' internal elements are misaligned across the row because each card has its own independent grid.</p>
+
+      <p><strong>Subgrid</strong> solves this by letting a grid item's children participate in the <em>parent</em> grid's track sizing. Instead of defining new tracks, you write <code>grid-template-columns: subgrid</code> or <code>grid-template-rows: subgrid</code>, and the item adopts its parent's tracks for that axis.</p>
+
+      <pre><code>/* Parent grid defines the columns */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Each card spans 1 column but uses subgrid for rows */
+.card {
+  display: grid;
+  grid-row: span 3; /* occupy 3 parent rows */
+  grid-template-rows: subgrid; /* adopt parent's row tracks */
+  gap: 0; /* can override gap independently */
+}
+
+/* Now .card > title, .card > description, .card > button
+   all align across cards because they share row tracks */</code></pre>
+
+      <p>The key insight is that subgrid makes the parent grid's track sizing consider <em>all</em> participating content. If Card A has a tall title, the title row expands for <em>all</em> cards, keeping descriptions and buttons aligned. This was previously impossible without fixed heights or JavaScript measurement.</p>
+
+      <p>Subgrid works on either axis independently. You can subgrid columns while defining your own row tracks, or vice versa. You can even subgrid both axes simultaneously for full alignment inheritance.</p>
+
+      <div class="why">
+        <h3>Why Subgrid Matters</h3>
+        <p>Before subgrid, developers used workarounds like setting fixed heights on card sections, using Flexbox with <code>flex-grow</code> (which pushes content down but doesn't truly align), or resorting to JavaScript layout measurement. Subgrid provides a pure CSS solution that's responsive, accessible, and performant. It completes the Grid specification's promise of two-dimensional layout control.</p>
+      </div>
+
+      <div class="demo" id="demo-subgrid-cards">
+        <h4>Subgrid Card Alignment Demo</h4>
+        <p>Notice how all titles, descriptions, and action buttons align across cards, regardless of content length. The parent grid's row tracks are shared via subgrid:</p>
+        <div class="subgrid-card-grid">
+          <article class="subgrid-card">
+            <h5 class="subgrid-card__title">Short Title</h5>
+            <p class="subgrid-card__desc">A brief description that takes minimal space.</p>
+            <button class="subgrid-card__action">Learn More</button>
+          </article>
+          <article class="subgrid-card">
+            <h5 class="subgrid-card__title">A Much Longer Title That Wraps to Multiple Lines for Demonstration</h5>
+            <p class="subgrid-card__desc">Despite the long title above, the description row starts at the same position across all cards because subgrid synchronizes the row tracks.</p>
+            <button class="subgrid-card__action">Learn More</button>
+          </article>
+          <article class="subgrid-card">
+            <h5 class="subgrid-card__title">Medium Title</h5>
+            <p class="subgrid-card__desc">This card's content areas align with its siblings. No fixed heights needed &mdash; subgrid handles it automatically.</p>
+            <button class="subgrid-card__action">Learn More</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 6: Subgrid Form Layout ==================== -->
+    <section class="concept" id="subgrid-forms">
+      <h2>6. Subgrid Form Layout</h2>
+
+      <p>Forms are one of the most compelling use cases for subgrid. A common design pattern is a two-column form where labels sit in the left column and inputs in the right. With traditional CSS, you either wrap each label-input pair in a row container (adding markup) or use a flat grid (which can't handle grouped fieldsets well).</p>
+
+      <p>Subgrid lets you structure your form semantically &mdash; using <code>&lt;fieldset&gt;</code> elements for logical grouping &mdash; while still aligning all labels and inputs to a single parent grid. Each fieldset becomes a subgrid item that inherits the parent's column tracks:</p>
+
+      <pre><code>.form-grid {
+  display: grid;
+  grid-template-columns: [label] max-content [input] 1fr;
+  gap: 1rem 1.5rem;
+  align-items: baseline;
+}
+
+.form-grid fieldset {
+  display: grid;
+  grid-column: 1 / -1; /* span full width */
+  grid-template-columns: subgrid; /* inherit parent columns */
+  gap: 0.75rem 1.5rem;
+}
+
+.form-grid label {
+  grid-column: label;
+  justify-self: end;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  grid-column: input;
+}</code></pre>
+
+      <p>This approach gives you the best of both worlds: semantic, accessible form markup with <code>&lt;fieldset&gt;</code> and <code>&lt;legend&gt;</code> elements, and pixel-perfect visual alignment across all form groups. The label column auto-sizes to the widest label across <em>all</em> fieldsets, keeping everything aligned.</p>
+
+      <p>You can extend this pattern with named grid lines for even more clarity, and combine it with container queries so the form switches to a stacked layout in narrow containers.</p>
+
+      <div class="demo" id="demo-subgrid-form">
+        <h4>Subgrid Form Demo</h4>
+        <p>Labels and inputs align perfectly across fieldset groups, with the label column auto-sizing to the longest label:</p>
+        <form class="sg-form" onsubmit="return false">
+          <fieldset class="sg-fieldset">
+            <legend>Personal Information</legend>
+            <label for="sg-name">Full Name</label>
+            <input type="text" id="sg-name" placeholder="Jane Doe">
+            <label for="sg-email">Email Address</label>
+            <input type="email" id="sg-email" placeholder="jane@example.com">
+            <label for="sg-phone">Phone Number</label>
+            <input type="tel" id="sg-phone" placeholder="+1 (555) 123-4567">
+          </fieldset>
+          <fieldset class="sg-fieldset">
+            <legend>Shipping Address</legend>
+            <label for="sg-street">Street Address</label>
+            <input type="text" id="sg-street" placeholder="123 Main St">
+            <label for="sg-city">City</label>
+            <input type="text" id="sg-city" placeholder="Springfield">
+            <label for="sg-zip">ZIP / Postal Code</label>
+            <input type="text" id="sg-zip" placeholder="62704">
+          </fieldset>
+          <div class="sg-form-actions">
+            <button type="submit">Save Information</button>
+            <button type="reset">Reset</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== Section 7: Combining Both ==================== -->
+    <section class="concept" id="combining-both">
+      <h2>7. Combining Container Queries + Subgrid</h2>
+
+      <p>The true power of modern CSS layout emerges when you combine container queries with subgrid. Container queries let components adapt their <em>internal</em> layout to available space, while subgrid lets them participate in their <em>parent's</em> layout alignment. Together, they create a component system that is simultaneously self-aware and context-aware.</p>
+
+      <p>Consider a dashboard widget system. The overall dashboard uses a grid layout. Each widget panel uses subgrid to align its header, content, and footer rows with sibling panels. Meanwhile, container queries let each panel's <em>content</em> adapt: a chart widget might switch from a full chart to a sparkline in narrow containers, or a stats panel might stack its metrics vertically when space is tight.</p>
+
+      <pre><code>/* Dashboard grid */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: auto;
+  gap: 1.5rem;
+}
+
+/* Each widget uses subgrid for row alignment */
+.widget {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  container-type: inline-size; /* also a container for CQ */
+}
+
+/* Widget content adapts to its container */
+@container (width < 350px) {
+  .widget__stats {
+    flex-direction: column;
+    font-size: 0.875rem;
+  }
+}
+
+@container (width >= 350px) {
+  .widget__stats {
+    flex-direction: row;
+    font-size: 1rem;
+  }
+}</code></pre>
+
+      <p>This pattern scales beautifully. You can nest containers within subgrid items, creating a hierarchy where each level handles its own concerns: the grid manages macro-level alignment, subgrid ensures cross-component consistency, and container queries handle micro-level adaptation.</p>
+
+      <p>Another powerful combination is using style queries with subgrid. A parent can set <code>--layout: dense</code>, and subgrid children can respond by tightening their internal spacing while maintaining row alignment with siblings. The visual consistency of subgrid combined with the adaptability of container queries creates components that feel alive and responsive to their environment.</p>
+
+      <div class="demo" id="demo-combined">
+        <h4>Dashboard with CQ + Subgrid</h4>
+        <p>Widget panels share row alignment through subgrid. Each panel's content adapts via container queries based on its individual width:</p>
+        <div class="combined-dashboard">
+          <div class="combined-widget">
+            <div class="combined-widget__header">Revenue</div>
+            <div class="combined-widget__body">
+              <div class="combined-stat">
+                <span class="combined-stat__value">$48.2K</span>
+                <span class="combined-stat__label">This Month</span>
+              </div>
+              <div class="combined-stat">
+                <span class="combined-stat__value">+12%</span>
+                <span class="combined-stat__label">Growth</span>
+              </div>
+            </div>
+            <div class="combined-widget__footer">Updated 2 min ago</div>
+          </div>
+          <div class="combined-widget">
+            <div class="combined-widget__header">Active Users</div>
+            <div class="combined-widget__body">
+              <div class="combined-stat">
+                <span class="combined-stat__value">1,847</span>
+                <span class="combined-stat__label">Online Now</span>
+              </div>
+              <div class="combined-stat">
+                <span class="combined-stat__value">23.4K</span>
+                <span class="combined-stat__label">Daily Avg</span>
+              </div>
+            </div>
+            <div class="combined-widget__footer">Real-time</div>
+          </div>
+          <div class="combined-widget">
+            <div class="combined-widget__header">Performance</div>
+            <div class="combined-widget__body">
+              <div class="combined-stat">
+                <span class="combined-stat__value">98.7%</span>
+                <span class="combined-stat__label">Uptime</span>
+              </div>
+              <div class="combined-stat">
+                <span class="combined-stat__value">42ms</span>
+                <span class="combined-stat__label">Latency</span>
+              </div>
+            </div>
+            <div class="combined-widget__footer">Last 24 hours</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Exercise ==================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Adaptive Product Card</h2>
+      <p>Build a product card that shows as a <strong>small thumbnail</strong> in a sidebar (vertical, compact) and as a <strong>featured card</strong> in main content (horizontal, detailed). Requirements:</p>
+      <ol>
+        <li>Create a <code>.sidebar</code> container (250px wide) and a <code>.main-content</code> container (full width).</li>
+        <li>Set both as containment contexts with <code>container-type: inline-size</code>.</li>
+        <li>Write a single <code>.product-card</code> component with an image, title, description, price, and "Add to Cart" button.</li>
+        <li>Use <code>@container</code> queries so the card:
+          <ul>
+            <li>Below 300px: stacks vertically, hides the description, shows a compact price.</li>
+            <li>300px&ndash;500px: shows vertically with the description visible.</li>
+            <li>Above 500px: switches to horizontal layout with the image on the left and full details on the right.</li>
+          </ul>
+        </li>
+        <li>Use container query units (<code>cqi</code>) for fluid font sizing.</li>
+      </ol>
+
+      <div class="starter-code">
+        <h4>Starter Code</h4>
+        <pre><code>&lt;div class="sidebar" style="width: 250px"&gt;
+  &lt;div class="product-card"&gt;
+    &lt;img src="..." alt="..." class="product-card__img"&gt;
+    &lt;div class="product-card__body"&gt;
+      &lt;h3 class="product-card__title"&gt;...&lt;/h3&gt;
+      &lt;p class="product-card__desc"&gt;...&lt;/p&gt;
+      &lt;span class="product-card__price"&gt;...&lt;/span&gt;
+      &lt;button class="product-card__cta"&gt;Add to Cart&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="main-content"&gt;
+  &lt;!-- same card markup --&gt;
+&lt;/div&gt;</code></pre>
+        <pre><code>.sidebar, .main-content {
+  container-type: inline-size;
+}
+
+.product-card {
+  /* base styles (mobile-first / narrow) */
+  display: flex;
+  flex-direction: column;
+}
+
+@container (width &gt;= 300px) {
+  .product-card__desc { display: block; }
+}
+
+@container (width &gt;= 500px) {
+  .product-card {
+    flex-direction: row;
+  }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ==================== Challenge ==================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Adaptive Dashboard with Subgrid</h2>
+      <p>Build a dashboard where each <strong>widget panel</strong> uses container queries to adapt its content, and the overall grid uses <strong>subgrid</strong> for alignment. Requirements:</p>
+      <ol>
+        <li>Create a dashboard grid with <code>repeat(auto-fit, minmax(280px, 1fr))</code> columns.</li>
+        <li>Each widget panel should span 3 rows and use <code>grid-template-rows: subgrid</code> to align header, body, and footer rows across all panels.</li>
+        <li>Set each widget panel as a containment context.</li>
+        <li>Use <code>@container</code> queries inside each widget:
+          <ul>
+            <li>Below 300px: show a minimal summary view.</li>
+            <li>300px&ndash;450px: show a standard view with key metrics.</li>
+            <li>Above 450px: show a detailed view with charts or tables.</li>
+          </ul>
+        </li>
+        <li>Add style queries: set <code>--widget-theme: dark</code> on some panels and use <code>@container style(--widget-theme: dark)</code> to apply dark styling.</li>
+        <li>Ensure all widget headers, bodies, and footers align visually across the row.</li>
+      </ol>
+
+      <div class="challenge-hint">
+        <h4>Hints</h4>
+        <ul>
+          <li>The grid container needs <code>grid-auto-rows</code> to define row heights that subgrid items can adopt.</li>
+          <li>Each widget needs both <code>display: grid; grid-template-rows: subgrid;</code> and <code>container-type: inline-size;</code>.</li>
+          <li>Use named containers to prevent inner container queries from accidentally targeting the wrong ancestor.</li>
+          <li>Test by resizing the viewport &mdash; as columns wrap, each widget's container query breakpoints fire independently.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../09-nesting-selectors/index.html">&larr; Previous</a>
+    <a href="../11-modern-colors/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

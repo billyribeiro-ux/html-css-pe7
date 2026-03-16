@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clean, Readable CSS | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 09</a>
+  </nav>
+  <header class="lesson-header">
+    <span class="level-badge level-3">Level 3 - Modern CSS</span>
+    <h1>Clean, Readable CSS</h1>
+    <p class="subtitle">Master native CSS nesting, the :has() parent selector, and modern pseudo-class functions to write powerful, maintainable stylesheets with less code.</p>
+  </header>
+  <main>
+
+    <!-- ==================== Section 1: Native CSS Nesting ==================== -->
+    <section class="concept" id="native-nesting">
+      <h2>1. Native CSS Nesting</h2>
+
+      <p>For years, CSS developers relied on preprocessors like Sass and Less for one killer feature: nesting. Writing selectors inside other selectors mirrors the HTML structure and dramatically reduces repetition. Now, native CSS supports nesting directly in the browser &mdash; no build step required. The <code>&amp;</code> symbol represents the parent selector, and you can nest rules inside any rule block.</p>
+
+      <p>Nesting isn't just syntactic sugar. It groups related styles together, making it immediately clear which styles belong to which component. When you revisit code months later, nested CSS reads like a self-contained component definition rather than a scattered collection of flat selectors that you have to mentally piece together.</p>
+
+      <p>The <code>&amp;</code> nesting selector refers to the nearest enclosing style rule's selector. In most cases, you place <code>&amp;</code> at the beginning of a nested selector to indicate "this parent, then this child." However, you can also place <code>&amp;</code> elsewhere in the selector to create more complex relationships, such as <code>.dark &amp;</code> to style the component differently when it's inside a dark-themed container.</p>
+
+      <div class="why">
+        <strong>Why Native Nesting Matters:</strong> Preprocessor nesting requires a build tool, adds a compilation step, and produces flat CSS anyway. Native nesting works directly in the browser, is debuggable in DevTools with the actual nested structure, and reduces the cognitive gap between what you write and what runs.
+      </div>
+
+      <h3>Flat CSS vs Nested CSS</h3>
+      <p>Compare these two approaches. They produce the same result, but the nested version is shorter and easier to scan:</p>
+
+      <div class="demo-row">
+        <div class="demo-panel">
+          <div class="demo-label">Flat CSS (Traditional)</div>
+          <pre><code>.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card .card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.card .card-body {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.card .card-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.card .card-footer a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.card .card-footer a:hover {
+  text-decoration: underline;
+}</code></pre>
+        </div>
+        <div class="demo-panel">
+          <div class="demo-label">Nested CSS (Modern)</div>
+          <pre><code>.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+
+  & .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  & .card-body {
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  & .card-footer {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+    margin-top: 1rem;
+
+    & a {
+      color: #6366f1;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-nesting-basic">
+        <h4>Demo: Nested Card Component</h4>
+        <p class="demo-instruction">This card is styled entirely with nested CSS. Hover the link in the footer to see the nested <code>&amp;:hover</code> rule in action.</p>
+        <div class="nest-card">
+          <h5 class="nest-card-title">Project Update</h5>
+          <div class="nest-card-body">
+            <p>All styles for this component are grouped inside a single <code>.nest-card</code> rule block using native nesting. No repetition of the parent selector.</p>
+          </div>
+          <div class="nest-card-footer">
+            <a href="#">View details</a>
+            <a href="#">Archive</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 2: Nesting Rules ==================== -->
+    <section class="concept" id="nesting-rules">
+      <h2>2. Nesting Rules</h2>
+
+      <p>Understanding when and how to use <code>&amp;</code> is the key to mastering CSS nesting. The ampersand works differently depending on where you place it, and in some cases it's optional. Let's break down every pattern you'll encounter.</p>
+
+      <p><strong>Pseudo-classes</strong> use <code>&amp;:hover</code>, <code>&amp;:focus</code>, <code>&amp;:active</code>, etc. The <code>&amp;</code> directly attaches the pseudo-class to the parent selector with no space, producing selectors like <code>.btn:hover</code>. This is the most common nesting pattern and makes interactive states easy to co-locate with their base styles.</p>
+
+      <p><strong>Pseudo-elements</strong> work the same way: <code>&amp;::before</code>, <code>&amp;::after</code>, <code>&amp;::placeholder</code>. They attach directly to the parent, producing <code>.input::placeholder</code> and similar selectors.</p>
+
+      <p><strong>Child/descendant selectors</strong> use <code>&amp; .child</code> with a space. The space between <code>&amp;</code> and the child selector is critical &mdash; it produces a descendant combinator. You can also use <code>&amp; &gt; .child</code> for direct children.</p>
+
+      <p><strong>When &amp; is optional:</strong> If a nested selector starts with a symbol that can't begin a valid selector on its own (like <code>:</code>, <code>::</code>, <code>+</code>, <code>~</code>, <code>&gt;</code>), the browser implicitly prepends <code>&amp;</code>. So <code>:hover { ... }</code> inside a rule block is equivalent to <code>&amp;:hover { ... }</code>. However, explicitly writing <code>&amp;</code> is recommended for clarity.</p>
+
+      <pre><code>.btn {
+  padding: 0.5rem 1rem;
+  background: #6366f1;
+  color: #fff;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+
+  /* Pseudo-classes: & attaches directly */
+  &:hover {
+    background: #4f46e5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Pseudo-elements: & attaches directly */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  /* Child selectors: space between & and child */
+  & .btn-icon {
+    margin-right: 0.5rem;
+  }
+
+  /* Direct child combinator */
+  & > span {
+    font-weight: 600;
+  }
+
+  /* Reverse nesting: style when inside another context */
+  .dark & {
+    background: #818cf8;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-nesting-rules">
+        <h4>Demo: Nesting Patterns</h4>
+        <p class="demo-instruction">Hover, focus (Tab key), and click the button to see different nested pseudo-class rules apply. The decorative element uses <code>&amp;::before</code>.</p>
+        <div class="nesting-rules-demo">
+          <button class="nr-btn">
+            <span class="nr-btn-icon">&#9733;</span>
+            <span>Interactive Button</span>
+          </button>
+          <button class="nr-btn" disabled>
+            <span class="nr-btn-icon">&#9888;</span>
+            <span>Disabled State</span>
+          </button>
+          <div class="nr-decorated-box">
+            This box uses <code>&amp;::before</code> for the decorative left border accent.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 3: Nesting Media Queries ==================== -->
+    <section class="concept" id="nesting-media">
+      <h2>3. Nesting Media Queries</h2>
+
+      <p>One of the most powerful applications of CSS nesting is placing <code>@media</code> queries directly inside rule blocks. Instead of scattering your responsive styles across separate media query blocks at the bottom of your file, you can co-locate them with the component they modify. This is a massive improvement for maintainability &mdash; when you look at a component's styles, you see <em>everything</em> about it, including how it responds to different screen sizes.</p>
+
+      <p>When you nest a <code>@media</code> query inside a rule, the browser automatically scopes it to that selector. You don't need to repeat the selector inside the media block. The result is identical to writing the media query separately with the full selector, but your source code is far more organized.</p>
+
+      <p>This pattern works with all at-rules that can be nested: <code>@media</code>, <code>@container</code>, <code>@supports</code>, and <code>@layer</code>. You can even nest media queries inside each other for compound conditions.</p>
+
+      <div class="why">
+        <strong>Why Co-Located Media Queries Win:</strong> In traditional CSS, a component's responsive behavior is defined far away from its base styles, often hundreds of lines apart. When you modify a component, you must hunt for all its media queries. With nesting, every responsive rule lives right next to the styles it modifies. One component, one location, all breakpoints.
+      </div>
+
+      <pre><code>/* Traditional: component styles scattered across the file */
+.pricing-card {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+/* ... 200 lines later ... */
+
+@media (min-width: 768px) {
+  .pricing-card {
+    padding: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ... 100 more lines ... */
+
+@media (min-width: 1024px) {
+  .pricing-card {
+    padding: 3rem;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* ---- Nested: everything in one place ---- */
+.pricing-card {
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 3rem;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-nested-media">
+        <h4>Demo: Responsive Component with Co-Located Styles</h4>
+        <p class="demo-instruction">Resize your browser window to see this component adapt. All breakpoint styles are nested inside a single rule block.</p>
+        <div class="responsive-profile">
+          <div class="responsive-profile-avatar">&#9786;</div>
+          <div class="responsive-profile-info">
+            <h5 class="responsive-profile-name">Alex Chen</h5>
+            <p class="responsive-profile-role">Senior Frontend Engineer</p>
+          </div>
+          <div class="responsive-profile-stats">
+            <div class="responsive-stat">
+              <span class="responsive-stat-value">142</span>
+              <span class="responsive-stat-label">Commits</span>
+            </div>
+            <div class="responsive-stat">
+              <span class="responsive-stat-value">38</span>
+              <span class="responsive-stat-label">PRs</span>
+            </div>
+            <div class="responsive-stat">
+              <span class="responsive-stat-value">17</span>
+              <span class="responsive-stat-label">Reviews</span>
+            </div>
+          </div>
+          <div class="responsive-profile-actions">
+            <button class="responsive-btn responsive-btn-primary">Message</button>
+            <button class="responsive-btn responsive-btn-secondary">Profile</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 4: The :has() Selector ==================== -->
+    <section class="concept" id="has-selector">
+      <h2>4. The :has() Selector</h2>
+
+      <p>The <code>:has()</code> selector is arguably the most significant addition to CSS selectors in a decade. It's often called "the parent selector" because it allows you to select an element <em>based on its children or descendants</em>. Before <code>:has()</code>, this was impossible in CSS &mdash; you could only select children based on parents, never the reverse. This limitation forced developers to use JavaScript for countless styling patterns that should have been pure CSS.</p>
+
+      <p>The syntax is straightforward: <code>A:has(B)</code> selects element A if it contains element B as a descendant. For example, <code>.card:has(img)</code> selects cards that contain an image, <code>form:has(input:invalid)</code> selects forms that contain an invalid input, and <code>li:has(+ li)</code> selects list items that are followed by another list item (using the adjacent sibling combinator inside <code>:has()</code>).</p>
+
+      <p>The power of <code>:has()</code> goes far beyond simple parent selection. It can check for any relational selector: siblings, specific child combinations, states of descendants, and more. Combined with <code>:valid</code>, <code>:checked</code>, <code>:empty</code>, and other state pseudo-classes, it enables complex UI logic without a single line of JavaScript.</p>
+
+      <div class="why">
+        <strong>Why :has() Changes Everything:</strong> Before <code>:has()</code>, showing a "form is valid" indicator required JavaScript to check all inputs and toggle a class. Now, <code>form:has(input:invalid)</code> does it in pure CSS. Interactive UIs that previously needed JS event listeners can now be declarative CSS rules.
+      </div>
+
+      <pre><code>/* Select a card that contains an image */
+.card:has(img) {
+  grid-template-rows: 200px 1fr;
+}
+
+/* Select a card that does NOT contain an image */
+.card:not(:has(img)) {
+  grid-template-rows: 1fr;
+}
+
+/* Style a form label when its sibling input is valid */
+.field:has(input:valid) {
+  & label {
+    color: #10b981;
+  }
+  & .field-indicator {
+    opacity: 1;
+  }
+}
+
+/* Style a form label when its sibling input is invalid and touched */
+.field:has(input:invalid:not(:placeholder-shown)) {
+  & label {
+    color: #ef4444;
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-has">
+        <h4>Demo: Form Validation with :has()</h4>
+        <p class="demo-instruction">Type in the fields below. Labels turn green when the input becomes valid. No JavaScript is involved &mdash; this is pure CSS using <code>:has()</code>.</p>
+        <form class="has-demo-form" onsubmit="return false;">
+          <div class="has-field">
+            <label for="has-email">Email Address</label>
+            <input type="email" id="has-email" placeholder=" " required>
+            <span class="has-field-indicator">&#10003;</span>
+          </div>
+          <div class="has-field">
+            <label for="has-name">Full Name (min 2 chars)</label>
+            <input type="text" id="has-name" placeholder=" " required minlength="2">
+            <span class="has-field-indicator">&#10003;</span>
+          </div>
+          <div class="has-field">
+            <label for="has-url">Website URL</label>
+            <input type="url" id="has-url" placeholder=" ">
+            <span class="has-field-indicator">&#10003;</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="demo" id="demo-has-card">
+        <h4>Demo: Card Layout with :has(img)</h4>
+        <p class="demo-instruction">Cards with images get a different layout automatically. No extra classes needed.</p>
+        <div class="has-card-grid">
+          <div class="has-card">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'%3E%3Crect fill='%236366f1' width='400' height='200'/%3E%3Ctext x='200' y='110' text-anchor='middle' fill='white' font-size='24' font-family='sans-serif'%3EImage Placeholder%3C/text%3E%3C/svg%3E" alt="Placeholder">
+            <div class="has-card-content">
+              <h5>Card With Image</h5>
+              <p>This card has an image, so <code>:has(img)</code> matches and applies a different layout.</p>
+            </div>
+          </div>
+          <div class="has-card">
+            <div class="has-card-content">
+              <h5>Card Without Image</h5>
+              <p>No image here, so this card gets the simpler text-only layout. CSS detects the difference automatically.</p>
+            </div>
+          </div>
+          <div class="has-card">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'%3E%3Crect fill='%2310b981' width='400' height='200'/%3E%3Ctext x='200' y='110' text-anchor='middle' fill='white' font-size='24' font-family='sans-serif'%3EAnother Image%3C/text%3E%3C/svg%3E" alt="Placeholder">
+            <div class="has-card-content">
+              <h5>Another Image Card</h5>
+              <p>The <code>:has()</code> selector adapts the layout without any JavaScript or extra class names.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 5: :is() and :where() ==================== -->
+    <section class="concept" id="is-where">
+      <h2>5. :is() and :where()</h2>
+
+      <p>The <code>:is()</code> and <code>:where()</code> pseudo-class functions let you group selectors to reduce repetition. Instead of writing the same declarations for multiple selectors, you can combine them into a single rule. They both accept a comma-separated list of selectors as their argument, and the rule matches if any of the listed selectors match.</p>
+
+      <p>The critical difference is <strong>specificity</strong>. <code>:is()</code> takes on the specificity of its <em>most specific argument</em>. If you write <code>:is(.card, #hero, div)</code>, the specificity of the entire <code>:is()</code> expression is that of <code>#hero</code> (1-0-0). <code>:where()</code>, on the other hand, always contributes <strong>zero specificity</strong>, no matter what selectors you put inside it. This makes <code>:where()</code> perfect for creating easily overridable base styles.</p>
+
+      <p>Both functions are also "forgiving" &mdash; if one selector in the list is invalid, the others still work. In a normal selector list, one invalid selector invalidates the entire rule. This forgiving behavior is useful when using selectors that might not be supported in all browsers.</p>
+
+      <div class="why">
+        <strong>Practical Guideline:</strong> Use <code>:is()</code> when you want the grouped selectors to carry their natural specificity. Use <code>:where()</code> when you're writing defaults or base styles that should be easy to override without specificity battles.
+      </div>
+
+      <pre><code>/* :is() - groups selectors, takes highest specificity */
+:is(h1, h2, h3, h4) {
+  line-height: 1.2;
+  color: #1e293b;
+}
+
+/* Without :is(), you'd write: */
+h1, h2, h3, h4 {
+  line-height: 1.2;
+  color: #1e293b;
+}
+
+/* :is() shines in complex selectors */
+:is(article, section, aside) :is(h2, h3) {
+  margin-top: 1.5em;
+}
+
+/* Without :is(), this would be 6 selectors:
+   article h2, article h3, section h2,
+   section h3, aside h2, aside h3 */
+
+/* :where() - same grouping, but ZERO specificity */
+:where(article, section, aside) :where(h2, h3) {
+  margin-top: 1.5em;
+  /* Specificity: 0-0-0 — trivially overridable! */
+}
+
+/* Easy override with just an element selector */
+section h2 {
+  margin-top: 0; /* Wins because 0-0-2 > 0-0-0 */
+}</code></pre>
+
+      <div class="demo" id="demo-is-where">
+        <h4>Demo: Specificity Comparison</h4>
+        <p class="demo-instruction">Both rows below target the same elements. The <code>:is()</code> version has higher specificity and is harder to override. The <code>:where()</code> version has zero specificity and is easily overridden.</p>
+        <div class="is-where-demo">
+          <div class="is-where-section">
+            <h5>:is() Specificity</h5>
+            <div class="is-demo-target">
+              <p class="is-text">This text is styled with <code>:is(.is-demo-target) .is-text</code>. Specificity: <strong>0-2-0</strong></p>
+              <p class="is-text override-attempt">This has <code>.override-attempt</code> too, but can't easily override because :is() keeps specificity high.</p>
+            </div>
+          </div>
+          <div class="is-where-section">
+            <h5>:where() Specificity</h5>
+            <div class="where-demo-target">
+              <p class="where-text">This text is styled with <code>:where(.where-demo-target) .where-text</code>. Specificity: <strong>0-1-0</strong></p>
+              <p class="where-text override-attempt">This has <code>.override-attempt</code> which easily overrides because :where() adds zero specificity.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 6: :not() Advanced ==================== -->
+    <section class="concept" id="not-advanced">
+      <h2>6. :not() Advanced</h2>
+
+      <p>The <code>:not()</code> pseudo-class has been around for a while, but its modern form is far more powerful. Originally, <code>:not()</code> could only accept a single simple selector. Now it accepts a full selector list, just like <code>:is()</code>. You can write <code>:not(.active, .disabled)</code> to exclude multiple classes, or <code>:not(:first-child, :last-child)</code> to target only middle elements.</p>
+
+      <p>The specificity of <code>:not()</code> follows the same rule as <code>:is()</code>: it takes on the specificity of its most specific argument. <code>:not()</code> itself doesn't add any specificity &mdash; it's the argument that counts. So <code>:not(.foo)</code> has specificity 0-1-0 (from <code>.foo</code>), and <code>:not(#bar)</code> has specificity 1-0-0.</p>
+
+      <p>Complex negation patterns become possible by combining <code>:not()</code> with other pseudo-classes. For example, <code>:not(:has(img))</code> selects elements that don't contain an image, <code>:not(:first-child):not(:last-child)</code> selects only middle children, and <code>input:not(:placeholder-shown):not(:focus)</code> targets inputs that have content but aren't currently focused.</p>
+
+      <pre><code>/* Exclude multiple states at once */
+.nav-link:not(.active, .disabled) {
+  opacity: 0.7;
+}
+
+/* Style all list items except first and last */
+li:not(:first-child, :last-child) {
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Target inputs that have content but aren't focused */
+input:not(:placeholder-shown):not(:focus) {
+  border-color: #10b981;
+}
+
+/* Select cards that don't have images */
+.card:not(:has(img)) {
+  min-height: 200px;
+}</code></pre>
+
+      <div class="demo" id="demo-not">
+        <h4>Demo: Complex Negation</h4>
+        <p class="demo-instruction">In this navigation, <code>:not(.active, .disabled)</code> dims inactive links. Middle list items (not first, not last) get borders.</p>
+        <nav class="not-demo-nav">
+          <a href="#" class="not-nav-link active">Dashboard</a>
+          <a href="#" class="not-nav-link">Projects</a>
+          <a href="#" class="not-nav-link">Analytics</a>
+          <a href="#" class="not-nav-link">Reports</a>
+          <a href="#" class="not-nav-link disabled">Admin</a>
+        </nav>
+        <ul class="not-demo-list">
+          <li>First item (no top border)</li>
+          <li>Middle item (has borders)</li>
+          <li>Middle item (has borders)</li>
+          <li>Middle item (has borders)</li>
+          <li>Last item (no bottom border)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==================== Section 7: Combining :has() with Nesting ==================== -->
+    <section class="concept" id="has-nesting">
+      <h2>7. Combining :has() with Nesting</h2>
+
+      <p>When you combine <code>:has()</code> with native CSS nesting, you unlock remarkably expressive component patterns &mdash; all without JavaScript. The nesting keeps the code organized and readable, while <code>:has()</code> provides the conditional logic. Together, they let you build interactive, state-aware components in pure CSS.</p>
+
+      <p>Consider a toggle switch: when the hidden checkbox inside it is <code>:checked</code>, the entire toggle's appearance changes. Or an accordion: when a <code>&lt;details&gt;</code> element is open, the parent section adjusts its styling. These patterns replace what previously required JavaScript event listeners and class toggling.</p>
+
+      <p>The key insight is that <code>:has()</code> + nesting turns CSS into a declarative state machine. You define how a component looks in each state (has checked input, has focused child, has valid form fields) and CSS handles the transitions between states automatically.</p>
+
+      <pre><code>/* Interactive toggle - zero JavaScript */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+
+  & .toggle-track {
+    width: 48px;
+    height: 26px;
+    background: #cbd5e1;
+    border-radius: 13px;
+    position: relative;
+    transition: background 0.2s;
+
+    &::after {
+      content: "";
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+  }
+
+  /* When the hidden input is checked, restyle everything */
+  &:has(input:checked) {
+    & .toggle-track {
+      background: #6366f1;
+
+      &::after {
+        transform: translateX(22px);
+      }
+    }
+
+    & .toggle-label {
+      color: #6366f1;
+      font-weight: 600;
+    }
+  }
+}</code></pre>
+
+      <div class="demo" id="demo-has-nesting">
+        <h4>Demo: Interactive Components, Zero JavaScript</h4>
+        <p class="demo-instruction">Click the toggles and checkboxes below. All state changes are handled by <code>:has(input:checked)</code> in CSS &mdash; no JavaScript involved.</p>
+        <div class="has-nesting-demos">
+          <div class="toggle-group">
+            <label class="css-toggle">
+              <input type="checkbox" class="sr-only">
+              <span class="toggle-track"></span>
+              <span class="toggle-label">Dark Mode</span>
+            </label>
+            <label class="css-toggle">
+              <input type="checkbox" class="sr-only" checked>
+              <span class="toggle-track"></span>
+              <span class="toggle-label">Notifications</span>
+            </label>
+            <label class="css-toggle">
+              <input type="checkbox" class="sr-only">
+              <span class="toggle-track"></span>
+              <span class="toggle-label">Auto-save</span>
+            </label>
+          </div>
+
+          <div class="checkbox-card-group">
+            <label class="checkbox-card">
+              <input type="checkbox" class="sr-only">
+              <span class="checkbox-card-check">&#10003;</span>
+              <span class="checkbox-card-title">Starter</span>
+              <span class="checkbox-card-price">Free</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" class="sr-only">
+              <span class="checkbox-card-check">&#10003;</span>
+              <span class="checkbox-card-title">Pro</span>
+              <span class="checkbox-card-price">$9/mo</span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" class="sr-only">
+              <span class="checkbox-card-check">&#10003;</span>
+              <span class="checkbox-card-title">Enterprise</span>
+              <span class="checkbox-card-price">$29/mo</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Section 8: Component Library ==================== -->
+    <section class="concept" id="component-library">
+      <h2>8. Component Library</h2>
+
+      <p>Let's put everything together and build a mini component library using nested CSS and <code>:has()</code>. Each component is self-contained, uses nesting for organization, and leverages <code>:has()</code> for dynamic behavior. This demonstrates how modern CSS can create rich, interactive components without JavaScript.</p>
+
+      <div class="demo" id="demo-library">
+        <h4>Demo: Component Library</h4>
+
+        <h5 class="lib-section-title">Buttons</h5>
+        <div class="lib-row">
+          <button class="lib-btn lib-btn-primary">Primary</button>
+          <button class="lib-btn lib-btn-secondary">Secondary</button>
+          <button class="lib-btn lib-btn-danger">Danger</button>
+          <button class="lib-btn lib-btn-ghost">Ghost</button>
+          <button class="lib-btn lib-btn-primary" disabled>Disabled</button>
+        </div>
+
+        <h5 class="lib-section-title">Badges</h5>
+        <div class="lib-row">
+          <span class="lib-badge lib-badge-default">Default</span>
+          <span class="lib-badge lib-badge-success">Success</span>
+          <span class="lib-badge lib-badge-warning">Warning</span>
+          <span class="lib-badge lib-badge-error">Error</span>
+          <span class="lib-badge lib-badge-info">Info</span>
+        </div>
+
+        <h5 class="lib-section-title">Cards (with :has() adaptive layout)</h5>
+        <div class="lib-card-grid">
+          <div class="lib-card">
+            <div class="lib-card-body">
+              <h5>Text-Only Card</h5>
+              <p>No image detected, so this card uses a compact text layout.</p>
+              <div class="lib-card-actions">
+                <button class="lib-btn lib-btn-primary lib-btn-sm">Learn More</button>
+              </div>
+            </div>
+          </div>
+          <div class="lib-card">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 180'%3E%3Crect fill='%23818cf8' width='400' height='180'/%3E%3Ctext x='200' y='100' text-anchor='middle' fill='white' font-size='20' font-family='sans-serif'%3EFeatured Image%3C/text%3E%3C/svg%3E" alt="Featured">
+            <div class="lib-card-body">
+              <h5>Image Card</h5>
+              <p>An image is present, so <code>:has(img)</code> applies a stacked layout.</p>
+              <div class="lib-card-actions">
+                <button class="lib-btn lib-btn-primary lib-btn-sm">View</button>
+                <button class="lib-btn lib-btn-ghost lib-btn-sm">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h5 class="lib-section-title">Form Fields (with :has() validation)</h5>
+        <form class="lib-form" onsubmit="return false;">
+          <div class="lib-field">
+            <label for="lib-username">Username</label>
+            <input type="text" id="lib-username" placeholder=" " required minlength="3">
+            <span class="lib-field-msg lib-field-error">At least 3 characters required</span>
+            <span class="lib-field-msg lib-field-success">Looks good!</span>
+          </div>
+          <div class="lib-field">
+            <label for="lib-email">Email</label>
+            <input type="email" id="lib-email" placeholder=" " required>
+            <span class="lib-field-msg lib-field-error">Please enter a valid email</span>
+            <span class="lib-field-msg lib-field-success">Valid email!</span>
+          </div>
+          <div class="lib-field">
+            <label for="lib-password">Password (min 8 chars)</label>
+            <input type="password" id="lib-password" placeholder=" " required minlength="8">
+            <span class="lib-field-msg lib-field-error">At least 8 characters required</span>
+            <span class="lib-field-msg lib-field-success">Strong password!</span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== Exercise ==================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Refactor Flat CSS into Nested CSS</h2>
+
+      <p>Take the following flat CSS and refactor it into nested CSS. Your goal is to eliminate the repetition of parent selectors and group related styles together. The refactored version should produce the exact same visual result but with significantly less repetition.</p>
+
+      <h3>Flat CSS to Refactor:</h3>
+      <pre><code>/* Refactor this flat CSS into nested CSS */
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid;
+  margin-bottom: 1rem;
+}
+
+.alert .alert-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.alert .alert-message {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.alert .alert-close {
+  float: right;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.alert .alert-close:hover {
+  opacity: 1;
+}
+
+.alert.alert-success {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.alert.alert-error {
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.alert.alert-warning {
+  background-color: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}</code></pre>
+
+      <h3>Your Target:</h3>
+      <pre><code>/* Nest everything inside a single .alert block.
+   Use & for modifier classes and pseudo-classes.
+   Reduce selector repetition to zero. */
+.alert {
+  /* base styles... */
+
+  & .alert-title { /* ... */ }
+  & .alert-message { /* ... */ }
+
+  & .alert-close {
+    /* ... */
+    &:hover { /* ... */ }
+  }
+
+  &.alert-success { /* ... */ }
+  &.alert-error { /* ... */ }
+  &.alert-warning { /* ... */ }
+}</code></pre>
+    </section>
+
+    <!-- ==================== Challenge ==================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Pure CSS Interactive Form</h2>
+
+      <p>Build a registration form where all interactive behavior is powered by <code>:has()</code> and CSS nesting &mdash; zero JavaScript allowed. The form should include the following behaviors:</p>
+
+      <h3>Requirements:</h3>
+      <ol>
+        <li><strong>Floating labels:</strong> Labels start inside the input and float above when the input has content (use <code>:not(:placeholder-shown)</code> combined with <code>:has()</code>).</li>
+        <li><strong>Validation feedback:</strong> Each field shows a green check mark when valid and a red error message when invalid (after the user has started typing). Use <code>:has(input:valid)</code> and <code>:has(input:invalid:not(:placeholder-shown))</code>.</li>
+        <li><strong>Submit button state:</strong> The submit button is visually disabled (grayed out, not clickable) until <em>all</em> fields are valid. Use <code>form:has(input:invalid) .submit-btn</code> to conditionally style the button.</li>
+        <li><strong>Progress indicator:</strong> Show a progress bar or step indicator that fills as more fields become valid.</li>
+        <li><strong>All styles must use CSS nesting</strong> for organization. No flat selectors outside of the main component block.</li>
+      </ol>
+
+      <h3>Starter HTML:</h3>
+      <pre><code>&lt;form class="smart-form"&gt;
+  &lt;div class="smart-field"&gt;
+    &lt;input type="text" id="sf-name" placeholder=" " required minlength="2"&gt;
+    &lt;label for="sf-name"&gt;Full Name&lt;/label&gt;
+    &lt;span class="smart-field-check"&gt;&amp;#10003;&lt;/span&gt;
+    &lt;span class="smart-field-error"&gt;Required (min 2 chars)&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;!-- Add more fields: email, password, confirm password --&gt;
+  &lt;button type="submit" class="smart-submit"&gt;Create Account&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+      <h3>Key CSS Patterns:</h3>
+      <pre><code>.smart-form {
+  /* Nest everything here */
+
+  & .smart-field {
+    position: relative;
+
+    & label {
+      /* Position inside input by default */
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: all 0.2s;
+    }
+
+    /* Float label when input has content */
+    &:has(input:not(:placeholder-shown)) label,
+    &:has(input:focus) label {
+      top: 0;
+      font-size: 0.75rem;
+      transform: translateY(-100%);
+    }
+
+    /* Valid state */
+    &:has(input:valid:not(:placeholder-shown)) {
+      & .smart-field-check { opacity: 1; }
+      & label { color: #10b981; }
+    }
+
+    /* Invalid state after interaction */
+    &:has(input:invalid:not(:placeholder-shown)) {
+      & .smart-field-error { display: block; }
+      & label { color: #ef4444; }
+    }
+  }
+
+  /* Submit button disabled when form has invalid inputs */
+  &:has(input:invalid) .smart-submit {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}</code></pre>
+    </section>
+
+  </main>
+  <footer class="lesson-footer">
+    <a href="../08-transitions-animations/index.html">&larr; Previous</a>
+    <a href="../10-container-queries-subgrid/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

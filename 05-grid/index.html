@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two-Dimensional Power | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 05</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-2">Level 2 - Layout Mastery</span>
+    <h1>Two-Dimensional Power</h1>
+    <p class="subtitle">CSS Grid gives you simultaneous control over rows and columns &mdash; the most powerful layout system CSS has ever had.</p>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         SECTION 1: Grid Container
+         ============================================================ -->
+    <section class="concept-section" id="grid-container">
+      <h2>1. Grid Container</h2>
+
+      <p>
+        CSS Grid Layout begins with <code>display: grid</code> on a container element. Just like
+        Flexbox, this turns direct children into grid items. But unlike Flexbox, Grid operates in
+        <strong>two dimensions simultaneously</strong>. You define both columns and rows up front,
+        creating a structured grid that items flow into.
+      </p>
+
+      <p>
+        The two foundational properties are <code>grid-template-columns</code> and
+        <code>grid-template-rows</code>. Each accepts a space-separated list of track sizes.
+        For example, <code>grid-template-columns: 200px 200px 200px</code> creates three columns,
+        each 200 pixels wide. <code>grid-template-rows: 100px 100px</code> creates two rows, each
+        100 pixels tall.
+      </p>
+
+      <p>
+        Items are placed into cells automatically in source order, filling each row from left to
+        right before moving to the next row. This "auto-placement" behavior means you often do not
+        need to explicitly position items &mdash; just define the grid structure and let the browser
+        fill it in.
+      </p>
+
+      <p>
+        Grid solves layout challenges that were extremely difficult with older techniques. Multi-column
+        layouts with aligned rows, dashboard interfaces, magazine-style designs &mdash; all of these
+        become straightforward. Where Flexbox excels at distributing items along a single axis, Grid
+        excels when you need both rows and columns to align.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Grid does not replace Flexbox &mdash; they complement each
+        other. Use Grid when your layout is fundamentally two-dimensional (rows AND columns matter).
+        Use Flexbox when you are distributing items along a single axis. In practice, most pages use
+        both: Grid for the overall page layout, Flexbox for components within grid cells.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.container {
+  display: grid;
+  grid-template-columns: 200px 200px 200px;  /* 3 equal columns */
+  grid-template-rows: 100px 100px;            /* 2 equal rows */
+  gap: 1rem;                                   /* Space between cells */
+}
+
+/* Items flow into cells automatically:
+   Item 1 -> row 1, col 1
+   Item 2 -> row 1, col 2
+   Item 3 -> row 1, col 3
+   Item 4 -> row 2, col 1
+   ... and so on */</code></pre>
+      </div>
+
+      <div class="demo" id="demo-basic-grid">
+        <h3>Basic Grid Demo</h3>
+        <div class="demo-panel">
+          <p class="demo-label">3 columns x 2 rows (200px each column, 100px each row)</p>
+          <div class="basic-grid">
+            <div class="cell cell-a">1</div>
+            <div class="cell cell-b">2</div>
+            <div class="cell cell-c">3</div>
+            <div class="cell cell-d">4</div>
+            <div class="cell cell-a">5</div>
+            <div class="cell cell-b">6</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: The fr Unit
+         ============================================================ -->
+    <section class="concept-section" id="fr-unit">
+      <h2>2. The fr Unit</h2>
+
+      <p>
+        While pixel values work, they create rigid grids. The <code>fr</code> (fractional) unit is
+        Grid's most important innovation. One <code>fr</code> represents one fraction of the available
+        space in the grid container. If you write <code>grid-template-columns: 1fr 1fr 1fr</code>,
+        the three columns share the available width equally. <code>1fr 2fr 1fr</code> gives the
+        middle column twice as much space as the others.
+      </p>
+
+      <p>
+        The <code>fr</code> unit distributes space <em>after</em> fixed-size tracks and gaps have
+        been accounted for. So <code>grid-template-columns: 200px 1fr 1fr</code> first reserves
+        200px for the first column, then splits the remaining space equally between the second
+        and third columns. This makes <code>fr</code> perfect for mixing fixed and flexible tracks.
+      </p>
+
+      <p>
+        Compared to percentages, <code>fr</code> is more intuitive and more powerful. Percentages
+        do not account for gaps &mdash; if you have three 33.33% columns with gaps, the total exceeds
+        100% and items overflow. The <code>fr</code> unit handles gaps automatically because it
+        distributes only the <em>remaining</em> space.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The <code>fr</code> unit eliminates the math that
+        percentage-based layouts required. No more calculating <code>calc(33.33% - 20px)</code> to
+        account for gutters. Just write <code>1fr 1fr 1fr</code> and let the browser handle it.
+        This makes Grid layouts inherently more maintainable and less error-prone.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Equal thirds */
+grid-template-columns: 1fr 1fr 1fr;
+
+/* Sidebar + main content */
+grid-template-columns: 250px 1fr;
+
+/* Proportional: 1:2:1 ratio */
+grid-template-columns: 1fr 2fr 1fr;
+
+/* Mixed: fixed, flexible, fixed */
+grid-template-columns: 80px 1fr 80px;</code></pre>
+      </div>
+
+      <div class="demo" id="demo-fr">
+        <h3>fr Unit Comparison</h3>
+        <div class="demo-panel">
+          <p class="demo-label">px columns: 150px 150px 150px (rigid)</p>
+          <div class="fr-demo fr-px">
+            <div class="cell cell-a">150px</div>
+            <div class="cell cell-b">150px</div>
+            <div class="cell cell-c">150px</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">fr columns: 1fr 1fr 1fr (flexible, equal)</p>
+          <div class="fr-demo fr-equal">
+            <div class="cell cell-a">1fr</div>
+            <div class="cell cell-b">1fr</div>
+            <div class="cell cell-c">1fr</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">Mixed: 200px 1fr 1fr (fixed + flexible)</p>
+          <div class="fr-demo fr-mixed">
+            <div class="cell cell-d">200px</div>
+            <div class="cell cell-a">1fr</div>
+            <div class="cell cell-b">1fr</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">Proportional: 1fr 2fr 1fr</p>
+          <div class="fr-demo fr-proportional">
+            <div class="cell cell-c">1fr</div>
+            <div class="cell cell-a">2fr</div>
+            <div class="cell cell-c">1fr</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: repeat() and minmax()
+         ============================================================ -->
+    <section class="concept-section" id="repeat-minmax">
+      <h2>3. repeat() and minmax()</h2>
+
+      <p>
+        Writing <code>1fr 1fr 1fr 1fr 1fr 1fr</code> for six equal columns is tedious. The
+        <code>repeat()</code> function shortens this to <code>repeat(6, 1fr)</code>. The first
+        argument is the count, the second is the track size pattern. You can repeat multiple
+        values: <code>repeat(3, 1fr 2fr)</code> creates six columns alternating 1fr and 2fr.
+      </p>
+
+      <p>
+        The <code>minmax()</code> function sets a minimum and maximum size for a track. For example,
+        <code>minmax(200px, 1fr)</code> means "at least 200px, but grow to fill available space."
+        This is incredibly useful for responsive layouts because tracks can adapt while respecting
+        minimum and maximum constraints.
+      </p>
+
+      <p>
+        The real magic happens when you combine <code>repeat()</code> with <code>auto-fill</code>
+        or <code>auto-fit</code> and <code>minmax()</code>. The expression
+        <code>repeat(auto-fill, minmax(200px, 1fr))</code> creates as many columns as will fit,
+        each at least 200px wide, distributing extra space equally. This creates a fully responsive
+        grid <em>without any media queries</em>.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The pattern
+        <code>repeat(auto-fill, minmax(min, 1fr))</code> is one of the most powerful one-liners in
+        all of CSS. It creates intrinsically responsive layouts that adapt to any container width.
+        Cards, image galleries, product grids &mdash; all can be built with this single declaration.
+        Learn this pattern and you will use it constantly.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* repeat() shorthand */
+grid-template-columns: repeat(3, 1fr);           /* Three equal columns */
+grid-template-columns: repeat(4, 150px);          /* Four 150px columns */
+grid-template-columns: repeat(3, 1fr 2fr);        /* Six columns: 1fr 2fr 1fr 2fr 1fr 2fr */
+
+/* minmax() for flexible tracks */
+grid-template-columns: repeat(3, minmax(100px, 1fr));
+
+/* The responsive grid pattern (no media queries!) */
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));</code></pre>
+      </div>
+
+      <div class="demo" id="demo-repeat">
+        <h3>repeat() + minmax() Demo</h3>
+        <p class="demo-note">Resize your browser to see auto-fill respond to available width.</p>
+        <div class="demo-panel">
+          <p class="demo-label">repeat(3, 1fr) &mdash; fixed 3 columns</p>
+          <div class="repeat-demo repeat-3">
+            <div class="cell cell-a">1</div>
+            <div class="cell cell-b">2</div>
+            <div class="cell cell-c">3</div>
+            <div class="cell cell-d">4</div>
+            <div class="cell cell-a">5</div>
+            <div class="cell cell-b">6</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">repeat(auto-fill, minmax(200px, 1fr)) &mdash; responsive!</p>
+          <div class="repeat-demo repeat-auto">
+            <div class="cell cell-a">1</div>
+            <div class="cell cell-b">2</div>
+            <div class="cell cell-c">3</div>
+            <div class="cell cell-d">4</div>
+            <div class="cell cell-a">5</div>
+            <div class="cell cell-b">6</div>
+            <div class="cell cell-c">7</div>
+            <div class="cell cell-d">8</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: auto-fill vs auto-fit
+         ============================================================ -->
+    <section class="concept-section" id="auto-fill-vs-fit">
+      <h2>4. auto-fill vs auto-fit</h2>
+
+      <p>
+        Both <code>auto-fill</code> and <code>auto-fit</code> create as many tracks as will fit in
+        the container, but they behave differently when there are <em>fewer items than available
+        tracks</em>. Understanding the difference is crucial for choosing the right one.
+      </p>
+
+      <p>
+        <code>auto-fill</code> creates as many tracks as possible, even if some are empty. The empty
+        tracks still take up space. This means items stay at their minimum size and do not stretch to
+        fill the entire container when there are few items.
+      </p>
+
+      <p>
+        <code>auto-fit</code> also creates as many tracks as possible, but it <strong>collapses
+        empty tracks to zero width</strong>. This means the existing items expand to fill all
+        available space. With few items, <code>auto-fit</code> makes them grow wider, while
+        <code>auto-fill</code> keeps them at their minimum size.
+      </p>
+
+      <p>
+        In practice: use <code>auto-fit</code> when you want items to stretch and fill the row
+        (common for card layouts). Use <code>auto-fill</code> when you want items to maintain
+        consistent sizing regardless of how many there are (common for image galleries where uniform
+        sizing matters).
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The difference only shows when items do not fill the row.
+        With many items both behave identically. But with 2-3 items in a wide container, the
+        difference is dramatic. Choosing wrong can make a 2-card layout look either elegantly
+        spacious (auto-fill) or properly filled (auto-fit).
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* auto-fill: keeps empty tracks, items stay at minmax minimum */
+grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+
+/* auto-fit: collapses empty tracks, items stretch to fill */
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));</code></pre>
+      </div>
+
+      <div class="demo" id="demo-fill-fit">
+        <h3>auto-fill vs auto-fit (with only 3 items)</h3>
+        <div class="demo-panel">
+          <p class="demo-label">auto-fill &mdash; empty tracks take space, items stay small</p>
+          <div class="fill-fit-demo auto-fill-demo">
+            <div class="cell cell-a">Item 1</div>
+            <div class="cell cell-b">Item 2</div>
+            <div class="cell cell-c">Item 3</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">auto-fit &mdash; empty tracks collapse, items stretch</p>
+          <div class="fill-fit-demo auto-fit-demo">
+            <div class="cell cell-a">Item 1</div>
+            <div class="cell cell-b">Item 2</div>
+            <div class="cell cell-c">Item 3</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: Grid Areas
+         ============================================================ -->
+    <section class="concept-section" id="grid-areas">
+      <h2>5. Grid Areas</h2>
+
+      <p>
+        Grid areas provide a visual, intuitive way to define layouts. Instead of specifying row and
+        column numbers, you draw an ASCII art map of your layout using
+        <code>grid-template-areas</code>. Each string represents a row, and each name within it
+        represents a cell. Items are assigned to areas using the <code>grid-area</code> property.
+      </p>
+
+      <p>
+        Named areas must form rectangles &mdash; L-shapes or other non-rectangular shapes are
+        invalid. Use a period (<code>.</code>) for empty cells. The area names you choose are
+        entirely up to you, but semantic names like "header," "sidebar," "content," and "footer"
+        make your layout self-documenting.
+      </p>
+
+      <p>
+        Grid areas are perhaps the most readable way to define a layout in CSS. Anyone looking at
+        the template string can immediately visualize the page structure. This makes maintenance
+        dramatically easier compared to numeric row/column placement, where you must mentally map
+        numbers to positions.
+      </p>
+
+      <p>
+        When combined with media queries, grid areas make responsive layouts trivial. You simply
+        redefine <code>grid-template-areas</code> at each breakpoint to rearrange the layout. The
+        HTML stays the same; only the CSS grid map changes.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Grid areas are the most readable layout mechanism CSS
+        has ever offered. A developer can glance at the template-areas string and instantly
+        understand the page layout. This drastically reduces the cognitive load of maintaining
+        complex layouts and makes responsive redesigns as simple as redrawing the ASCII map.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.page {
+  display: grid;
+  grid-template-areas:
+    "header  header  header"
+    "sidebar content content"
+    "footer  footer  footer";
+  grid-template-columns: 200px 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  min-height: 400px;
+}
+
+.page-header  { grid-area: header; }
+.page-sidebar { grid-area: sidebar; }
+.page-content { grid-area: content; }
+.page-footer  { grid-area: footer; }
+
+/* Responsive: single column on mobile */
+@media (max-width: 768px) {
+  .page {
+    grid-template-areas:
+      "header"
+      "content"
+      "sidebar"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-areas">
+        <h3>Grid Areas Demo</h3>
+        <div class="demo-panel">
+          <p class="demo-label">Named grid areas: header, sidebar, content, footer</p>
+          <div class="areas-demo">
+            <div class="area-header">header</div>
+            <div class="area-sidebar">sidebar</div>
+            <div class="area-content">content</div>
+            <div class="area-footer">footer</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: Grid Item Placement
+         ============================================================ -->
+    <section class="concept-section" id="item-placement">
+      <h2>6. Grid Item Placement</h2>
+
+      <p>
+        While auto-placement works for simple grids, explicit placement gives you precise control.
+        The <code>grid-column</code> and <code>grid-row</code> properties let you specify exactly
+        where an item should start and end. The syntax uses line numbers &mdash; a 3-column grid
+        has 4 column lines (numbered 1 through 4).
+      </p>
+
+      <p>
+        The shorthand <code>grid-column: 1 / 3</code> means "start at column line 1, end at column
+        line 3" (spanning two columns). You can also use the <code>span</code> keyword:
+        <code>grid-column: span 2</code> means "span two columns from wherever auto-placement puts
+        me." Similarly, <code>grid-row: 1 / span 2</code> means "start at row 1, span 2 rows."
+      </p>
+
+      <p>
+        Negative line numbers count from the end. <code>grid-column: 1 / -1</code> spans from the
+        first line to the last, making the item full-width regardless of how many columns exist.
+        This is particularly useful for header and footer elements that should always span the
+        entire grid.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Explicit placement is what makes Grid truly two-dimensional.
+        You can place items in any cell, span them across multiple cells, and even overlap them.
+        This is impossible with Flexbox. Mastering line-based placement gives you pixel-perfect
+        control over complex layouts like magazine pages, dashboards, and image mosaics.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.full-width {
+  grid-column: 1 / -1;              /* Span all columns */
+}
+
+.feature {
+  grid-column: 1 / 3;               /* Columns 1-2 */
+  grid-row: 2 / 4;                   /* Rows 2-3 */
+}
+
+.sidebar {
+  grid-column: span 1;              /* Span 1 column */
+  grid-row: span 3;                  /* Span 3 rows */
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-placement">
+        <h3>Item Placement Demo</h3>
+        <div class="demo-panel">
+          <p class="demo-label">4-column grid with items spanning multiple cells</p>
+          <div class="placement-demo">
+            <div class="cell cell-a place-full">Full Width (col 1 / -1)</div>
+            <div class="cell cell-b place-wide">Span 2 cols</div>
+            <div class="cell cell-c place-tall">Span 2 rows</div>
+            <div class="cell cell-d place-single">1x1</div>
+            <div class="cell cell-a place-single">1x1</div>
+            <div class="cell cell-b place-single">1x1</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 7: Implicit Grid
+         ============================================================ -->
+    <section class="concept-section" id="implicit-grid">
+      <h2>7. Implicit Grid</h2>
+
+      <p>
+        When you place items beyond the explicitly defined grid, or when auto-placement needs more
+        rows than you defined, the browser creates <strong>implicit tracks</strong>. By default
+        these tracks are sized to <code>auto</code> (fitting their content). You can control their
+        size with <code>grid-auto-rows</code> and <code>grid-auto-columns</code>.
+      </p>
+
+      <p>
+        For example, if you define <code>grid-template-columns: repeat(3, 1fr)</code> but no rows,
+        the browser creates rows automatically as items are placed. Setting
+        <code>grid-auto-rows: 150px</code> makes every auto-created row exactly 150px tall.
+        Using <code>grid-auto-rows: minmax(100px, auto)</code> gives them a minimum height of 100px
+        but allows them to grow for taller content.
+      </p>
+
+      <p>
+        The <code>grid-auto-flow</code> property controls how auto-placed items fill the grid.
+        The default is <code>row</code>, filling each row left-to-right before starting a new row.
+        Setting <code>grid-auto-flow: column</code> fills columns top-to-bottom instead. Adding
+        the <code>dense</code> keyword (<code>grid-auto-flow: row dense</code>) allows the browser
+        to backfill gaps left by larger spanning items, creating a more compact layout.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The implicit grid is what makes Grid work well with
+        dynamic content. When you do not know how many items you will have (a CMS blog listing, a
+        product catalog), you define columns and let the implicit grid handle rows. Use
+        <code>grid-auto-rows</code> to ensure consistent row heights without knowing the count.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(100px, auto);  /* Implicit rows: at least 100px */
+  grid-auto-flow: row dense;             /* Fill gaps when possible */
+  gap: 1rem;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-implicit">
+        <h3>Implicit Grid Demo</h3>
+        <div class="demo-panel">
+          <p class="demo-label">3 columns defined, rows auto-created (minmax(80px, auto))</p>
+          <div class="implicit-demo">
+            <div class="cell cell-a">1</div>
+            <div class="cell cell-b">2</div>
+            <div class="cell cell-c">3</div>
+            <div class="cell cell-d">4</div>
+            <div class="cell cell-a">5</div>
+            <div class="cell cell-b">6</div>
+            <div class="cell cell-c">7</div>
+            <div class="cell cell-d">8</div>
+            <div class="cell cell-a">9</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">grid-auto-flow: dense &mdash; backfills gaps</p>
+          <div class="implicit-demo dense-demo">
+            <div class="cell cell-a implicit-span2">Span 2</div>
+            <div class="cell cell-b">2</div>
+            <div class="cell cell-c implicit-span2">Span 2</div>
+            <div class="cell cell-d">4</div>
+            <div class="cell cell-a">5</div>
+            <div class="cell cell-b">6</div>
+            <div class="cell cell-c">7</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 8: Gap
+         ============================================================ -->
+    <section class="concept-section" id="gap">
+      <h2>8. Gap</h2>
+
+      <p>
+        The <code>gap</code> property adds space between grid tracks (rows and columns). It is the
+        successor to the older <code>grid-gap</code> property and now works in both Grid and Flexbox
+        contexts. The shorthand <code>gap: 1rem</code> sets equal row and column gaps. You can set
+        them independently with <code>row-gap</code> and <code>column-gap</code>.
+      </p>
+
+      <p>
+        Unlike margins, gap only creates space <em>between</em> items &mdash; never at the outer
+        edges. This eliminates the classic problem of needing to remove the margin from the last
+        item in a row. Gap also interacts correctly with the <code>fr</code> unit: fractional units
+        distribute space after gaps have been subtracted.
+      </p>
+
+      <p>
+        You can use any length unit for gap: pixels, rems, percentages, or even
+        <code>calc()</code> expressions. Percentage gaps are relative to the grid container's size
+        in the relevant dimension. For most use cases, <code>rem</code> values provide the most
+        predictable and maintainable spacing.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Consistent spacing is a hallmark of professional design.
+        The <code>gap</code> property gives you that consistency with zero effort. No more negative
+        margin hacks, no more <code>:last-child</code> overrides, no more miscounting gutters.
+        It just works.
+      </div>
+
+      <div class="code-block">
+        <pre><code>/* Equal gap in both directions */
+gap: 1rem;
+
+/* Different row and column gaps */
+row-gap: 2rem;
+column-gap: 1rem;
+
+/* Shorthand: row-gap / column-gap */
+gap: 2rem 1rem;</code></pre>
+      </div>
+
+      <div class="demo" id="demo-gap">
+        <h3>Gap Demo</h3>
+        <div class="demo-row">
+          <div class="demo-panel">
+            <p class="demo-label">gap: 0</p>
+            <div class="gap-demo gap-0">
+              <div class="cell cell-a">1</div>
+              <div class="cell cell-b">2</div>
+              <div class="cell cell-c">3</div>
+              <div class="cell cell-d">4</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">gap: 0.5rem</p>
+            <div class="gap-demo gap-sm">
+              <div class="cell cell-a">1</div>
+              <div class="cell cell-b">2</div>
+              <div class="cell cell-c">3</div>
+              <div class="cell cell-d">4</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-row">
+          <div class="demo-panel">
+            <p class="demo-label">gap: 1.5rem</p>
+            <div class="gap-demo gap-md">
+              <div class="cell cell-a">1</div>
+              <div class="cell cell-b">2</div>
+              <div class="cell cell-c">3</div>
+              <div class="cell cell-d">4</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">row-gap: 2rem; column-gap: 0.5rem</p>
+            <div class="gap-demo gap-asym">
+              <div class="cell cell-a">1</div>
+              <div class="cell cell-b">2</div>
+              <div class="cell cell-c">3</div>
+              <div class="cell cell-d">4</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 9: Dashboard Layout
+         ============================================================ -->
+    <section class="concept-section" id="dashboard">
+      <h2>9. Dashboard Layout</h2>
+
+      <p>
+        Dashboards are a perfect use case for CSS Grid. They typically consist of a navigation bar
+        across the top, a sidebar on the left, and a main content area filled with cards of varying
+        sizes. Grid areas make the overall structure clear, and nested grids handle the card layout
+        within the main content area.
+      </p>
+
+      <p>
+        The dashboard below uses <code>grid-template-areas</code> for the outer layout and
+        <code>repeat(auto-fill, minmax(...))</code> for the inner card grid. Some cards span two
+        columns to highlight important metrics. This is a pattern you will see in virtually every
+        admin interface, analytics tool, and data visualization platform.
+      </p>
+
+      <p>
+        Notice how the entire layout is achieved with pure CSS &mdash; no JavaScript, no absolute
+        positioning, no float hacks. The structure is semantic HTML, the layout is declarative CSS,
+        and the result is responsive by nature.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Dashboard layouts are one of the most common requirements
+        in web applications. Mastering the Grid patterns shown here prepares you for real-world
+        projects in enterprise software, SaaS products, and admin panels. The combination of
+        named areas for structure and auto-fill for content is a powerful, repeatable pattern.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.dashboard {
+  display: grid;
+  grid-template-areas:
+    "nav     nav"
+    "sidebar main";
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 400px;
+}
+
+.dash-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.dash-card-wide {
+  grid-column: span 2;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-dashboard">
+        <h3>Dashboard Demo</h3>
+        <div class="demo-panel">
+          <div class="dashboard-demo">
+            <div class="dash-nav">Dashboard Navigation</div>
+            <div class="dash-sidebar">
+              <div class="dash-sidebar-item">Overview</div>
+              <div class="dash-sidebar-item">Analytics</div>
+              <div class="dash-sidebar-item">Reports</div>
+              <div class="dash-sidebar-item">Settings</div>
+            </div>
+            <div class="dash-main">
+              <div class="dash-cards">
+                <div class="dash-card dash-card-wide cell-a">
+                  <h4>Revenue</h4>
+                  <p class="dash-metric">$48,250</p>
+                </div>
+                <div class="dash-card cell-b">
+                  <h4>Users</h4>
+                  <p class="dash-metric">1,284</p>
+                </div>
+                <div class="dash-card cell-c">
+                  <h4>Orders</h4>
+                  <p class="dash-metric">356</p>
+                </div>
+                <div class="dash-card cell-d">
+                  <h4>Conversion</h4>
+                  <p class="dash-metric">3.2%</p>
+                </div>
+                <div class="dash-card cell-a">
+                  <h4>Sessions</h4>
+                  <p class="dash-metric">12,450</p>
+                </div>
+                <div class="dash-card dash-card-wide cell-b">
+                  <h4>Monthly Trend</h4>
+                  <p class="dash-metric">+12.5%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EXERCISE
+         ============================================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise</h2>
+      <p>
+        <strong>Build a magazine-style article layout</strong> with the following requirements:
+      </p>
+      <ul>
+        <li>A full-width header area spanning all columns.</li>
+        <li>A sidebar on the left (about 200px wide) for related links or an author bio.</li>
+        <li>A main content area taking the remaining space for the article text.</li>
+        <li>A full-width footer at the bottom.</li>
+        <li>Use <code>grid-template-areas</code> for the layout structure.</li>
+        <li>Add a <code>gap</code> of 1.5rem between all areas.</li>
+        <li>The layout should have a minimum height of 500px.</li>
+      </ul>
+      <p>
+        Hint: Define your areas as strings in <code>grid-template-areas</code>. Remember that each
+        area name must form a rectangle.
+      </p>
+      <div class="code-block">
+        <pre><code>&lt;!-- Starter HTML --&gt;
+&lt;div class="magazine"&gt;
+  &lt;header class="mag-header"&gt;Magazine Title&lt;/header&gt;
+  &lt;aside class="mag-sidebar"&gt;Author Bio / Links&lt;/aside&gt;
+  &lt;article class="mag-content"&gt;Article content...&lt;/article&gt;
+  &lt;footer class="mag-footer"&gt;Footer info&lt;/footer&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHALLENGE
+         ============================================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge</h2>
+      <p>
+        <strong>Create a responsive photo mosaic</strong> where images span different numbers of
+        grid cells:
+      </p>
+      <ul>
+        <li>Use a grid with 4 columns on desktop.</li>
+        <li>Some images should span 2 columns, some 2 rows, and one should span 2x2.</li>
+        <li>Use <code>grid-auto-flow: dense</code> to eliminate gaps.</li>
+        <li>Images should use <code>object-fit: cover</code> to fill their cells without distortion.</li>
+        <li>On tablet (below 768px), switch to 3 columns.</li>
+        <li>On mobile (below 480px), switch to 2 columns with simpler spanning.</li>
+        <li>Add a subtle <code>border-radius</code> and <code>gap</code> for polish.</li>
+      </ul>
+      <p>
+        Bonus: Add a hover effect that slightly scales the image and shows an overlay with the photo
+        title.
+      </p>
+    </section>
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../04-flexbox/index.html">&larr; Previous</a>
+    <a href="../06-responsive-design/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

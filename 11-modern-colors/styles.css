@@ -1,0 +1,598 @@
+/* ============================================================
+   Module 11: Color Science for the Web
+   ============================================================ */
+
+/* ----- Section 1: Beyond sRGB ----- */
+.srgb-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.comparison-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comparison-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-family: "Fira Code", "Courier New", monospace;
+}
+
+.hsl-swatches,
+.oklch-swatches {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ----- Section 2: OKLCH ----- */
+.oklch-wheel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.wheel-ring {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wheel-label {
+  font-family: "Fira Code", "Courier New", monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  min-width: 70px;
+}
+
+.wheel-colors {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.wheel-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+/* HSL vs OKLCH comparison */
+.hsl-oklch-compare {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.compare-group h5 {
+  font-family: "Fira Code", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.75rem;
+}
+
+.compare-swatches {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.swatch-labeled {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.swatch-labeled .swatch {
+  width: 60px;
+  height: 50px;
+}
+
+.swatch-labeled span {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-family: "Fira Code", "Courier New", monospace;
+}
+
+/* ----- Section 3: color-mix() ----- */
+.color-mix-demo {
+  --brand: oklch(0.55 0.2 250);
+}
+
+.mix-palette {
+  margin-bottom: 1.25rem;
+}
+
+.mix-palette h5 {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.mix-swatches {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.mix-swatch {
+  width: 70px;
+  height: 50px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.mix-swatch span {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.mix-base        { background: var(--brand); }
+.mix-tint-90     { background: color-mix(in oklch, var(--brand) 90%, white); }
+.mix-tint-80     { background: color-mix(in oklch, var(--brand) 80%, white); }
+.mix-tint-70     { background: color-mix(in oklch, var(--brand) 70%, white); }
+.mix-tint-60     { background: color-mix(in oklch, var(--brand) 60%, white); }
+.mix-tint-50     { background: color-mix(in oklch, var(--brand) 50%, white); }
+
+.mix-tint-50 span,
+.mix-tint-60 span {
+  color: #1e293b;
+  text-shadow: none;
+}
+
+.mix-shade-90    { background: color-mix(in oklch, var(--brand) 90%, black); }
+.mix-shade-80    { background: color-mix(in oklch, var(--brand) 80%, black); }
+.mix-shade-70    { background: color-mix(in oklch, var(--brand) 70%, black); }
+.mix-shade-60    { background: color-mix(in oklch, var(--brand) 60%, black); }
+.mix-shade-50    { background: color-mix(in oklch, var(--brand) 50%, black); }
+
+/* ----- Section 4: Relative Color Syntax ----- */
+.rcs-palette-demo {
+  --base: oklch(0.6 0.2 250);
+}
+
+.rcs-row {
+  margin-bottom: 1.25rem;
+}
+
+.rcs-row h5 {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.rcs-swatches {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.rcs-swatch {
+  width: 80px;
+  height: 50px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.rcs-swatch span {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Lightness variations */
+.rcs-l-140  { background: oklch(from var(--base) calc(l * 1.4) c h); }
+.rcs-l-120  { background: oklch(from var(--base) calc(l * 1.2) c h); }
+.rcs-l-100  { background: var(--base); }
+.rcs-l-80   { background: oklch(from var(--base) calc(l * 0.8) c h); }
+.rcs-l-60   { background: oklch(from var(--base) calc(l * 0.6) c h); }
+
+.rcs-l-140 span,
+.rcs-l-120 span {
+  color: #1e293b;
+  text-shadow: none;
+}
+
+/* Chroma variations */
+.rcs-c-0    { background: oklch(from var(--base) l 0 h); }
+.rcs-c-25   { background: oklch(from var(--base) l calc(c * 0.25) h); }
+.rcs-c-50   { background: oklch(from var(--base) l calc(c * 0.5) h); }
+.rcs-c-100  { background: var(--base); }
+.rcs-c-150  { background: oklch(from var(--base) l calc(c * 1.5) h); }
+
+/* Hue shifts */
+.rcs-h-0    { background: var(--base); }
+.rcs-h-60   { background: oklch(from var(--base) l c calc(h + 60)); }
+.rcs-h-120  { background: oklch(from var(--base) l c calc(h + 120)); }
+.rcs-h-180  { background: oklch(from var(--base) l c calc(h + 180)); }
+.rcs-h-240  { background: oklch(from var(--base) l c calc(h + 240)); }
+.rcs-h-300  { background: oklch(from var(--base) l c calc(h + 300)); }
+
+/* ----- Section 5: light-dark() ----- */
+.light-dark-demo {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.ld-card-wrapper {
+  flex: 1;
+  min-width: 280px;
+}
+
+.ld-card-wrapper h5 {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.ld-card {
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.ld-light .ld-card {
+  background: #ffffff;
+  color: #333333;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ld-dark .ld-card {
+  background: #1a1a2e;
+  color: #eeeeee;
+  border: 1px solid #404060;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.ld-card h6 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.ld-light .ld-card h6 { color: #1a1a2e; }
+.ld-dark .ld-card h6  { color: #ffffff; }
+
+.ld-card p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  opacity: 0.85;
+}
+
+.ld-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.ld-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  border-radius: 8px;
+}
+
+.ld-light .ld-stat { background: #f0f4f8; }
+.ld-dark .ld-stat  { background: #2d2d44; }
+
+.ld-stat-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.ld-light .ld-stat-value { color: oklch(0.45 0.2 250); }
+.ld-dark .ld-stat-value  { color: oklch(0.75 0.15 250); }
+
+.ld-stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+  margin-top: 0.2rem;
+}
+
+/* ----- Section 6: Color System ----- */
+.system-demo {
+  --primary:   oklch(0.55 0.2 250);
+  --secondary: oklch(0.6 0.15 160);
+}
+
+.system-palette {
+  margin-bottom: 1.5rem;
+}
+
+.system-palette h5 {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.system-swatches {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.sys-swatch {
+  width: 56px;
+  height: 44px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+}
+
+.sys-swatch span {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Primary scale */
+.sys-primary-10   { background: color-mix(in oklch, var(--primary) 10%, white); }
+.sys-primary-20   { background: color-mix(in oklch, var(--primary) 20%, white); }
+.sys-primary-30   { background: color-mix(in oklch, var(--primary) 30%, white); }
+.sys-primary-40   { background: color-mix(in oklch, var(--primary) 40%, white); }
+.sys-primary-50   { background: color-mix(in oklch, var(--primary) 50%, white); }
+.sys-primary-60   { background: color-mix(in oklch, var(--primary) 60%, white); }
+.sys-primary-70   { background: color-mix(in oklch, var(--primary) 70%, white); }
+.sys-primary-80   { background: color-mix(in oklch, var(--primary) 80%, white); }
+.sys-primary-90   { background: color-mix(in oklch, var(--primary) 90%, white); }
+.sys-primary-base { background: var(--primary); }
+
+.sys-primary-10 span,
+.sys-primary-20 span,
+.sys-primary-30 span {
+  color: #1e293b;
+  text-shadow: none;
+}
+
+/* Secondary scale */
+.sys-secondary-10   { background: color-mix(in oklch, var(--secondary) 10%, white); }
+.sys-secondary-20   { background: color-mix(in oklch, var(--secondary) 20%, white); }
+.sys-secondary-30   { background: color-mix(in oklch, var(--secondary) 30%, white); }
+.sys-secondary-40   { background: color-mix(in oklch, var(--secondary) 40%, white); }
+.sys-secondary-50   { background: color-mix(in oklch, var(--secondary) 50%, white); }
+.sys-secondary-60   { background: color-mix(in oklch, var(--secondary) 60%, white); }
+.sys-secondary-70   { background: color-mix(in oklch, var(--secondary) 70%, white); }
+.sys-secondary-80   { background: color-mix(in oklch, var(--secondary) 80%, white); }
+.sys-secondary-90   { background: color-mix(in oklch, var(--secondary) 90%, white); }
+.sys-secondary-base { background: var(--secondary); }
+
+.sys-secondary-10 span,
+.sys-secondary-20 span,
+.sys-secondary-30 span {
+  color: #1e293b;
+  text-shadow: none;
+}
+
+/* Semantic colors */
+.semantic-swatches {
+  gap: 0.5rem;
+}
+
+.sys-success { background: oklch(0.6 0.18 145); }
+.sys-warning { background: oklch(0.75 0.18 80); }
+.sys-error   { background: oklch(0.55 0.22 25); }
+.sys-info    { background: oklch(0.6 0.15 240); }
+
+.sys-warning span {
+  color: #1e293b;
+  text-shadow: none;
+}
+
+.semantic-swatches .sys-swatch {
+  width: auto;
+  flex: 1;
+  min-width: 70px;
+  height: 50px;
+}
+
+/* ----- Section 7: Wide-Gamut Colors ----- */
+.gamut-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gamut-row h5 {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.gamut-swatches {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.gamut-srgb-red     { background: rgb(255, 0, 0); }
+.gamut-srgb-green   { background: rgb(0, 200, 0); }
+.gamut-srgb-blue    { background: rgb(0, 0, 255); }
+.gamut-srgb-cyan    { background: rgb(0, 220, 220); }
+.gamut-srgb-magenta { background: rgb(220, 0, 220); }
+.gamut-srgb-orange  { background: rgb(255, 140, 0); }
+
+.gamut-p3-red       { background: color(display-p3 1 0 0); }
+.gamut-p3-green     { background: color(display-p3 0 0.85 0); }
+.gamut-p3-blue      { background: color(display-p3 0 0 1); }
+.gamut-p3-cyan      { background: color(display-p3 0 0.9 0.9); }
+.gamut-p3-magenta   { background: color(display-p3 0.9 0 0.9); }
+.gamut-p3-orange    { background: color(display-p3 1 0.5 0); }
+
+/* ----- Section 8: Accessibility ----- */
+.a11y-demo {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.a11y-variant {
+  flex: 1;
+  min-width: 240px;
+}
+
+.a11y-variant h5 {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.a11y-card {
+  padding: 1.25rem;
+  border-radius: 10px;
+}
+
+.a11y-card h6 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.a11y-card p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.a11y-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.a11y-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+/* Default contrast */
+.a11y-default {
+  background: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.a11y-default h6 { color: #212529; }
+
+.a11y-default .a11y-btn-primary {
+  background: oklch(0.55 0.2 250);
+  color: #fff;
+}
+
+.a11y-default .a11y-btn-secondary {
+  background: transparent;
+  color: oklch(0.55 0.2 250);
+  border-color: oklch(0.55 0.2 250);
+}
+
+/* High contrast */
+.a11y-high-contrast {
+  background: #ffffff;
+  color: #000000;
+  border: 3px solid #000000;
+}
+
+.a11y-high-contrast h6 { color: #000000; }
+
+.a11y-high-contrast .a11y-btn-primary {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.a11y-high-contrast .a11y-btn-secondary {
+  background: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+/* Forced colors simulation */
+.a11y-forced {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.a11y-forced h6 { color: #ffff00; }
+
+.a11y-forced .a11y-btn-primary {
+  background: #1e90ff;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.a11y-forced .a11y-btn-secondary {
+  background: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* ============================================================
+   Responsive adjustments
+   ============================================================ */
+@media (max-width: 600px) {
+  .light-dark-demo {
+    flex-direction: column;
+  }
+
+  .a11y-demo {
+    flex-direction: column;
+  }
+
+  .sys-swatch {
+    width: 44px;
+    height: 36px;
+    font-size: 0.5rem;
+  }
+
+  .swatch {
+    width: 60px;
+    height: 48px;
+  }
+
+  .wheel-swatch {
+    width: 30px;
+    height: 30px;
+  }
+
+  .rcs-swatch,
+  .mix-swatch {
+    width: 60px;
+    height: 40px;
+  }
+}
