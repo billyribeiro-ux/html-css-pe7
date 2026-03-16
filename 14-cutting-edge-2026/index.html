@@ -1070,6 +1070,88 @@ p  { font-size: --fluid-size(1rem, 1.125rem); }
           </div>
         </div>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="stagger-grid" data-cols="3">
+  <article class="stagger-item">
+    <h3>Research</h3>
+    <p>Understand the problem space and user needs.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Ideate</h3>
+    <p>Brainstorm solutions and explore possibilities.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Prototype</h3>
+    <p>Build quick mockups to test concepts.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Test</h3>
+    <p>Validate assumptions with real users.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Build</h3>
+    <p>Develop the production-ready solution.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Launch</h3>
+    <p>Deploy and monitor in production.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Measure</h3>
+    <p>Track metrics and gather feedback.</p>
+  </article>
+  <article class="stagger-item">
+    <h3>Iterate</h3>
+    <p>Refine based on data and insights.</p>
+  </article>
+</div>
+        </template>
+        <template class="starter-css">
+.stagger-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.stagger-item {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  animation: stagger-in 0.5s ease backwards;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+}
+
+.stagger-item h3 {
+  margin-bottom: 0.5rem;
+  color: #38bdf8;
+}
+
+.stagger-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Fallback for browsers without sibling-index() */
+.stagger-item:nth-child(1) { --i: 0; }
+.stagger-item:nth-child(2) { --i: 1; }
+.stagger-item:nth-child(3) { --i: 2; }
+.stagger-item:nth-child(4) { --i: 3; }
+.stagger-item:nth-child(5) { --i: 4; }
+.stagger-item:nth-child(6) { --i: 5; }
+.stagger-item:nth-child(7) { --i: 6; }
+.stagger-item:nth-child(8) { --i: 7; }
+        </template>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -1102,6 +1184,196 @@ p  { font-size: --fluid-size(1rem, 1.125rem); }
           <li>Test with Chrome DevTools "Experimental Web Platform Features" flag enabled.</li>
         </ul>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="dashboard" style="--layout: grid;">
+  <!-- Layout Toggle -->
+  <header class="dash-header">
+    <h1>Dashboard</h1>
+    <select class="layout-toggle">
+      <option value="grid">Grid View</option>
+      <option value="list">List View</option>
+    </select>
+  </header>
+
+  <!-- KPI Metric Cards -->
+  <section class="metrics">
+    <div class="metric-card" data-progress="85">
+      <h3>Revenue</h3>
+      <p class="metric-value">$48,250</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+    <div class="metric-card" data-progress="62">
+      <h3>Users</h3>
+      <p class="metric-value">1,284</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+    <div class="metric-card" data-progress="35">
+      <h3>Bounce Rate</h3>
+      <p class="metric-value">35%</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+    <div class="metric-card" data-progress="91">
+      <h3>Satisfaction</h3>
+      <p class="metric-value">91%</p>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+  </section>
+
+  <!-- Activity Feed -->
+  <section class="activity-feed">
+    <h2>Recent Activity</h2>
+    <ul class="feed-list">
+      <li class="feed-item">New user signed up</li>
+      <li class="feed-item">Order #1042 completed</li>
+      <li class="feed-item">Support ticket resolved</li>
+      <li class="feed-item">New review posted</li>
+    </ul>
+  </section>
+
+  <!-- Notes Panel -->
+  <aside class="notes-panel">
+    <h2>Notes</h2>
+    <textarea placeholder="Type your notes here..."></textarea>
+  </aside>
+</div>
+        </template>
+        <template class="starter-css">
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  grid-template-rows: auto auto 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 400px;
+}
+
+.dash-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dash-header h1 {
+  font-size: 1.5rem;
+}
+
+.layout-toggle {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.25rem;
+  border: 1px solid #334155;
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+/* Metrics Section */
+.metrics {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.metric-card {
+  background: #1e293b;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+}
+
+.metric-card h3 {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #334155;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #22c55e;
+  width: 50%; /* Use attr() or if() for dynamic widths */
+}
+
+/* Color by progress level */
+[data-progress="85"] .progress-fill { width: 85%; background: #22c55e; }
+[data-progress="62"] .progress-fill { width: 62%; background: #f59e0b; }
+[data-progress="35"] .progress-fill { width: 35%; background: #ef4444; }
+[data-progress="91"] .progress-fill { width: 91%; background: #22c55e; }
+
+/* Activity Feed */
+.activity-feed {
+  background: #1e293b;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+}
+
+.activity-feed h2 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.feed-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feed-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #334155;
+  animation: stagger-in 0.4s ease backwards;
+}
+
+.feed-item:nth-child(1) { animation-delay: 0s; }
+.feed-item:nth-child(2) { animation-delay: 0.1s; }
+.feed-item:nth-child(3) { animation-delay: 0.2s; }
+.feed-item:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateX(-10px); }
+}
+
+/* Notes Panel */
+.notes-panel {
+  background: #1e293b;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+}
+
+.notes-panel h2 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.notes-panel textarea {
+  width: 100%;
+  min-height: 80px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 0.25rem;
+  color: #e2e8f0;
+  padding: 0.75rem;
+  resize: vertical;
+  font-family: inherit;
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -1110,5 +1382,6 @@ p  { font-size: --fluid-size(1rem, 1.125rem); }
     <a href="../13-view-transitions-anchor/index.html">&larr; Previous</a>
     <a href="../15-capstone-project/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>

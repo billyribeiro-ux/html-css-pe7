@@ -518,6 +518,166 @@
           <li>Add entrance animations using <code>@starting-style</code></li>
           <li>Use <code>color-mix()</code> for subtle category-based color coding</li>
         </ul>
+
+        <div class="live-editor" data-mode="html-css">
+          <template class="starter-html">
+<section class="blog-section">
+  <h2>From the Blog</h2>
+  <div class="blog-grid">
+    <article class="blog-card featured">
+      <div class="card-image">
+        <div class="placeholder">Featured Image</div>
+      </div>
+      <div class="card-content">
+        <span class="category cat-css">CSS</span>
+        <h3>The Future of CSS Layout</h3>
+        <p>Exploring container queries, masonry, and how modern CSS is changing the way we build responsive interfaces.</p>
+        <time datetime="2026-03-10">March 10, 2026</time>
+      </div>
+    </article>
+    <article class="blog-card">
+      <div class="card-image">
+        <div class="placeholder">Image</div>
+      </div>
+      <div class="card-content">
+        <span class="category cat-html">HTML</span>
+        <h3>Semantic Markup Matters</h3>
+        <p>Why choosing the right HTML elements improves accessibility and SEO.</p>
+        <time datetime="2026-03-08">March 8, 2026</time>
+      </div>
+    </article>
+    <article class="blog-card">
+      <div class="card-image">
+        <div class="placeholder">Image</div>
+      </div>
+      <div class="card-content">
+        <span class="category cat-design">Design</span>
+        <h3>Color Theory for Devs</h3>
+        <p>Understanding OKLCH and modern color spaces in CSS.</p>
+        <time datetime="2026-03-05">March 5, 2026</time>
+      </div>
+    </article>
+    <article class="blog-card">
+      <div class="card-image">
+        <div class="placeholder">Image</div>
+      </div>
+      <div class="card-content">
+        <span class="category cat-css">CSS</span>
+        <h3>Scroll-Driven Animations</h3>
+        <p>Animating elements based on scroll position without JavaScript.</p>
+        <time datetime="2026-03-01">March 1, 2026</time>
+      </div>
+    </article>
+  </div>
+</section>
+          </template>
+          <template class="starter-css">
+.blog-section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+  color: #e2e8f0;
+}
+
+.blog-section h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Featured post spans 2 columns */
+.blog-card.featured {
+  grid-column: span 2;
+}
+
+.blog-card {
+  container-type: inline-size;
+  background: #1e293b;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image .placeholder {
+  background: linear-gradient(135deg, #334155, #475569);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.card-content {
+  padding: 1.25rem;
+}
+
+.category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.cat-css { background: color-mix(in oklch, #3b82f6 30%, transparent); color: #60a5fa; }
+.cat-html { background: color-mix(in oklch, #f97316 30%, transparent); color: #fb923c; }
+.cat-design { background: color-mix(in oklch, #a855f7 30%, transparent); color: #c084fc; }
+
+.card-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-content p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.card-content time {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Container query: horizontal layout when wide enough */
+@container (min-width: 500px) {
+  .blog-card {
+    flex-direction: row;
+  }
+  .card-image {
+    width: 40%;
+    flex-shrink: 0;
+  }
+  .card-image .placeholder {
+    height: 100%;
+    min-height: 200px;
+  }
+}
+
+/* Responsive: single column on mobile */
+@media (max-width: 768px) {
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+  .blog-card.featured {
+    grid-column: span 1;
+  }
+}
+          </template>
+        </div>
       </div>
 
       <div class="exercise-card challenge">

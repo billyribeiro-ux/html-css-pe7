@@ -796,6 +796,116 @@ document.startViewTransition(() => {
           </div>
         </div>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="tooltip-system">
+  <button class="tip-trigger" style="anchor-name: --btn-anchor"
+          aria-describedby="tip-btn">
+    Save File
+  </button>
+  <div class="tip tip-bottom" id="tip-btn"
+       role="tooltip"
+       style="position-anchor: --btn-anchor;
+              top: anchor(bottom);
+              left: anchor(center);
+              translate: -50% 0;">
+    Save your current progress (Ctrl+S)
+  </div>
+
+  <a href="#" class="tip-trigger" style="anchor-name: --link-anchor"
+     aria-describedby="tip-link">
+    Learn more
+  </a>
+  <div class="tip tip-top" id="tip-link" role="tooltip"
+       style="position-anchor: --link-anchor;
+              bottom: anchor(top);
+              left: anchor(center);
+              translate: -50% 0;">
+    Opens the documentation in a new tab
+  </div>
+
+  <span class="tip-trigger tip-icon" style="anchor-name: --icon-anchor"
+        tabindex="0" aria-describedby="tip-icon-el">&#9881;</span>
+  <div class="tip tip-left" id="tip-icon-el" role="tooltip"
+       style="position-anchor: --icon-anchor;
+              right: anchor(left);
+              top: anchor(center);
+              translate: 0 -50%;">
+    Open settings panel
+  </div>
+
+  <code class="tip-trigger" style="anchor-name: --code-anchor"
+        tabindex="0" aria-describedby="tip-code">anchor()</code>
+  <div class="tip tip-right" id="tip-code" role="tooltip"
+       style="position-anchor: --code-anchor;
+              left: anchor(right);
+              top: anchor(center);
+              translate: 0 -50%;">
+    CSS anchor positioning function
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.tooltip-system {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  flex-wrap: wrap;
+}
+
+.tip-trigger {
+  padding: 0.5rem 1rem;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.tip-trigger.tip-icon {
+  font-size: 1.5rem;
+  background: #334155;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+}
+
+code.tip-trigger {
+  background: #1e293b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.tip {
+  position: fixed;
+  background: #1a1a2e;
+  color: #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  max-width: 240px;
+  margin: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  position-try-fallbacks: flip-block;
+}
+
+.tip-trigger:hover + .tip,
+.tip-trigger:focus + .tip {
+  opacity: 1;
+  pointer-events: auto;
+}
+        </template>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -826,6 +936,260 @@ document.startViewTransition(() => {
           <li>For the popover form, use <code>popover="manual"</code> so users do not accidentally dismiss it while filling out fields.</li>
         </ul>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<nav class="portfolio-nav" style="view-transition-name: nav-bar">
+  <a href="#" class="nav-logo" style="view-transition-name: site-logo">Portfolio</a>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Projects</a>
+  </div>
+  <button popovertarget="contact-popover" class="contact-btn">Contact Me</button>
+</nav>
+
+<main class="portfolio-main">
+  <h1 style="view-transition-name: page-title">My Projects</h1>
+
+  <div class="project-grid">
+    <div class="project-card" style="view-transition-name: project-1">
+      <div class="project-thumb project-thumb--1"></div>
+      <h3>Project Alpha</h3>
+      <span class="info-icon" style="anchor-name: --info-1"
+            tabindex="0" aria-describedby="info-tip-1">&#9432;</span>
+      <div class="info-tip" id="info-tip-1" role="tooltip"
+           style="position-anchor: --info-1;
+                  top: anchor(bottom);
+                  left: anchor(center);
+                  translate: -50% 0;
+                  position-try-fallbacks: flip-block;">
+        <strong>Tech:</strong> HTML, CSS, JS<br>
+        <strong>Completed:</strong> Jan 2026
+      </div>
+    </div>
+
+    <div class="project-card" style="view-transition-name: project-2">
+      <div class="project-thumb project-thumb--2"></div>
+      <h3>Project Beta</h3>
+      <span class="info-icon" style="anchor-name: --info-2"
+            tabindex="0" aria-describedby="info-tip-2">&#9432;</span>
+      <div class="info-tip" id="info-tip-2" role="tooltip"
+           style="position-anchor: --info-2;
+                  top: anchor(bottom);
+                  left: anchor(center);
+                  translate: -50% 0;
+                  position-try-fallbacks: flip-block;">
+        <strong>Tech:</strong> React, TypeScript<br>
+        <strong>Completed:</strong> Mar 2026
+      </div>
+    </div>
+
+    <div class="project-card" style="view-transition-name: project-3">
+      <div class="project-thumb project-thumb--3"></div>
+      <h3>Project Gamma</h3>
+      <span class="info-icon" style="anchor-name: --info-3"
+            tabindex="0" aria-describedby="info-tip-3">&#9432;</span>
+      <div class="info-tip" id="info-tip-3" role="tooltip"
+           style="position-anchor: --info-3;
+                  top: anchor(bottom);
+                  left: anchor(center);
+                  translate: -50% 0;
+                  position-try-fallbacks: flip-block;">
+        <strong>Tech:</strong> Svelte, CSS<br>
+        <strong>Completed:</strong> In Progress
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="contact-popover" popover="manual" class="contact-form-popover">
+  <h3>Contact Me</h3>
+  <form>
+    <label>Name <input type="text" placeholder="Your name"></label>
+    <label>Email <input type="email" placeholder="you@example.com"></label>
+    <label>Message <textarea placeholder="Your message..."></textarea></label>
+    <div class="form-actions">
+      <button type="submit">Send</button>
+      <button type="button" popovertarget="contact-popover" popovertargetaction="hide">Cancel</button>
+    </div>
+  </form>
+</div>
+        </template>
+        <template class="starter-css">
+@view-transition {
+  navigation: auto;
+}
+
+.portfolio-nav {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #0f172a;
+  color: white;
+  gap: 1rem;
+}
+
+.nav-logo {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.nav-links a {
+  color: #94a3b8;
+  text-decoration: none;
+}
+
+.contact-btn {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.portfolio-main {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #e2e8f0;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.project-card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 1rem;
+  position: relative;
+}
+
+.project-thumb {
+  height: 140px;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.project-thumb--1 { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.project-thumb--2 { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+.project-thumb--3 { background: linear-gradient(135deg, #14b8a6, #06b6d4); }
+
+.info-icon {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #94a3b8;
+}
+
+.info-tip {
+  position: fixed;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  max-width: 220px;
+  margin-top: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.info-icon:hover + .info-tip,
+.info-icon:focus + .info-tip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Popover contact form */
+.contact-form-popover {
+  padding: 2rem;
+  border: none;
+  border-radius: 16px;
+  background: #1e293b;
+  color: #e2e8f0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease,
+              overlay 0.3s allow-discrete,
+              display 0.3s allow-discrete;
+}
+
+.contact-form-popover:popover-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@starting-style {
+  .contact-form-popover:popover-open {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+}
+
+.contact-form-popover label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.contact-form-popover input,
+.contact-form-popover textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.contact-form-popover textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.form-actions button {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+  background: #6366f1;
+  color: white;
+}
+
+.form-actions button[type="button"] {
+  background: #334155;
+  color: #94a3b8;
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -834,5 +1198,6 @@ document.startViewTransition(() => {
     <a href="../12-scroll-animations/index.html">&larr; Previous</a>
     <a href="../14-cutting-edge-2026/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>
