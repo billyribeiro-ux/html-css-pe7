@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML/CSS PE7 - Master Course</title>
+  <link rel="stylesheet" href="styles/reset.css">
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-2: #242836;
+      --border: #2e3345;
+      --text: #e4e6ef;
+      --text-muted: #8b8fa7;
+      --accent: #6c5ce7;
+      --accent-light: #a29bfe;
+
+      --level-1: #00b894;
+      --level-2: #0984e3;
+      --level-3: #6c5ce7;
+      --level-4: #e17055;
+      --level-5: #fd79a8;
+
+      --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      --font-mono: "Fira Code", ui-monospace, monospace;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+      background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, var(--accent-light), var(--level-5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat .number {
+      display: block;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent-light);
+    }
+
+    .hero-stat .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Course Grid ── */
+    .course-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .level-section {
+      margin-bottom: 3rem;
+    }
+
+    .level-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .level-title .badge {
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .level-title h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .l1 .badge { background: color-mix(in oklch, var(--level-1) 20%, transparent); color: var(--level-1); }
+    .l2 .badge { background: color-mix(in oklch, var(--level-2) 20%, transparent); color: var(--level-2); }
+    .l3 .badge { background: color-mix(in oklch, var(--level-3) 20%, transparent); color: var(--level-3); }
+    .l4 .badge { background: color-mix(in oklch, var(--level-4) 20%, transparent); color: var(--level-4); }
+    .l5 .badge { background: color-mix(in oklch, var(--level-5) 20%, transparent); color: var(--level-5); }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .module-card {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .module-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(108, 92, 231, 0.15);
+    }
+
+    .module-card .module-number {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .module-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .module-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .module-card .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .module-card .tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      background: var(--surface-2);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Color accents per level */
+    .l1 .module-card:hover { border-color: var(--level-1); box-shadow: 0 8px 32px rgba(0, 184, 148, 0.1); }
+    .l2 .module-card:hover { border-color: var(--level-2); box-shadow: 0 8px 32px rgba(9, 132, 227, 0.1); }
+    .l3 .module-card:hover { border-color: var(--level-3); box-shadow: 0 8px 32px rgba(108, 92, 231, 0.1); }
+    .l4 .module-card:hover { border-color: var(--level-4); box-shadow: 0 8px 32px rgba(225, 112, 85, 0.1); }
+    .l5 .module-card:hover { border-color: var(--level-5); box-shadow: 0 8px 32px rgba(253, 121, 168, 0.1); }
+
+    .l1 .module-card h3 { color: var(--level-1); }
+    .l2 .module-card h3 { color: var(--level-2); }
+    .l3 .module-card h3 { color: var(--level-3); }
+    .l4 .module-card h3 { color: var(--level-4); }
+    .l5 .module-card h3 { color: var(--level-5); }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 2.5rem 1rem 2rem; }
+      .hero-stats { gap: 1.5rem; }
+      .modules-grid { grid-template-columns: 1fr; }
+      .course-content { padding: 1.5rem 1rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ── Hero Section ── -->
+  <header class="hero">
+    <div class="hero-badge">Principal Engineer 7 Mastery</div>
+    <h1>HTML / CSS PE7</h1>
+    <p>From absolute beginner to cutting-edge 2026 CSS mastery. Learn by building real components with the PE7 methodology.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="number">15</span>
+        <span class="label">Modules</span>
+      </div>
+      <div class="hero-stat">
+        <span class="number">5</span>
+        <span class="label">Levels</span>
+      </div>
+      <div class="hero-stat">
+        <span class="number">2026</span>
+        <span class="label">CSS Features</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Course Modules ── -->
+  <div class="course-content">
+
+    <!-- Level 1: Foundations -->
+    <section class="level-section l1">
+      <div class="level-title">
+        <span class="badge">Level 1</span>
+        <h2>Foundations</h2>
+      </div>
+      <div class="modules-grid">
+        <a href="01-html-foundations/index.html" class="module-card">
+          <div class="module-number">Module 01</div>
+          <h3>The Building Blocks</h3>
+          <p>Document structure, semantic HTML5 elements, forms, and tables. Build a personal profile page.</p>
+          <div class="tags">
+            <span class="tag">semantic HTML</span>
+            <span class="tag">forms</span>
+            <span class="tag">structure</span>
+          </div>
+        </a>
+        <a href="02-css-fundamentals/index.html" class="module-card">
+          <div class="module-number">Module 02</div>
+          <h3>Painting the Web</h3>
+          <p>Cascade, specificity, selectors, colors, units, typography, and backgrounds.</p>
+          <div class="tags">
+            <span class="tag">selectors</span>
+            <span class="tag">cascade</span>
+            <span class="tag">typography</span>
+          </div>
+        </a>
+        <a href="03-box-model-layout/index.html" class="module-card">
+          <div class="module-number">Module 03</div>
+          <h3>Understanding Space</h3>
+          <p>Box model, display types, positioning, overflow, and z-index. Build a fixed nav + sticky sidebar.</p>
+          <div class="tags">
+            <span class="tag">box model</span>
+            <span class="tag">positioning</span>
+            <span class="tag">z-index</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Level 2: Layout Mastery -->
+    <section class="level-section l2">
+      <div class="level-title">
+        <span class="badge">Level 2</span>
+        <h2>Layout Mastery</h2>
+      </div>
+      <div class="modules-grid">
+        <a href="04-flexbox/index.html" class="module-card">
+          <div class="module-number">Module 04</div>
+          <h3>One-Dimensional Flow</h3>
+          <p>Flex container and item properties, axis control, alignment, wrapping, and gap.</p>
+          <div class="tags">
+            <span class="tag">flexbox</span>
+            <span class="tag">alignment</span>
+            <span class="tag">gap</span>
+          </div>
+        </a>
+        <a href="05-grid/index.html" class="module-card">
+          <div class="module-number">Module 05</div>
+          <h3>Two-Dimensional Power</h3>
+          <p>Grid template, fr units, repeat(), minmax(), auto-fill, grid areas, and named lines.</p>
+          <div class="tags">
+            <span class="tag">grid</span>
+            <span class="tag">areas</span>
+            <span class="tag">fr unit</span>
+          </div>
+        </a>
+        <a href="06-responsive-design/index.html" class="module-card">
+          <div class="module-number">Module 06</div>
+          <h3>Every Screen Matters</h3>
+          <p>Media queries, mobile-first, fluid typography with clamp(), viewport units, and aspect-ratio.</p>
+          <div class="tags">
+            <span class="tag">responsive</span>
+            <span class="tag">clamp()</span>
+            <span class="tag">media queries</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Level 3: Modern CSS -->
+    <section class="level-section l3">
+      <div class="level-title">
+        <span class="badge">Level 3</span>
+        <h2>Modern CSS</h2>
+      </div>
+      <div class="modules-grid">
+        <a href="07-custom-properties-cascade/index.html" class="module-card">
+          <div class="module-number">Module 07</div>
+          <h3>Variables & Layers</h3>
+          <p>Custom properties, @property, cascade layers (@layer), @scope, and theming systems.</p>
+          <div class="tags">
+            <span class="tag">--custom</span>
+            <span class="tag">@layer</span>
+            <span class="tag">@scope</span>
+          </div>
+        </a>
+        <a href="08-transitions-animations/index.html" class="module-card">
+          <div class="module-number">Module 08</div>
+          <h3>Motion & Interaction</h3>
+          <p>Transitions, @keyframes, @starting-style, interpolate-size, and display:none animations.</p>
+          <div class="tags">
+            <span class="tag">@keyframes</span>
+            <span class="tag">@starting-style</span>
+            <span class="tag">motion</span>
+          </div>
+        </a>
+        <a href="09-nesting-selectors/index.html" class="module-card">
+          <div class="module-number">Module 09</div>
+          <h3>Nesting & :has()</h3>
+          <p>Native CSS nesting, the & selector, :has() parent selector, :is(), :where(), :not().</p>
+          <div class="tags">
+            <span class="tag">nesting</span>
+            <span class="tag">:has()</span>
+            <span class="tag">:is()</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Level 4: Advanced Techniques -->
+    <section class="level-section l4">
+      <div class="level-title">
+        <span class="badge">Level 4</span>
+        <h2>Advanced Techniques</h2>
+      </div>
+      <div class="modules-grid">
+        <a href="10-container-queries-subgrid/index.html" class="module-card">
+          <div class="module-number">Module 10</div>
+          <h3>Component-Aware Design</h3>
+          <p>Container queries, container units (cqw, cqi), style queries, and CSS Subgrid.</p>
+          <div class="tags">
+            <span class="tag">@container</span>
+            <span class="tag">subgrid</span>
+            <span class="tag">cqw</span>
+          </div>
+        </a>
+        <a href="11-modern-colors/index.html" class="module-card">
+          <div class="module-number">Module 11</div>
+          <h3>Color Science</h3>
+          <p>OKLCH, color-mix(), relative colors, light-dark(), wide-gamut colors, and theming.</p>
+          <div class="tags">
+            <span class="tag">oklch()</span>
+            <span class="tag">color-mix()</span>
+            <span class="tag">light-dark()</span>
+          </div>
+        </a>
+        <a href="12-scroll-animations/index.html" class="module-card">
+          <div class="module-number">Module 12</div>
+          <h3>Scroll-Powered</h3>
+          <p>Scroll-driven animations, view timelines, scroll-snap, ::scroll-button, ::scroll-marker.</p>
+          <div class="tags">
+            <span class="tag">scroll()</span>
+            <span class="tag">view()</span>
+            <span class="tag">::scroll-marker</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Level 5: PE7 Mastery -->
+    <section class="level-section l5">
+      <div class="level-title">
+        <span class="badge">Level 5</span>
+        <h2>PE7 Mastery</h2>
+      </div>
+      <div class="modules-grid">
+        <a href="13-view-transitions-anchor/index.html" class="module-card">
+          <div class="module-number">Module 13</div>
+          <h3>Transitions & Anchoring</h3>
+          <p>View Transitions API, CSS Anchor Positioning, Popover API styling, floating UI.</p>
+          <div class="tags">
+            <span class="tag">view-transition</span>
+            <span class="tag">anchor()</span>
+            <span class="tag">popover</span>
+          </div>
+        </a>
+        <a href="14-cutting-edge-2026/index.html" class="module-card">
+          <div class="module-number">Module 14</div>
+          <h3>The Bleeding Edge</h3>
+          <p>CSS if(), sibling-count(), sibling-index(), enhanced attr(), custom select, field-sizing.</p>
+          <div class="tags">
+            <span class="tag">if()</span>
+            <span class="tag">sibling-index()</span>
+            <span class="tag">base-select</span>
+          </div>
+        </a>
+        <a href="15-capstone-project/index.html" class="module-card">
+          <div class="module-number">Module 15</div>
+          <h3>PE7 Portfolio</h3>
+          <p>Build a complete production portfolio combining every technique from all 14 modules.</p>
+          <div class="tags">
+            <span class="tag">capstone</span>
+            <span class="tag">portfolio</span>
+            <span class="tag">all features</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    HTML/CSS PE7 Course &mdash; From Beginner to Principal Engineer Mastery &mdash; 2026 Edition
+  </footer>
+</body>
+</html>

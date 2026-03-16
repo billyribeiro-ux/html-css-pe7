@@ -1,0 +1,327 @@
+/* PE7 Course - Shared Lesson Styles */
+
+/* ── Design Tokens ── */
+:root {
+  --pe7-bg: #0f1117;
+  --pe7-surface: #1a1d27;
+  --pe7-surface-2: #242836;
+  --pe7-border: #2e3345;
+  --pe7-text: #e4e6ef;
+  --pe7-text-muted: #8b8fa7;
+  --pe7-accent: #6c5ce7;
+  --pe7-accent-light: #a29bfe;
+  --pe7-success: #00cec9;
+  --pe7-warning: #fdcb6e;
+  --pe7-danger: #ff7675;
+  --pe7-code-bg: #12141c;
+
+  --pe7-level-1: #00b894;
+  --pe7-level-2: #0984e3;
+  --pe7-level-3: #6c5ce7;
+  --pe7-level-4: #e17055;
+  --pe7-level-5: #fd79a8;
+
+  --pe7-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --pe7-font-mono: "Fira Code", "JetBrains Mono", "Cascadia Code", ui-monospace, monospace;
+
+  --pe7-radius: 8px;
+  --pe7-radius-lg: 12px;
+  --pe7-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --pe7-transition: 0.2s ease;
+}
+
+/* ── Base ── */
+body {
+  font-family: var(--pe7-font);
+  background: var(--pe7-bg);
+  color: var(--pe7-text);
+}
+
+/* ── Course Navigation ── */
+.course-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--pe7-surface);
+  border-bottom: 1px solid var(--pe7-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.course-nav a {
+  color: var(--pe7-text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color var(--pe7-transition);
+}
+
+.course-nav a:hover {
+  color: var(--pe7-accent-light);
+}
+
+.course-nav .nav-home {
+  font-weight: 600;
+  color: var(--pe7-accent-light);
+}
+
+.course-nav .nav-sep {
+  color: var(--pe7-border);
+}
+
+/* ── Lesson Header ── */
+.lesson-header {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--pe7-surface), var(--pe7-surface-2));
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.lesson-header .level-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.level-badge.level-1 { background: color-mix(in oklch, var(--pe7-level-1) 20%, transparent); color: var(--pe7-level-1); }
+.level-badge.level-2 { background: color-mix(in oklch, var(--pe7-level-2) 20%, transparent); color: var(--pe7-level-2); }
+.level-badge.level-3 { background: color-mix(in oklch, var(--pe7-level-3) 20%, transparent); color: var(--pe7-level-3); }
+.level-badge.level-4 { background: color-mix(in oklch, var(--pe7-level-4) 20%, transparent); color: var(--pe7-level-4); }
+.level-badge.level-5 { background: color-mix(in oklch, var(--pe7-level-5) 20%, transparent); color: var(--pe7-level-5); }
+
+.lesson-header h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.lesson-header .subtitle {
+  color: var(--pe7-text-muted);
+  font-size: 1.1rem;
+}
+
+/* ── Main Content ── */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Concept Section ── */
+.concept {
+  margin-bottom: 3rem;
+}
+
+.concept h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+.concept .why {
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
+  border-left: 3px solid var(--pe7-accent);
+  padding: 1rem 1.25rem;
+  border-radius: 0 var(--pe7-radius) var(--pe7-radius) 0;
+  margin: 1.5rem 0;
+}
+
+.concept .why strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ── Code Blocks ── */
+.code-block {
+  background: var(--pe7-code-bg);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  padding: 1.25rem;
+  margin: 1rem 0 1.5rem;
+  overflow-x: auto;
+  position: relative;
+}
+
+.code-block .label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--pe7-accent);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 0 var(--pe7-radius) 0 var(--pe7-radius);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.code-block code,
+.code-block pre {
+  font-family: var(--pe7-font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+code {
+  font-family: var(--pe7-font-mono);
+  background: var(--pe7-code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Syntax coloring classes */
+.kw { color: #c792ea; }  /* keyword */
+.fn { color: #82aaff; }  /* function */
+.str { color: #c3e88d; } /* string */
+.num { color: #f78c6c; } /* number */
+.cm { color: #546e7a; }  /* comment */
+.prop { color: #ffcb6b; } /* property */
+.val { color: #89ddff; }  /* value */
+.tag { color: #f07178; }  /* tag */
+.attr { color: #c792ea; } /* attribute */
+
+/* ── Demo Area ── */
+.demo {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.demo::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Exercise Section ── */
+.exercise {
+  background: color-mix(in oklch, var(--pe7-success) 5%, var(--pe7-surface));
+  border: 1px solid color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
+  border-radius: var(--pe7-radius-lg);
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.exercise h2 {
+  color: var(--pe7-success);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.exercise ol, .exercise ul {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.exercise li {
+  list-style: decimal;
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+/* ── Challenge Section ── */
+.challenge {
+  background: color-mix(in oklch, var(--pe7-warning) 5%, var(--pe7-surface));
+  border: 1px solid color-mix(in oklch, var(--pe7-warning) 30%, var(--pe7-border));
+  border-radius: var(--pe7-radius-lg);
+  padding: 2rem;
+  margin: 3rem 0 2rem;
+}
+
+.challenge h2 {
+  color: var(--pe7-warning);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.challenge ul {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.challenge li {
+  list-style: disc;
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+/* ── Lesson Footer ── */
+.lesson-footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--pe7-border);
+}
+
+.lesson-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  color: var(--pe7-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all var(--pe7-transition);
+}
+
+.lesson-footer a:hover {
+  color: var(--pe7-accent-light);
+  border-color: var(--pe7-accent);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, var(--pe7-surface-2));
+}
+
+/* ── Utility ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  main { padding: 1.5rem 1rem 3rem; }
+  .lesson-header { padding: 2rem 1rem; }
+}
