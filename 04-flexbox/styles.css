@@ -1,0 +1,365 @@
+/* ============================================================
+   Module 04: Flexbox — One-Dimensional Flow
+   ============================================================ */
+
+/* ----- Shared demo box styles ----- */
+.box {
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+  min-width: 50px;
+}
+
+.box-a { background-color: #e74c3c; }
+.box-b { background-color: #3498db; }
+.box-c { background-color: #2ecc71; }
+.box-d { background-color: #f39c12; }
+
+.demo-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.demo-panel {
+  flex: 1;
+  min-width: 280px;
+  margin-bottom: 1rem;
+}
+
+.demo-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  font-family: "Fira Code", "Courier New", monospace;
+}
+
+.demo-note {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+/* ============================================================
+   SECTION 1: flex-direction Demo
+   ============================================================ */
+.flex-dir-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  min-height: 200px;
+}
+
+.dir-row { flex-direction: row; }
+.dir-row-reverse { flex-direction: row-reverse; }
+.dir-column { flex-direction: column; }
+.dir-column-reverse { flex-direction: column-reverse; }
+
+/* ============================================================
+   SECTION 2: justify-content Demo
+   ============================================================ */
+.justify-demos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jc-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  min-height: 60px;
+}
+
+.jc-start   { justify-content: flex-start; }
+.jc-end     { justify-content: flex-end; }
+.jc-center  { justify-content: center; }
+.jc-between { justify-content: space-between; }
+.jc-around  { justify-content: space-around; }
+.jc-evenly  { justify-content: space-evenly; }
+
+/* ============================================================
+   SECTION 3: align-items Demo
+   ============================================================ */
+.align-demos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.ai-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  height: 160px;
+  min-width: 220px;
+}
+
+.ai-stretch  { align-items: stretch; }
+.ai-start    { align-items: flex-start; }
+.ai-end      { align-items: flex-end; }
+.ai-center   { align-items: center; }
+.ai-baseline { align-items: baseline; }
+
+.box-tall   { height: auto; padding-top: 2rem; padding-bottom: 2rem; }
+.box-short  { height: auto; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.box-medium { height: auto; padding-top: 1rem; padding-bottom: 1rem; }
+
+.ai-stretch .box-tall,
+.ai-stretch .box-short,
+.ai-stretch .box-medium {
+  height: auto;
+}
+
+.baseline-big   { font-size: 1.5rem; padding-top: 2rem; }
+.baseline-small { font-size: 0.75rem; padding-top: 0.5rem; }
+
+.align-self-end {
+  align-self: flex-end;
+}
+
+/* ============================================================
+   SECTION 4: flex-grow / flex-shrink Demo
+   ============================================================ */
+.flex-props-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  min-height: 60px;
+}
+
+.fp-equal       { flex: 1; }
+.fp-one         { flex: 1; }
+.fp-two         { flex: 2; }
+.fp-three       { flex: 3; }
+.fp-fixed       { flex: 0 0 150px; }
+.fp-basis-zero  { flex: 1 1 0; }
+.fp-basis-auto  { flex: 1 1 auto; }
+
+/* ============================================================
+   SECTION 5: Wrapping & Gap Demo
+   ============================================================ */
+.wrap-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.no-wrap-demo {
+  flex-wrap: nowrap;
+}
+
+.card-item {
+  flex: 1 1 200px;
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+}
+
+.card-item.box-a { background-color: #e74c3c; }
+.card-item.box-b { background-color: #3498db; }
+.card-item.box-c { background-color: #2ecc71; }
+.card-item.box-d { background-color: #f39c12; }
+
+/* ============================================================
+   SECTION 6: Order Demo
+   ============================================================ */
+.order-demo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.order-default .box { flex: 1; }
+
+.order-custom .box { flex: 1; }
+.order-custom .order-neg1 { order: -1; }
+.order-custom .order-0    { order: 0; }
+.order-custom .order-1    { order: 1; }
+
+/* ============================================================
+   SECTION 7: Common Patterns
+   ============================================================ */
+
+/* --- Pattern: Flex Center --- */
+.pattern-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+}
+
+.centered-box {
+  padding: 1.5rem 3rem;
+  background: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #764ba2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Pattern: Navbar --- */
+.pattern-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #1e293b;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.navbar-logo {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #38bdf8;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-links li {
+  cursor: pointer;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.navbar-links li:hover {
+  color: #fff;
+}
+
+.navbar-cta {
+  padding: 0.5rem 1.25rem;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 700;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* --- Pattern: Card Row --- */
+.pattern-card-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.pattern-card {
+  flex: 1;
+  padding: 1.5rem;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.pattern-card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.pattern-card p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* --- Pattern: Holy Grail --- */
+.pattern-holy-grail {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e2e8f0;
+}
+
+.hg-header,
+.hg-footer {
+  padding: 1rem;
+  background: #1e293b;
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+}
+
+.hg-body {
+  display: flex;
+  flex: 1;
+}
+
+.hg-sidebar-left,
+.hg-sidebar-right {
+  flex: 0 0 130px;
+  padding: 1rem;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.hg-main {
+  flex: 1;
+  padding: 1rem;
+  background: #fff;
+  color: #334155;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Responsive adjustments
+   ============================================================ */
+@media (max-width: 600px) {
+  .demo-row {
+    flex-direction: column;
+  }
+
+  .pattern-card-row {
+    flex-direction: column;
+  }
+
+  .pattern-navbar {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .hg-body {
+    flex-direction: column;
+  }
+
+  .hg-sidebar-left,
+  .hg-sidebar-right {
+    flex: 0 0 auto;
+  }
+}

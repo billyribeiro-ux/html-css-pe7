@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painting the Web | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 02</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-1">Level 1 - Foundations</span>
+    <h1>Painting the Web</h1>
+    <p class="subtitle">Learn how CSS transforms plain HTML into beautiful, styled web pages.</p>
+  </header>
+
+  <main>
+
+    <!-- ===== 1. HOW CSS WORKS ===== -->
+    <section class="concept-section" id="how-css-works">
+      <h2>1. How CSS Works</h2>
+
+      <p>CSS (Cascading Style Sheets) is the language that controls how HTML elements look. The word "cascading" is key: when multiple styles target the same element, CSS uses a set of rules to determine which style wins. Understanding these rules &mdash; the cascade, specificity, and inheritance &mdash; is what separates a frustrated developer from a confident one.</p>
+
+      <p>The <strong>cascade</strong> is the algorithm that resolves conflicts when multiple CSS rules apply to the same element. It considers three factors in order: importance (<code>!important</code> declarations), specificity (how targeted the selector is), and source order (later rules win if everything else is equal). Most of the time, you will be working with specificity and source order.</p>
+
+      <p><strong>Specificity</strong> is a scoring system for selectors. Inline styles score highest (1,0,0,0), followed by IDs (0,1,0,0), then classes, attributes, and pseudo-classes (0,0,1,0), and finally element selectors and pseudo-elements (0,0,0,1). When two rules target the same element, the one with higher specificity wins regardless of source order.</p>
+
+      <p><strong>Inheritance</strong> is how certain CSS properties pass from parent elements to their children. Text-related properties like <code>color</code>, <code>font-family</code>, and <code>line-height</code> are inherited by default. Layout properties like <code>margin</code>, <code>padding</code>, and <code>border</code> are not. You can force inheritance with the <code>inherit</code> keyword or reset to the default with <code>initial</code> or <code>unset</code>.</p>
+
+      <div class="why">
+        <h3>Why Understanding Specificity Prevents "!important Wars"</h3>
+        <p>When developers do not understand specificity, they reach for <code>!important</code> to force their styles to apply. This works once, but soon another style needs to override the <code>!important</code> one, leading to more <code>!important</code> declarations, creating an unwinnable arms race. The result is a stylesheet that is impossible to maintain. If you understand specificity, you can write selectors at the right level and never need <code>!important</code> (except in rare utility-class situations).</p>
+      </div>
+
+      <div class="demo" id="specificity-demo">
+        <h3>Specificity Calculator</h3>
+        <div class="demo-box">
+          <table class="specificity-table">
+            <thead>
+              <tr>
+                <th>Selector</th>
+                <th>Inline</th>
+                <th>IDs</th>
+                <th>Classes</th>
+                <th>Elements</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>p</code></td>
+                <td>0</td><td>0</td><td>0</td><td>1</td>
+                <td class="score">0,0,0,1</td>
+              </tr>
+              <tr>
+                <td><code>.intro</code></td>
+                <td>0</td><td>0</td><td>1</td><td>0</td>
+                <td class="score">0,0,1,0</td>
+              </tr>
+              <tr>
+                <td><code>p.intro</code></td>
+                <td>0</td><td>0</td><td>1</td><td>1</td>
+                <td class="score">0,0,1,1</td>
+              </tr>
+              <tr>
+                <td><code>#header</code></td>
+                <td>0</td><td>1</td><td>0</td><td>0</td>
+                <td class="score">0,1,0,0</td>
+              </tr>
+              <tr>
+                <td><code>#header .nav a</code></td>
+                <td>0</td><td>1</td><td>1</td><td>1</td>
+                <td class="score">0,1,1,1</td>
+              </tr>
+              <tr>
+                <td><code>style="..."</code></td>
+                <td>1</td><td>0</td><td>0</td><td>0</td>
+                <td class="score">1,0,0,0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Cascade in Action</h3>
+        <pre><code>/* Specificity: 0,0,0,1 */
+p {
+  color: blue;
+}
+
+/* Specificity: 0,0,1,0 -- WINS over the above */
+.intro {
+  color: green;
+}
+
+/* Specificity: 0,0,1,1 -- WINS over both above */
+p.intro {
+  color: red;
+}
+
+/* Source order: this wins over a same-specificity rule above it */
+p.intro {
+  color: purple;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 2. SELECTORS ===== -->
+    <section class="concept-section" id="selectors">
+      <h2>2. Selectors</h2>
+
+      <p>CSS selectors are patterns that target HTML elements for styling. They range from simple (targeting every paragraph) to highly specific (targeting the third child of a list inside a sidebar). Mastering selectors means you can style any element precisely without adding extra classes to your HTML.</p>
+
+      <p>The simplest selectors are <strong>element selectors</strong> (<code>p</code>, <code>h1</code>, <code>div</code>) which target all instances of an element. <strong>Class selectors</strong> (<code>.classname</code>) target elements with a specific class attribute and are the workhorse of modern CSS. <strong>ID selectors</strong> (<code>#id</code>) target a unique element but have high specificity, so use them sparingly for styling.</p>
+
+      <p><strong>Attribute selectors</strong> let you target elements based on their attributes: <code>[type="email"]</code> selects all email inputs, <code>[href^="https"]</code> selects links starting with "https". <strong>Pseudo-classes</strong> target elements in specific states: <code>:hover</code> when the mouse is over them, <code>:focus</code> when they have keyboard focus, <code>:first-child</code> and <code>:nth-child()</code> based on their position among siblings.</p>
+
+      <p><strong>Pseudo-elements</strong> create virtual elements that do not exist in the HTML: <code>::before</code> and <code>::after</code> insert content before or after an element, <code>::first-line</code> targets only the first line of text. These are powerful for decorative effects without polluting your HTML with extra markup.</p>
+
+      <div class="demo" id="selectors-demo">
+        <h3>Selectors in Action</h3>
+        <div class="demo-box">
+          <div class="selector-showcase">
+            <div class="sel-group">
+              <h4>:hover</h4>
+              <div class="hover-target">Hover over me!</div>
+            </div>
+            <div class="sel-group">
+              <h4>:focus</h4>
+              <input type="text" class="focus-target" placeholder="Click or tab to focus me">
+            </div>
+            <div class="sel-group">
+              <h4>:nth-child(odd)</h4>
+              <ul class="nth-child-demo">
+                <li>Item 1 (odd - highlighted)</li>
+                <li>Item 2 (even)</li>
+                <li>Item 3 (odd - highlighted)</li>
+                <li>Item 4 (even)</li>
+                <li>Item 5 (odd - highlighted)</li>
+              </ul>
+            </div>
+            <div class="sel-group">
+              <h4>::before &amp; ::after</h4>
+              <p class="pseudo-demo">This paragraph has decorative pseudo-elements.</p>
+            </div>
+            <div class="sel-group">
+              <h4>::first-line</h4>
+              <p class="first-line-demo">The first line of this paragraph is styled differently using the ::first-line pseudo-element. Resize your browser window to see how the styling dynamically adjusts to whatever text ends up on the first rendered line. This is a powerful tool for typographic effects.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Selector Reference</h3>
+        <pre><code>/* Element selector */
+p { color: #333; }
+
+/* Class selector */
+.card { border: 1px solid #ccc; }
+
+/* ID selector */
+#main-title { font-size: 2rem; }
+
+/* Attribute selector */
+input[type="email"] { border-color: blue; }
+a[href^="https"] { color: green; }
+
+/* Pseudo-classes */
+a:hover { text-decoration: underline; }
+input:focus { outline: 2px solid blue; }
+li:first-child { font-weight: bold; }
+tr:nth-child(even) { background: #f5f5f5; }
+
+/* Pseudo-elements */
+.quote::before { content: "\201C"; font-size: 2em; }
+.quote::after { content: "\201D"; font-size: 2em; }
+p::first-line { font-variant: small-caps; }</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 3. COLORS ===== -->
+    <section class="concept-section" id="colors">
+      <h2>3. Colors</h2>
+
+      <p>Color is one of the most impactful tools in web design. CSS offers multiple ways to specify colors, each with its own strengths. Understanding the different color formats helps you choose the right one for each situation and makes it easier to create cohesive color palettes.</p>
+
+      <p><strong>Hexadecimal</strong> (<code>#rrggbb</code>) is the most traditional format. Each pair of characters represents red, green, and blue values from 00 to ff. Shorthand (<code>#rgb</code>) works when each pair is identical digits (e.g., <code>#fff</code> equals <code>#ffffff</code>). You can add two more digits for alpha transparency: <code>#rrggbbaa</code>.</p>
+
+      <p><strong>RGB</strong> (<code>rgb(red, green, blue)</code>) uses decimal values from 0-255 for each channel. Modern CSS also accepts percentages: <code>rgb(100% 50% 0%)</code>. The <code>rgba()</code> function adds an alpha channel for transparency. In modern CSS, you can use the space-separated syntax: <code>rgb(255 128 0 / 50%)</code>.</p>
+
+      <p><strong>HSL</strong> (<code>hsl(hue, saturation%, lightness%)</code>) is the most intuitive format for humans. Hue is a degree on the color wheel (0-360), saturation is the intensity (0% is gray, 100% is vivid), and lightness controls how light or dark (0% is black, 100% is white, 50% is the pure color). HSL makes it easy to create variations of a color by adjusting a single value.</p>
+
+      <div class="demo" id="color-demo">
+        <h3>Color Format Comparison</h3>
+        <div class="demo-box">
+          <div class="color-palette">
+            <div class="color-group">
+              <h4>Hex Colors</h4>
+              <div class="color-swatch" style="background: #e74c3c;"><span>#e74c3c</span></div>
+              <div class="color-swatch" style="background: #3498db;"><span>#3498db</span></div>
+              <div class="color-swatch" style="background: #2ecc71;"><span>#2ecc71</span></div>
+              <div class="color-swatch" style="background: #f39c12;"><span>#f39c12</span></div>
+              <div class="color-swatch" style="background: #9b59b6;"><span>#9b59b6</span></div>
+            </div>
+            <div class="color-group">
+              <h4>RGB Colors</h4>
+              <div class="color-swatch" style="background: rgb(231, 76, 60);"><span>rgb(231,76,60)</span></div>
+              <div class="color-swatch" style="background: rgb(52, 152, 219);"><span>rgb(52,152,219)</span></div>
+              <div class="color-swatch" style="background: rgb(46, 204, 113);"><span>rgb(46,204,113)</span></div>
+              <div class="color-swatch" style="background: rgb(243, 156, 18);"><span>rgb(243,156,18)</span></div>
+              <div class="color-swatch" style="background: rgb(155, 89, 182);"><span>rgb(155,89,182)</span></div>
+            </div>
+            <div class="color-group">
+              <h4>HSL Colors</h4>
+              <div class="color-swatch" style="background: hsl(6, 78%, 57%);"><span>hsl(6,78%,57%)</span></div>
+              <div class="color-swatch" style="background: hsl(204, 70%, 53%);"><span>hsl(204,70%,53%)</span></div>
+              <div class="color-swatch" style="background: hsl(145, 63%, 49%);"><span>hsl(145,63%,49%)</span></div>
+              <div class="color-swatch" style="background: hsl(39, 90%, 51%);"><span>hsl(39,90%,51%)</span></div>
+              <div class="color-swatch" style="background: hsl(282, 39%, 53%);"><span>hsl(282,39%,53%)</span></div>
+            </div>
+          </div>
+
+          <h4 style="margin-top: 1.5rem;">HSL Hue Wheel</h4>
+          <div class="hue-wheel">
+            <div class="hue-slice" style="background: hsl(0, 80%, 55%);">0&deg; Red</div>
+            <div class="hue-slice" style="background: hsl(30, 80%, 55%);">30&deg;</div>
+            <div class="hue-slice" style="background: hsl(60, 80%, 55%); color: #333;">60&deg; Yellow</div>
+            <div class="hue-slice" style="background: hsl(120, 80%, 40%);">120&deg; Green</div>
+            <div class="hue-slice" style="background: hsl(180, 80%, 40%);">180&deg; Cyan</div>
+            <div class="hue-slice" style="background: hsl(240, 80%, 55%);">240&deg; Blue</div>
+            <div class="hue-slice" style="background: hsl(300, 80%, 55%);">300&deg; Magenta</div>
+            <div class="hue-slice" style="background: hsl(330, 80%, 55%);">330&deg;</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="why">
+        <h3>Why HSL is Often the Best Choice</h3>
+        <p>HSL is the most human-readable color format. Need a lighter version of your brand color? Increase lightness. Need a muted version? Decrease saturation. Need a complementary color? Add 180 to the hue. With hex or RGB, creating color variations requires changing multiple values with no intuitive relationship. HSL lets you think about color the way designers do.</p>
+      </div>
+    </section>
+
+    <!-- ===== 4. UNITS ===== -->
+    <section class="concept-section" id="units">
+      <h2>4. Units</h2>
+
+      <p>CSS units determine the size of everything on your page. Choosing the right unit for each situation is crucial for creating responsive, accessible designs. There are two main categories: <strong>absolute units</strong> (like <code>px</code>) that stay the same size regardless of context, and <strong>relative units</strong> (like <code>em</code>, <code>rem</code>, <code>%</code>) that scale based on their environment.</p>
+
+      <p><strong>Pixels (px)</strong> are the most straightforward unit: 1px is always 1px (adjusted for device pixel ratio). Use them for things that should never scale, like thin borders or shadows. However, using pixels for font sizes prevents users from scaling text with their browser settings, which is an accessibility issue.</p>
+
+      <p><strong>Em</strong> units are relative to the font size of the element itself (or its parent for the <code>font-size</code> property). They compound: if a parent is <code>1.2em</code> and a child is <code>1.2em</code>, the child is actually <code>1.44em</code> of the root. This compounding can be both useful and surprising. <strong>Rem</strong> (root em) units are always relative to the root <code>&lt;html&gt;</code> font size, avoiding compounding entirely.</p>
+
+      <p><strong>Viewport units</strong> (<code>vw</code>, <code>vh</code>) are relative to the browser window. <code>1vw</code> is 1% of the viewport width, <code>1vh</code> is 1% of the viewport height. They are perfect for full-screen sections, responsive typography, and layouts that should fill the screen. <strong>Percentages</strong> are relative to the parent element's dimensions.</p>
+
+      <div class="demo" id="units-demo">
+        <h3>Unit Comparison</h3>
+        <div class="demo-box">
+          <div class="unit-comparison">
+            <div class="unit-row">
+              <span class="unit-label">200px</span>
+              <div class="unit-bar" style="width: 200px;"></div>
+            </div>
+            <div class="unit-row">
+              <span class="unit-label">12rem</span>
+              <div class="unit-bar unit-rem" style="width: 12rem;"></div>
+            </div>
+            <div class="unit-row">
+              <span class="unit-label">50%</span>
+              <div class="unit-bar unit-pct" style="width: 50%;"></div>
+            </div>
+            <div class="unit-row">
+              <span class="unit-label">30vw</span>
+              <div class="unit-bar unit-vw" style="width: 30vw;"></div>
+            </div>
+          </div>
+          <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">Resize your browser window to see how relative units (%, vw) change while absolute units (px) stay fixed. Rem stays fixed unless you change the root font size.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>When to Use Each Unit</h3>
+        <pre><code>/* px - borders, shadows, small fixed values */
+border: 1px solid #ccc;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+/* rem - font sizes, spacing, most layout values */
+font-size: 1.125rem;    /* 18px at default 16px root */
+padding: 1.5rem;
+gap: 2rem;
+
+/* em - values that should scale with local font size */
+margin-bottom: 1.5em;   /* scales with element's font-size */
+letter-spacing: 0.05em;
+
+/* % - widths relative to parent */
+width: 100%;
+max-width: 80%;
+
+/* vw/vh - viewport-relative sizing */
+min-height: 100vh;      /* full viewport height */
+font-size: clamp(1rem, 2.5vw, 3rem); /* responsive type */</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 5. TYPOGRAPHY ===== -->
+    <section class="concept-section" id="typography">
+      <h2>5. Typography</h2>
+
+      <p>Typography is the art and technique of arranging type. On the web, good typography makes content readable, establishes visual hierarchy, and conveys personality. CSS gives you extensive control over how text looks, from font selection to spacing and decoration.</p>
+
+      <p><strong>Font families</strong> are specified with <code>font-family</code>, using a stack of fallbacks: <code>font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;</code>. The browser uses the first available font. System font stacks are increasingly popular for performance since they require no downloads.</p>
+
+      <p><strong>Font size and weight</strong> establish hierarchy. Headings are larger and bolder, body text is moderate, captions are smaller. The <code>line-height</code> property controls the space between lines of text &mdash; a value of 1.5 to 1.7 for body text is generally ideal for readability. Too tight and lines blur together; too loose and the eye loses track.</p>
+
+      <p><strong>Letter spacing and text transforms</strong> are finishing touches. Small amounts of letter spacing (<code>0.02em</code> to <code>0.05em</code>) improve readability of uppercase text. <code>text-transform</code> can uppercase, lowercase, or capitalize text without changing the HTML, keeping content semantically correct while styling it differently.</p>
+
+      <div class="demo" id="typography-demo">
+        <h3>Typography Specimens</h3>
+        <div class="demo-box">
+          <div class="type-specimens">
+            <div class="type-specimen">
+              <div class="type-sample" style="font-family: Georgia, 'Times New Roman', serif; font-size: 1.5rem; line-height: 1.4;">
+                The quick brown fox jumps over the lazy dog.
+              </div>
+              <span class="type-meta">Georgia, serif &mdash; 1.5rem &mdash; weight 400</span>
+            </div>
+            <div class="type-specimen">
+              <div class="type-sample" style="font-family: system-ui, sans-serif; font-size: 1.5rem; font-weight: 300; line-height: 1.4;">
+                The quick brown fox jumps over the lazy dog.
+              </div>
+              <span class="type-meta">system-ui, sans-serif &mdash; 1.5rem &mdash; weight 300</span>
+            </div>
+            <div class="type-specimen">
+              <div class="type-sample" style="font-family: 'Courier New', monospace; font-size: 1.25rem; line-height: 1.4;">
+                The quick brown fox jumps over the lazy dog.
+              </div>
+              <span class="type-meta">'Courier New', monospace &mdash; 1.25rem &mdash; weight 400</span>
+            </div>
+            <div class="type-specimen">
+              <div class="type-sample" style="font-family: system-ui, sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;">
+                Uppercase with letter spacing
+              </div>
+              <span class="type-meta">Uppercase &mdash; 1rem &mdash; weight 700 &mdash; letter-spacing 0.15em</span>
+            </div>
+            <div class="type-specimen">
+              <div class="type-sample" style="font-family: Georgia, serif; font-size: 1.75rem; font-style: italic; font-weight: 400;">
+                Italic serif for elegance
+              </div>
+              <span class="type-meta">Georgia italic &mdash; 1.75rem &mdash; weight 400</span>
+            </div>
+          </div>
+
+          <h4 style="margin-top: 2rem;">Line Height Comparison</h4>
+          <div class="line-height-comparison">
+            <div class="lh-sample" style="line-height: 1.0;">
+              <strong>line-height: 1.0</strong><br>
+              Text feels cramped and hard to read. Lines of text are touching each other and the eye struggles to track from one line to the next.
+            </div>
+            <div class="lh-sample" style="line-height: 1.5;">
+              <strong>line-height: 1.5</strong><br>
+              This is comfortable for body text. There is enough space between lines for the eye to easily find the next line without losing its place.
+            </div>
+            <div class="lh-sample" style="line-height: 2.2;">
+              <strong>line-height: 2.2</strong><br>
+              Too much space between lines. The text feels disconnected and it takes more effort to associate lines as part of the same paragraph.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Typography Properties</h3>
+        <pre><code>body {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1rem;        /* 16px default */
+  line-height: 1.6;       /* 1.5-1.7 is ideal for body text */
+  color: #333;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;  /* tighten large headings */
+  line-height: 1.2;         /* tighter for headings */
+}
+
+.overline {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;    /* open up uppercase text */
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 6. BACKGROUNDS & BORDERS ===== -->
+    <section class="concept-section" id="backgrounds-borders">
+      <h2>6. Backgrounds &amp; Borders</h2>
+
+      <p>Backgrounds and borders are the decorative foundation of CSS. They transform plain boxes into visually distinct components. From solid colors to complex gradients, from sharp corners to pill shapes, these properties give you the tools to create any visual style.</p>
+
+      <p><strong>Background colors</strong> are the simplest background property. <strong>Background images</strong> can be photographs, patterns, or SVGs, controlled with properties like <code>background-size</code> (cover, contain, or specific dimensions), <code>background-position</code>, and <code>background-repeat</code>.</p>
+
+      <p><strong>Gradients</strong> are generated images created with CSS. <code>linear-gradient()</code> transitions between colors along a straight line. <code>radial-gradient()</code> radiates from a center point. You can use multiple color stops, angles, and even layer multiple gradients. They are infinitely scalable and add zero network requests.</p>
+
+      <p><strong>Borders</strong> wrap around elements with a specified width, style, and color. The <code>border-radius</code> property rounds corners &mdash; use a single value for uniform rounding, four values for individual corners, or <code>50%</code> to create circles. You can also use <code>outline</code> for borders that do not affect layout (commonly used for focus indicators).</p>
+
+      <div class="demo" id="gradient-demo">
+        <h3>Gradient Cards</h3>
+        <div class="demo-box">
+          <div class="gradient-cards">
+            <div class="gradient-card" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+              <span class="gradient-label">linear-gradient(135deg, #667eea, #764ba2)</span>
+            </div>
+            <div class="gradient-card" style="background: linear-gradient(to right, #f093fb, #f5576c);">
+              <span class="gradient-label">linear-gradient(to right, #f093fb, #f5576c)</span>
+            </div>
+            <div class="gradient-card" style="background: linear-gradient(180deg, #4facfe, #00f2fe);">
+              <span class="gradient-label">linear-gradient(180deg, #4facfe, #00f2fe)</span>
+            </div>
+            <div class="gradient-card" style="background: radial-gradient(circle, #fbc2eb, #a6c1ee);">
+              <span class="gradient-label">radial-gradient(circle, #fbc2eb, #a6c1ee)</span>
+            </div>
+            <div class="gradient-card" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+              <span class="gradient-label">linear-gradient(135deg, #a8edea, #fed6e3)</span>
+            </div>
+            <div class="gradient-card" style="background: conic-gradient(from 0deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);">
+              <span class="gradient-label">conic-gradient(...)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" id="border-demo">
+        <h3>Border Radius Examples</h3>
+        <div class="demo-box">
+          <div class="border-examples">
+            <div class="border-box" style="border-radius: 0;">0px</div>
+            <div class="border-box" style="border-radius: 8px;">8px</div>
+            <div class="border-box" style="border-radius: 16px;">16px</div>
+            <div class="border-box" style="border-radius: 50%;">50%</div>
+            <div class="border-box" style="border-radius: 20px 0 20px 0;">20px 0</div>
+            <div class="border-box" style="border-radius: 30px 30px 0 0;">pill top</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Background &amp; Border Properties</h3>
+        <pre><code>/* Solid background */
+.card { background-color: #1a1a2e; }
+
+/* Gradient background */
+.hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Radial gradient */
+.spotlight {
+  background: radial-gradient(circle at top, #fff, transparent);
+}
+
+/* Background image */
+.banner {
+  background-image: url('hero.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Borders */
+.card {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+}
+
+/* Circle */
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== EXERCISE ===== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Style a Profile Page</h2>
+      <p>Take the HTML profile page you built in Module 01 (or create a new one) and apply CSS to transform it:</p>
+      <ul>
+        <li>Set a system font stack on the body with comfortable line-height (1.6).</li>
+        <li>Style headings with different sizes using <code>rem</code> units and tighter line-height.</li>
+        <li>Add a color scheme using HSL colors &mdash; pick a primary hue and create variations by changing saturation and lightness.</li>
+        <li>Style links with custom colors and a hover effect that changes the underline.</li>
+        <li>Add background colors to the header and footer sections.</li>
+        <li>Round the corners of any card-like sections with <code>border-radius</code>.</li>
+        <li>Use at least one gradient (for a header background, a divider, or an accent element).</li>
+      </ul>
+    </section>
+
+    <!-- ===== CHALLENGE ===== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Styled Business Card</h2>
+      <p>Create a business card component with the following requirements:</p>
+      <ul>
+        <li>A card container with rounded corners, a subtle border, and a <strong>gradient background</strong> (use at least 3 color stops).</li>
+        <li>A circular avatar placeholder (use <code>border-radius: 50%</code> on a colored div).</li>
+        <li>A name styled with a large, bold font and tight letter-spacing.</li>
+        <li>A job title in uppercase with wider letter-spacing and reduced font-weight.</li>
+        <li>Contact information styled with different text colors for labels and values.</li>
+        <li>A hover effect that slightly scales the card, changes the box shadow, and shifts the gradient.</li>
+        <li>Use only class selectors for styling (no IDs, no element selectors except for the body).</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../01-html-foundations/index.html">&larr; Previous</a>
+    <a href="../03-box-model-layout/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

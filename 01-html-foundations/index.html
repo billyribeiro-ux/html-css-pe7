@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Building Blocks | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 01</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-1">Level 1 - Foundations</span>
+    <h1>The Building Blocks</h1>
+    <p class="subtitle">Master the fundamental HTML elements that form every web page on the internet.</p>
+  </header>
+
+  <main>
+
+    <!-- ===== 1. DOCUMENT STRUCTURE ===== -->
+    <section class="concept-section" id="document-structure">
+      <h2>1. Document Structure</h2>
+
+      <p>Every HTML document follows a specific structure that browsers rely on to correctly interpret and render your content. Think of it as the skeleton of a building: invisible to visitors, but absolutely essential for everything else to stand properly. Without a correct document structure, browsers enter "quirks mode" and may render your page unpredictably.</p>
+
+      <p>The structure begins with a declaration that tells the browser which version of HTML you are using. Then comes the root element that wraps everything, followed by two main sections: the <code>&lt;head&gt;</code> for metadata and the <code>&lt;body&gt;</code> for visible content. Every tag you write lives inside one of these two containers.</p>
+
+      <p>Metadata in the <code>&lt;head&gt;</code> includes the character encoding, viewport settings for mobile devices, the page title (shown in browser tabs), links to stylesheets, and other machine-readable information. None of this content is displayed on the page itself, but it profoundly affects how the page behaves.</p>
+
+      <p>Understanding this anatomy is not just academic. Search engines read your <code>&lt;title&gt;</code> and meta tags. Screen readers depend on proper language attributes. Mobile browsers need the viewport meta tag to display your page at the correct scale. Getting the foundation right means everything built on top works correctly.</p>
+
+      <div class="code-block">
+        <h3>Anatomy of an HTML Document</h3>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;meta name="description" content="A brief description of your page"&gt;
+  &lt;title&gt;My First Web Page&lt;/title&gt;
+  &lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello, World!&lt;/h1&gt;
+  &lt;p&gt;This is my first web page.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Each Part Matters</h3>
+        <ul>
+          <li><strong>&lt;!DOCTYPE html&gt;</strong> &mdash; Tells the browser to use modern standards mode. Without it, browsers fall back to "quirks mode" which emulates bugs from the 1990s.</li>
+          <li><strong>&lt;html lang="en"&gt;</strong> &mdash; The root element. The <code>lang</code> attribute helps screen readers pronounce text correctly and enables browser translation features.</li>
+          <li><strong>&lt;meta charset="UTF-8"&gt;</strong> &mdash; Ensures characters from all languages (including emojis) display correctly. Always place this first in the head.</li>
+          <li><strong>&lt;meta name="viewport"&gt;</strong> &mdash; Without this, mobile browsers render the page at desktop width and then shrink it down, making text unreadable.</li>
+          <li><strong>&lt;title&gt;</strong> &mdash; Appears in browser tabs, bookmarks, and search engine results. It is one of the most important SEO elements on any page.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 2. SEMANTIC ELEMENTS ===== -->
+    <section class="concept-section" id="semantic-elements">
+      <h2>2. Semantic Elements</h2>
+
+      <p>Semantic HTML means using elements that describe the <em>meaning</em> of your content, not just its appearance. Before HTML5, developers used generic <code>&lt;div&gt;</code> tags for everything and relied on class names like "header" or "sidebar" to convey purpose. Now we have dedicated elements that communicate structure to browsers, screen readers, and search engines.</p>
+
+      <p>Using semantic elements is not optional best practice &mdash; it is how HTML is designed to be written. Screen readers use these landmarks to let users jump between sections. Search engines use them to understand page hierarchy. Other developers reading your code can instantly understand the layout without deciphering class names.</p>
+
+      <p>The key semantic elements are: <code>&lt;header&gt;</code> for introductory content, <code>&lt;nav&gt;</code> for navigation links, <code>&lt;main&gt;</code> for the primary content (only one per page), <code>&lt;article&gt;</code> for self-contained compositions, <code>&lt;section&gt;</code> for thematic groupings, <code>&lt;aside&gt;</code> for tangentially related content, and <code>&lt;footer&gt;</code> for closing information.</p>
+
+      <p>A page can have multiple <code>&lt;header&gt;</code> and <code>&lt;footer&gt;</code> elements (one for the page, others inside articles or sections), but there should only be one <code>&lt;main&gt;</code>. The <code>&lt;article&gt;</code> element should make sense on its own if extracted from the page &mdash; think blog posts, news stories, or product cards.</p>
+
+      <div class="code-block">
+        <h3>Proper Semantic Structure</h3>
+        <pre><code>&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;My Website&lt;/h1&gt;
+    &lt;nav&gt;
+      &lt;a href="/"&gt;Home&lt;/a&gt;
+      &lt;a href="/about"&gt;About&lt;/a&gt;
+      &lt;a href="/contact"&gt;Contact&lt;/a&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Article Title&lt;/h2&gt;
+      &lt;p&gt;Article content...&lt;/p&gt;
+    &lt;/article&gt;
+
+    &lt;section&gt;
+      &lt;h2&gt;Related Topics&lt;/h2&gt;
+      &lt;p&gt;Section content...&lt;/p&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;aside&gt;
+    &lt;h3&gt;Sidebar&lt;/h3&gt;
+    &lt;p&gt;Related links, ads, etc.&lt;/p&gt;
+  &lt;/aside&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;&amp;copy; 2026 My Website&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Semantics Matter</h3>
+        <p>A <code>&lt;div&gt;</code> tells the browser nothing about its content. A <code>&lt;nav&gt;</code> tells screen readers "this is a navigation region &mdash; skip it if you want to jump to the main content." Semantic HTML is the foundation of accessible web development. It is also a ranking factor for search engines, which use semantic structure to understand page content and display rich search results.</p>
+      </div>
+
+      <div class="demo" id="semantic-layout-demo">
+        <h3>Visual Semantic Layout</h3>
+        <div class="semantic-diagram">
+          <div class="sem-header">
+            <span>&lt;header&gt;</span>
+            <div class="sem-nav"><span>&lt;nav&gt;</span></div>
+          </div>
+          <div class="sem-body">
+            <div class="sem-main">
+              <span>&lt;main&gt;</span>
+              <div class="sem-article"><span>&lt;article&gt;</span></div>
+              <div class="sem-section"><span>&lt;section&gt;</span></div>
+            </div>
+            <div class="sem-aside"><span>&lt;aside&gt;</span></div>
+          </div>
+          <div class="sem-footer"><span>&lt;footer&gt;</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. TEXT CONTENT ===== -->
+    <section class="concept-section" id="text-content">
+      <h2>3. Text Content</h2>
+
+      <p>Text is the backbone of the web. HTML provides a rich set of elements for structuring text content, from headings that create document outlines to paragraphs, emphasis, and quotations. Using the right element for the right purpose ensures your content is accessible, well-structured, and meaningful.</p>
+
+      <p>Headings (<code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>) create a hierarchical outline of your document. Think of them like the outline of a book: <code>&lt;h1&gt;</code> is the book title, <code>&lt;h2&gt;</code> is a chapter title, <code>&lt;h3&gt;</code> is a section within a chapter, and so on. Never skip heading levels (going from h1 to h3 without an h2) as this breaks the document outline for assistive technologies.</p>
+
+      <p>For inline text semantics, <code>&lt;em&gt;</code> represents stress emphasis (the browser defaults to italic), while <code>&lt;strong&gt;</code> represents strong importance (the browser defaults to bold). These are different from <code>&lt;i&gt;</code> and <code>&lt;b&gt;</code>, which are purely visual. Screen readers change their tone of voice for <code>&lt;em&gt;</code> and <code>&lt;strong&gt;</code> but not for <code>&lt;i&gt;</code> and <code>&lt;b&gt;</code>.</p>
+
+      <p>The <code>&lt;blockquote&gt;</code> element is used for extended quotations from another source. It is a block-level element that typically gets indented by browsers. You can include a <code>&lt;cite&gt;</code> element to attribute the source of the quote.</p>
+
+      <div class="demo" id="headings-demo">
+        <h3>Heading Hierarchy</h3>
+        <div class="demo-box">
+          <h1 style="font-size: 2rem; margin: 0.3em 0;">Heading 1 &mdash; Page Title</h1>
+          <h2 style="font-size: 1.6rem; margin: 0.3em 0;">Heading 2 &mdash; Major Section</h2>
+          <h3 style="font-size: 1.35rem; margin: 0.3em 0;">Heading 3 &mdash; Subsection</h3>
+          <h4 style="font-size: 1.15rem; margin: 0.3em 0;">Heading 4 &mdash; Sub-subsection</h4>
+          <h5 style="font-size: 1rem; margin: 0.3em 0;">Heading 5 &mdash; Minor heading</h5>
+          <h6 style="font-size: 0.875rem; margin: 0.3em 0;">Heading 6 &mdash; Smallest heading</h6>
+        </div>
+      </div>
+
+      <div class="demo" id="text-demo">
+        <h3>Text Emphasis &amp; Quotations</h3>
+        <div class="demo-box">
+          <p>This is a regular paragraph of text.</p>
+          <p>This word is <em>emphasized</em> (stress emphasis).</p>
+          <p>This word is <strong>strongly important</strong>.</p>
+          <p>You can <strong>nest <em>emphasis inside</em> strong importance</strong>.</p>
+          <blockquote>
+            <p>"The best way to predict the future is to invent it."</p>
+            <cite>&mdash; Alan Kay</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div class="why">
+        <h3>Why Correct Text Markup Matters</h3>
+        <p>Screen readers announce headings and let users navigate by heading level. Using <code>&lt;strong&gt;</code> instead of CSS <code>font-weight: bold</code> conveys meaning to assistive technologies. Proper text structure also helps search engines understand the key topics on your page and their relative importance.</p>
+      </div>
+    </section>
+
+    <!-- ===== 4. LISTS ===== -->
+    <section class="concept-section" id="lists">
+      <h2>4. Lists</h2>
+
+      <p>Lists are one of the most commonly used HTML structures. They appear everywhere: navigation menus, feature lists, step-by-step instructions, recipe ingredients, and more. HTML provides three types of lists, each with a specific semantic purpose.</p>
+
+      <p><strong>Unordered lists</strong> (<code>&lt;ul&gt;</code>) are for items where the order does not matter &mdash; like a shopping list or a set of features. <strong>Ordered lists</strong> (<code>&lt;ol&gt;</code>) are for items where sequence is important &mdash; like instructions, rankings, or steps. <strong>Description lists</strong> (<code>&lt;dl&gt;</code>) are for name-value pairs &mdash; like a glossary, FAQ, or metadata display.</p>
+
+      <p>Lists can be nested inside each other to create hierarchical structures. Navigation menus with submenus are commonly built with nested unordered lists. Screen readers announce the type and length of lists, helping users understand the structure of your content.</p>
+
+      <div class="demo" id="lists-demo">
+        <h3>List Types</h3>
+        <div class="demo-box lists-grid">
+          <div>
+            <h4>Unordered List</h4>
+            <ul>
+              <li>HTML</li>
+              <li>CSS</li>
+              <li>JavaScript
+                <ul>
+                  <li>React</li>
+                  <li>Vue</li>
+                  <li>Svelte</li>
+                </ul>
+              </li>
+              <li>TypeScript</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Ordered List</h4>
+            <ol>
+              <li>Preheat the oven to 350&deg;F</li>
+              <li>Mix the dry ingredients</li>
+              <li>Add the wet ingredients</li>
+              <li>Pour into a greased pan</li>
+              <li>Bake for 25 minutes</li>
+            </ol>
+          </div>
+          <div>
+            <h4>Description List</h4>
+            <dl>
+              <dt>HTML</dt>
+              <dd>HyperText Markup Language &mdash; the structure of web pages.</dd>
+              <dt>CSS</dt>
+              <dd>Cascading Style Sheets &mdash; the presentation and styling.</dd>
+              <dt>JS</dt>
+              <dd>JavaScript &mdash; the behavior and interactivity.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>List Markup</h3>
+        <pre><code>&lt;!-- Unordered list --&gt;
+&lt;ul&gt;
+  &lt;li&gt;First item&lt;/li&gt;
+  &lt;li&gt;Second item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- Ordered list --&gt;
+&lt;ol&gt;
+  &lt;li&gt;Step one&lt;/li&gt;
+  &lt;li&gt;Step two&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!-- Description list --&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Term&lt;/dt&gt;
+  &lt;dd&gt;Definition of the term.&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 5. LINKS & IMAGES ===== -->
+    <section class="concept-section" id="links-images">
+      <h2>5. Links &amp; Images</h2>
+
+      <p>Links and images are what transformed documents into the interconnected, visual web we know today. The anchor element (<code>&lt;a&gt;</code>) creates hyperlinks that connect pages together, while the image element (<code>&lt;img&gt;</code>) embeds visual content. Both require careful attention to accessibility.</p>
+
+      <p>The <code>href</code> attribute on links can point to other pages (relative or absolute URLs), specific sections on the same page (using <code>#id</code>), email addresses (<code>mailto:</code>), or phone numbers (<code>tel:</code>). The <code>target="_blank"</code> attribute opens links in a new tab, but should be used sparingly and always with <code>rel="noopener noreferrer"</code> for security.</p>
+
+      <p>Images must always include an <code>alt</code> attribute that describes the image for users who cannot see it. If the image is purely decorative, use an empty <code>alt=""</code> so screen readers skip it. The <code>loading="lazy"</code> attribute defers loading images until they are near the viewport, improving page performance significantly on image-heavy pages.</p>
+
+      <p>Link text should be descriptive and make sense out of context. Avoid generic text like "click here" or "read more" &mdash; screen reader users often navigate by listing all links on a page, and "click here" repeated five times is useless. Instead, write "Read the full article about CSS Grid" or "Download the project files."</p>
+
+      <div class="code-block">
+        <h3>Links &amp; Images</h3>
+        <pre><code>&lt;!-- External link opening in new tab --&gt;
+&lt;a href="https://example.com" target="_blank" rel="noopener noreferrer"&gt;
+  Visit Example.com
+&lt;/a&gt;
+
+&lt;!-- Internal page link --&gt;
+&lt;a href="/about.html"&gt;About Us&lt;/a&gt;
+
+&lt;!-- Jump to section on same page --&gt;
+&lt;a href="#contact"&gt;Skip to Contact Section&lt;/a&gt;
+
+&lt;!-- Image with alt text --&gt;
+&lt;img src="photo.jpg" alt="A golden retriever playing in the park" loading="lazy"&gt;
+
+&lt;!-- Decorative image --&gt;
+&lt;img src="divider.svg" alt="" role="presentation"&gt;</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Accessibility Matters Here</h3>
+        <p>Approximately 15% of the world's population has some form of disability. The <code>alt</code> attribute on images is not optional &mdash; it is required by the HTML specification and by accessibility laws in many countries. Descriptive link text helps all users understand where a link will take them, and it is essential for screen reader users who may navigate a page by tabbing through links.</p>
+      </div>
+
+      <div class="demo" id="links-demo">
+        <h3>Link Styles Demo</h3>
+        <div class="demo-box">
+          <p><a href="#links-images">This is an internal link</a> (goes to this section).</p>
+          <p><a href="https://developer.mozilla.org" target="_blank" rel="noopener noreferrer">MDN Web Docs <span class="external-icon">&#x2197;</span></a> (opens in new tab).</p>
+          <p><a href="mailto:hello@example.com">hello@example.com</a> (email link).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 6. TABLES ===== -->
+    <section class="concept-section" id="tables">
+      <h2>6. Tables</h2>
+
+      <p>HTML tables are designed for displaying tabular data &mdash; information that is logically organized into rows and columns. They should never be used for page layout (that is what CSS Flexbox and Grid are for). When used correctly, tables are powerful tools for presenting data clearly and accessibly.</p>
+
+      <p>A well-structured table uses <code>&lt;thead&gt;</code> for the header row, <code>&lt;tbody&gt;</code> for the data rows, and optionally <code>&lt;tfoot&gt;</code> for summary rows. The <code>&lt;th&gt;</code> element marks header cells and has a <code>scope</code> attribute ("col" or "row") that tells screen readers which data cells the header describes.</p>
+
+      <p>The <code>&lt;caption&gt;</code> element provides a title for the table and is essential for accessibility. Think of it as the table's alt text &mdash; it tells screen reader users what data the table contains before they start navigating it.</p>
+
+      <p>Tables can be styled extensively with CSS. Alternating row colors (zebra striping), hover effects, and responsive behavior can all be achieved without changing the HTML. The key is to keep the HTML semantic and let CSS handle the presentation.</p>
+
+      <div class="demo" id="table-demo">
+        <h3>Styled Data Table</h3>
+        <div class="demo-box">
+          <table class="data-table">
+            <caption>Front-End Technology Comparison</caption>
+            <thead>
+              <tr>
+                <th scope="col">Technology</th>
+                <th scope="col">Type</th>
+                <th scope="col">Year Released</th>
+                <th scope="col">Popularity</th>
+                <th scope="col">Learning Curve</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>HTML</td>
+                <td>Markup Language</td>
+                <td>1993</td>
+                <td>Universal</td>
+                <td>Easy</td>
+              </tr>
+              <tr>
+                <td>CSS</td>
+                <td>Style Sheet Language</td>
+                <td>1996</td>
+                <td>Universal</td>
+                <td>Moderate</td>
+              </tr>
+              <tr>
+                <td>JavaScript</td>
+                <td>Programming Language</td>
+                <td>1995</td>
+                <td>Universal</td>
+                <td>Moderate</td>
+              </tr>
+              <tr>
+                <td>React</td>
+                <td>UI Library</td>
+                <td>2013</td>
+                <td>Very High</td>
+                <td>Moderate</td>
+              </tr>
+              <tr>
+                <td>Svelte</td>
+                <td>Compiler Framework</td>
+                <td>2016</td>
+                <td>Rising</td>
+                <td>Easy</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Table Markup</h3>
+        <pre><code>&lt;table&gt;
+  &lt;caption&gt;Monthly Sales Data&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;Month&lt;/th&gt;
+      &lt;th scope="col"&gt;Revenue&lt;/th&gt;
+      &lt;th scope="col"&gt;Units Sold&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;January&lt;/td&gt;
+      &lt;td&gt;$12,000&lt;/td&gt;
+      &lt;td&gt;150&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;February&lt;/td&gt;
+      &lt;td&gt;$15,500&lt;/td&gt;
+      &lt;td&gt;190&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ===== 7. FORMS ===== -->
+    <section class="concept-section" id="forms">
+      <h2>7. Forms</h2>
+
+      <p>Forms are the primary way users interact with web pages beyond clicking links. Every login screen, search bar, checkout process, and contact page relies on HTML forms. Understanding form elements and their attributes is essential for building usable, accessible web applications.</p>
+
+      <p>The <code>&lt;form&gt;</code> element wraps all form controls. It has an <code>action</code> attribute (where data is sent) and a <code>method</code> attribute (<code>GET</code> for retrieving data, <code>POST</code> for submitting data). Inside, you use <code>&lt;input&gt;</code> elements with different <code>type</code> attributes for different kinds of data.</p>
+
+      <p>Every form control must have a <code>&lt;label&gt;</code> element associated with it, either by wrapping the control or using the <code>for</code> attribute that matches the control's <code>id</code>. Labels are essential for accessibility &mdash; they tell screen reader users what each field is for, and clicking a label focuses the associated input, increasing the clickable area.</p>
+
+      <p>HTML5 introduced many new input types: <code>email</code>, <code>url</code>, <code>tel</code>, <code>number</code>, <code>date</code>, <code>color</code>, <code>range</code>, and more. These provide built-in validation, appropriate mobile keyboards, and native date/color pickers without needing JavaScript. Always use the most specific input type for the data you are collecting.</p>
+
+      <p>The <code>&lt;select&gt;</code> element creates dropdown menus, <code>&lt;textarea&gt;</code> provides multi-line text input, and <code>&lt;fieldset&gt;</code> with <code>&lt;legend&gt;</code> groups related controls together (essential for radio buttons and checkboxes).</p>
+
+      <div class="demo" id="form-demo">
+        <h3>Complete Registration Form</h3>
+        <div class="demo-box">
+          <form class="registration-form" onsubmit="event.preventDefault(); alert('Form submitted! (Demo only)');">
+            <fieldset>
+              <legend>Personal Information</legend>
+
+              <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Jane Doe" required>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" minlength="8" required>
+              </div>
+
+              <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob">
+              </div>
+
+              <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="13" max="120">
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Preferences</legend>
+
+              <div class="form-group">
+                <label for="experience">Experience Level</label>
+                <select id="experience" name="experience">
+                  <option value="">-- Select --</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <span class="label-text">Interests</span>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="interests" value="html"> HTML
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="interests" value="css"> CSS
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="interests" value="js"> JavaScript
+                </label>
+              </div>
+
+              <div class="form-group">
+                <span class="label-text">Preferred Learning Style</span>
+                <label class="radio-label">
+                  <input type="radio" name="style" value="video"> Video
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="style" value="reading"> Reading
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="style" value="hands-on"> Hands-on
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="bio">Short Bio</label>
+                <textarea id="bio" name="bio" rows="4" placeholder="Tell us a little about yourself..."></textarea>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="submit">Create Account</button>
+              <button type="reset" class="btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Form Element Reference</h3>
+        <pre><code>&lt;form action="/submit" method="POST"&gt;
+  &lt;label for="name"&gt;Name:&lt;/label&gt;
+  &lt;input type="text" id="name" name="name" required&gt;
+
+  &lt;label for="email"&gt;Email:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email" required&gt;
+
+  &lt;label for="message"&gt;Message:&lt;/label&gt;
+  &lt;textarea id="message" name="message"&gt;&lt;/textarea&gt;
+
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Labels and Input Types Matter</h3>
+        <p>Using <code>&lt;label&gt;</code> elements is not just good practice &mdash; it is a requirement for accessible forms. Without labels, screen reader users have no idea what a text field is asking for. Correct <code>type</code> attributes (like <code>email</code> or <code>tel</code>) trigger appropriate virtual keyboards on mobile devices and provide free built-in validation, reducing the amount of JavaScript you need to write.</p>
+      </div>
+    </section>
+
+    <!-- ===== EXERCISE ===== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Build a Personal Profile Page</h2>
+      <p>Using all the semantic elements you have learned, build a personal profile page that includes:</p>
+      <ul>
+        <li>A <code>&lt;header&gt;</code> with your name as an <code>&lt;h1&gt;</code> and a <code>&lt;nav&gt;</code> linking to sections on the page.</li>
+        <li>A <code>&lt;main&gt;</code> containing an <code>&lt;article&gt;</code> with a short bio using paragraphs, emphasis, and a blockquote of your favorite quote.</li>
+        <li>A <code>&lt;section&gt;</code> listing your skills using an unordered list.</li>
+        <li>A <code>&lt;section&gt;</code> with a table showing your education or work history.</li>
+        <li>An <code>&lt;aside&gt;</code> with links to your social profiles.</li>
+        <li>A <code>&lt;footer&gt;</code> with a contact form (name, email, message, submit button).</li>
+      </ul>
+      <p>Ensure every image has meaningful alt text, every form control has a label, and heading levels follow the correct hierarchy.</p>
+    </section>
+
+    <!-- ===== CHALLENGE ===== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Create a Recipe Page</h2>
+      <p>Build a complete recipe page for your favorite dish. It must include:</p>
+      <ul>
+        <li>A descriptive <code>&lt;title&gt;</code> and proper document structure with all required meta tags.</li>
+        <li>A page <code>&lt;header&gt;</code> with the recipe name as <code>&lt;h1&gt;</code> and a short description paragraph.</li>
+        <li>An ingredients section using an <strong>unordered list</strong>.</li>
+        <li>A preparation steps section using an <strong>ordered list</strong>.</li>
+        <li>A nutrition facts section using a <strong>data table</strong> with proper <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;th&gt;</code> with scope, and a <code>&lt;caption&gt;</code>.</li>
+        <li>A review form with: text input for reviewer name, email input, a 1-5 star rating (radio buttons), a textarea for the review, and a submit button. All controls must have labels.</li>
+      </ul>
+      <p><strong>Bonus:</strong> Add a description list (<code>&lt;dl&gt;</code>) for metadata like prep time, cook time, servings, and difficulty.</p>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../index.html">&larr; Previous</a>
+    <a href="../02-css-fundamentals/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

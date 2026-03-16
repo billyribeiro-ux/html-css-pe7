@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One-Dimensional Flow | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 04</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-2">Level 2 - Layout Mastery</span>
+    <h1>One-Dimensional Flow</h1>
+    <p class="subtitle">Master Flexbox to build layouts that flow naturally along a single axis &mdash; the backbone of modern CSS layout.</p>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         SECTION 1: Flex Container Basics
+         ============================================================ -->
+    <section class="concept-section" id="flex-container-basics">
+      <h2>1. Flex Container Basics</h2>
+
+      <p>
+        Flexbox begins with a single declaration: <code>display: flex</code>. The moment you apply this
+        to an element, it becomes a <strong>flex container</strong>, and every direct child becomes a
+        <strong>flex item</strong>. This fundamentally changes how the children are laid out &mdash;
+        instead of following normal block or inline flow, they arrange themselves along a
+        <em>main axis</em>.
+      </p>
+
+      <p>
+        The main axis is controlled by the <code>flex-direction</code> property. By default it is
+        <code>row</code>, which runs left-to-right in left-to-right languages. You can flip it to
+        <code>row-reverse</code> (right-to-left), <code>column</code> (top-to-bottom), or
+        <code>column-reverse</code> (bottom-to-top). Understanding that every flex layout has a main
+        axis and a cross axis (perpendicular to it) is the single most important mental model for
+        mastering Flexbox.
+      </p>
+
+      <p>
+        Before Flexbox, achieving horizontal layout required floats, inline-block hacks, or table
+        display. Each approach had painful edge cases. Flexbox replaced all of them with a clean,
+        predictable model. It was purpose-built for distributing space and aligning content in a
+        single dimension.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Nearly every UI component &mdash; navigation bars, card rows,
+        form layouts, media objects &mdash; is fundamentally one-dimensional. You are arranging items
+        along a line. Flexbox is the right tool whenever your layout flows in <em>one</em> direction.
+        Reserve CSS Grid for when you need two-dimensional control.
+      </div>
+
+      <div class="code-block">
+        <pre><code>&lt;div class="container"&gt;
+  &lt;div class="item"&gt;A&lt;/div&gt;
+  &lt;div class="item"&gt;B&lt;/div&gt;
+  &lt;div class="item"&gt;C&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.container {
+  display: flex;               /* Activates Flexbox */
+  flex-direction: row;         /* Main axis: horizontal (default) */
+}
+
+/* Try these alternatives: */
+/* flex-direction: row-reverse;    Right to left */
+/* flex-direction: column;         Top to bottom */
+/* flex-direction: column-reverse; Bottom to top */
+&lt;/style&gt;</code></pre>
+      </div>
+
+      <p>
+        In the demo below, four colored boxes are placed inside a flex container. Toggle through the
+        different <code>flex-direction</code> values to see how the layout changes. Notice how
+        <code>row-reverse</code> mirrors the order, and <code>column</code> stacks them vertically.
+      </p>
+
+      <div class="demo" id="demo-direction">
+        <h3>flex-direction Demo</h3>
+        <div class="demo-row">
+          <div class="demo-panel">
+            <p class="demo-label">row (default)</p>
+            <div class="flex-dir-demo dir-row">
+              <div class="box box-a">A</div>
+              <div class="box box-b">B</div>
+              <div class="box box-c">C</div>
+              <div class="box box-d">D</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">row-reverse</p>
+            <div class="flex-dir-demo dir-row-reverse">
+              <div class="box box-a">A</div>
+              <div class="box box-b">B</div>
+              <div class="box box-c">C</div>
+              <div class="box box-d">D</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-row">
+          <div class="demo-panel">
+            <p class="demo-label">column</p>
+            <div class="flex-dir-demo dir-column">
+              <div class="box box-a">A</div>
+              <div class="box box-b">B</div>
+              <div class="box box-c">C</div>
+              <div class="box box-d">D</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">column-reverse</p>
+            <div class="flex-dir-demo dir-column-reverse">
+              <div class="box box-a">A</div>
+              <div class="box box-b">B</div>
+              <div class="box box-c">C</div>
+              <div class="box box-d">D</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: Main Axis Alignment
+         ============================================================ -->
+    <section class="concept-section" id="main-axis-alignment">
+      <h2>2. Main Axis Alignment</h2>
+
+      <p>
+        Once you have established a flex container and its direction, the next question is: how should
+        the items be distributed along the main axis? That is the job of <code>justify-content</code>.
+        This property controls where items sit and how leftover space is distributed between them.
+      </p>
+
+      <p>
+        There are six key values. <code>flex-start</code> packs items to the start of the main axis
+        (the default). <code>flex-end</code> packs them to the end. <code>center</code> clusters them
+        in the middle. <code>space-between</code> puts the first item at the start, the last at the
+        end, and distributes remaining space equally between items. <code>space-around</code> gives
+        each item equal space on both sides (so the gap between two items is double the gap at the
+        edges). <code>space-evenly</code> distributes space so that the gap between any two adjacent
+        items &mdash; and the gap before the first and after the last &mdash; are all identical.
+      </p>
+
+      <p>
+        The difference between <code>space-around</code> and <code>space-evenly</code> is subtle but
+        important. With <code>space-around</code>, edge items get half the spacing that inner items
+        get. With <code>space-evenly</code>, every gap is the same. In practice,
+        <code>space-evenly</code> tends to look more balanced and is usually what designers intend.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Understanding <code>justify-content</code> eliminates the
+        need for margin hacks and spacer elements. Instead of manually computing margins to spread
+        items out, you let the browser do the math. This is more robust, more readable, and adapts
+        automatically when items are added or removed.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.container {
+  display: flex;
+  justify-content: space-between; /* Distributes items with equal space between */
+}
+
+/* All possible values: */
+/* justify-content: flex-start;    Pack to start (default) */
+/* justify-content: flex-end;      Pack to end */
+/* justify-content: center;        Center items */
+/* justify-content: space-between; Space between items only */
+/* justify-content: space-around;  Equal space around each item */
+/* justify-content: space-evenly;  Equal space everywhere */</code></pre>
+      </div>
+
+      <div class="demo" id="demo-justify">
+        <h3>justify-content Demo</h3>
+        <div class="justify-demos">
+          <div class="demo-panel">
+            <p class="demo-label">flex-start</p>
+            <div class="jc-demo jc-start">
+              <div class="box box-a">1</div>
+              <div class="box box-b">2</div>
+              <div class="box box-c">3</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">flex-end</p>
+            <div class="jc-demo jc-end">
+              <div class="box box-a">1</div>
+              <div class="box box-b">2</div>
+              <div class="box box-c">3</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">center</p>
+            <div class="jc-demo jc-center">
+              <div class="box box-a">1</div>
+              <div class="box box-b">2</div>
+              <div class="box box-c">3</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">space-between</p>
+            <div class="jc-demo jc-between">
+              <div class="box box-a">1</div>
+              <div class="box box-b">2</div>
+              <div class="box box-c">3</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">space-around</p>
+            <div class="jc-demo jc-around">
+              <div class="box box-a">1</div>
+              <div class="box box-b">2</div>
+              <div class="box box-c">3</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">space-evenly</p>
+            <div class="jc-demo jc-evenly">
+              <div class="box box-a">1</div>
+              <div class="box box-b">2</div>
+              <div class="box box-c">3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: Cross Axis Alignment
+         ============================================================ -->
+    <section class="concept-section" id="cross-axis-alignment">
+      <h2>3. Cross Axis Alignment</h2>
+
+      <p>
+        While <code>justify-content</code> handles the main axis, <code>align-items</code> controls
+        how flex items are positioned along the <strong>cross axis</strong> (perpendicular to the main
+        axis). In a row layout, the cross axis runs vertically. In a column layout, it runs
+        horizontally. This property is set on the flex container and affects all items.
+      </p>
+
+      <p>
+        The default value is <code>stretch</code>, which makes items expand to fill the container's
+        cross-axis dimension. This is why flex items in a row layout all become the same height by
+        default &mdash; they stretch to match the tallest item. Other values include
+        <code>flex-start</code> (align to the top/left of the cross axis), <code>flex-end</code>
+        (align to the bottom/right), <code>center</code> (center on the cross axis), and
+        <code>baseline</code> (align by text baseline).
+      </p>
+
+      <p>
+        You can also override the container's alignment for individual items using
+        <code>align-self</code>. This accepts all the same values as <code>align-items</code> and
+        lets a single item break away from the group's alignment. This is particularly useful for
+        creating asymmetric layouts where one element needs special positioning.
+      </p>
+
+      <p>
+        The <code>baseline</code> value deserves special attention. It aligns items so that the text
+        baselines of each item line up. This is especially useful when items have different font sizes
+        or different amounts of padding above their text. Without baseline alignment, text in
+        adjacent flex items can look misaligned even when the boxes themselves are aligned.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> Cross-axis alignment is what makes Flexbox a complete
+        layout tool rather than just a float replacement. The ability to vertically center items in
+        a row &mdash; something that was notoriously difficult before Flexbox &mdash; is now a single
+        property. <code>align-items: center</code> is one of the most-used CSS declarations in
+        modern web development.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.container {
+  display: flex;
+  align-items: center;       /* All items centered on cross axis */
+  height: 200px;             /* Need height to see cross-axis effect */
+}
+
+.special-item {
+  align-self: flex-end;      /* Override: this item goes to the bottom */
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-align">
+        <h3>align-items Demo</h3>
+        <p class="demo-note">Items have different heights to illustrate alignment differences.</p>
+        <div class="align-demos">
+          <div class="demo-panel">
+            <p class="demo-label">stretch (default)</p>
+            <div class="ai-demo ai-stretch">
+              <div class="box box-a box-tall">A</div>
+              <div class="box box-b box-short">B</div>
+              <div class="box box-c box-medium">C</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">flex-start</p>
+            <div class="ai-demo ai-start">
+              <div class="box box-a box-tall">A</div>
+              <div class="box box-b box-short">B</div>
+              <div class="box box-c box-medium">C</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">flex-end</p>
+            <div class="ai-demo ai-end">
+              <div class="box box-a box-tall">A</div>
+              <div class="box box-b box-short">B</div>
+              <div class="box box-c box-medium">C</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">center</p>
+            <div class="ai-demo ai-center">
+              <div class="box box-a box-tall">A</div>
+              <div class="box box-b box-short">B</div>
+              <div class="box box-c box-medium">C</div>
+            </div>
+          </div>
+          <div class="demo-panel">
+            <p class="demo-label">baseline</p>
+            <div class="ai-demo ai-baseline">
+              <div class="box box-a box-tall baseline-big">A</div>
+              <div class="box box-b box-short">B</div>
+              <div class="box box-c box-medium baseline-small">C</div>
+            </div>
+          </div>
+        </div>
+
+        <h4>align-self Override</h4>
+        <div class="demo-panel">
+          <p class="demo-label">Container: center &mdash; Item B: flex-end</p>
+          <div class="ai-demo ai-center">
+            <div class="box box-a">A</div>
+            <div class="box box-b align-self-end">B (self: end)</div>
+            <div class="box box-c">C</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: Flex Item Properties
+         ============================================================ -->
+    <section class="concept-section" id="flex-item-properties">
+      <h2>4. Flex Item Properties</h2>
+
+      <p>
+        Beyond alignment, Flexbox provides fine-grained control over how individual items consume
+        available space. Three properties govern this: <code>flex-grow</code>,
+        <code>flex-shrink</code>, and <code>flex-basis</code>. Together, they determine how an item
+        expands into extra space, how it contracts when space is tight, and what its ideal starting
+        size should be.
+      </p>
+
+      <p>
+        <code>flex-grow</code> is a unitless number (defaulting to 0) that defines how much of the
+        remaining space an item should absorb. If all items have <code>flex-grow: 1</code>, they share
+        leftover space equally. If one item has <code>flex-grow: 2</code> and the others have
+        <code>flex-grow: 1</code>, it absorbs twice as much extra space as each of the others.
+        Crucially, this distributes <em>extra</em> space &mdash; it does not make the item twice as
+        wide overall.
+      </p>
+
+      <p>
+        <code>flex-shrink</code> works in reverse (defaulting to 1). When items overflow the
+        container, each item shrinks proportionally to its shrink factor. Setting
+        <code>flex-shrink: 0</code> prevents an item from shrinking at all, which is useful for
+        fixed-width elements like icons or action buttons.
+      </p>
+
+      <p>
+        <code>flex-basis</code> sets the initial size before growing or shrinking. It accepts any
+        length value or <code>auto</code> (which uses the item's width/height). Setting
+        <code>flex-basis: 0</code> means the item starts at zero size and all space is distributed
+        by grow factors, giving you truly proportional sizing.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The <code>flex</code> shorthand (<code>flex: grow shrink basis</code>)
+        is the recommended way to set these. Common patterns: <code>flex: 1</code> (grow equally,
+        basis 0), <code>flex: 0 0 auto</code> (rigid, no grow/shrink), <code>flex: 1 1 200px</code>
+        (grow/shrink from 200px base). Use the shorthand because it sets sensible defaults for the
+        values you omit.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.item-a { flex: 1; }           /* flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+.item-b { flex: 2; }           /* Absorbs twice as much extra space as item-a */
+.item-c { flex: 0 0 200px; }   /* Fixed at 200px, no grow, no shrink */
+.item-d { flex: 1 1 300px; }   /* Starts at 300px, can grow and shrink */
+
+/* The longhand equivalents: */
+.item-a {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-flex-props">
+        <h3>flex-grow / flex-shrink Demo</h3>
+        <div class="demo-panel">
+          <p class="demo-label">All items: flex: 1 (equal distribution)</p>
+          <div class="flex-props-demo">
+            <div class="box box-a fp-equal">flex: 1</div>
+            <div class="box box-b fp-equal">flex: 1</div>
+            <div class="box box-c fp-equal">flex: 1</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">Item B has flex: 2 (double share of extra space)</p>
+          <div class="flex-props-demo">
+            <div class="box box-a fp-one">flex: 1</div>
+            <div class="box box-b fp-two">flex: 2</div>
+            <div class="box box-c fp-one">flex: 1</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">Mixed: flex:1, flex:0 0 150px, flex:3</p>
+          <div class="flex-props-demo">
+            <div class="box box-a fp-one">flex: 1</div>
+            <div class="box box-b fp-fixed">flex: 0 0 150px</div>
+            <div class="box box-c fp-three">flex: 3</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">flex-basis comparison: 0 vs auto</p>
+          <div class="flex-props-demo">
+            <div class="box box-a fp-basis-zero">flex: 1 1 0<br>(basis 0)</div>
+            <div class="box box-b fp-basis-auto">flex: 1 1 auto<br>(basis auto)</div>
+            <div class="box box-c fp-basis-zero">flex: 1 1 0<br>(basis 0)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: Wrapping & Gap
+         ============================================================ -->
+    <section class="concept-section" id="wrapping-gap">
+      <h2>5. Wrapping &amp; Gap</h2>
+
+      <p>
+        By default, flex items try to fit onto a single line. If the items' combined size exceeds the
+        container's width, they shrink (governed by <code>flex-shrink</code>) rather than wrapping.
+        You can change this with <code>flex-wrap: wrap</code>, which allows items to flow onto
+        additional lines when there is not enough room.
+      </p>
+
+      <p>
+        Wrapping transforms Flexbox from a strictly single-line tool into something that can handle
+        multi-line layouts. When items wrap, each line becomes its own "flex line" with independent
+        alignment. The <code>align-content</code> property controls how multiple flex lines are
+        distributed on the cross axis &mdash; similar to how <code>justify-content</code> distributes
+        items on the main axis.
+      </p>
+
+      <p>
+        The <code>gap</code> property (and its longhands <code>row-gap</code> and
+        <code>column-gap</code>) adds consistent spacing between flex items without margin hacks.
+        Unlike margins, gap only appears <em>between</em> items &mdash; never at the edges. This
+        solves the classic "last-child margin" problem. Gap works beautifully with wrapping: items
+        on different lines get the row-gap between them.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The combination of <code>flex-wrap: wrap</code> and
+        <code>gap</code> creates intrinsically responsive layouts. A row of cards that naturally
+        wraps when space runs out, with consistent gutters, requires no media queries. This is
+        the foundation of many real-world component layouts.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.card-container {
+  display: flex;
+  flex-wrap: wrap;          /* Allow items to wrap to new lines */
+  gap: 1rem;                /* Space between items (row and column) */
+}
+
+.card {
+  flex: 1 1 250px;          /* Grow/shrink from a 250px base */
+  /* Cards will be at least 250px wide and wrap when they can't fit */
+}
+
+/* align-content controls multi-line distribution */
+.multi-line {
+  align-content: space-between; /* Spread lines across cross axis */
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-wrap">
+        <h3>flex-wrap &amp; gap Demo</h3>
+        <p class="demo-note">Resize your browser window to see the cards wrap naturally.</p>
+        <div class="demo-panel">
+          <p class="demo-label">Wrapping card layout with gap: 1rem</p>
+          <div class="wrap-demo">
+            <div class="card-item box-a">Card 1</div>
+            <div class="card-item box-b">Card 2</div>
+            <div class="card-item box-c">Card 3</div>
+            <div class="card-item box-d">Card 4</div>
+            <div class="card-item box-a">Card 5</div>
+            <div class="card-item box-b">Card 6</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">No wrap (default) &mdash; items shrink instead</p>
+          <div class="wrap-demo no-wrap-demo">
+            <div class="card-item box-a">Card 1</div>
+            <div class="card-item box-b">Card 2</div>
+            <div class="card-item box-c">Card 3</div>
+            <div class="card-item box-d">Card 4</div>
+            <div class="card-item box-a">Card 5</div>
+            <div class="card-item box-b">Card 6</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: Order
+         ============================================================ -->
+    <section class="concept-section" id="order">
+      <h2>6. Order</h2>
+
+      <p>
+        The <code>order</code> property lets you visually reorder flex items without changing the
+        HTML source order. Every flex item defaults to <code>order: 0</code>. Items are laid out
+        in ascending order value &mdash; items with lower values come first. Items with the same
+        order value appear in their source order.
+      </p>
+
+      <p>
+        You can use negative values to move items before the default position. For example, setting
+        <code>order: -1</code> on an item pushes it to the very beginning, ahead of all items with
+        the default <code>order: 0</code>. This is useful for responsive designs where you might
+        want a sidebar to appear above the main content on mobile but beside it on desktop.
+      </p>
+
+      <p>
+        However, there is an important accessibility caveat. Screen readers and keyboard navigation
+        follow the <em>source order</em>, not the visual order. If you use <code>order</code>
+        extensively, the visual layout can diverge from the tab order, creating a confusing experience
+        for keyboard users. Use <code>order</code> sparingly and always test with keyboard
+        navigation.
+      </p>
+
+      <div class="why">
+        <strong>Why this matters:</strong> The <code>order</code> property is a powerful tool for
+        responsive design, but it must be used responsibly. It is best suited for small reorderings
+        (like moving a CTA button to the top on mobile) rather than wholesale layout changes. If
+        you need dramatically different orderings at different breakpoints, consider whether your
+        HTML structure should be reconsidered instead.
+      </div>
+
+      <div class="code-block">
+        <pre><code>.item-a { order: 3; }   /* Appears last */
+.item-b { order: 1; }   /* Appears first */
+.item-c { order: 2; }   /* Appears second */
+
+/* Visual order: B, C, A */
+/* Source order (for accessibility): A, B, C */</code></pre>
+      </div>
+
+      <div class="demo" id="demo-order">
+        <h3>Order Demo</h3>
+        <div class="demo-panel">
+          <p class="demo-label">Source order: A B C D E</p>
+          <div class="order-demo order-default">
+            <div class="box box-a">A (0)</div>
+            <div class="box box-b">B (0)</div>
+            <div class="box box-c">C (0)</div>
+            <div class="box box-d">D (0)</div>
+            <div class="box box-a">E (0)</div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <p class="demo-label">Reordered: C(-1) A(0) B(0) E(0) D(1)</p>
+          <div class="order-demo order-custom">
+            <div class="box box-a order-0">A (0)</div>
+            <div class="box box-b order-0">B (0)</div>
+            <div class="box box-c order-neg1">C (-1)</div>
+            <div class="box box-d order-1">D (1)</div>
+            <div class="box box-a order-0">E (0)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 7: Common Patterns
+         ============================================================ -->
+    <section class="concept-section" id="common-patterns">
+      <h2>7. Common Flex Patterns</h2>
+
+      <p>
+        Flexbox truly shines when applied to everyday layout challenges. Below are the most common
+        patterns you will encounter in real projects. Each one demonstrates a practical application
+        of the properties covered above. Internalize these patterns and you will be able to build
+        most UI components without hesitation.
+      </p>
+
+      <h3>Pattern 1: The Flex Center</h3>
+      <p>
+        Centering both horizontally and vertically was CSS's most notorious challenge for over a
+        decade. Flexbox solves it with two properties. This pattern is so common it has become a
+        meme in the CSS community &mdash; "How to center a div" now has a trivial answer.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.center-parent {
+  display: flex;
+  justify-content: center;   /* Center on main axis (horizontal) */
+  align-items: center;       /* Center on cross axis (vertical) */
+  min-height: 100vh;         /* Full viewport height */
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-center">
+        <div class="demo-panel">
+          <p class="demo-label">Perfect centering</p>
+          <div class="pattern-center">
+            <div class="centered-box">Centered!</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 2: Navigation Bar</h3>
+      <p>
+        A classic navigation bar with a logo on the left and links on the right uses
+        <code>justify-content: space-between</code>. This pushes the first and last children to
+        opposite ends with remaining items distributed between them.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-navbar">
+        <div class="demo-panel">
+          <p class="demo-label">Navigation bar</p>
+          <div class="pattern-navbar">
+            <div class="navbar-logo">Logo</div>
+            <ul class="navbar-links">
+              <li>Home</li>
+              <li>About</li>
+              <li>Services</li>
+              <li>Contact</li>
+            </ul>
+            <div class="navbar-cta">Sign Up</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 3: Card Row</h3>
+      <p>
+        Equal-width cards that fill the container use <code>flex: 1</code> on each card. Add
+        <code>gap</code> for spacing. The cards grow and shrink together, maintaining equal widths
+        regardless of content.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.card-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.card {
+  flex: 1;               /* Equal width distribution */
+  padding: 1.5rem;
+  border-radius: 8px;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-cards">
+        <div class="demo-panel">
+          <p class="demo-label">Equal-width card row</p>
+          <div class="pattern-card-row">
+            <div class="pattern-card box-a">
+              <h4>Plan A</h4>
+              <p>Basic features for individuals</p>
+            </div>
+            <div class="pattern-card box-b">
+              <h4>Plan B</h4>
+              <p>Advanced features for teams with more content here</p>
+            </div>
+            <div class="pattern-card box-c">
+              <h4>Plan C</h4>
+              <p>Enterprise</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 4: Holy Grail Layout</h3>
+      <p>
+        The "Holy Grail" layout has a header, footer, and three columns (left sidebar, main content,
+        right sidebar). With Flexbox, the outer container uses <code>flex-direction: column</code>
+        and the middle section uses <code>flex-direction: row</code>. The main content gets
+        <code>flex: 1</code> to absorb all extra horizontal space.
+      </p>
+
+      <div class="code-block">
+        <pre><code>.holy-grail {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.holy-grail-body {
+  display: flex;
+  flex: 1;
+}
+
+.holy-grail-main { flex: 1; }
+.holy-grail-sidebar { flex: 0 0 150px; }</code></pre>
+      </div>
+
+      <div class="demo" id="demo-holy-grail">
+        <div class="demo-panel">
+          <p class="demo-label">Holy Grail layout</p>
+          <div class="pattern-holy-grail">
+            <div class="hg-header">Header</div>
+            <div class="hg-body">
+              <div class="hg-sidebar-left">Left Sidebar</div>
+              <div class="hg-main">Main Content</div>
+              <div class="hg-sidebar-right">Right Sidebar</div>
+            </div>
+            <div class="hg-footer">Footer</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EXERCISE
+         ============================================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise</h2>
+      <p>
+        <strong>Build a responsive navigation bar</strong> with the following requirements:
+      </p>
+      <ul>
+        <li>A logo on the far left.</li>
+        <li>Navigation links centered in the middle.</li>
+        <li>A call-to-action (CTA) button on the far right.</li>
+        <li>The nav links should have equal spacing between them using <code>gap</code>.</li>
+        <li>All items should be vertically centered.</li>
+        <li>The entire navbar should have horizontal padding and a subtle background color.</li>
+      </ul>
+      <p>
+        Hint: You will need the middle section (nav links) to take up all available space with
+        <code>flex: 1</code> and then center its children using nested flex.
+      </p>
+      <div class="code-block">
+        <pre><code>&lt;!-- Starter HTML --&gt;
+&lt;nav class="my-navbar"&gt;
+  &lt;div class="logo"&gt;MyBrand&lt;/div&gt;
+  &lt;ul class="links"&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Products&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;button class="cta"&gt;Get Started&lt;/button&gt;
+&lt;/nav&gt;</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHALLENGE
+         ============================================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge</h2>
+      <p>
+        <strong>Create a responsive toolbar</strong> that collapses items into multiple rows on
+        smaller screens:
+      </p>
+      <ul>
+        <li>The toolbar contains 8-10 action buttons (e.g., Bold, Italic, Underline, Align Left,
+            Align Center, Align Right, Indent, Outdent, Undo, Redo).</li>
+        <li>Use <code>flex-wrap: wrap</code> so buttons flow to the next row when space runs out.</li>
+        <li>Add logical grouping with small vertical dividers between groups.</li>
+        <li>Use <code>gap</code> for consistent spacing.</li>
+        <li>Buttons should not stretch &mdash; they should maintain their natural size.</li>
+        <li>On wide screens, everything fits on one row. On narrow screens, groups wrap elegantly.</li>
+      </ul>
+      <p>
+        Bonus: Use <code>order</code> to move the Undo/Redo group to the beginning on screens below
+        600px (conceptually &mdash; use a media query to change the order at that breakpoint).
+      </p>
+    </section>
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../03-box-model-layout/index.html">&larr; Previous</a>
+    <a href="../05-grid/index.html">Next &rarr;</a>
+  </footer>
+</body>
+</html>

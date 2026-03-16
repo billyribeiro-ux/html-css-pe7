@@ -1,0 +1,307 @@
+/* ===== Module 01: HTML Foundations - Module-Specific Styles ===== */
+
+/* --- Semantic Layout Diagram --- */
+.semantic-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 1rem;
+  background: #1a1a2e;
+  border-radius: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.semantic-diagram span {
+  display: block;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+.sem-header {
+  background: #e94560;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.sem-nav {
+  background: #c73e54;
+  border-radius: 6px;
+  margin-top: 6px;
+  padding: 6px;
+}
+
+.sem-body {
+  display: flex;
+  gap: 6px;
+}
+
+.sem-main {
+  flex: 3;
+  background: #0f3460;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sem-article {
+  background: #16498a;
+  border-radius: 6px;
+  padding: 12px 8px;
+}
+
+.sem-section {
+  background: #1a5599;
+  border-radius: 6px;
+  padding: 12px 8px;
+}
+
+.sem-aside {
+  flex: 1;
+  background: #533483;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sem-footer {
+  background: #e94560;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+/* --- Lists Grid --- */
+.lists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.lists-grid h4 {
+  margin-bottom: 0.5rem;
+  color: var(--accent, #6c63ff);
+  font-size: 1rem;
+}
+
+.lists-grid ul,
+.lists-grid ol {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.lists-grid li {
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+}
+
+.lists-grid ul ul {
+  margin-top: 0.35rem;
+}
+
+.lists-grid dl {
+  margin: 0;
+}
+
+.lists-grid dt {
+  font-weight: 700;
+  color: var(--accent, #6c63ff);
+  margin-top: 0.75rem;
+}
+
+.lists-grid dt:first-child {
+  margin-top: 0;
+}
+
+.lists-grid dd {
+  margin-left: 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent, #6c63ff);
+  margin-top: 0.25rem;
+}
+
+/* --- External Link Icon --- */
+.external-icon {
+  font-size: 0.75em;
+  vertical-align: super;
+}
+
+/* --- Data Table --- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.data-table caption {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  text-align: left;
+  color: var(--accent, #6c63ff);
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.data-table thead th {
+  background: rgba(108, 99, 255, 0.15);
+  color: var(--accent, #6c63ff);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(108, 99, 255, 0.06);
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.data-table tbody tr:nth-child(even):hover {
+  background: rgba(108, 99, 255, 0.08);
+}
+
+/* --- Registration Form --- */
+.registration-form {
+  max-width: 600px;
+}
+
+.registration-form fieldset {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.registration-form legend {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent, #6c63ff);
+  padding: 0 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label,
+.form-group .label-text {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent, #6c63ff);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+}
+
+.checkbox-label,
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1rem;
+  margin-top: 0.35rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-actions button {
+  padding: 0.65rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.form-actions button[type="submit"] {
+  background: var(--accent, #6c63ff);
+  color: #fff;
+}
+
+.form-actions button[type="submit"]:hover {
+  background: #5a52e0;
+  transform: translateY(-1px);
+}
+
+.form-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: inherit;
+}
+
+.form-actions .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Blockquote in demos --- */
+.demo-box blockquote {
+  border-left: 3px solid var(--accent, #6c63ff);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+}
+
+.demo-box blockquote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* --- Headings demo reset --- */
+#headings-demo .demo-box h1,
+#headings-demo .demo-box h2,
+#headings-demo .demo-box h3,
+#headings-demo .demo-box h4,
+#headings-demo .demo-box h5,
+#headings-demo .demo-box h6 {
+  border: none;
+  padding: 0;
+}
