@@ -714,6 +714,123 @@ body {
 }</code></pre>
         </div>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="palette-container">
+  <h3>Brand Color Palette</h3>
+
+  <h4>Tints (mixed with white)</h4>
+  <div class="palette-grid">
+    <div class="palette-swatch tint-10"><span>10%</span></div>
+    <div class="palette-swatch tint-30"><span>30%</span></div>
+    <div class="palette-swatch tint-50"><span>50%</span></div>
+    <div class="palette-swatch tint-70"><span>70%</span></div>
+    <div class="palette-swatch tint-90"><span>90%</span></div>
+  </div>
+
+  <h4>Base</h4>
+  <div class="palette-grid">
+    <div class="palette-swatch brand-base"><span>Brand</span></div>
+  </div>
+
+  <h4>Shades (mixed with black)</h4>
+  <div class="palette-grid">
+    <div class="palette-swatch shade-10"><span>10%</span></div>
+    <div class="palette-swatch shade-30"><span>30%</span></div>
+    <div class="palette-swatch shade-50"><span>50%</span></div>
+    <div class="palette-swatch shade-70"><span>70%</span></div>
+    <div class="palette-swatch shade-90"><span>90%</span></div>
+  </div>
+
+  <h4>Usage Demo</h4>
+  <div class="demo-card">
+    <h5>Sample Card</h5>
+    <p>Styled using the generated palette.</p>
+    <button class="demo-btn">Action</button>
+    <span class="demo-badge">New</span>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+:root {
+  --brand: oklch(0.6 0.2 250);
+
+  --brand-tint-10: color-mix(in oklch, var(--brand) 10%, white);
+  --brand-tint-30: color-mix(in oklch, var(--brand) 30%, white);
+  --brand-tint-50: color-mix(in oklch, var(--brand) 50%, white);
+  --brand-tint-70: color-mix(in oklch, var(--brand) 70%, white);
+  --brand-tint-90: color-mix(in oklch, var(--brand) 90%, white);
+
+  --brand-shade-10: color-mix(in oklch, var(--brand) 90%, black);
+  --brand-shade-30: color-mix(in oklch, var(--brand) 70%, black);
+  --brand-shade-50: color-mix(in oklch, var(--brand) 50%, black);
+  --brand-shade-70: color-mix(in oklch, var(--brand) 30%, black);
+  --brand-shade-90: color-mix(in oklch, var(--brand) 10%, black);
+}
+
+.palette-container {
+  font-family: system-ui, sans-serif;
+  padding: 1rem;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.palette-swatch {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex;
+  align-items: end;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  color: white;
+}
+
+.tint-10 { background: var(--brand-tint-10); color: #333; }
+.tint-30 { background: var(--brand-tint-30); color: #333; }
+.tint-50 { background: var(--brand-tint-50); }
+.tint-70 { background: var(--brand-tint-70); }
+.tint-90 { background: var(--brand-tint-90); }
+.brand-base { background: var(--brand); }
+.shade-10 { background: var(--brand-shade-10); }
+.shade-30 { background: var(--brand-shade-30); }
+.shade-50 { background: var(--brand-shade-50); }
+.shade-70 { background: var(--brand-shade-70); }
+.shade-90 { background: var(--brand-shade-90); }
+
+/* Usage demo */
+.demo-card {
+  background: var(--brand-tint-10);
+  border: 2px solid var(--brand-tint-50);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.demo-btn {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.demo-badge {
+  background: var(--brand-shade-30);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+        </template>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -746,6 +863,166 @@ body {
           <li>For forced-colors mode, use system keywords: <code>Canvas</code>, <code>CanvasText</code>, <code>LinkText</code>, <code>ButtonFace</code>, <code>ButtonText</code>.</li>
         </ul>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="color-system">
+  <h2>Accessible Color System</h2>
+
+  <div class="component-grid">
+    <div class="card">
+      <h3>Dashboard Card</h3>
+      <p>This card adapts to light and dark mode using light-dark().</p>
+      <button class="btn btn-primary">Primary Action</button>
+      <button class="btn btn-secondary">Secondary</button>
+    </div>
+
+    <div class="alert alert-success">
+      <strong>Success:</strong> Your changes have been saved.
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>Warning:</strong> Your session expires in 5 minutes.
+    </div>
+
+    <div class="alert alert-error">
+      <strong>Error:</strong> Unable to connect to server.
+    </div>
+  </div>
+
+  <h3>Contrast Checker</h3>
+  <div class="contrast-grid">
+    <div class="contrast-pair">
+      <span class="fg-sample">Text</span>
+      <span class="bg-sample">on Primary</span>
+    </div>
+    <div class="contrast-pair pair-secondary">
+      <span class="fg-sample">Text</span>
+      <span class="bg-sample">on Secondary</span>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+:root {
+  color-scheme: light dark;
+
+  --primary: oklch(0.55 0.2 250);
+  --secondary: oklch(0.6 0.15 160);
+  --accent: oklch(0.65 0.22 30);
+
+  --primary-light: color-mix(in oklch, var(--primary) 20%, white);
+  --primary-dark: color-mix(in oklch, var(--primary) 80%, black);
+
+  --text: light-dark(#1a1a2e, #e8e8f0);
+  --bg: light-dark(#ffffff, #1a1a2e);
+  --surface: light-dark(#f8f9fa, #2d2d44);
+  --border: light-dark(#dee2e6, #404060);
+
+  --success: oklch(0.6 0.18 145);
+  --warning: oklch(0.75 0.18 80);
+  --error: oklch(0.55 0.22 25);
+}
+
+.color-system {
+  font-family: system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  padding: 1.5rem;
+}
+
+.component-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.btn {
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background: color-mix(in oklch, var(--success) 15%, var(--bg));
+  border-color: var(--success);
+}
+
+.alert-warning {
+  background: color-mix(in oklch, var(--warning) 15%, var(--bg));
+  border-color: var(--warning);
+}
+
+.alert-error {
+  background: color-mix(in oklch, var(--error) 15%, var(--bg));
+  border-color: var(--error);
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text: light-dark(#000, #fff);
+    --border: light-dark(#000, #fff);
+  }
+}
+
+@media (forced-colors: active) {
+  .card {
+    border: 2px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+  .btn {
+    border: 2px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+}
+
+.contrast-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contrast-pair {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.pair-secondary {
+  background: var(--secondary);
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -754,5 +1031,6 @@ body {
     <a href="../10-container-queries-subgrid/index.html">&larr; Previous</a>
     <a href="../12-scroll-animations/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>
