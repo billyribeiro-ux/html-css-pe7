@@ -690,30 +690,32 @@
         <template class="starter-html">
 <div class="scroll-progress"></div>
 
-<section class="content-section">
-  <h2>Section 1: Introduction</h2>
-  <p>Welcome to the scroll-driven animation demo. Scroll down to see sections fade in and the progress bar fill.</p>
-</section>
+<div class="page-content">
+  <section class="content-section">
+    <h2>Section 1: Introduction</h2>
+    <p>Welcome to the scroll-driven experience. As you scroll, the progress bar fills and sections reveal themselves with smooth animations.</p>
+  </section>
 
-<section class="content-section">
-  <h2>Section 2: Features</h2>
-  <p>Each section fades in and slides up as it enters the viewport using animation-timeline: view().</p>
-</section>
+  <section class="content-section">
+    <h2>Section 2: Features</h2>
+    <p>Each section fades and slides into view using animation-timeline: view(). No JavaScript needed for these scroll-triggered effects.</p>
+  </section>
 
-<section class="content-section">
-  <h2>Section 3: Performance</h2>
-  <p>Scroll-driven animations run on the compositor thread, delivering smooth 60fps performance.</p>
-</section>
+  <section class="content-section">
+    <h2>Section 3: Performance</h2>
+    <p>Scroll-driven animations run on the compositor thread, ensuring buttery-smooth 60fps performance even under heavy load.</p>
+  </section>
 
-<section class="content-section">
-  <h2>Section 4: Accessibility</h2>
-  <p>Always include a prefers-reduced-motion media query to respect user preferences.</p>
-</section>
+  <section class="content-section">
+    <h2>Section 4: Accessibility</h2>
+    <p>We respect prefers-reduced-motion to ensure users who are sensitive to motion can still enjoy the content without animations.</p>
+  </section>
 
-<section class="content-section">
-  <h2>Section 5: Conclusion</h2>
-  <p>CSS scroll-driven animations replace complex JavaScript with simple, declarative CSS.</p>
-</section>
+  <section class="content-section">
+    <h2>Section 5: Conclusion</h2>
+    <p>CSS scroll-driven animations are a game changer. Declarative, performant, and accessible by design.</p>
+  </section>
+</div>
         </template>
         <template class="starter-css">
 .scroll-progress {
@@ -726,29 +728,61 @@
   transform-origin: left;
   transform: scaleX(0);
   z-index: 999;
-  /* Add animation and animation-timeline here */
+  animation: fill-progress linear;
+  animation-timeline: scroll(root);
 }
 
 @keyframes fill-progress {
   to { transform: scaleX(1); }
 }
 
+.page-content {
+  padding: 2rem 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
 .content-section {
   padding: 2rem;
-  margin: 4rem auto;
-  max-width: 600px;
-  background: #1e293b;
+  margin-bottom: 3rem;
+  background: #f8f9fa;
   border-radius: 12px;
-  color: #e2e8f0;
-  opacity: 0;
-  transform: translateY(40px);
-  /* Add animation, animation-timeline, and animation-range here */
+  border-left: 4px solid #6366f1;
+  animation: reveal-section linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+.content-section:nth-child(even) {
+  animation-name: reveal-from-left;
+}
+
+.content-section:nth-child(odd) {
+  animation-name: reveal-from-right;
 }
 
 @keyframes reveal-section {
-  to {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reveal-from-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes reveal-from-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress,
+  .content-section {
+    animation: none;
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
         </template>
@@ -783,58 +817,59 @@
         <template class="starter-html">
 <div class="story-progress"></div>
 
-<section class="scene scene-title">
-  <h1>The Journey Begins</h1>
-  <p>Scroll to explore the story...</p>
-</section>
+<div class="story">
+  <section class="scene scene-title">
+    <h1>The Story of the Web</h1>
+    <p class="scene-subtitle">Scroll to begin the journey</p>
+  </section>
 
-<section class="scene scene-narrative">
-  <div class="parallax-bg layer-back"></div>
-  <div class="parallax-bg layer-mid"></div>
-  <div class="parallax-bg layer-front"></div>
-  <div class="narrative-content entry-reveal">
-    <h2>Chapter 1: Discovery</h2>
-    <p>A world of scroll-driven animations awaits.</p>
-  </div>
-</section>
+  <section class="scene scene-narrative">
+    <div class="parallax-bg"></div>
+    <div class="parallax-mg"></div>
+    <div class="scene-content">
+      <h2>Chapter 1: The Beginning</h2>
+      <p>In the early days, the web was static. Pages were simple documents linked together.</p>
+    </div>
+  </section>
 
-<section class="scene scene-data">
-  <div class="contain-reveal">
-    <h2>Chapter 2: The Data</h2>
-    <div class="data-bar" style="--target-width: 80%;">Performance</div>
-    <div class="data-bar" style="--target-width: 95%;">Accessibility</div>
-    <div class="data-bar" style="--target-width: 70%;">Browser Support</div>
-  </div>
-</section>
+  <section class="scene scene-data">
+    <h2>Chapter 2: The Growth</h2>
+    <div class="data-bars">
+      <div class="bar" style="--value: 20%"><span>2000</span></div>
+      <div class="bar" style="--value: 45%"><span>2005</span></div>
+      <div class="bar" style="--value: 65%"><span>2010</span></div>
+      <div class="bar" style="--value: 85%"><span>2020</span></div>
+      <div class="bar" style="--value: 95%"><span>2026</span></div>
+    </div>
+  </section>
 
-<section class="scene scene-chapters">
-  <h2>Chapters</h2>
-  <div class="chapter-carousel">
-    <div class="chapter-slide">Chapter A</div>
-    <div class="chapter-slide">Chapter B</div>
-    <div class="chapter-slide">Chapter C</div>
-  </div>
-</section>
-
-<section class="scene scene-conclusion">
-  <div class="exit-reveal">
-    <h2>The End</h2>
-    <p>You have completed the scroll-driven story.</p>
-  </div>
-</section>
+  <section class="scene scene-conclusion">
+    <h2>The Future</h2>
+    <p>CSS now handles what once required entire JavaScript libraries. The web has never been more powerful.</p>
+  </section>
+</div>
         </template>
         <template class="starter-css">
-/* Story progress bar */
 .story-progress {
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   height: 4px;
   width: 100%;
   background: linear-gradient(90deg, #6366f1, #ec4899, #f59e0b);
   transform-origin: left;
-  transform: scaleX(0);
-  z-index: 999;
-  /* Add: animation, animation-timeline: scroll(root) */
+  animation: fill linear;
+  animation-timeline: scroll(root);
+  z-index: 100;
+}
+
+@keyframes fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.story {
+  font-family: system-ui, sans-serif;
 }
 
 .scene {
@@ -844,84 +879,122 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  color: #e2e8f0;
+  position: relative;
 }
 
 .scene-title {
-  background: #0f172a;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: white;
+  text-align: center;
+}
+
+.scene-title h1 {
+  font-size: 3rem;
+  animation: title-reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+@keyframes title-reveal {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .scene-narrative {
-  position: relative;
+  background: #0f172a;
+  color: white;
   overflow: hidden;
-  background: #1e293b;
 }
 
-/* Parallax layers — animate translateY with view() at different rates */
-.parallax-bg {
+.parallax-bg, .parallax-mg {
   position: absolute;
-  inset: -30% 0;
+  inset: 0;
 }
 
-.layer-back { background: #1e3a5f; z-index: 0; }
-.layer-mid  { background: rgba(99,102,241,0.2); z-index: 1; }
-.layer-front { z-index: 2; }
+.parallax-bg {
+  background: radial-gradient(circle at 30% 40%, #1e3a5f, transparent);
+  animation: shift-slow linear;
+  animation-timeline: view();
+}
 
-.narrative-content {
+.parallax-mg {
+  background: radial-gradient(circle at 70% 60%, #2d1b69 20%, transparent);
+  animation: shift-mid linear;
+  animation-timeline: view();
+}
+
+@keyframes shift-slow {
+  from { transform: translateY(-10%); }
+  to { transform: translateY(10%); }
+}
+
+@keyframes shift-mid {
+  from { transform: translateY(-20%); }
+  to { transform: translateY(20%); }
+}
+
+.scene-content {
   position: relative;
-  z-index: 3;
-}
-
-/* Entry reveal — animate on entry range */
-.entry-reveal {
-  opacity: 0;
-  transform: translateY(60px);
-  /* Add: animation, animation-timeline: view(), animation-range: entry */
-}
-
-/* Contain reveal — animate while fully in view */
-.contain-reveal {
-  opacity: 0;
-  /* Add: animation, animation-timeline: view(), animation-range: contain */
-}
-
-/* Exit reveal — animate on exit */
-.exit-reveal {
-  /* Add: animation, animation-timeline: view(), animation-range: exit */
-}
-
-/* Chapter carousel with scroll snap */
-.chapter-carousel {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 1rem;
-  width: 80%;
-  padding: 1rem;
-}
-
-.chapter-slide {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
-  padding: 3rem;
-  background: #334155;
-  border-radius: 12px;
+  z-index: 1;
   text-align: center;
-  font-size: 1.5rem;
 }
 
-.data-bar {
-  background: #6366f1;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
-  border-radius: 6px;
-  width: var(--target-width, 50%);
+.scene-data {
+  background: #f8fafc;
+  text-align: center;
+}
+
+.data-bars {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  height: 200px;
+  margin-top: 2rem;
+}
+
+.bar {
+  flex: 1;
+  background: linear-gradient(to top, #6366f1, #a78bfa);
+  border-radius: 8px 8px 0 0;
+  height: var(--value);
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 0.5rem;
+  color: white;
+  font-weight: bold;
+  animation: grow-bar linear both;
+  animation-timeline: view();
+  animation-range: entry 0% contain 50%;
+}
+
+@keyframes grow-bar {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to { transform: scaleY(1); transform-origin: bottom; }
+}
+
+.scene-conclusion {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+  text-align: center;
+}
+
+.scene-conclusion h2 {
+  animation: fade-exit linear both;
+  animation-timeline: view();
+  animation-range: exit 0% exit 100%;
+}
+
+@keyframes fade-exit {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.9); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation: none !important;
-    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
         </template>
