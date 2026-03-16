@@ -867,6 +867,98 @@
         <li>Use a <code>&lt;footer&gt;</code> with a copyright notice and at least one external link (e.g., to your GitHub or LinkedIn) with proper <code>target</code> and <code>rel</code> attributes.</li>
         <li>Validate your page using the <a href="https://validator.w3.org/" target="_blank" rel="noopener noreferrer" style="color: var(--pe7-success);">W3C HTML Validator</a> and fix any errors.</li>
       </ol>
+
+      <div class="live-editor" data-mode="html">
+        <template class="starter-html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile Page</title>
+</head>
+<body>
+  <header>
+    <h1>Your Name</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <figure>
+        <img src="https://placehold.co/300x300" alt="Profile photo of Your Name">
+        <figcaption>Your Name - Web Developer</figcaption>
+      </figure>
+      <p>Write a paragraph about yourself here. Use <strong>strong</strong> and <em>emphasis</em> where appropriate.</p>
+      <p>Add a second paragraph with more details.</p>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <ul>
+        <li>Programming
+          <ul>
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+          </ul>
+        </li>
+        <li>Design</li>
+      </ul>
+    </section>
+
+    <section id="experience">
+      <h2>Experience</h2>
+      <dl>
+        <dt>Job Title</dt>
+        <dd>Description of your role and responsibilities.</dd>
+      </dl>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+
+        <label for="subject">Subject:</label>
+        <select id="subject" name="subject">
+          <option>General Inquiry</option>
+          <option>Job Opportunity</option>
+        </select>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message"></textarea>
+
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Your Name</p>
+    <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+  </footer>
+</body>
+</html>
+        </template>
+        <template class="starter-css">
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 1rem;
+}
+        </template>
+      </div>
     </section>
 
     <!-- ════════════════════════════════════════════ -->
@@ -883,6 +975,104 @@
         <li><strong>Review Form:</strong> A form where users can submit a review: name (text), email (email), rating (range slider 1&ndash;5 with <code>&lt;output&gt;</code> display), would-recommend (radio buttons: Yes/No), and review text (textarea). Group related fields with <code>&lt;fieldset&gt;</code> and <code>&lt;legend&gt;</code>.</li>
         <li><strong>Semantic Structure:</strong> Use <code>&lt;article&gt;</code> for the recipe, <code>&lt;section&gt;</code> for each part (ingredients, steps, nutrition, reviews), <code>&lt;aside&gt;</code> for a "Chef's Tips" sidebar, and a proper <code>&lt;footer&gt;</code>.</li>
       </ul>
+
+      <div class="live-editor" data-mode="html">
+        <template class="starter-html">
+<article>
+  <header>
+    <h1>Classic Margherita Pizza</h1>
+    <figure>
+      <img src="https://placehold.co/600x400" alt="A freshly baked Margherita pizza">
+      <figcaption>Classic Margherita Pizza fresh from the oven</figcaption>
+    </figure>
+    <p>A timeless Italian classic featuring fresh mozzarella, tomatoes, and basil.</p>
+  </header>
+
+  <section>
+    <h2>Ingredients</h2>
+    <ul>
+      <li>For the dough:
+        <ul>
+          <li>2 cups flour</li>
+          <li>1 tsp yeast</li>
+          <li>1 tsp salt</li>
+        </ul>
+      </li>
+      <li>For the sauce:
+        <ul>
+          <li>1 can crushed tomatoes</li>
+          <li>2 cloves garlic</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Steps</h2>
+    <ol>
+      <li><p>Mix the flour, yeast, and salt. Add water gradually and knead until smooth.</p></li>
+      <li><p>Let the dough rise for 1 hour in a warm place.</p></li>
+      <li><p>Spread the sauce, add mozzarella, and bake at 450°F for 12-15 minutes.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Nutrition</h2>
+    <table>
+      <caption>Nutrition per serving</caption>
+      <thead>
+        <tr>
+          <th scope="col">Nutrient</th>
+          <th scope="col">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Calories</td><td>266</td></tr>
+        <tr><td>Protein</td><td>11g</td></tr>
+        <tr><td>Carbs</td><td>33g</td></tr>
+        <tr><td>Fat</td><td>10g</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <aside>
+    <h2>Chef's Tips</h2>
+    <p>Use San Marzano tomatoes for the most authentic flavor!</p>
+  </aside>
+
+  <section>
+    <h2>Leave a Review</h2>
+    <form>
+      <fieldset>
+        <legend>Your Review</legend>
+        <label for="reviewer-name">Name:</label>
+        <input type="text" id="reviewer-name" name="name">
+
+        <label for="rating">Rating:</label>
+        <input type="range" id="rating" name="rating" min="1" max="5">
+        <output for="rating">3</output>
+      </fieldset>
+
+      <label for="review-text">Review:</label>
+      <textarea id="review-text" name="review"></textarea>
+      <button type="submit">Submit Review</button>
+    </form>
+  </section>
+</article>
+
+<footer>
+  <p>&copy; 2026 Recipe Collection</p>
+</footer>
+        </template>
+        <template class="starter-css">
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 1rem;
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -893,5 +1083,6 @@
     <a href="../02-css-fundamentals/index.html">Module 02: Painting the Web &rarr;</a>
   </footer>
 
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>

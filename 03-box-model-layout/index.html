@@ -387,6 +387,100 @@
         <li>Add enough content in the main area (multiple paragraphs or sections) to enable scrolling.</li>
         <li>Ensure the layout works with <code>box-sizing: border-box</code> applied globally.</li>
       </ul>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<nav class="fixed-nav">
+  <span class="nav-brand">MySite</span>
+  <a href="#">Home</a>
+  <a href="#">About</a>
+  <a href="#">Contact</a>
+</nav>
+
+<div class="layout">
+  <main class="content">
+    <h1>Main Content</h1>
+    <p>This is the main content area. Add multiple paragraphs to enable scrolling and test the sticky sidebar behavior.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>More content to make the page scroll. Keep adding paragraphs to test the sticky sidebar and fixed nav.</p>
+  </main>
+
+  <aside class="sidebar">
+    <h2>Sidebar</h2>
+    <ul>
+      <li>Link One</li>
+      <li>Link Two</li>
+      <li>Link Three</li>
+    </ul>
+  </aside>
+</div>
+        </template>
+        <template class="starter-css">
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  padding-top: 60px; /* Space for fixed nav */
+}
+
+/* Fixed navigation bar */
+.fixed-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #1a1a2e;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  gap: 1.5rem;
+  z-index: 1000;
+}
+
+.fixed-nav a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.nav-brand {
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-right: auto;
+}
+
+/* Two-column layout */
+.layout {
+  display: flex;
+  max-width: 960px;
+  margin: 2rem auto;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.content {
+  flex: 1;
+}
+
+/* Sticky sidebar */
+.sidebar {
+  width: 200px;
+  position: sticky;
+  top: 76px; /* nav height + spacing */
+  align-self: flex-start;
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 8px;
+}
+        </template>
+      </div>
     </section>
 
     <!-- ===== CHALLENGE ===== -->
@@ -402,6 +496,83 @@
         <li>On <strong>hover</strong>, each card should increase its z-index and scale up slightly with a smooth transition, rising above the stack.</li>
       </ul>
       <p><strong>Bonus:</strong> Add a <code>transform: rotate()</code> to each card with slightly different angles (e.g., -3deg, -1.5deg, 0deg, 1.5deg, 3deg) to create a fanned-out effect.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="card-stack">
+  <div class="stack-card card-1">Card 1</div>
+  <div class="stack-card card-2">Card 2</div>
+  <div class="stack-card card-3">Card 3</div>
+  <div class="stack-card card-4">Card 4</div>
+  <div class="stack-card card-5">Card 5</div>
+</div>
+        </template>
+        <template class="starter-css">
+.card-stack {
+  position: relative;
+  width: 300px;
+  height: 250px;
+  margin: 3rem auto;
+}
+
+.stack-card {
+  position: absolute;
+  width: 200px;
+  height: 150px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: white;
+  transition: transform 0.3s, z-index 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card-1 {
+  background: hsl(220, 60%, 70%);
+  z-index: 1;
+  top: 0; left: 0;
+  transform: rotate(-3deg);
+}
+
+.card-2 {
+  background: hsl(220, 60%, 60%);
+  z-index: 2;
+  top: 15px; left: 20px;
+  transform: rotate(-1.5deg);
+}
+
+.card-3 {
+  background: hsl(220, 60%, 50%);
+  z-index: 3;
+  top: 30px; left: 40px;
+  transform: rotate(0deg);
+}
+
+.card-4 {
+  background: hsl(220, 60%, 40%);
+  z-index: 4;
+  top: 45px; left: 60px;
+  transform: rotate(1.5deg);
+}
+
+.card-5 {
+  background: hsl(220, 60%, 30%);
+  z-index: 5;
+  top: 60px; left: 80px;
+  transform: rotate(3deg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.stack-card:hover {
+  z-index: 10;
+  transform: scale(1.1) rotate(0deg);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+        </template>
+      </div>
     </section>
 
   </main>
@@ -410,5 +581,6 @@
     <a href="../02-css-fundamentals/index.html">&larr; Previous</a>
     <a href="../04-flexbox/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>

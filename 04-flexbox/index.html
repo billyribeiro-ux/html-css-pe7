@@ -879,6 +879,68 @@
   &lt;button class="cta"&gt;Get Started&lt;/button&gt;
 &lt;/nav&gt;</code></pre>
       </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<nav class="my-navbar">
+  <div class="logo">MyBrand</div>
+  <ul class="links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Products</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+  <button class="cta">Get Started</button>
+</nav>
+        </template>
+        <template class="starter-css">
+/* Style the navbar as a flex container */
+.my-navbar {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #1a1a2e;
+  color: white;
+}
+
+/* Logo stays on the left */
+.logo {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+/* Links take up remaining space and center themselves */
+.links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.links a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.links a:hover {
+  color: white;
+}
+
+/* CTA button on the right */
+.cta {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+        </template>
+      </div>
     </section>
 
     <!-- ============================================================
@@ -902,6 +964,81 @@
         Bonus: Use <code>order</code> to move the Undo/Redo group to the beginning on screens
         below 600px (conceptually &mdash; use a media query to change the order at that breakpoint).
       </p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="toolbar">
+  <div class="tool-group">
+    <button class="tool-btn">B</button>
+    <button class="tool-btn">I</button>
+    <button class="tool-btn">U</button>
+  </div>
+  <div class="divider"></div>
+  <div class="tool-group">
+    <button class="tool-btn">&#8676;</button>
+    <button class="tool-btn">&#8677;</button>
+    <button class="tool-btn">&#8678;</button>
+  </div>
+  <div class="divider"></div>
+  <div class="tool-group">
+    <button class="tool-btn">&#9776;</button>
+    <button class="tool-btn">&#8801;</button>
+  </div>
+  <div class="divider"></div>
+  <div class="tool-group undo-redo">
+    <button class="tool-btn">&#8630;</button>
+    <button class="tool-btn">&#8631;</button>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f0f0f0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  align-items: center;
+}
+
+.tool-group {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tool-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-btn:hover {
+  background: #e0e0ff;
+  border-color: #6366f1;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: #ccc;
+  margin: 0 0.25rem;
+}
+
+/* Bonus: reorder undo/redo on narrow screens */
+/* @media (max-width: 600px) {
+  .undo-redo { order: -1; }
+} */
+        </template>
+      </div>
     </section>
 
   </main>
@@ -910,5 +1047,6 @@
     <a href="../03-box-model-layout/index.html">&larr; Previous</a>
     <a href="../05-grid/index.html">Next &rarr;</a>
   </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
 </body>
 </html>
