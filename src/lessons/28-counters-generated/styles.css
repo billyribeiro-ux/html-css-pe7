@@ -1,0 +1,1258 @@
+/* ============================================
+   Module 28: Generated Content & CSS Counters
+   Content property, CSS counters, @counter-style,
+   ::marker, advanced patterns, accessibility
+   ============================================ */
+
+/* ---- Lesson-level Custom Properties ---- */
+:root {
+  --m28-bg: #0f1117;
+  --m28-surface: #1a1d27;
+  --m28-surface-2: #242836;
+  --m28-text: #e4e6ef;
+  --m28-text-muted: #8b8fa3;
+  --m28-accent: #6c5ce7;
+  --m28-accent-light: #a29bfe;
+  --m28-border: rgba(255, 255, 255, 0.08);
+  --m28-radius: 8px;
+  --m28-radius-lg: 12px;
+  --m28-transition: 0.25s ease;
+  --m28-success: #22c55e;
+  --m28-warning: #f59e0b;
+  --m28-danger: #ef4444;
+}
+
+/* ---- Level 9 Badge (not in course.css) ---- */
+.level-badge.level-9 {
+  background: color-mix(in oklch, #f59e0b 20%, transparent);
+  color: #f59e0b;
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-block-end: 4rem;
+  padding-block-end: 3rem;
+  border-block-end: 1px solid var(--m28-border);
+}
+
+.concept-section:last-of-type {
+  border-block-end: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-block-end: 1rem;
+  padding-block-end: 0.5rem;
+  border-block-end: 2px solid var(--m28-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-block-start: 2rem;
+  margin-block-end: 0.75rem;
+  color: var(--m28-accent-light);
+}
+
+.concept-section p {
+  margin-block-end: 1rem;
+  line-height: 1.8;
+  color: var(--m28-text);
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding-block: 1.25rem;
+  padding-inline: 1.5rem;
+  border-radius: var(--m28-radius-lg);
+  margin-block: 2rem;
+  background: color-mix(in oklch, var(--m28-accent) 8%, transparent);
+  border-inline-start: 4px solid var(--m28-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--m28-text);
+}
+
+.info-box strong {
+  color: var(--m28-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--m28-surface);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius-lg);
+  padding-block: 1.5rem;
+  padding-inline: 1.5rem;
+  margin-block: 2rem;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  inset-block-start: -0.7em;
+  inset-inline-start: 1rem;
+  background: var(--m28-success);
+  color: var(--m28-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding-block: 0.15rem;
+  padding-inline: 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-block-end: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--m28-text);
+}
+
+/* ---- Demo Note ---- */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--m28-text-muted);
+  font-style: italic;
+  margin-block-end: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block Overrides ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m28-text-muted);
+  margin-block-end: 0.5rem;
+}
+
+
+/* =============================================
+   SECTION 1: Content Property Demo
+   ============================================= */
+
+.content-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.content-demo-item {
+  background: var(--m28-surface-2);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius);
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
+}
+
+/* Required label indicator */
+.demo-required-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-block-end: 0.5rem;
+  color: var(--m28-text);
+}
+
+.demo-required-label::after {
+  content: " *";
+  color: var(--m28-danger);
+  font-weight: 700;
+}
+
+.demo-input-placeholder {
+  block-size: 36px;
+  background: var(--m28-surface);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius);
+}
+
+/* External link indicator */
+.demo-external-link {
+  color: var(--m28-accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 0.95rem;
+}
+
+.demo-external-link::after {
+  content: " \2197";
+  font-size: 0.85em;
+  color: var(--m28-text-muted);
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Blockquote with generated quotes */
+.demo-blockquote {
+  position: relative;
+  padding-inline-start: 3rem;
+  padding-block: 0.75rem;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--m28-text-muted);
+}
+
+.demo-blockquote::before {
+  content: "\201C";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: -0.25rem;
+  font-size: 3.5rem;
+  font-family: Georgia, serif;
+  color: var(--m28-accent);
+  line-height: 1;
+}
+
+.demo-blockquote::after {
+  content: "\201D";
+  font-size: 1.5rem;
+  font-family: Georgia, serif;
+  color: var(--m28-accent);
+  margin-inline-start: 0.15rem;
+  vertical-align: -0.2em;
+}
+
+/* Tooltip text using attr() */
+.demo-tooltip-text {
+  position: relative;
+  display: inline-block;
+  color: var(--m28-accent-light);
+  cursor: help;
+  border-block-end: 1px dashed var(--m28-accent);
+  padding-block-end: 2px;
+}
+
+.demo-tooltip-text::after {
+  content: attr(data-info);
+  position: absolute;
+  inset-block-end: 100%;
+  inset-inline-start: 0;
+  margin-block-end: 0.5rem;
+  background: var(--m28-accent);
+  color: #fff;
+  font-size: 0.78rem;
+  font-style: normal;
+  padding-block: 0.35rem;
+  padding-inline: 0.75rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.demo-tooltip-text:hover::after {
+  opacity: 1;
+}
+
+/* Heading with underline accent */
+.demo-underlined-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--m28-text);
+  margin-block-end: 0;
+}
+
+.demo-underlined-heading::after {
+  content: "";
+  display: block;
+  inline-size: 60px;
+  block-size: 3px;
+  background: var(--m28-accent);
+  margin-block-start: 0.5rem;
+  border-radius: 2px;
+}
+
+
+/* =============================================
+   SECTION 2: CSS Counters Demo
+   ============================================= */
+
+.counter-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.counter-demo-panel {
+  background: var(--m28-surface-2);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius-lg);
+  padding-block: 1.25rem;
+  padding-inline: 1.25rem;
+}
+
+.counter-demo-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m28-text-muted);
+  font-weight: 700;
+  margin-block-end: 0.75rem;
+  display: block;
+}
+
+/* Demo Steps (auto-numbered) */
+.demo-steps {
+  counter-reset: step;
+  list-style: none;
+  padding-inline-start: 2.5rem;
+}
+
+.demo-steps li {
+  counter-increment: step;
+  position: relative;
+  padding-block: 0.35rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-steps li::before {
+  content: counter(step);
+  position: absolute;
+  inset-inline-start: -2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  border-radius: 50%;
+  background: var(--m28-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Demo Nested Counters */
+.demo-nested {
+  counter-reset: nest-item;
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.demo-nested ol {
+  counter-reset: nest-item;
+  list-style: none;
+  padding-inline-start: 1.25rem;
+  margin-block: 0.15rem;
+}
+
+.demo-nested li {
+  counter-increment: nest-item;
+  position: relative;
+  padding-block: 0.25rem;
+  padding-inline-start: 2.75rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-nested li::before {
+  content: counters(nest-item, ".");
+  position: absolute;
+  inset-inline-start: 0;
+  font-weight: 700;
+  color: var(--m28-accent-light);
+  font-size: 0.85rem;
+  min-inline-size: 2.25rem;
+}
+
+/* Demo Roman Numerals */
+.demo-roman {
+  counter-reset: roman;
+  list-style: none;
+  padding-inline-start: 3.5rem;
+}
+
+.demo-roman li {
+  counter-increment: roman;
+  position: relative;
+  padding-block: 0.35rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-roman li::before {
+  content: counter(roman, upper-roman) ".";
+  position: absolute;
+  inset-inline-start: -3.5rem;
+  font-weight: 700;
+  color: var(--m28-accent);
+  font-size: 0.85rem;
+  min-inline-size: 3rem;
+  text-align: end;
+}
+
+/* Demo Reversed Countdown */
+.demo-countdown {
+  counter-reset: reversed(launch);
+  list-style: none;
+  padding-inline-start: 2.5rem;
+}
+
+.demo-countdown li {
+  counter-increment: launch -1;
+  position: relative;
+  padding-block: 0.35rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-countdown li::before {
+  content: counter(launch);
+  position: absolute;
+  inset-inline-start: -2.5rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--m28-danger);
+  min-inline-size: 1.75rem;
+  text-align: center;
+}
+
+.demo-countdown li:last-child {
+  color: var(--m28-success);
+  font-weight: 700;
+}
+
+.demo-countdown li:last-child::before {
+  color: var(--m28-success);
+}
+
+@media (max-width: 700px) {
+  .counter-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =============================================
+   SECTION 3: @counter-style Demo
+   ============================================= */
+
+/* Custom counter style definitions for the demo */
+@counter-style emoji-cycle {
+  system: cyclic;
+  symbols: "\1F525" "\2728" "\1F680" "\1F4A1" "\2705" "\1F3AF";
+  suffix: " ";
+}
+
+@counter-style padded-bracket {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+  prefix: "[";
+  suffix: "] ";
+  pad: 3 "0";
+}
+
+@counter-style star-level {
+  system: symbolic;
+  symbols: "\2605";
+  suffix: " ";
+}
+
+@counter-style demo-roman-additive {
+  system: additive;
+  additive-symbols: 1000 M, 900 CM, 500 D, 400 CD, 100 C, 90 XC, 50 L, 40 XL, 10 X, 9 IX, 5 V, 4 IV, 1 I;
+  suffix: ". ";
+}
+
+.counter-style-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.cs-demo-panel {
+  background: var(--m28-surface-2);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius-lg);
+  padding-block: 1.25rem;
+  padding-inline: 1.25rem;
+}
+
+.cs-demo-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m28-text-muted);
+  font-weight: 700;
+  margin-block-end: 0.75rem;
+  display: block;
+}
+
+/* Emoji cyclic list */
+.demo-emoji-list {
+  list-style-type: emoji-cycle;
+  padding-inline-start: 2rem;
+}
+
+.demo-emoji-list li {
+  padding-block: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+/* Padded bracket list */
+.demo-padded-list {
+  list-style-type: padded-bracket;
+  padding-inline-start: 4.5rem;
+}
+
+.demo-padded-list li {
+  padding-block: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-padded-list li::marker {
+  color: var(--m28-accent);
+  font-family: var(--pe7-font-mono, monospace);
+  font-weight: 600;
+}
+
+/* Symbolic stars list */
+.demo-stars-list {
+  list-style-type: star-level;
+  padding-inline-start: 5rem;
+}
+
+.demo-stars-list li {
+  padding-block: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-stars-list li::marker {
+  color: var(--m28-warning);
+  font-size: 0.9em;
+}
+
+/* Custom Roman list */
+.demo-custom-roman {
+  list-style-type: demo-roman-additive;
+  padding-inline-start: 3rem;
+}
+
+.demo-custom-roman li {
+  padding-block: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-custom-roman li::marker {
+  color: var(--m28-accent-light);
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .counter-style-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =============================================
+   SECTION 4: ::marker Demo
+   ============================================= */
+
+.marker-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.marker-demo-panel {
+  background: var(--m28-surface-2);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius-lg);
+  padding-block: 1.25rem;
+  padding-inline: 1.25rem;
+}
+
+.marker-demo-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m28-text-muted);
+  font-weight: 700;
+  margin-block-end: 0.75rem;
+  display: block;
+}
+
+/* Colored markers */
+.demo-colored-markers {
+  list-style: disc;
+  padding-inline-start: 1.5rem;
+}
+
+.demo-colored-markers li {
+  padding-block: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.demo-colored-markers li::marker {
+  color: var(--m28-accent);
+  font-size: 1.4em;
+  font-weight: 700;
+}
+
+/* Status markers */
+.demo-status-markers {
+  list-style: none;
+  padding-inline-start: 2rem;
+}
+
+.demo-status-markers li {
+  padding-block: 0.4rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+  display: list-item;
+}
+
+.demo-status-markers li.status-done::marker {
+  content: "\2705 ";
+  font-size: 1em;
+}
+
+.demo-status-markers li.status-progress::marker {
+  content: "\1F504 ";
+  font-size: 1em;
+}
+
+.demo-status-markers li.status-pending::marker {
+  content: "\23F3 ";
+  font-size: 1em;
+}
+
+/* Summary marker */
+.demo-details {
+  margin-block-end: 0.75rem;
+}
+
+.demo-details summary {
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--m28-text);
+  padding-block: 0.4rem;
+  list-style: none;
+  display: list-item;
+}
+
+.demo-details summary::marker {
+  content: "\25B6 ";
+  color: var(--m28-accent);
+  font-size: 0.75em;
+}
+
+.demo-details[open] > summary::marker {
+  content: "\25BC ";
+}
+
+.demo-details p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--m28-text-muted);
+  padding-inline-start: 0.25rem;
+  padding-block: 0.5rem;
+  margin-block-end: 0;
+}
+
+/* Counter + Marker */
+.demo-counter-marker {
+  counter-reset: cm-item;
+  list-style: none;
+  padding-inline-start: 2.75rem;
+}
+
+.demo-counter-marker li {
+  counter-increment: cm-item;
+  padding-block: 0.35rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+  display: list-item;
+}
+
+.demo-counter-marker li::marker {
+  content: counter(cm-item, upper-roman) " \2014 ";
+  color: var(--m28-accent-light);
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .marker-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =============================================
+   SECTION 5: Advanced Patterns Demo
+   ============================================= */
+
+.patterns-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.patterns-section {
+  background: var(--m28-surface-2);
+  border: 1px solid var(--m28-border);
+  border-radius: var(--m28-radius-lg);
+  padding-block: 1.25rem;
+  padding-inline: 1.25rem;
+}
+
+.patterns-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m28-text-muted);
+  font-weight: 700;
+  margin-block-end: 1rem;
+  display: block;
+}
+
+/* Breadcrumbs */
+.demo-breadcrumb ol {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.demo-breadcrumb li {
+  font-size: 0.88rem;
+  color: var(--m28-text);
+}
+
+.demo-breadcrumb li + li::before {
+  content: "\203A";
+  padding-inline: 0.65rem;
+  color: var(--m28-text-muted);
+  font-size: 1.1em;
+}
+
+.demo-breadcrumb a {
+  color: var(--m28-accent-light);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.demo-breadcrumb a:hover {
+  color: #fff;
+}
+
+.demo-breadcrumb span {
+  color: var(--m28-text-muted);
+}
+
+/* Step Indicator */
+.demo-step-indicator {
+  counter-reset: step-ind;
+  display: flex;
+  gap: 0;
+  position: relative;
+}
+
+.demo-step {
+  counter-increment: step-ind;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding-block-start: 3rem;
+  font-size: 0.82rem;
+  color: var(--m28-text-muted);
+  line-height: 1.4;
+}
+
+/* Step circle */
+.demo-step::before {
+  content: counter(step-ind);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 50%;
+  background: var(--m28-surface);
+  border: 2px solid var(--m28-border);
+  color: var(--m28-text-muted);
+  font-weight: 700;
+  font-size: 0.82rem;
+  z-index: 1;
+}
+
+/* Connector line */
+.demo-step + .demo-step::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(1rem - 1px);
+  inset-inline-end: 50%;
+  inline-size: 100%;
+  block-size: 2px;
+  background: var(--m28-border);
+  z-index: 0;
+}
+
+/* Complete step */
+.demo-step.is-complete::before {
+  background: var(--m28-accent);
+  border-color: var(--m28-accent);
+  color: #fff;
+}
+
+.demo-step.is-complete {
+  color: var(--m28-accent-light);
+}
+
+.demo-step.is-complete + .demo-step::after {
+  background: var(--m28-accent);
+}
+
+/* Active step */
+.demo-step.is-active::before {
+  background: transparent;
+  border-color: var(--m28-accent);
+  color: var(--m28-accent);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--m28-accent) 25%, transparent);
+}
+
+.demo-step.is-active {
+  color: var(--m28-text);
+  font-weight: 600;
+}
+
+/* Auto-Numbered Headings */
+.demo-auto-headings {
+  counter-reset: demo-h2 demo-h3;
+}
+
+.demo-h2 {
+  counter-increment: demo-h2;
+  counter-reset: demo-h3;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--m28-text);
+  margin-block-start: 0.75rem;
+  margin-block-end: 0.35rem;
+  padding-block-start: 0.5rem;
+  border-block-start: 1px solid var(--m28-border);
+}
+
+.demo-h2:first-child {
+  border-block-start: none;
+  margin-block-start: 0;
+  padding-block-start: 0;
+}
+
+.demo-h2::before {
+  content: counter(demo-h2) ". ";
+  color: var(--m28-accent);
+  font-weight: 800;
+}
+
+.demo-h3 {
+  counter-increment: demo-h3;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--m28-text-muted);
+  padding-inline-start: 1.5rem;
+  margin-block: 0.2rem;
+}
+
+.demo-h3::before {
+  content: counter(demo-h2) "." counter(demo-h3) " ";
+  color: var(--m28-accent-light);
+  font-weight: 600;
+}
+
+/* Footnotes */
+.demo-footnotes-container {
+  counter-reset: demo-fn;
+}
+
+.demo-body-text {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--m28-text);
+  margin-block-end: 1rem;
+}
+
+.demo-fn-ref {
+  counter-increment: demo-fn;
+}
+
+.demo-fn-ref::after {
+  content: "[" counter(demo-fn) "]";
+  font-size: 0.7em;
+  vertical-align: super;
+  color: var(--m28-accent);
+  font-weight: 700;
+  margin-inline-start: 1px;
+  cursor: pointer;
+}
+
+.demo-footnotes {
+  counter-reset: demo-fn-list;
+  border-block-start: 1px solid var(--m28-border);
+  padding-block-start: 0.75rem;
+  margin-block-start: 0.5rem;
+}
+
+.demo-fn-item {
+  counter-increment: demo-fn-list;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--m28-text-muted);
+  padding-inline-start: 1.5rem;
+  position: relative;
+  margin-block-end: 0.25rem;
+}
+
+.demo-fn-item::before {
+  content: counter(demo-fn-list) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  font-weight: 700;
+  color: var(--m28-accent);
+  font-size: 0.85rem;
+}
+
+
+/* =============================================
+   SECTION 6: Accessibility
+   ============================================= */
+
+.a11y-guidelines {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-block: 2rem;
+}
+
+.a11y-rule {
+  border-radius: var(--m28-radius-lg);
+  padding-block: 1.25rem;
+  padding-inline: 1.25rem;
+  border: 1px solid var(--m28-border);
+}
+
+.a11y-rule h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-block-end: 0.75rem;
+}
+
+.a11y-rule ul {
+  padding-inline-start: 0;
+}
+
+.a11y-rule li {
+  padding-block: 0.3rem;
+  padding-inline-start: 1.75rem;
+  position: relative;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m28-text);
+}
+
+.a11y-do {
+  background: color-mix(in oklch, var(--m28-success) 6%, var(--m28-surface-2));
+  border-color: color-mix(in oklch, var(--m28-success) 25%, var(--m28-border));
+}
+
+.a11y-do h4 {
+  color: var(--m28-success);
+}
+
+.a11y-do li::before {
+  content: "\2713";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m28-success);
+  font-weight: 700;
+}
+
+.a11y-dont {
+  background: color-mix(in oklch, var(--m28-danger) 6%, var(--m28-surface-2));
+  border-color: color-mix(in oklch, var(--m28-danger) 25%, var(--m28-border));
+}
+
+.a11y-dont h4 {
+  color: var(--m28-danger);
+}
+
+.a11y-dont li::before {
+  content: "\2717";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m28-danger);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .a11y-guidelines {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =============================================
+   Exercise & Challenge Sections
+   ============================================= */
+
+.exercise, .challenge {
+  margin-block-end: 4rem;
+  padding-block: 2rem;
+}
+
+.exercise h2, .challenge h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-block-end: 0.75rem;
+  color: var(--m28-text);
+}
+
+.exercise > p, .challenge > p {
+  margin-block-end: 1.5rem;
+  line-height: 1.8;
+  color: var(--m28-text);
+}
+
+.exercise-requirements, .challenge-requirements,
+.exercise-starter, .challenge-hints {
+  margin-block-end: 2rem;
+}
+
+.exercise-requirements h3, .challenge-requirements h3,
+.exercise-starter h3, .challenge-hints h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-block-end: 0.75rem;
+  color: var(--m28-accent-light);
+}
+
+.exercise-requirements ul, .challenge-requirements ul,
+.challenge-hints ul {
+  list-style: none;
+  padding-inline-start: 0;
+  margin-block: 0;
+}
+
+.exercise-requirements li, .challenge-requirements li,
+.challenge-hints li {
+  padding-block: 0.5rem;
+  padding-inline-start: 2rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--m28-text);
+  font-size: 0.95rem;
+}
+
+.exercise-requirements li::before, .challenge-requirements li::before {
+  content: "\2713";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m28-success);
+  font-weight: 700;
+}
+
+.challenge-hints li::before {
+  content: "\2192";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m28-accent-light);
+  font-weight: 700;
+}
+
+
+/* =============================================
+   Motion Preferences (for this lesson page)
+   ============================================= */
+
+@media (prefers-reduced-motion: no-preference) {
+  .content-demo-item {
+    transition: border-color var(--m28-transition), box-shadow var(--m28-transition);
+  }
+
+  .content-demo-item:hover {
+    border-color: var(--m28-accent);
+    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.12);
+  }
+
+  .counter-demo-panel,
+  .cs-demo-panel,
+  .marker-demo-panel,
+  .patterns-section {
+    transition: border-color var(--m28-transition);
+  }
+
+  .counter-demo-panel:hover,
+  .cs-demo-panel:hover,
+  .marker-demo-panel:hover,
+  .patterns-section:hover {
+    border-color: var(--m28-accent);
+  }
+
+  .demo-steps li::before {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .demo-steps li:hover::before {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--m28-accent) 25%, transparent);
+  }
+
+  .demo-step::before {
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+
+  .a11y-rule {
+    transition: border-color var(--m28-transition), transform var(--m28-transition);
+  }
+
+  .a11y-rule:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-tooltip-text::after {
+    transition: none;
+  }
+}
+
+
+/* =============================================
+   High Contrast Overrides (this lesson page)
+   ============================================= */
+
+@media (prefers-contrast: more) {
+  .content-demo-item,
+  .counter-demo-panel,
+  .cs-demo-panel,
+  .marker-demo-panel,
+  .patterns-section,
+  .a11y-rule {
+    border-width: 2px;
+    border-color: var(--m28-text);
+  }
+
+  .info-box {
+    border-inline-start-width: 5px;
+    background: rgba(108, 92, 231, 0.15);
+  }
+
+  .demo-container {
+    border-width: 2px;
+  }
+
+  .demo-steps li::before,
+  .demo-step.is-complete::before {
+    border: 2px solid #fff;
+  }
+}
+
+
+/* =============================================
+   Forced Colors (Windows High Contrast)
+   ============================================= */
+
+@media (forced-colors: active) {
+  .content-demo-item,
+  .counter-demo-panel,
+  .cs-demo-panel,
+  .marker-demo-panel,
+  .patterns-section,
+  .demo-container,
+  .a11y-rule {
+    border: 2px solid ButtonText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .info-box {
+    border-inline-start: 4px solid Highlight;
+    background: Canvas;
+  }
+
+  .demo-container::before {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .demo-steps li::before,
+  .demo-step::before {
+    background: Highlight;
+    color: HighlightText;
+    border-color: ButtonText;
+  }
+
+  .demo-blockquote::before,
+  .demo-blockquote::after {
+    color: Highlight;
+  }
+
+  .demo-external-link::after {
+    color: LinkText;
+  }
+}
+
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 480px) {
+  .demo-step-indicator {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .demo-step {
+    padding-block-start: 0;
+    padding-inline-start: 3rem;
+    text-align: start;
+    min-block-size: 2.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .demo-step::before {
+    inset-inline-start: 0;
+    transform: none;
+  }
+
+  .demo-step + .demo-step::after {
+    inset-inline-start: calc(1rem - 1px);
+    inset-block-end: 100%;
+    inset-block-start: auto;
+    inline-size: 2px;
+    block-size: 0.5rem;
+  }
+}

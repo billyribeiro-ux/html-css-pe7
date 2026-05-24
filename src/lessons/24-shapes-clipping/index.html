@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shapes, Clipping &amp; Masking | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 24</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-8">Level 8 - Production Polish</span>
+    <h1>Shapes, Clipping &amp; Masking</h1>
+    <p class="subtitle">Move beyond rectangles. Use <code>clip-path</code> to cut elements into circles, polygons, and organic SVG shapes. Wrap text around curves with <code>shape-outside</code>. Apply gradient and image masks with <code>mask-image</code>. Build animated reveals, diagonal sections, and production-ready visual effects with pure CSS.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: CLIP-PATH BASICS    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="clip-path-basics">
+      <h2>1. clip-path Basics</h2>
+      <p>The <code>clip-path</code> property cuts an element to a specific shape. Anything outside the clipping region is invisible -- it is not removed from the DOM, not hidden with <code>opacity</code>, and not collapsed with <code>display: none</code>. It simply does not render. The element still occupies its original rectangular box in the layout.</p>
+
+      <p>CSS provides four basic shape functions you can use directly in your stylesheet without touching SVG.</p>
+
+      <h3>circle()</h3>
+      <p>Clips the element to a circle. Takes a radius and an optional center position.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Circle at center, radius = 50% of element */
+.avatar {
+  clip-path: circle(50%);
+}
+
+/* Smaller circle, offset to the right */
+.offset {
+  clip-path: circle(40% at 60% 50%);
+}</code></pre>
+      </div>
+
+      <h3>ellipse()</h3>
+      <p>Like <code>circle()</code> but with independent horizontal and vertical radii.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Wide ellipse */
+.banner {
+  clip-path: ellipse(50% 35% at 50% 50%);
+}
+
+/* Tall, narrow ellipse at top-left */
+.sidebar {
+  clip-path: ellipse(30% 50% at 25% 40%);
+}</code></pre>
+      </div>
+
+      <h3>inset()</h3>
+      <p>Clips by insetting from each edge. Supports optional <code>round</code> for border-radius-style corners. This is how you create rounded rectangles as clip paths.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Inset 10px from all sides with rounded corners */
+.card {
+  clip-path: inset(10px round 16px);
+}
+
+/* Inset with different values per side */
+.cropped {
+  clip-path: inset(5% 10% 15% 10% round 8px);
+}</code></pre>
+      </div>
+
+      <h3>polygon()</h3>
+      <p>The most flexible basic shape. Define any number of x/y points, and the browser draws straight lines between them to create the clip region. This is where things get interesting.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Triangle */
+.triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* Hexagon */
+.hexagon {
+  clip-path: polygon(
+    25% 0%, 75% 0%,
+    100% 50%,
+    75% 100%, 25% 100%,
+    0% 50%
+  );
+}
+
+/* Arrow pointing right */
+.arrow {
+  clip-path: polygon(
+    0% 20%, 60% 20%,
+    60% 0%, 100% 50%,
+    60% 100%, 60% 80%,
+    0% 80%
+  );
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Basic Clip-Path Shapes</h4>
+        <p class="demo-note">Each box has the same gradient background. The <code>clip-path</code> property cuts it into a different geometric shape. Hover to see the shape label.</p>
+
+        <div class="shapes-grid">
+          <div class="shape-item shape-circle">
+            <div class="shape-label">circle(50%)</div>
+          </div>
+          <div class="shape-item shape-ellipse">
+            <div class="shape-label">ellipse(50% 35%)</div>
+          </div>
+          <div class="shape-item shape-inset">
+            <div class="shape-label">inset(8px round 16px)</div>
+          </div>
+          <div class="shape-item shape-triangle">
+            <div class="shape-label">polygon() triangle</div>
+          </div>
+          <div class="shape-item shape-hexagon">
+            <div class="shape-label">polygon() hexagon</div>
+          </div>
+          <div class="shape-item shape-arrow">
+            <div class="shape-label">polygon() arrow</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Clipped areas do not receive pointer events. If you clip a button to a circle, only the visible circular area is clickable. This is a feature, not a bug -- it makes clip-path ideal for creating non-rectangular interactive regions.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: CLIP-PATH: PATH()   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="clip-path-path">
+      <h2>2. clip-path: path()</h2>
+      <p>Basic shapes cover geometric forms, but real design often needs organic, curved, or irregular outlines. The <code>path()</code> function accepts SVG path data -- the same <code>d</code> attribute syntax used in <code>&lt;path&gt;</code> elements. This gives you full control over curves, arcs, and complex contours.</p>
+
+      <h3>SVG Path Syntax Crash Course</h3>
+      <p>SVG path data uses single-letter commands followed by coordinates:</p>
+      <ul class="feature-list">
+        <li><strong>M x y</strong> -- Move to a point (starting position)</li>
+        <li><strong>L x y</strong> -- Draw a straight line to a point</li>
+        <li><strong>C x1 y1, x2 y2, x y</strong> -- Cubic Bezier curve (two control points + endpoint)</li>
+        <li><strong>Q x1 y1, x y</strong> -- Quadratic Bezier curve (one control point + endpoint)</li>
+        <li><strong>A rx ry rotation large-arc sweep x y</strong> -- Elliptical arc</li>
+        <li><strong>Z</strong> -- Close the path (line back to start)</li>
+      </ul>
+
+      <p>Lowercase versions (m, l, c, q, a) use relative coordinates. For clip-path, you typically work in pixels since <code>path()</code> does not accept percentages.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Organic blob shape */
+.blob {
+  clip-path: path(
+    "M 150 0 C 250 0, 300 50, 300 150
+     C 300 250, 250 300, 150 300
+     C 50 300, 0 250, 0 150
+     C 0 50, 80 0, 150 0 Z"
+  );
+}
+
+/* Heart shape */
+.heart {
+  clip-path: path(
+    "M 150 30
+     C 105 -20, 0 20, 0 100
+     C 0 180, 150 270, 150 270
+     C 150 270, 300 180, 300 100
+     C 300 20, 195 -20, 150 30 Z"
+  );
+}
+
+/* Referencing an SVG clipPath element */
+.complex {
+  clip-path: url(#my-clip);
+}</code></pre>
+      </div>
+
+      <h3>Using url() with SVG clipPath</h3>
+      <p>For shapes that need to scale with percentage-based coordinates, embed an SVG <code>&lt;clipPath&gt;</code> element and reference it by ID. Set <code>clipPathUnits="objectBoundingBox"</code> so coordinates are relative to the element (0 to 1 instead of absolute pixels).</p>
+      <div class="code-block">
+        <h4>HTML + CSS</h4>
+        <pre><code>&lt;svg width="0" height="0"&gt;
+  &lt;defs&gt;
+    &lt;clipPath id="wave-clip" clipPathUnits="objectBoundingBox"&gt;
+      &lt;path d="M 0 0.3 Q 0.25 0, 0.5 0.3
+               T 1 0.3 L 1 1 L 0 1 Z" /&gt;
+    &lt;/clipPath&gt;
+  &lt;/defs&gt;
+&lt;/svg&gt;
+
+.hero {
+  clip-path: url(#wave-clip);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Complex Path Shapes</h4>
+        <p class="demo-note">These shapes use SVG path data via <code>clip-path: path()</code> for curved, organic outlines that basic shape functions cannot produce.</p>
+
+        <div class="path-shapes-grid">
+          <div class="path-shape-item path-blob">
+            <div class="shape-label">Blob</div>
+          </div>
+          <div class="path-shape-item path-heart">
+            <div class="shape-label">Heart</div>
+          </div>
+          <div class="path-shape-item path-star">
+            <div class="shape-label">Star</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>path()</code> function uses fixed pixel units, so the shape does not scale with the element. If you need responsive clip shapes, use an SVG <code>&lt;clipPath&gt;</code> with <code>clipPathUnits="objectBoundingBox"</code> and reference it via <code>url(#id)</code>.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: CLIP-PATH ANIMATIONS -->
+    <!-- ============================== -->
+    <section class="concept-section" id="clip-path-animations">
+      <h2>3. clip-path Animations</h2>
+      <p>Here is where clip-path gets powerful: you can <strong>transition and animate</strong> between shapes. The browser interpolates between clip-path values, creating smooth morphing effects. The one rule is that both the start and end states must use the same shape function and the same number of points (for <code>polygon()</code>).</p>
+
+      <h3>Transitioning polygon()</h3>
+      <p>When you transition between two <code>polygon()</code> values with the same number of vertices, each point smoothly moves from its start position to its end position.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Rectangle that morphs to a diamond on hover */
+.morph {
+  clip-path: polygon(
+    0% 0%, 100% 0%,
+    100% 100%, 0% 100%
+  );
+  transition: clip-path 0.5s ease;
+}
+
+.morph:hover {
+  clip-path: polygon(
+    50% 0%, 100% 50%,
+    50% 100%, 0% 50%
+  );
+}</code></pre>
+      </div>
+
+      <h3>Circle Reveal</h3>
+      <p>A circle clip-path that expands from nothing to full coverage creates a reveal effect.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.reveal {
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.6s ease-out;
+}
+
+.reveal:hover {
+  clip-path: circle(75% at 50% 50%);
+}</code></pre>
+      </div>
+
+      <h3>Keyframe Animations</h3>
+      <p>Use <code>@keyframes</code> for multi-step shape morphing that runs continuously.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@keyframes morph-shape {
+  0%   { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+  25%  { clip-path: polygon(20% 0%, 80% 20%, 100% 80%, 0% 100%); }
+  50%  { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+  75%  { clip-path: polygon(20% 20%, 80% 0%, 100% 100%, 0% 80%); }
+  100% { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+}
+
+.morphing {
+  animation: morph-shape 4s ease-in-out infinite;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Clip-Path Transitions</h4>
+        <p class="demo-note">Hover each element to trigger the clip-path transition. The left card morphs from a rectangle to a diamond. The center card uses a circle reveal. The right card transitions between polygon states.</p>
+
+        <div class="clip-anim-grid">
+          <div class="clip-anim-item clip-morph-diamond">
+            <span class="clip-anim-text">Rectangle to Diamond</span>
+          </div>
+          <div class="clip-anim-item clip-circle-reveal">
+            <span class="clip-anim-text">Circle Reveal</span>
+          </div>
+          <div class="clip-anim-item clip-morph-chevron">
+            <span class="clip-anim-text">Rectangle to Chevron</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Continuous Morphing Animation</h4>
+        <p class="demo-note">This shape continuously morphs between four polygon states using <code>@keyframes</code>. No hover required -- it runs on its own.</p>
+
+        <div class="morph-demo-wrapper">
+          <div class="morph-continuous"></div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> For polygon transitions to work, both states must have the <strong>same number of vertices</strong>. If you need a triangle (3 points) to morph into a pentagon (5 points), add duplicate vertices to the triangle so both shapes have 5 points. The browser cannot interpolate between different point counts.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: SHAPE-OUTSIDE       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="shape-outside">
+      <h2>4. shape-outside</h2>
+      <p>While <code>clip-path</code> changes how an element <em>looks</em>, <code>shape-outside</code> changes how other content <em>flows around</em> it. It applies to floated elements and defines a non-rectangular region that adjacent inline content wraps around.</p>
+
+      <p>This is the CSS property that makes magazine-style text wrapping possible. Text flows around circles, curves, and irregular shapes instead of being forced into rectangular columns.</p>
+
+      <h3>Shape Functions</h3>
+      <p>The same shape functions work here: <code>circle()</code>, <code>ellipse()</code>, <code>polygon()</code>, and <code>inset()</code>.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Float an image and wrap text around a circle */
+.profile-pic {
+  float: left;
+  width: 200px;
+  height: 200px;
+  shape-outside: circle(50%);
+  clip-path: circle(50%);    /* match the visual */
+  margin-right: 1.5rem;
+}
+
+/* Wrap text around a diagonal */
+.diagonal-float {
+  float: right;
+  width: 300px;
+  height: 400px;
+  shape-outside: polygon(100% 0%, 100% 100%, 0% 100%);
+}</code></pre>
+      </div>
+
+      <h3>shape-margin</h3>
+      <p>Adds spacing between the shape boundary and the wrapping text. Without it, text hugs the shape edge too closely.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.float-circle {
+  float: left;
+  width: 180px;
+  height: 180px;
+  shape-outside: circle(50%);
+  shape-margin: 1rem;   /* 1rem gap around the circle */
+  clip-path: circle(50%);
+}</code></pre>
+      </div>
+
+      <h3>Image-Based Shapes with url()</h3>
+      <p>Use <code>shape-outside: url(image.png)</code> to derive the shape from an image's alpha channel. The browser traces the non-transparent pixels and wraps text around them. The image must be CORS-accessible.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.cutout-float {
+  float: left;
+  width: 250px;
+  height: 300px;
+  shape-outside: url("silhouette.png");
+  shape-image-threshold: 0.5;  /* alpha threshold */
+  shape-margin: 10px;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: shape-outside Text Wrapping</h4>
+        <p class="demo-note">The circular element on the left uses both <code>shape-outside: circle(50%)</code> and <code>clip-path: circle(50%)</code>. Notice how the text wraps along the curve of the circle rather than forming a rectangular gap.</p>
+
+        <div class="shape-outside-demo">
+          <div class="float-circle-demo"></div>
+          <p class="wrap-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed euismod, nisl vel tincidunt lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl eu nisl. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Cras sit amet diam eu dolor tempus cursus. Proin at venenatis sapien. Maecenas accumsan lacus vel facilisis volutpat. Morbi condimentum tempor urna, non ultricies purus cursus vel. Etiam hendrerit pretium mi, sit amet vehicula tortor posuere non. Nullam facilisis arcu at ante fermentum, vel feugiat justo bibendum. Fusce vitae metus et felis commodo vestibulum. Duis auctore lectus sit amet risus tempor, eu pulvinar erat consequat.</p>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> <code>shape-outside</code> only works on <strong>floated</strong> elements. It does not affect grid or flexbox children. Always pair it with <code>clip-path</code> using the same shape function so the visual appearance matches the text flow region.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: CSS MASK-IMAGE      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="mask-image">
+      <h2>5. CSS mask-image</h2>
+      <p>Masking is similar to clipping but more powerful. While <code>clip-path</code> creates hard edges (visible or not), <code>mask-image</code> supports <strong>partial transparency</strong>. Black areas of the mask are fully visible, transparent areas are hidden, and everything in between creates a gradient of opacity. This is how you build fade-out effects, image reveal patterns, and complex transparency composites.</p>
+
+      <h3>Gradient Masks</h3>
+      <p>The most common use case: fade an element's edges using a gradient as the mask.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Fade out at the bottom */
+.fade-bottom {
+  mask-image: linear-gradient(
+    to bottom,
+    black 60%,
+    transparent 100%
+  );
+}
+
+/* Fade both edges for a scrollable container */
+.scroll-fade {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+/* Radial fade from center */
+.spotlight {
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    black 30%,
+    transparent 70%
+  );
+}</code></pre>
+      </div>
+
+      <h3>SVG and Image Masks</h3>
+      <p>Use an SVG or PNG image as the mask source. The alpha channel of the image determines what is visible.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* SVG mask */
+.masked {
+  mask-image: url("mask-pattern.svg");
+  mask-size: cover;
+  mask-repeat: no-repeat;
+}
+
+/* Repeating pattern mask */
+.dotted {
+  mask-image: radial-gradient(
+    circle 4px, black 100%, transparent 100%
+  );
+  mask-size: 12px 12px;
+  mask-repeat: repeat;
+}</code></pre>
+      </div>
+
+      <h3>mask-composite</h3>
+      <p>When you layer multiple mask images, <code>mask-composite</code> controls how they combine. This creates effects like subtracting one shape from another.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.ring {
+  mask-image:
+    radial-gradient(circle, black 50%, transparent 50%),
+    radial-gradient(circle, transparent 30%, black 30%);
+  mask-composite: intersect;
+  /* Produces a ring: only where both masks overlap */
+}
+
+/* Values: add, subtract, intersect, exclude */</code></pre>
+      </div>
+
+      <h3>Mask Sizing and Positioning</h3>
+      <p>Just like <code>background-image</code>, masks have sizing, positioning, and repeat properties.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.custom-mask {
+  mask-image: url("mask.svg");
+  mask-size: 200px 200px;     /* or cover, contain, % */
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-mode: alpha;           /* or luminance */
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Mask Effects</h4>
+        <p class="demo-note">Each card has the same colorful gradient background. Different <code>mask-image</code> values control what is visible. The first fades to transparent at the bottom. The second uses a radial spotlight. The third uses a repeating dot pattern.</p>
+
+        <div class="mask-demo-grid">
+          <div class="mask-demo-item mask-fade-bottom">
+            <div class="mask-demo-content">
+              <span>Fade Bottom</span>
+              <small>linear-gradient mask</small>
+            </div>
+          </div>
+          <div class="mask-demo-item mask-spotlight">
+            <div class="mask-demo-content">
+              <span>Spotlight</span>
+              <small>radial-gradient mask</small>
+            </div>
+          </div>
+          <div class="mask-demo-item mask-dots">
+            <div class="mask-demo-content">
+              <span>Dot Pattern</span>
+              <small>repeating mask</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> In mask gradients, use <code>black</code> for fully visible areas and <code>transparent</code> for hidden areas. The color hue does not matter -- only the alpha channel. <code>rgba(0,0,0,0.5)</code> makes an area 50% visible, regardless of what color you use.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: PRACTICAL PATTERNS  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="practical-patterns">
+      <h2>6. Practical Patterns</h2>
+      <p>Knowing the properties is one thing. Knowing when to reach for them is another. Here are the production patterns that come up most often.</p>
+
+      <h3>Diagonal Section Dividers</h3>
+      <p>Use <code>clip-path: polygon()</code> on full-width sections to create angled transitions between content areas. This replaces the old transform-skew hack.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Diagonal cut at the bottom */
+.section-angled {
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% 85%, 0 100%
+  );
+  padding-bottom: 6rem; /* compensate for clipped area */
+}
+
+/* Chevron/arrow section divider */
+.section-chevron {
+  clip-path: polygon(
+    0 0, 100% 0,
+    100% 90%, 50% 100%,
+    0 90%
+  );
+}</code></pre>
+      </div>
+
+      <h3>Profile Picture Cutouts</h3>
+      <p>Clip user avatars to circles, hexagons, or rounded squares. Pair with a pseudo-element border for a clean outline effect.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.avatar-hex {
+  width: 120px;
+  height: 120px;
+  clip-path: polygon(
+    50% 0%, 100% 25%,
+    100% 75%, 50% 100%,
+    0% 75%, 0% 25%
+  );
+  object-fit: cover;
+}
+
+/* Border trick: slightly larger parent with same clip */
+.avatar-border {
+  padding: 4px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  clip-path: polygon(
+    50% 0%, 100% 25%,
+    100% 75%, 50% 100%,
+    0% 75%, 0% 25%
+  );
+}</code></pre>
+      </div>
+
+      <h3>Image Hover Reveal</h3>
+      <p>Combine <code>clip-path</code> transitions with overlaid text for hover effects that reveal content beneath.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.card-reveal {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-reveal .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.5s ease;
+  display: grid;
+  place-items: center;
+}
+
+.card-reveal:hover .overlay {
+  clip-path: circle(100% at 50% 50%);
+}</code></pre>
+      </div>
+
+      <h3>Text Reveal Animation</h3>
+      <p>Animate <code>clip-path</code> to reveal text line by line, or use <code>mask-image</code> with a moving gradient for a wipe effect.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Wipe reveal using animated mask position */
+.text-wipe {
+  mask-image: linear-gradient(
+    to right,
+    black 50%, transparent 50%
+  );
+  mask-size: 200% 100%;
+  mask-position: right;
+  transition: mask-position 0.8s ease;
+}
+
+.text-wipe:hover {
+  mask-position: left;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Practical Patterns</h4>
+        <p class="demo-note">A diagonal section divider, hexagonal avatar cutouts, and an image hover reveal effect. Hover the cards in the bottom row to see the circle reveal transition.</p>
+
+        <div class="diagonal-section-demo">
+          <div class="diagonal-top">Diagonal Section Divider</div>
+          <div class="diagonal-bottom">Next Section Flows Here</div>
+        </div>
+
+        <div class="avatar-row">
+          <div class="avatar-hex-border">
+            <div class="avatar-hex-inner avatar-1"></div>
+          </div>
+          <div class="avatar-hex-border">
+            <div class="avatar-hex-inner avatar-2"></div>
+          </div>
+          <div class="avatar-hex-border">
+            <div class="avatar-hex-inner avatar-3"></div>
+          </div>
+        </div>
+
+        <div class="hover-reveal-row">
+          <div class="hover-card">
+            <div class="hover-card-bg hover-bg-1"></div>
+            <div class="hover-card-overlay">
+              <span>Revealed</span>
+            </div>
+          </div>
+          <div class="hover-card">
+            <div class="hover-card-bg hover-bg-2"></div>
+            <div class="hover-card-overlay">
+              <span>Revealed</span>
+            </div>
+          </div>
+          <div class="hover-card">
+            <div class="hover-card-bg hover-bg-3"></div>
+            <div class="hover-card-overlay">
+              <span>Revealed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: PROGRESSIVE ENHANCE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="progressive-enhancement">
+      <h2>7. Progressive Enhancement</h2>
+      <p>Not every browser supports every clip-path or mask feature equally. <code>@supports</code> lets you detect feature support and provide fallbacks. The approach is simple: start with a working rectangular design, then enhance it when the browser supports shapes.</p>
+
+      <h3>@supports for clip-path</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Base: works everywhere */
+.hero-image {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Enhanced: only in browsers that support clip-path */
+@supports (clip-path: polygon(0 0, 100% 0, 100% 100%)) {
+  .hero-image {
+    border-radius: 0;
+    clip-path: polygon(
+      0 0, 100% 0,
+      100% 80%, 50% 100%,
+      0 80%
+    );
+  }
+}</code></pre>
+      </div>
+
+      <h3>@supports for mask-image</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Base: visible overflow with opacity fade */
+.scroll-container {
+  overflow-x: auto;
+}
+
+/* Enhanced: gradient mask for scroll edges */
+@supports (mask-image: linear-gradient(black, transparent)) {
+  .scroll-container {
+    mask-image: linear-gradient(
+      to right,
+      transparent, black 5%,
+      black 95%, transparent
+    );
+  }
+}
+
+/* For WebKit browsers that need -webkit- prefix */
+@supports (-webkit-mask-image: linear-gradient(black, transparent)) {
+  .scroll-container {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent, black 5%,
+      black 95%, transparent
+    );
+  }
+}</code></pre>
+      </div>
+
+      <h3>Vendor Prefix Considerations</h3>
+      <p>As of 2026, <code>clip-path</code> is unprefixed in all major browsers. <code>mask-image</code> still requires <code>-webkit-mask-image</code> in some WebKit-based browsers. Always provide both prefixed and unprefixed versions for mask properties.</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.fade-effect {
+  -webkit-mask-image: linear-gradient(black 80%, transparent);
+  mask-image: linear-gradient(black 80%, transparent);
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The best progressive enhancement strategy is to make the rectangular version look intentional. If your design falls apart without clip-path, the design is fragile. If the rectangular fallback is simply a cleaner, simpler version, the enhancement is solid.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="exercise">
+      <h2>Exercise: Clip-Path Profile Cards</h2>
+      <p>Build a row of profile cards that use <code>clip-path</code> and <code>shape-outside</code>. Each card has a hexagonal avatar, a diagonal header, and text that wraps around the avatar shape.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create 3 profile cards side by side using flexbox or grid.</li>
+          <li>Each card's header area should use <code>clip-path: polygon()</code> for a diagonal bottom edge.</li>
+          <li>The avatar inside each card should be clipped to a hexagon using <code>clip-path: polygon()</code>.</li>
+          <li>In the card body, float the avatar and use <code>shape-outside: circle(50%)</code> so the bio text wraps around it.</li>
+          <li>Add a hover effect on the card that transitions the header's <code>clip-path</code> to a deeper diagonal.</li>
+          <li>Use <code>@supports</code> to fall back to <code>border-radius: 50%</code> for the avatar if clip-path is not supported.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <h4>HTML + CSS</h4>
+          <pre><code>&lt;div class="profile-grid"&gt;
+  &lt;div class="profile-card"&gt;
+    &lt;div class="profile-header"&gt;&lt;/div&gt;
+    &lt;div class="profile-body"&gt;
+      &lt;div class="profile-avatar"&gt;&lt;/div&gt;
+      &lt;h3&gt;Name&lt;/h3&gt;
+      &lt;p&gt;Bio text that wraps around the avatar...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- repeat for 3 cards --&gt;
+&lt;/div&gt;
+
+.profile-header {
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+  transition: clip-path 0.3s ease;
+}
+.profile-card:hover .profile-header {
+  clip-path: polygon(0 0, 100% 0, 100% 65%, 0 100%);
+}
+.profile-avatar {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%,
+    50% 100%, 0% 75%, 0% 25%);
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="profile-grid">
+  <div class="profile-card">
+    <div class="profile-header header-1"></div>
+    <div class="profile-body">
+      <div class="profile-avatar avatar-g1"></div>
+      <h3>Alex Chen</h3>
+      <p>Full-stack developer who loves building accessible web applications and contributing to open source projects. Passionate about design systems and component architecture.</p>
+    </div>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-header header-2"></div>
+    <div class="profile-body">
+      <div class="profile-avatar avatar-g2"></div>
+      <h3>Maya Patel</h3>
+      <p>UX engineer bridging the gap between design and code. Specializes in motion design, CSS animations, and creating delightful micro-interactions for production apps.</p>
+    </div>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-header header-3"></div>
+    <div class="profile-body">
+      <div class="profile-avatar avatar-g3"></div>
+      <h3>Jordan Kim</h3>
+      <p>Performance-focused front-end engineer. Expert in CSS architecture, critical rendering path optimization, and building fast experiences that work on any device.</p>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* Profile Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card */
+.profile-card {
+  background: #1a1d27;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #2e3345;
+}
+
+/* Header with diagonal clip */
+.profile-header {
+  height: 100px;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+  transition: clip-path 0.4s ease;
+}
+
+.profile-card:hover .profile-header {
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 0 100%);
+}
+
+.header-1 { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.header-2 { background: linear-gradient(135deg, #00cec9, #81ecec); }
+.header-3 { background: linear-gradient(135deg, #e17055, #fab1a0); }
+
+/* Body */
+.profile-body {
+  padding: 1rem 1.25rem 1.5rem;
+}
+
+.profile-body h3 {
+  color: #e4e6ef;
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.profile-body p {
+  color: #8b8fa7;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Avatar - hexagonal clip + shape-outside */
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  float: left;
+  margin: -35px 0.75rem 0.5rem 0;
+  clip-path: polygon(
+    50% 0%, 100% 25%, 100% 75%,
+    50% 100%, 0% 75%, 0% 25%
+  );
+  shape-outside: circle(50%);
+  shape-margin: 0.5rem;
+}
+
+.avatar-g1 { background: linear-gradient(135deg, #fd79a8, #e84393); }
+.avatar-g2 { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+.avatar-g3 { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
+
+/* Fallback */
+@supports not (clip-path: polygon(0 0, 100% 0, 100% 100%)) {
+  .profile-avatar {
+    border-radius: 50%;
+  }
+  .profile-header {
+    border-bottom: 3px solid #6c5ce7;
+  }
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="challenge">
+      <h2>Challenge: Interactive Shape Gallery</h2>
+      <p>Build a gallery of image cards that combines <code>clip-path</code>, <code>mask-image</code>, and animation. Each card should have a unique clip shape, a hover reveal effect, and a gradient mask that fades the bottom edge.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create a 2x2 grid of image cards.</li>
+          <li>Each card should have a distinct <code>clip-path</code> shape (circle, hexagon, diamond, rounded inset).</li>
+          <li>Add a hover effect that transitions each card from its unique shape to a full rectangle (reveal the entire image).</li>
+          <li>Apply <code>mask-image</code> with a bottom-fade gradient on the overall gallery container.</li>
+          <li>Add one card that uses a continuous <code>@keyframes</code> animation to morph between polygon states.</li>
+          <li>Include a text overlay on each card that appears on hover using <code>clip-path: circle()</code> reveal.</li>
+          <li>Apply <code>@supports</code> fallbacks for both clip-path and mask-image.</li>
+          <li>Respect <code>prefers-reduced-motion</code> by disabling animations when the user prefers reduced motion.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="gallery-container">
+  <div class="gallery-grid">
+    <div class="gallery-card card-circle">
+      <div class="gallery-bg bg-1"></div>
+      <div class="gallery-overlay">
+        <span class="gallery-title">Aurora</span>
+        <span class="gallery-sub">circle(45%)</span>
+      </div>
+    </div>
+
+    <div class="gallery-card card-hexagon">
+      <div class="gallery-bg bg-2"></div>
+      <div class="gallery-overlay">
+        <span class="gallery-title">Prism</span>
+        <span class="gallery-sub">polygon() hexagon</span>
+      </div>
+    </div>
+
+    <div class="gallery-card card-diamond">
+      <div class="gallery-bg bg-3"></div>
+      <div class="gallery-overlay">
+        <span class="gallery-title">Crystal</span>
+        <span class="gallery-sub">polygon() diamond</span>
+      </div>
+    </div>
+
+    <div class="gallery-card card-morph">
+      <div class="gallery-bg bg-4"></div>
+      <div class="gallery-overlay">
+        <span class="gallery-title">Flux</span>
+        <span class="gallery-sub">@keyframes morph</span>
+      </div>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* Gallery Container with mask fade */
+.gallery-container {
+  -webkit-mask-image: linear-gradient(
+    to bottom, black 70%, transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom, black 70%, transparent 100%
+  );
+  padding-bottom: 3rem;
+}
+
+/* Grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Card base */
+.gallery-card {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: clip-path 0.5s ease;
+}
+
+/* Backgrounds */
+.gallery-bg {
+  position: absolute;
+  inset: 0;
+}
+.bg-1 { background: linear-gradient(135deg, #6c5ce7, #fd79a8, #fdcb6e); }
+.bg-2 { background: linear-gradient(135deg, #00cec9, #0984e3, #6c5ce7); }
+.bg-3 { background: linear-gradient(135deg, #e17055, #fdcb6e, #00b894); }
+.bg-4 { background: linear-gradient(135deg, #a29bfe, #fd79a8, #e17055); }
+
+/* Overlay (circle reveal on hover) */
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 17, 23, 0.75);
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.5s ease;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.gallery-card:hover .gallery-overlay {
+  clip-path: circle(100% at 50% 50%);
+}
+
+.gallery-title {
+  display: block;
+  color: #e4e6ef;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.gallery-sub {
+  display: block;
+  color: #a29bfe;
+  font-size: 0.8rem;
+  font-family: monospace;
+  margin-top: 0.25rem;
+}
+
+/* Individual clip shapes */
+.card-circle {
+  clip-path: circle(45% at 50% 50%);
+}
+.card-circle:hover {
+  clip-path: circle(100% at 50% 50%);
+}
+
+.card-hexagon {
+  clip-path: polygon(
+    25% 0%, 75% 0%, 100% 50%,
+    75% 100%, 25% 100%, 0% 50%
+  );
+}
+.card-hexagon:hover {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 50%,
+    100% 100%, 0% 100%, 0% 50%
+  );
+}
+
+.card-diamond {
+  clip-path: polygon(50% 5%, 95% 50%, 50% 95%, 5% 50%);
+}
+.card-diamond:hover {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* Morphing card */
+.card-morph {
+  animation: gallery-morph 5s ease-in-out infinite;
+}
+.card-morph:hover {
+  animation: none;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+@keyframes gallery-morph {
+  0%   { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+  33%  { clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%); }
+  66%  { clip-path: polygon(0% 0%, 100% 25%, 75% 100%, 25% 75%); }
+  100% { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-morph {
+    animation: none;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+  .gallery-card,
+  .gallery-overlay {
+    transition: none;
+  }
+}
+
+/* Fallbacks */
+@supports not (clip-path: polygon(0 0, 100% 0, 100% 100%)) {
+  .gallery-card {
+    border-radius: 12px;
+  }
+  .gallery-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .gallery-card:hover .gallery-overlay {
+    opacity: 1;
+  }
+}
+
+@supports not (mask-image: linear-gradient(black, transparent)) {
+  .gallery-container {
+    padding-bottom: 0;
+  }
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../23-logical-a11y/index.html">&larr; Previous</a>
+    <a href="../25-advanced-typography/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PE7 Grand Capstone | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav"><a href="../index.html" class="nav-home">PE7</a><span class="nav-sep">/</span><a href="#">Module 30</a></nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-9">Level 9 - PE7 Grand Mastery</span>
+    <h1>PE7 Grand Capstone</h1>
+    <p class="subtitle">You have spent 29 modules mastering every layer of modern CSS &mdash; from semantic HTML foundations to scroll-driven animations, from <code>@property</code> choreography to SVG icon systems. This is where you prove it. One project. Every technique. No training wheels.</p>
+  </header>
+
+  <main>
+
+    <!-- =========================================== -->
+    <!-- SECTION 1: PROJECT OVERVIEW                 -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="project-overview">
+      <h2>1. Project Overview</h2>
+
+      <div class="capstone-brief">
+        <div class="brief-badge">The Assignment</div>
+        <h3 class="brief-title">Build the PE7 Agency Landing Page</h3>
+        <p class="brief-desc">Design and code a multi-section, production-quality landing page for <strong>PE7 Creative Agency</strong> &mdash; a fictional digital design studio. The page must demonstrate mastery of every major CSS feature covered across all nine levels of this course. It is a single HTML file with a single CSS file. No frameworks. No build tools. No JavaScript. Pure HTML and CSS.</p>
+      </div>
+
+      <p>This is not a follow-along tutorial. There are no step-by-step instructions. You are given a detailed specification, a requirements checklist, an architecture guide, and a starter template. The rest is yours to build.</p>
+
+      <div class="info-box">
+        <strong>What you are being evaluated on:</strong> Not pixel-perfect design &mdash; creative interpretation is encouraged. You are evaluated on <em>technique coverage</em>, <em>code architecture</em>, <em>accessibility</em>, and <em>performance awareness</em>. A visually simple page that demonstrates every technique correctly will score higher than a flashy page that skips half the checklist.
+      </div>
+
+      <h3>The Agency</h3>
+      <p>PE7 Creative Agency is a boutique digital studio that specializes in web experiences, brand identity, and motion design. They value clean aesthetics, bold typography, and subtle animation. Their brand colors are deep indigo (<code>#6c5ce7</code>), warm coral (<code>#ff6b6b</code>), and cool mint (<code>#00cec9</code>) against a dark canvas. The tone is confident but approachable &mdash; they let their work speak louder than their words.</p>
+
+      <h3>Deliverables</h3>
+      <ul class="deliverables-list">
+        <li><strong>One HTML file</strong> &mdash; semantic, accessible, well-structured</li>
+        <li><strong>One CSS file</strong> &mdash; organized with <code>@layer</code>, using CSS nesting throughout</li>
+        <li><strong>Seven sections minimum</strong> &mdash; Hero, About, Services, Portfolio, Testimonials, Contact, Footer</li>
+        <li><strong>Dark mode and light mode</strong> &mdash; toggled via <code>prefers-color-scheme</code></li>
+        <li><strong>Full technique checklist</strong> &mdash; every item in Section 3 must be demonstrated</li>
+      </ul>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 2: REQUIRED SECTIONS                -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="required-sections">
+      <h2>2. Required Sections</h2>
+      <p>Your landing page must contain at least the following seven sections. You may add more (a pricing table, a blog preview, a stats counter &mdash; anything that gives you room to demonstrate additional techniques). But these seven are mandatory.</p>
+
+      <div class="section-cards">
+
+        <!-- HERO -->
+        <article class="section-card" id="req-hero">
+          <div class="card-header-bar gradient-hero">
+            <span class="card-num">01</span>
+            <h3>Hero</h3>
+          </div>
+          <div class="card-content">
+            <p>The first thing visitors see. It must make an immediate visual impact and establish the agency brand.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li><code>clip-path</code> on a decorative shape or the hero image container</li>
+              <li>Gradient text using <code>background-clip: text</code> on the headline</li>
+              <li><code>view-transition-name</code> on the hero heading (for potential cross-page transitions)</li>
+              <li>A scroll-driven progress bar at the top of the page (tied to <code>scroll()</code> timeline)</li>
+              <li>CSS math function (<code>sin()</code> or <code>cos()</code>) for a decorative circular or wave element</li>
+              <li><code>text-wrap: balance</code> on the headline</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ABOUT -->
+        <article class="section-card" id="req-about">
+          <div class="card-header-bar gradient-about">
+            <span class="card-num">02</span>
+            <h3>About</h3>
+          </div>
+          <div class="card-content">
+            <p>Tell the agency&rsquo;s story. Who they are, what drives them, why clients choose them.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li>Glassmorphism cards using <code>backdrop-filter: blur()</code> with a semi-transparent background</li>
+              <li>Variable font with at least one animated or interactive axis (e.g., weight on hover)</li>
+              <li>Logical properties exclusively &mdash; no physical <code>margin-left</code>, <code>padding-top</code>, etc.</li>
+              <li>A <code>@container</code> query on the about cards so they reflow based on container width</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- SERVICES -->
+        <article class="section-card" id="req-services">
+          <div class="card-header-bar gradient-services">
+            <span class="card-num">03</span>
+            <h3>Services</h3>
+          </div>
+          <div class="card-content">
+            <p>Showcase what the agency offers. Web design, branding, motion graphics, development &mdash; at least four services.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li>Masonry grid layout (<code>display: masonry</code> or <code>grid</code> with <code>masonry-template-tracks</code>)</li>
+              <li>Scroll-driven fade-in animation using <code>animation-timeline: view()</code></li>
+              <li>Container queries on service cards &mdash; layout changes at a container breakpoint</li>
+              <li><code>@starting-style</code> for entry animations on cards</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- PORTFOLIO -->
+        <article class="section-card" id="req-portfolio">
+          <div class="card-header-bar gradient-portfolio">
+            <span class="card-num">04</span>
+            <h3>Portfolio</h3>
+          </div>
+          <div class="card-content">
+            <p>A gallery of the agency&rsquo;s best work. At least six project cards with category tags.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li>CSS Grid with <code>subgrid</code> &mdash; card headers and footers must align across the grid row</li>
+              <li><code>:has()</code> selector for category filtering &mdash; when a filter checkbox is checked, non-matching cards dim or hide</li>
+              <li>Anchor-positioned tooltips &mdash; hovering a card reveals a tooltip positioned with <code>anchor()</code></li>
+              <li>Relative color syntax for category tag colors (derive tints from a base hue)</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- TESTIMONIALS -->
+        <article class="section-card" id="req-testimonials">
+          <div class="card-header-bar gradient-testimonials">
+            <span class="card-num">05</span>
+            <h3>Testimonials</h3>
+          </div>
+          <div class="card-content">
+            <p>Client quotes organized as an exclusive accordion. Only one testimonial expands at a time.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li>Exclusive accordion using <code>&lt;details name="testimonials"&gt;</code></li>
+              <li>Animated open/close with <code>::details-content</code> and <code>interpolate-size: allow-keywords</code></li>
+              <li>Custom counters &mdash; each testimonial is auto-numbered with <code>counter()</code></li>
+              <li><code>@counter-style</code> or <code>::marker</code> styling on the summary elements</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- CONTACT -->
+        <article class="section-card" id="req-contact">
+          <div class="card-header-bar gradient-contact">
+            <span class="card-num">06</span>
+            <h3>Contact</h3>
+          </div>
+          <div class="card-content">
+            <p>A contact form with name, email, subject category, and message fields.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li>Customizable <code>&lt;select&gt;</code> using the appearance base-select pattern</li>
+              <li><code>field-sizing: content</code> on the textarea so it grows with input</li>
+              <li>Popover confirmation dialog &mdash; submitting the form triggers a <code>[popover]</code> success message</li>
+              <li><code>:user-valid</code> / <code>:user-invalid</code> styling with <code>:has()</code> for label color changes</li>
+              <li><code>focus-visible</code> ring styling on all interactive elements</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- FOOTER -->
+        <article class="section-card" id="req-footer">
+          <div class="card-header-bar gradient-footer">
+            <span class="card-num">07</span>
+            <h3>Footer</h3>
+          </div>
+          <div class="card-content">
+            <p>Multi-column footer with navigation, social links, and legal text.</p>
+            <h4>Required Techniques</h4>
+            <ul class="req-list">
+              <li>Inline SVG icons styled with <code>currentColor</code> &mdash; they must inherit their link&rsquo;s text color</li>
+              <li>Relative color hover states &mdash; use <code>oklch(from var(--color) ...)</code> to lighten icons on hover</li>
+              <li>CSS Grid for the footer column layout</li>
+              <li><code>content-visibility: auto</code> on this section (it is off-screen on load)</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 3: TECHNIQUE CHECKLIST              -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="technique-checklist">
+      <h2>3. Required CSS Techniques Checklist</h2>
+      <p>Every technique listed below must appear somewhere in your final submission. Check them off as you implement each one. If a technique does not fit naturally into any of the seven sections above, add an extra section or a decorative element specifically to showcase it.</p>
+
+      <div class="checklist-container">
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Custom Properties &amp; Architecture</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Custom properties (<code>--*</code>) for all colors, spacing, and typography</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>@property</code> registered properties with typed animations (gradient hue shift, progress counter, etc.)</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">CSS nesting (<code>&amp;</code>) used throughout &mdash; no flat selectors at component level</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>@layer</code> organization: <code>reset</code>, <code>base</code>, <code>layout</code>, <code>components</code>, <code>utilities</code></span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>@function</code> or <code>@mixin</code> for spacing scale, color palette generation, or component patterns</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Layout &amp; Responsiveness</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Container queries (<code>@container</code>) on at least 2 different components</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">CSS Subgrid on the portfolio card grid</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Masonry layout on the services section</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Logical properties exclusively &mdash; zero physical <code>margin-left/right/top/bottom</code> or <code>padding-left/right/top/bottom</code></span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Fluid typography with <code>clamp()</code></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Animation &amp; Motion</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Scroll-driven animations: progress bar + section reveal effects</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">View transitions (<code>view-transition-name</code>) on at least one element</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>@starting-style</code> entry animations on dynamically-rendered elements</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>@keyframes</code> animations (at least two distinct animations)</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">CSS transitions on interactive elements (hover, focus, active states)</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Color &amp; Visual</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Relative color syntax for hover/focus states: <code>oklch(from var(--base) ...)</code></span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>color-mix()</code> for tints, shades, or transparency</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>clip-path</code> on at least one element (hero shape, image frame, divider)</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>backdrop-filter</code> glassmorphism on at least one card or panel</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>background-clip: text</code> gradient text on a heading</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Math &amp; Advanced Functions</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">CSS math: <code>sin()</code>/<code>cos()</code> for circular or wave decorative elements</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>clamp()</code>, <code>min()</code>, or <code>max()</code> for responsive sizing</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>round()</code>, <code>mod()</code>, or <code>rem()</code> for grid snapping or pattern generation</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Typography &amp; Content</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>text-wrap: balance</code> on headings</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>::marker</code> or <code>@counter-style</code> for custom list styling</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">CSS counters (<code>counter-reset</code> / <code>counter-increment</code> / <code>counter()</code>)</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Variable font usage (at least one axis besides weight)</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">SVG icons styled with <code>currentColor</code></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Accessibility &amp; Performance</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>prefers-reduced-motion</code> &mdash; disable or tone down all animations</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>prefers-color-scheme</code> &mdash; full light/dark theme support</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>:focus-visible</code> styling on all interactive elements</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>content-visibility: auto</code> on off-screen sections</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Semantic HTML throughout &mdash; correct landmark elements, heading hierarchy, form labels</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="checklist-group">
+          <h4 class="checklist-group-title">Interactive Components</h4>
+          <ul class="checklist">
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Exclusive <code>&lt;details&gt;</code> accordion with animated <code>::details-content</code></span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Popover element (<code>[popover]</code>) with <code>@starting-style</code> entry animation</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label"><code>:has()</code> selector for at least one interactive pattern (filtering, form validation, toggle state)</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Customizable <code>&lt;select&gt;</code> or <code>field-sizing: content</code> textarea</span>
+            </li>
+            <li>
+              <span class="check-box"></span>
+              <span class="check-label">Anchor positioning (<code>anchor()</code>) on at least one tooltip or floating element</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="info-box">
+        <strong>Count:</strong> That is 40 individual technique requirements. Some requirements overlap with section-specific demands &mdash; that is intentional. Demonstrating a technique in its required section <em>and</em> checking it off the master list are the same action. No double-work needed.
+      </div>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 4: ARCHITECTURE GUIDE               -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="architecture-guide">
+      <h2>4. Architecture Guide</h2>
+      <p>Good CSS architecture is the difference between a project you can maintain and one that collapses under its own weight. Follow these guidelines for your capstone.</p>
+
+      <h3>Layer Order</h3>
+      <p>Declare your layers at the very top of your CSS file, before any other rules:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Layer declaration &mdash; order determines priority */
+@layer reset, base, layout, components, utilities;
+
+/* Optional: functions and mixins before layers */
+@function --space(--n) {
+  result: calc(var(--n) * 0.25rem);
+}
+
+@layer reset {
+  /* Box-sizing, margin/padding reset, etc. */
+}
+
+@layer base {
+  /* @property registrations */
+  /* Design tokens (custom properties on :root) */
+  /* Typography defaults */
+  /* Color scheme and prefers-* queries */
+}
+
+@layer layout {
+  /* Page-level layout: nav, main, footer grid */
+  /* Section spacing and max-widths */
+}
+
+@layer components {
+  /* Individual component styles: cards, buttons,
+     accordions, forms, tooltips */
+  /* Use CSS nesting inside each component block */
+}
+
+@layer utilities {
+  /* Utility classes: .visually-hidden, .gradient-text */
+  /* Override-level helpers */
+}</code></pre>
+      </div>
+
+      <h3>Custom Property Naming Convention</h3>
+      <p>Adopt a consistent naming scheme. The recommended convention for PE7 is a two-tier system:</p>
+
+      <div class="arch-diagram">
+        <div class="arch-tier">
+          <h4>Global Tokens (Tier 1)</h4>
+          <div class="arch-code">
+            <code>--color-indigo-500</code><br>
+            <code>--color-coral-400</code><br>
+            <code>--space-md</code><br>
+            <code>--font-display</code><br>
+            <code>--radius-lg</code>
+          </div>
+          <p>Raw design values. Never used directly in component styles.</p>
+        </div>
+        <div class="arch-arrow">&darr;</div>
+        <div class="arch-tier">
+          <h4>Semantic Tokens (Tier 2)</h4>
+          <div class="arch-code">
+            <code>--clr-bg</code><br>
+            <code>--clr-surface</code><br>
+            <code>--clr-text</code><br>
+            <code>--clr-accent</code><br>
+            <code>--btn-radius</code>
+          </div>
+          <p>Meaningful aliases. These are what components reference. When the theme changes, only Tier 2 values update.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@layer base {
+  :root {
+    /* Tier 1: raw palette */
+    --color-indigo-500: oklch(0.55 0.24 280);
+    --color-indigo-400: oklch(0.65 0.22 280);
+    --color-coral-500:  oklch(0.65 0.22 25);
+    --color-mint-500:   oklch(0.72 0.15 175);
+    --color-slate-900:  oklch(0.15 0.01 260);
+    --color-slate-800:  oklch(0.20 0.015 260);
+
+    /* Tier 2: semantic mapping */
+    --clr-bg:      var(--color-slate-900);
+    --clr-surface: var(--color-slate-800);
+    --clr-text:    oklch(0.93 0.01 260);
+    --clr-accent:  var(--color-indigo-500);
+    --clr-cta:     var(--color-coral-500);
+    --clr-success: var(--color-mint-500);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --clr-bg:      oklch(0.97 0.005 260);
+      --clr-surface: oklch(0.99 0.002 260);
+      --clr-text:    oklch(0.20 0.02 260);
+    }
+  }
+}</code></pre>
+      </div>
+
+      <h3>File Organization Hints</h3>
+      <p>Even though you are working in a single CSS file, organize it as if it were multiple files. Use clear comment headers to separate each layer and each component block within layers:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* ==============================================
+   PE7 AGENCY LANDING PAGE
+   Grand Capstone Project
+   ============================================== */
+
+@layer reset, base, layout, components, utilities;
+
+/* ========= RESET ========= */
+@layer reset { /* ... */ }
+
+/* ========= BASE ========= */
+@layer base { /* tokens, @property, prefers-* */ }
+
+/* ========= LAYOUT ========= */
+@layer layout { /* nav, main, footer structure */ }
+
+/* ========= COMPONENTS ========= */
+@layer components {
+  /* -- Hero -------------------------------- */
+  /* -- About ------------------------------- */
+  /* -- Services (masonry) ------------------ */
+  /* -- Portfolio (subgrid) ----------------- */
+  /* -- Testimonials (accordion) ------------ */
+  /* -- Contact (form) ---------------------- */
+  /* -- Footer ------------------------------ */
+  /* -- Scroll progress bar ----------------- */
+  /* -- Tooltips (anchor-positioned) -------- */
+  /* -- Popover ----------------------------- */
+}
+
+/* ========= UTILITIES ========= */
+@layer utilities { /* .visually-hidden, .gradient-text */ }
+
+/* ========= REDUCED MOTION ========= */
+@media (prefers-reduced-motion: reduce) { /* ... */ }</code></pre>
+      </div>
+
+      <h3>Nesting Conventions</h3>
+      <p>Nest component children inside their parent block. Keep nesting no deeper than three levels. Use <code>&amp;</code> for pseudo-classes, pseudo-elements, and modifier states:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.service-card {
+  background: var(--clr-surface);
+  border-radius: var(--radius-lg);
+  container-type: inline-size;
+
+  &amp; .card-icon {
+    color: var(--clr-accent);
+    transition: transform 0.3s ease;
+  }
+
+  &amp;:hover {
+    box-shadow: var(--shadow-lg);
+
+    &amp; .card-icon {
+      transform: scale(1.1);
+    }
+  }
+
+  &amp;:focus-visible {
+    outline: 2px solid var(--clr-accent);
+    outline-offset: 3px;
+  }
+
+  @container (min-width: 400px) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 5: GRADING RUBRIC                   -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="grading-rubric">
+      <h2>5. Grading Rubric</h2>
+      <p>Your capstone is evaluated across five categories. Each category is worth a maximum number of points. The total possible score is <strong>100 points</strong>.</p>
+
+      <div class="rubric-table-wrap">
+        <table class="rubric-table">
+          <thead>
+            <tr>
+              <th class="col-category">Category</th>
+              <th class="col-points">Points</th>
+              <th class="col-criteria">Criteria</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="category-cell">
+                <span class="rubric-icon icon-techniques"></span>
+                Feature Coverage
+              </td>
+              <td class="points-cell"><span class="points-badge">35</span></td>
+              <td>
+                <ul>
+                  <li>All 40 checklist items demonstrated (35/35)</li>
+                  <li>30&ndash;39 items demonstrated (25/35)</li>
+                  <li>20&ndash;29 items demonstrated (15/35)</li>
+                  <li>Fewer than 20 items (5/35)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td class="category-cell">
+                <span class="rubric-icon icon-code"></span>
+                Code Quality
+              </td>
+              <td class="points-cell"><span class="points-badge">25</span></td>
+              <td>
+                <ul>
+                  <li>Proper <code>@layer</code> organization (5 pts)</li>
+                  <li>Consistent CSS nesting (5 pts)</li>
+                  <li>Custom property naming convention (5 pts)</li>
+                  <li>No redundant or dead code (5 pts)</li>
+                  <li>Clean, readable formatting with comment headers (5 pts)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td class="category-cell">
+                <span class="rubric-icon icon-design"></span>
+                Visual Design
+              </td>
+              <td class="points-cell"><span class="points-badge">20</span></td>
+              <td>
+                <ul>
+                  <li>Cohesive color palette and typography (5 pts)</li>
+                  <li>Responsive across mobile, tablet, and desktop (5 pts)</li>
+                  <li>Thoughtful spacing, alignment, and visual hierarchy (5 pts)</li>
+                  <li>Animations enhance rather than distract (5 pts)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td class="category-cell">
+                <span class="rubric-icon icon-a11y"></span>
+                Accessibility
+              </td>
+              <td class="points-cell"><span class="points-badge">10</span></td>
+              <td>
+                <ul>
+                  <li>Semantic HTML elements and heading hierarchy (3 pts)</li>
+                  <li><code>prefers-reduced-motion</code> honored (2 pts)</li>
+                  <li><code>:focus-visible</code> on all interactive elements (3 pts)</li>
+                  <li>Sufficient color contrast and readable text sizes (2 pts)</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td class="category-cell">
+                <span class="rubric-icon icon-perf"></span>
+                Performance
+              </td>
+              <td class="points-cell"><span class="points-badge">10</span></td>
+              <td>
+                <ul>
+                  <li><code>content-visibility: auto</code> on below-fold sections (3 pts)</li>
+                  <li>No unnecessary <code>will-change</code> or layout thrashing (3 pts)</li>
+                  <li>Efficient selectors (no deep nesting beyond 3 levels) (2 pts)</li>
+                  <li><code>contain</code> used where appropriate (2 pts)</li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="total-label">Total</td>
+              <td class="total-points"><span class="points-badge total">100</span></td>
+              <td class="total-desc">90+ = PE7 Grand Master &bull; 75&ndash;89 = Distinction &bull; 60&ndash;74 = Pass</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="grade-scale">
+        <div class="grade-tier tier-master">
+          <span class="grade-range">90&ndash;100</span>
+          <span class="grade-label">PE7 Grand Master</span>
+          <p>Every technique demonstrated with intention. Production-ready code.</p>
+        </div>
+        <div class="grade-tier tier-distinction">
+          <span class="grade-range">75&ndash;89</span>
+          <span class="grade-label">Distinction</span>
+          <p>Strong coverage with minor gaps. Architecture is solid.</p>
+        </div>
+        <div class="grade-tier tier-pass">
+          <span class="grade-range">60&ndash;74</span>
+          <span class="grade-label">Pass</span>
+          <p>Core techniques present. Some areas need deeper implementation.</p>
+        </div>
+        <div class="grade-tier tier-retry">
+          <span class="grade-range">Below 60</span>
+          <span class="grade-label">Not Yet</span>
+          <p>Review the modules for missed techniques and resubmit.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 6: TIPS FROM THE PE7 TEAM           -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="tips">
+      <h2>6. Tips from the PE7 Team</h2>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-number">01</div>
+          <h4>Start with the skeleton</h4>
+          <p>Write all your HTML first. Get every section, every landmark, every form element in place before touching CSS. Semantic structure is worth 3 points on its own and makes everything else easier.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-number">02</div>
+          <h4>Declare layers early</h4>
+          <p>Put your <code>@layer</code> declaration on line 1 of your CSS. Add all <code>@property</code> registrations in the base layer before any visual styles. This prevents specificity surprises later.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-number">03</div>
+          <h4>Work section by section</h4>
+          <p>Do not try to implement all 40 techniques at once. Build one section, check off its required techniques, then move to the next. Each completed section is progress you cannot lose.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-number">04</div>
+          <h4>Test reduced motion first</h4>
+          <p>Enable <code>prefers-reduced-motion: reduce</code> in your browser dev tools <em>before</em> adding animations. Build the static version, then layer motion on top. This guarantees your reduced-motion fallback works.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-number">05</div>
+          <h4>Use the checklist as a commit guide</h4>
+          <p>After implementing each technique, open the checklist and confirm it is present. Consider writing a CSS comment near each technique: <code>/* CHECKLIST: @property animation */</code>. This helps during review.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-number">06</div>
+          <h4>Do not over-animate</h4>
+          <p>You need scroll-driven animations and transitions, but the rubric says animations should <em>enhance</em> rather than distract. Subtle reveals and smooth state changes beat flashy pyrotechnics. Restraint is a skill.</p>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Remember:</strong> You have already built every technique in isolation across modules 1 through 29. This capstone is not about learning something new &mdash; it is about combining everything you already know into a single, cohesive project. Trust your training. Ship it.
+      </div>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 7: QUICK REFERENCE                  -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="quick-reference">
+      <h2>7. Quick Reference: Module Map</h2>
+      <p>Forgot the syntax for a technique? Here is where you originally learned each one. Jump back to the relevant module for a refresher.</p>
+
+      <div class="module-map">
+        <div class="map-group">
+          <h4>Level 1&ndash;3 &mdash; Foundations &amp; Modern CSS</h4>
+          <ul class="map-list">
+            <li><strong>Module 01:</strong> Semantic HTML, forms, document structure</li>
+            <li><strong>Module 02:</strong> Selectors, cascade, specificity, typography</li>
+            <li><strong>Module 03:</strong> Box model, positioning, z-index</li>
+            <li><strong>Module 04:</strong> Flexbox layout and alignment</li>
+            <li><strong>Module 05:</strong> CSS Grid, areas, named lines</li>
+            <li><strong>Module 06:</strong> Responsive design, <code>clamp()</code>, media queries</li>
+            <li><strong>Module 07:</strong> Custom properties, <code>@layer</code>, <code>@scope</code></li>
+            <li><strong>Module 08:</strong> Transitions, <code>@keyframes</code>, <code>@starting-style</code></li>
+            <li><strong>Module 09:</strong> CSS nesting, <code>:has()</code>, <code>:is()</code>, <code>:where()</code></li>
+          </ul>
+        </div>
+        <div class="map-group">
+          <h4>Level 4&ndash;5 &mdash; Advanced &amp; Mastery</h4>
+          <ul class="map-list">
+            <li><strong>Module 10:</strong> Container queries, subgrid</li>
+            <li><strong>Module 11:</strong> OKLCH, <code>color-mix()</code>, <code>light-dark()</code></li>
+            <li><strong>Module 12:</strong> Scroll-driven animations, <code>view()</code>, <code>scroll()</code></li>
+            <li><strong>Module 13:</strong> View transitions, anchor positioning</li>
+            <li><strong>Module 14:</strong> <code>if()</code>, <code>sibling-index()</code>, custom select, <code>field-sizing</code></li>
+            <li><strong>Module 15:</strong> First capstone &mdash; portfolio project</li>
+          </ul>
+        </div>
+        <div class="map-group">
+          <h4>Level 6&ndash;9 &mdash; Deep Dives &amp; Grand Mastery</h4>
+          <ul class="map-list">
+            <li><strong>Module 16:</strong> <code>@mixin</code>, <code>@apply</code>, design systems</li>
+            <li><strong>Module 17:</strong> Masonry layout</li>
+            <li><strong>Module 18:</strong> Popover API, <code>commandfor</code>, invokers</li>
+            <li><strong>Module 19:</strong> Relative color syntax, <code>contrast-color()</code></li>
+            <li><strong>Module 20:</strong> <code>@property</code>, typed animations, Houdini</li>
+            <li><strong>Module 21:</strong> <code>sin()</code>, <code>cos()</code>, <code>round()</code>, <code>mod()</code></li>
+            <li><strong>Module 22:</strong> <code>&lt;details&gt;</code> accordion, <code>::details-content</code></li>
+            <li><strong>Module 23:</strong> Logical properties, <code>prefers-*</code>, accessibility</li>
+            <li><strong>Module 24:</strong> <code>clip-path</code>, <code>shape-outside</code>, <code>mask-image</code></li>
+            <li><strong>Module 25:</strong> Variable fonts, <code>text-wrap</code>, <code>initial-letter</code></li>
+            <li><strong>Module 26:</strong> Filters, <code>backdrop-filter</code>, blend modes</li>
+            <li><strong>Module 27:</strong> <code>content-visibility</code>, <code>contain</code>, performance</li>
+            <li><strong>Module 28:</strong> Counters, <code>@counter-style</code>, <code>::marker</code></li>
+            <li><strong>Module 29:</strong> SVG + CSS, <code>currentColor</code>, stroke animation</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================== -->
+    <!-- SECTION 8: STARTER CODE & LIVE EDITOR       -->
+    <!-- =========================================== -->
+    <section class="concept-section" id="starter-code">
+      <h2>8. Starter Code</h2>
+      <p>Below is a generous starter template to save you from blank-page paralysis. The HTML skeleton has all seven required sections with placeholder content. The CSS has the <code>@layer</code> declaration, design token stubs, and a few components started. Your job is to fill in every section, implement the checklist techniques, and make it yours.</p>
+
+      <div class="info-box">
+        <strong>This is your workspace.</strong> Edit the HTML and CSS below to build your PE7 Agency Landing Page. The preview pane shows your work in real time. When you are ready, copy the final code into standalone files for submission.
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+&lt;!-- PE7 Agency Landing Page — Grand Capstone --&gt;
+
+&lt;!-- Scroll Progress Bar --&gt;
+&lt;div class="scroll-progress" aria-hidden="true"&gt;&lt;/div&gt;
+
+&lt;!-- ========== NAVIGATION ========== --&gt;
+&lt;nav class="site-nav" aria-label="Main navigation"&gt;
+  &lt;div class="nav-inner"&gt;
+    &lt;a href="#" class="nav-logo" aria-label="PE7 Agency Home"&gt;
+      &lt;svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"&gt;
+        &lt;circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/&gt;
+        &lt;text x="16" y="21" text-anchor="middle" fill="currentColor" font-size="12" font-weight="700"&gt;PE7&lt;/text&gt;
+      &lt;/svg&gt;
+      &lt;span&gt;PE7 Agency&lt;/span&gt;
+    &lt;/a&gt;
+    &lt;ul class="nav-links"&gt;
+      &lt;li&gt;&lt;a href="#about"&gt;About&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#services"&gt;Services&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#portfolio"&gt;Portfolio&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#testimonials"&gt;Testimonials&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;!-- ========== HERO ========== --&gt;
+&lt;section class="hero" id="hero"&gt;
+  &lt;div class="hero-decoration" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;div class="hero-content"&gt;
+    &lt;p class="hero-eyebrow"&gt;Digital Design Studio&lt;/p&gt;
+    &lt;h1 class="hero-title" style="view-transition-name: hero-heading;"&gt;
+      &lt;span class="gradient-text"&gt;We craft digital experiences that matter&lt;/span&gt;
+    &lt;/h1&gt;
+    &lt;p class="hero-subtitle"&gt;
+      Strategy. Design. Code. Motion. We bring brands to life
+      on the web with modern CSS and zero compromises.
+    &lt;/p&gt;
+    &lt;div class="hero-actions"&gt;
+      &lt;a href="#portfolio" class="btn btn-primary"&gt;See Our Work&lt;/a&gt;
+      &lt;a href="#contact" class="btn btn-outline"&gt;Start a Project&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- ========== ABOUT ========== --&gt;
+&lt;section class="about section" id="about"&gt;
+  &lt;div class="section-inner"&gt;
+    &lt;h2 class="section-heading"&gt;Who We Are&lt;/h2&gt;
+    &lt;div class="about-grid"&gt;
+      &lt;div class="glass-card"&gt;
+        &lt;h3&gt;Our Story&lt;/h3&gt;
+        &lt;p&gt;
+          Founded in 2020, PE7 Agency started as a two-person
+          studio with a radical idea: build everything with
+          modern, standards-based CSS. No frameworks. No
+          preprocessors. Just the platform.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class="glass-card"&gt;
+        &lt;h3&gt;Our Philosophy&lt;/h3&gt;
+        &lt;p&gt;
+          We believe the web platform is powerful enough.
+          Container queries, scroll-driven animations, view
+          transitions — browsers ship features faster than
+          frameworks can wrap them.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class="glass-card"&gt;
+        &lt;h3&gt;Our Team&lt;/h3&gt;
+        &lt;p&gt;
+          Eight designers and engineers, distributed across
+          four time zones, united by a shared obsession with
+          pushing CSS to its limits.
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- ========== SERVICES ========== --&gt;
+&lt;section class="services section" id="services"&gt;
+  &lt;div class="section-inner"&gt;
+    &lt;h2 class="section-heading"&gt;What We Do&lt;/h2&gt;
+    &lt;div class="services-grid"&gt;
+      &lt;article class="service-card"&gt;
+        &lt;div class="service-icon"&gt;
+          &lt;svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"&gt;
+            &lt;rect x="3" y="3" width="18" height="18" rx="2"/&gt;
+            &lt;path d="M3 9h18"/&gt;
+          &lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;h3&gt;Web Design&lt;/h3&gt;
+        &lt;p&gt;Responsive, accessible interfaces built with modern CSS Grid, container queries, and fluid typography.&lt;/p&gt;
+      &lt;/article&gt;
+      &lt;article class="service-card"&gt;
+        &lt;div class="service-icon"&gt;
+          &lt;svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"&gt;
+            &lt;circle cx="12" cy="12" r="9"/&gt;
+            &lt;path d="M12 3v18M3 12h18"/&gt;
+          &lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;h3&gt;Brand Identity&lt;/h3&gt;
+        &lt;p&gt;Logos, color systems, and design tokens that translate seamlessly from Figma to CSS custom properties.&lt;/p&gt;
+      &lt;/article&gt;
+      &lt;article class="service-card"&gt;
+        &lt;div class="service-icon"&gt;
+          &lt;svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"&gt;
+            &lt;path d="M5 3l14 9-14 9V3z"/&gt;
+          &lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;h3&gt;Motion Design&lt;/h3&gt;
+        &lt;p&gt;Scroll-driven animations, view transitions, and @property-powered choreography. Zero JavaScript.&lt;/p&gt;
+      &lt;/article&gt;
+      &lt;article class="service-card"&gt;
+        &lt;div class="service-icon"&gt;
+          &lt;svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"&gt;
+            &lt;polyline points="16 18 22 12 16 6"/&gt;
+            &lt;polyline points="8 6 2 12 8 18"/&gt;
+          &lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;h3&gt;Development&lt;/h3&gt;
+        &lt;p&gt;Production-grade HTML and CSS with @layer architecture, logical properties, and performance optimization.&lt;/p&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- ========== PORTFOLIO ========== --&gt;
+&lt;section class="portfolio section" id="portfolio"&gt;
+  &lt;div class="section-inner"&gt;
+    &lt;h2 class="section-heading"&gt;Selected Work&lt;/h2&gt;
+
+    &lt;!-- Category filters using :has() --&gt;
+    &lt;div class="portfolio-filters"&gt;
+      &lt;label&gt;&lt;input type="checkbox" name="filter" value="web" checked&gt; Web&lt;/label&gt;
+      &lt;label&gt;&lt;input type="checkbox" name="filter" value="brand" checked&gt; Brand&lt;/label&gt;
+      &lt;label&gt;&lt;input type="checkbox" name="filter" value="motion" checked&gt; Motion&lt;/label&gt;
+    &lt;/div&gt;
+
+    &lt;div class="portfolio-grid"&gt;
+      &lt;article class="portfolio-card" data-category="web"&gt;
+        &lt;div class="card-header"&gt;
+          &lt;div class="card-image gradient-1"&gt;&lt;span&gt;01&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h3&gt;Meridian Dashboard&lt;/h3&gt;
+          &lt;p&gt;Analytics platform with container-query-driven responsive panels.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+          &lt;span class="tag"&gt;Web&lt;/span&gt;
+          &lt;span class="tag"&gt;CSS Grid&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+      &lt;article class="portfolio-card" data-category="brand"&gt;
+        &lt;div class="card-header"&gt;
+          &lt;div class="card-image gradient-2"&gt;&lt;span&gt;02&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h3&gt;Solstice Rebrand&lt;/h3&gt;
+          &lt;p&gt;Complete visual identity with OKLCH color tokens and variable fonts.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+          &lt;span class="tag"&gt;Brand&lt;/span&gt;
+          &lt;span class="tag"&gt;Typography&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+      &lt;article class="portfolio-card" data-category="motion"&gt;
+        &lt;div class="card-header"&gt;
+          &lt;div class="card-image gradient-3"&gt;&lt;span&gt;03&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h3&gt;Aurora Showcase&lt;/h3&gt;
+          &lt;p&gt;Product launch microsite with scroll-driven parallax and view transitions.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+          &lt;span class="tag"&gt;Motion&lt;/span&gt;
+          &lt;span class="tag"&gt;Scroll&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+      &lt;article class="portfolio-card" data-category="web"&gt;
+        &lt;div class="card-header"&gt;
+          &lt;div class="card-image gradient-4"&gt;&lt;span&gt;04&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h3&gt;Prism E-Commerce&lt;/h3&gt;
+          &lt;p&gt;Online store with masonry product grid and anchor-positioned quick views.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+          &lt;span class="tag"&gt;Web&lt;/span&gt;
+          &lt;span class="tag"&gt;Masonry&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+      &lt;article class="portfolio-card" data-category="brand"&gt;
+        &lt;div class="card-header"&gt;
+          &lt;div class="card-image gradient-5"&gt;&lt;span&gt;05&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h3&gt;Verdant Health&lt;/h3&gt;
+          &lt;p&gt;Wellness brand with relative color palette generation from a single base hue.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+          &lt;span class="tag"&gt;Brand&lt;/span&gt;
+          &lt;span class="tag"&gt;Color&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+      &lt;article class="portfolio-card" data-category="motion"&gt;
+        &lt;div class="card-header"&gt;
+          &lt;div class="card-image gradient-6"&gt;&lt;span&gt;06&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="card-body"&gt;
+          &lt;h3&gt;Kinetic Conference&lt;/h3&gt;
+          &lt;p&gt;Event site with @property gradient animations and CSS-only image carousel.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="card-footer"&gt;
+          &lt;span class="tag"&gt;Motion&lt;/span&gt;
+          &lt;span class="tag"&gt;@property&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- ========== TESTIMONIALS ========== --&gt;
+&lt;section class="testimonials section" id="testimonials"&gt;
+  &lt;div class="section-inner"&gt;
+    &lt;h2 class="section-heading"&gt;What Clients Say&lt;/h2&gt;
+
+    &lt;div class="accordion-group"&gt;
+      &lt;details name="testimonials" open&gt;
+        &lt;summary&gt;
+          &lt;span class="client-name"&gt;Sarah Chen, CTO at Meridian&lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class="testimonial-content"&gt;
+          &lt;blockquote&gt;
+            &lt;p&gt;&quot;PE7 delivered a dashboard that loads in under a second and looks stunning on every screen size. Their CSS-only approach meant zero JavaScript bundle bloat. Our performance scores went from 62 to 98.&quot;&lt;/p&gt;
+          &lt;/blockquote&gt;
+        &lt;/div&gt;
+      &lt;/details&gt;
+
+      &lt;details name="testimonials"&gt;
+        &lt;summary&gt;
+          &lt;span class="client-name"&gt;Marcus Rivera, Founder of Solstice&lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class="testimonial-content"&gt;
+          &lt;blockquote&gt;
+            &lt;p&gt;&quot;They did not just give us a logo. They gave us a complete design token system with OKLCH colors, variable font axes, and CSS custom properties we could plug directly into our codebase.&quot;&lt;/p&gt;
+          &lt;/blockquote&gt;
+        &lt;/div&gt;
+      &lt;/details&gt;
+
+      &lt;details name="testimonials"&gt;
+        &lt;summary&gt;
+          &lt;span class="client-name"&gt;Aisha Patel, Head of Product at Aurora&lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class="testimonial-content"&gt;
+          &lt;blockquote&gt;
+            &lt;p&gt;&quot;The scroll-driven animations on our launch page had visitors thinking we used a heavy animation library. When we told them it was pure CSS, they did not believe us. PE7 changed how we think about web motion.&quot;&lt;/p&gt;
+          &lt;/blockquote&gt;
+        &lt;/div&gt;
+      &lt;/details&gt;
+
+      &lt;details name="testimonials"&gt;
+        &lt;summary&gt;
+          &lt;span class="client-name"&gt;David Okonkwo, Director at Kinetic Events&lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class="testimonial-content"&gt;
+          &lt;blockquote&gt;
+            &lt;p&gt;&quot;Accessibility was not an afterthought — it was baked into every decision. Keyboard navigation, reduced motion support, proper ARIA patterns. PE7 builds for everyone.&quot;&lt;/p&gt;
+          &lt;/blockquote&gt;
+        &lt;/div&gt;
+      &lt;/details&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- ========== CONTACT ========== --&gt;
+&lt;section class="contact section" id="contact"&gt;
+  &lt;div class="section-inner"&gt;
+    &lt;h2 class="section-heading"&gt;Start a Project&lt;/h2&gt;
+    &lt;form class="contact-form"&gt;
+      &lt;div class="form-group"&gt;
+        &lt;label for="c-name"&gt;Name&lt;/label&gt;
+        &lt;input type="text" id="c-name" name="name" required
+               placeholder="Your full name" autocomplete="name"&gt;
+      &lt;/div&gt;
+      &lt;div class="form-group"&gt;
+        &lt;label for="c-email"&gt;Email&lt;/label&gt;
+        &lt;input type="email" id="c-email" name="email" required
+               placeholder="you@company.com" autocomplete="email"&gt;
+      &lt;/div&gt;
+      &lt;div class="form-group full-width"&gt;
+        &lt;label for="c-service"&gt;Service&lt;/label&gt;
+        &lt;select id="c-service" name="service"&gt;
+          &lt;option value=""&gt;Select a service&lt;/option&gt;
+          &lt;option value="web"&gt;Web Design&lt;/option&gt;
+          &lt;option value="brand"&gt;Brand Identity&lt;/option&gt;
+          &lt;option value="motion"&gt;Motion Design&lt;/option&gt;
+          &lt;option value="dev"&gt;Development&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;div class="form-group full-width"&gt;
+        &lt;label for="c-message"&gt;Message&lt;/label&gt;
+        &lt;textarea id="c-message" name="message" required
+                  placeholder="Tell us about your project..."&gt;&lt;/textarea&gt;
+      &lt;/div&gt;
+      &lt;button type="submit" class="btn btn-primary full-width"
+              popovertarget="success-popover"&gt;
+        Send Message
+      &lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;!-- Success Popover --&gt;
+    &lt;div id="success-popover" popover&gt;
+      &lt;div class="popover-content"&gt;
+        &lt;h3&gt;Message Sent!&lt;/h3&gt;
+        &lt;p&gt;We will get back to you within 24 hours.&lt;/p&gt;
+        &lt;button popovertarget="success-popover" popovertargetaction="hide"
+                class="btn btn-outline"&gt;Close&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- ========== FOOTER ========== --&gt;
+&lt;footer class="site-footer"&gt;
+  &lt;div class="footer-inner"&gt;
+    &lt;div class="footer-grid"&gt;
+      &lt;div class="footer-brand"&gt;
+        &lt;span class="footer-logo"&gt;PE7 Agency&lt;/span&gt;
+        &lt;p&gt;Crafting digital experiences with modern CSS.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class="footer-col"&gt;
+        &lt;h4&gt;Navigation&lt;/h4&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href="#about"&gt;About&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#services"&gt;Services&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#portfolio"&gt;Portfolio&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class="footer-col"&gt;
+        &lt;h4&gt;Social&lt;/h4&gt;
+        &lt;ul class="social-links"&gt;
+          &lt;li&gt;
+            &lt;a href="#" aria-label="GitHub"&gt;
+              &lt;svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"&gt;
+                &lt;path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21.5c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/&gt;
+              &lt;/svg&gt;
+            &lt;/a&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;a href="#" aria-label="LinkedIn"&gt;
+              &lt;svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"&gt;
+                &lt;path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/&gt;
+              &lt;/svg&gt;
+            &lt;/a&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;a href="#" aria-label="Dribbble"&gt;
+              &lt;svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"&gt;
+                &lt;path d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.04 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.81zm-11.62-2.58c.232-.4 3.045-5.055 8.332-6.765.135-.045.27-.084.405-.12-.26-.585-.54-1.167-.832-1.74C7.17 11.775 2.206 11.71 1.756 11.7l-.004.312c0 2.633.998 5.037 2.634 6.855zm-2.42-8.955c.46.008 4.683.026 9.477-1.248-1.698-3.018-3.53-5.558-3.8-5.928-2.868 1.35-5.01 3.99-5.676 7.17zM9.6 2.052c.282.38 2.145 2.914 3.822 6 3.645-1.365 5.19-3.44 5.373-3.702C16.86 2.61 14.545 1.62 12 1.62c-.8 0-1.632.15-2.4.432zM19.68 5.21c-.207.278-1.89 2.478-5.664 4.023.237.486.463.98.674 1.478.075.17.15.34.22.51 3.445-.435 6.854.27 7.19.33-.02-2.42-.88-4.64-2.42-6.35z"/&gt;
+              &lt;/svg&gt;
+            &lt;/a&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="footer-bottom"&gt;
+      &lt;p&gt;&amp;copy; 2026 PE7 Agency. Built with pure HTML &amp;amp; CSS.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;
+        </template>
+        <template class="starter-css">
+/* ==============================================
+   PE7 AGENCY — Grand Capstone Starter
+   ============================================== */
+
+/* Layer declaration — fill each layer below */
+@layer reset, base, layout, components, utilities;
+
+/* ========= @property registrations ========= */
+@property --hue-rotate {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --scroll-progress {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+/* ========= RESET ========= */
+@layer reset {
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  ul, ol { list-style: none; }
+  img, svg { display: block; max-inline-size: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+}
+
+/* ========= BASE ========= */
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* Tier 1 — Raw palette */
+    --color-indigo-500: oklch(0.55 0.24 280);
+    --color-indigo-400: oklch(0.65 0.22 280);
+    --color-coral-500:  oklch(0.65 0.22 25);
+    --color-mint-500:   oklch(0.72 0.15 175);
+    --color-slate-950:  #0f1117;
+    --color-slate-900:  #1a1d27;
+    --color-slate-800:  #242836;
+    --color-slate-200:  #e4e6ef;
+    --color-slate-400:  #8b8fa3;
+
+    /* Tier 2 — Semantic tokens */
+    --clr-bg:      var(--color-slate-950);
+    --clr-surface: var(--color-slate-900);
+    --clr-surface-2: var(--color-slate-800);
+    --clr-text:    var(--color-slate-200);
+    --clr-muted:   var(--color-slate-400);
+    --clr-accent:  var(--color-indigo-500);
+    --clr-accent-light: var(--color-indigo-400);
+    --clr-cta:     var(--color-coral-500);
+    --clr-success: var(--color-mint-500);
+    --clr-border:  rgba(255, 255, 255, 0.08);
+
+    /* Spacing */
+    --space-xs:  0.25rem;
+    --space-sm:  0.5rem;
+    --space-md:  1rem;
+    --space-lg:  1.5rem;
+    --space-xl:  2.5rem;
+    --space-2xl: 4rem;
+
+    /* Typography */
+    --font-sans: system-ui, -apple-system, sans-serif;
+    --font-mono: ui-monospace, "Fira Code", monospace;
+
+    /* Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1.25rem;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration: 0.3s;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    line-height: 1.7;
+  }
+
+  h1, h2, h3, h4 {
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  /* TODO: Add prefers-color-scheme: light overrides */
+  /* TODO: Add prefers-reduced-motion: reduce rules */
+}
+
+/* ========= LAYOUT ========= */
+@layer layout {
+  .section-inner {
+    max-inline-size: 75rem;
+    margin-inline: auto;
+    padding-inline: var(--space-lg);
+  }
+
+  .section {
+    padding-block: var(--space-2xl);
+  }
+
+  .section-heading {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    text-align: center;
+    margin-block-end: var(--space-xl);
+  }
+}
+
+/* ========= COMPONENTS ========= */
+@layer components {
+
+  /* -- Navigation ------------------------------ */
+  .site-nav {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 100;
+    background: color-mix(in oklch,
+      var(--clr-bg) 85%, transparent);
+    backdrop-filter: blur(12px);
+    border-block-end: 1px solid var(--clr-border);
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-lg);
+
+    & .nav-inner {
+      max-inline-size: 75rem;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    & .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-weight: 700;
+      color: var(--clr-accent-light);
+    }
+
+    & .nav-links {
+      display: flex;
+      gap: var(--space-lg);
+
+      & a {
+        color: var(--clr-muted);
+        font-size: 0.9rem;
+        transition: color var(--duration) var(--ease);
+
+        &:hover { color: var(--clr-text); }
+        &:focus-visible {
+          outline: 2px solid var(--clr-accent);
+          outline-offset: 3px;
+          border-radius: var(--radius-sm);
+        }
+      }
+    }
+  }
+
+  /* -- Hero ------------------------------------ */
+  .hero {
+    min-block-size: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+
+    & .hero-content {
+      max-inline-size: 55rem;
+    }
+
+    & .hero-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--clr-accent-light);
+      font-size: 0.9rem;
+      margin-block-end: var(--space-md);
+    }
+
+    & .hero-title {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      margin-block-end: var(--space-lg);
+    }
+
+    & .gradient-text {
+      background: linear-gradient(
+        135deg,
+        var(--clr-accent),
+        var(--clr-cta),
+        var(--clr-success)
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    & .hero-subtitle {
+      color: var(--clr-muted);
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      max-inline-size: 38rem;
+      margin-inline: auto;
+      margin-block-end: var(--space-xl);
+    }
+
+    & .hero-actions {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+
+  /* -- Buttons --------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-xl);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid transparent;
+    transition: all var(--duration) var(--ease);
+
+    &:focus-visible {
+      outline: 2px solid var(--clr-accent);
+      outline-offset: 3px;
+    }
+  }
+
+  .btn-primary {
+    background: var(--clr-accent);
+    color: white;
+
+    &:hover {
+      background: oklch(from var(--clr-accent) calc(l + 0.1) c h);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px oklch(from var(--clr-accent) l c h / 0.3);
+    }
+  }
+
+  .btn-outline {
+    border-color: var(--clr-border);
+    color: var(--clr-text);
+
+    &:hover {
+      border-color: var(--clr-accent);
+      color: var(--clr-accent-light);
+    }
+  }
+
+  /* TODO: Add About (glassmorphism) styles */
+  /* TODO: Add Services (masonry) styles */
+  /* TODO: Add Portfolio (subgrid) styles */
+  /* TODO: Add Testimonials (accordion) styles */
+  /* TODO: Add Contact (form) styles */
+  /* TODO: Add Footer styles */
+  /* TODO: Add scroll progress bar */
+  /* TODO: Add anchor-positioned tooltips */
+}
+
+/* ========= UTILITIES ========= */
+@layer utilities {
+  .visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ========= REDUCED MOTION ========= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+        </template>
+      </div>
+
+      <p>The starter gives you approximately 20% of the final CSS. The remaining 80% &mdash; all the section-specific styles, the masonry grid, the subgrid portfolio, the accordion animations, the anchor tooltips, the <code>sin()</code>/<code>cos()</code> decorations, the <code>@counter-style</code> rules, and the light theme &mdash; is yours to write.</p>
+
+      <div class="final-message">
+        <h3>You have mastered every tool. Now prove it.</h3>
+        <p>Twenty-nine modules. Nine levels. Hundreds of techniques. This is the moment they all come together. Build something you are proud of. Ship it.</p>
+        <p class="sign-off">&mdash; The PE7 Team</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../29-svg-css/index.html">&larr; Previous</a>
+    <a href="../index.html">Course Home &rarr;</a>
+  </footer>
+
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

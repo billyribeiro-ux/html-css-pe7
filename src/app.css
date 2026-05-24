@@ -20,6 +20,8 @@
 	--level-5: #fd79a8;
 	--level-6: #e84393;
 	--level-7: #00b4d8;
+	--level-8: #f77f00;
+	--level-9: #ef233c;
 
 	--font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 	--font-mono: 'Fira Code', ui-monospace, monospace;
@@ -156,6 +158,8 @@ body {
 .sidebar-group.g5 .sidebar-group-title { color: var(--level-5); }
 .sidebar-group.g6 .sidebar-group-title { color: var(--level-6); }
 .sidebar-group.g7 .sidebar-group-title { color: var(--level-7); }
+.sidebar-group.g8 .sidebar-group-title { color: var(--level-8); }
+.sidebar-group.g9 .sidebar-group-title { color: var(--level-9); }
 
 .sidebar-link {
 	display: flex;
@@ -312,6 +316,8 @@ body {
 .l5 .badge { background: color-mix(in oklch, var(--level-5) 20%, transparent); color: var(--level-5); }
 .l6 .badge { background: color-mix(in oklch, var(--level-6) 20%, transparent); color: var(--level-6); }
 .l7 .badge { background: color-mix(in oklch, var(--level-7) 20%, transparent); color: var(--level-7); }
+.l8 .badge { background: color-mix(in oklch, var(--level-8) 20%, transparent); color: var(--level-8); }
+.l9 .badge { background: color-mix(in oklch, var(--level-9) 20%, transparent); color: var(--level-9); }
 
 .modules-grid {
 	display: grid;
@@ -398,6 +404,8 @@ body {
 .l5 .module-card:hover { border-color: var(--level-5); box-shadow: 0 8px 32px rgba(253, 121, 168, 0.1); }
 .l6 .module-card:hover { border-color: var(--level-6); box-shadow: 0 8px 32px rgba(232, 67, 147, 0.1); }
 .l7 .module-card:hover { border-color: var(--level-7); box-shadow: 0 8px 32px rgba(0, 180, 216, 0.1); }
+.l8 .module-card:hover { border-color: var(--level-8); box-shadow: 0 8px 32px rgba(247, 127, 0, 0.1); }
+.l9 .module-card:hover { border-color: var(--level-9); box-shadow: 0 8px 32px rgba(239, 35, 60, 0.1); }
 
 .l1 .module-card h3 { color: var(--level-1); }
 .l2 .module-card h3 { color: var(--level-2); }
@@ -406,6 +414,8 @@ body {
 .l5 .module-card h3 { color: var(--level-5); }
 .l6 .module-card h3 { color: var(--level-6); }
 .l7 .module-card h3 { color: var(--level-7); }
+.l8 .module-card h3 { color: var(--level-8); }
+.l9 .module-card h3 { color: var(--level-9); }
 
 /* ── Footer ── */
 .site-footer {

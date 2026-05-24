@@ -1,0 +1,835 @@
+/* ================================================================
+   Module 26: Filters, Blend Modes & Glassmorphism
+   All demo styles for CSS filters, backdrop-filter, blend modes,
+   glassmorphism, and practical visual effect patterns.
+   ================================================================ */
+
+/* ── Level 8 Badge (not in course.css) ── */
+.level-badge.level-8 {
+  background: color-mix(in oklch, #e84393 20%, transparent);
+  color: #e84393;
+}
+
+/* ------------------------------------------------
+   Demo Instruction Text
+   ------------------------------------------------ */
+.demo-instruction {
+  font-style: italic;
+  color: var(--pe7-text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* ================================================================
+   SECTION 1: CSS Filter Functions - Filter Gallery Demo
+   ================================================================ */
+
+/* Shared gradient swatch base */
+.filter-swatch {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--pe7-radius);
+  background: linear-gradient(
+    135deg,
+    #6c5ce7 0%,
+    #00cec9 35%,
+    #fdcb6e 65%,
+    #e17055 100%
+  );
+  transition: filter 0.4s ease;
+}
+
+.filter-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.filter-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-size: 0.72rem;
+  font-family: var(--pe7-font-mono);
+  color: var(--pe7-text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Individual filter effects */
+.filter-blur              { filter: blur(4px); }
+.filter-brightness        { filter: brightness(1.6); }
+.filter-contrast          { filter: contrast(2); }
+.filter-grayscale         { filter: grayscale(1); }
+.filter-hue-rotate        { filter: hue-rotate(180deg); }
+.filter-invert            { filter: invert(1); }
+.filter-saturate          { filter: saturate(3); }
+.filter-sepia             { filter: sepia(1); }
+.filter-drop-shadow       { filter: drop-shadow(4px 6px 8px rgba(0, 0, 0, 0.7)); }
+.filter-chained           { filter: sepia(0.6) contrast(1.2) brightness(0.85) hue-rotate(30deg); }
+
+/* Hover: reset all filters to default */
+.filter-blur:hover        { filter: blur(0); }
+.filter-brightness:hover  { filter: brightness(1); }
+.filter-contrast:hover    { filter: contrast(1); }
+.filter-grayscale:hover   { filter: grayscale(0); }
+.filter-hue-rotate:hover  { filter: hue-rotate(0deg); }
+.filter-invert:hover      { filter: invert(0); }
+.filter-saturate:hover    { filter: saturate(1); }
+.filter-sepia:hover       { filter: sepia(0); }
+.filter-drop-shadow:hover { filter: drop-shadow(0 0 0 transparent); }
+.filter-chained:hover     { filter: sepia(0) contrast(1) brightness(1) hue-rotate(0deg); }
+
+.filter-swatch { cursor: pointer; }
+
+/* ================================================================
+   SECTION 2: backdrop-filter & Glassmorphism
+   ================================================================ */
+
+/* --- Glass Scene with Gradient Background --- */
+.glass-scene {
+  position: relative;
+  min-height: 380px;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.glass-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #6c5ce7 0%,
+    #0984e3 25%,
+    #00cec9 50%,
+    #e17055 75%,
+    #fd79a8 100%
+  );
+  z-index: 0;
+}
+
+/* Animated decorative blobs behind the glass */
+.glass-bg::before, .glass-bg::after {
+  content: ""; position: absolute; border-radius: 50%; z-index: 1;
+  animation: glass-float 12s ease-in-out infinite;
+}
+.glass-bg::before { width: 200px; height: 200px; background: rgba(253, 203, 110, 0.5); top: 10%; left: 15%; }
+.glass-bg::after  { width: 260px; height: 260px; background: rgba(225, 112, 85, 0.4); bottom: 5%; right: 10%; animation-delay: -6s; animation-direction: reverse; }
+
+@keyframes glass-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-15px, 25px) scale(0.95); }
+}
+
+.glass-cards-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* --- Glass Cards --- */
+.glass-card {
+  width: 280px;
+  padding: 1.75rem;
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: backdrop-filter 0.3s ease,
+              transform 0.25s ease,
+              box-shadow 0.25s ease;
+  cursor: default;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f0f0f5;
+}
+
+.glass-card h4 { font-size: 1.15rem; margin: 0 0 0.6rem; font-weight: 700; }
+.glass-card p   { font-size: 0.88rem; line-height: 1.6; margin: 0 0 1rem; opacity: 0.9; }
+.glass-tag {
+  display: inline-block; padding: 0.25rem 0.6rem; border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1); font-family: var(--pe7-font-mono);
+  font-size: 0.72rem; color: rgba(255, 255, 255, 0.75); border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* --- Frosted Glass Navbar Demo --- */
+.glass-navbar-scene {
+  position: relative;
+  height: 320px;
+  border-radius: var(--pe7-radius-lg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #0f1117 0%, #1a1d27 100%);
+  border: 1px solid var(--pe7-border);
+}
+
+.glass-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: rgba(15, 17, 23, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-nav-brand { font-weight: 800; font-size: 1rem; color: var(--pe7-accent-light); }
+.glass-nav-links { display: flex; gap: 1rem; align-items: center; }
+.glass-nav-links a { color: var(--pe7-text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 500; transition: color 0.2s ease; }
+.glass-nav-links a:hover { color: #fff; }
+.glass-nav-cta { background: var(--pe7-accent); color: #fff !important; padding: 0.35rem 0.85rem; border-radius: 6px; font-weight: 600 !important; }
+.glass-navbar-content { padding: 1.5rem; }
+.glass-navbar-hero { text-align: center; padding: 1.5rem 1rem; }
+.glass-navbar-hero h4 { font-size: 1.1rem; color: var(--pe7-text); margin: 0 0 0.5rem; }
+.glass-navbar-hero p { font-size: 0.85rem; color: var(--pe7-text-muted); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+.glass-navbar-blocks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; padding: 1rem 0 3rem; }
+.glass-block {
+  height: 100px; border-radius: var(--pe7-radius); opacity: 0.8;
+  background: linear-gradient(135deg, hsl(var(--block-hue, 200) 75% 50%), hsl(var(--block-hue, 200) 60% 70%));
+}
+
+/* ================================================================
+   SECTION 3: mix-blend-mode - Blend Grid & Duotone
+   ================================================================ */
+
+/* --- Blend Mode Comparison Grid --- */
+.blend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+}
+
+.blend-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--pe7-radius);
+  overflow: hidden;
+  border: 1px solid var(--pe7-border);
+}
+
+.blend-base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #fdcb6e 0%,
+    #e17055 30%,
+    #6c5ce7 60%,
+    #00cec9 100%
+  );
+}
+
+.blend-overlay {
+  position: absolute; inset: 0; background: #6c5ce7;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-family: var(--pe7-font-mono); font-weight: 600;
+  color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); padding: 0.5rem; text-align: center;
+}
+
+/* --- Duotone Effect --- */
+.duotone-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.duotone-card {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--pe7-border);
+}
+
+.duotone-img {
+  position: absolute;
+  inset: 0;
+  /* Simulated photo with complex gradient */
+  background:
+    radial-gradient(circle at 30% 40%, #f5f5f5 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, #333 0%, transparent 50%),
+    linear-gradient(135deg, #888 0%, #444 40%, #999 70%, #555 100%);
+  filter: grayscale(1) contrast(1.3);
+}
+
+.duotone-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--duo-color, #6c5ce7);
+  mix-blend-mode: color;
+  transition: opacity 0.4s ease;
+}
+
+.duotone-card:hover .duotone-tint {
+  opacity: 0.3;
+}
+
+.duotone-card:hover .duotone-img {
+  filter: grayscale(0.3) contrast(1.1);
+  transition: filter 0.4s ease;
+}
+
+.duotone-label {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* ================================================================
+   SECTION 4: background-blend-mode & isolation
+   ================================================================ */
+
+/* --- Background Blend Mode Grid --- */
+.bg-blend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.bg-blend-panel {
+  height: 130px;
+  border-radius: var(--pe7-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  border: 1px solid var(--pe7-border);
+  overflow: hidden;
+  position: relative;
+
+  /* Pattern layer + gradient layer */
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.08) 8px,
+      rgba(255, 255, 255, 0.08) 16px
+    ),
+    linear-gradient(
+      135deg,
+      #6c5ce7 0%,
+      #00cec9 50%,
+      #fdcb6e 100%
+    );
+  background-size: auto, 100% 100%;
+}
+
+/* Blend modes via data attributes */
+.bg-blend-panel[data-mode="multiply"]    { background-blend-mode: multiply; }
+.bg-blend-panel[data-mode="screen"]      { background-blend-mode: screen; }
+.bg-blend-panel[data-mode="overlay"]     { background-blend-mode: overlay; }
+.bg-blend-panel[data-mode="soft-light"]  { background-blend-mode: soft-light; }
+.bg-blend-panel[data-mode="color-dodge"] { background-blend-mode: color-dodge; }
+.bg-blend-panel[data-mode="difference"]  { background-blend-mode: difference; }
+
+.bg-blend-panel span {
+  font-family: var(--pe7-font-mono); font-size: 0.78rem; font-weight: 600;
+  color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3); padding: 0.2rem 0.5rem; border-radius: 4px;
+}
+
+/* --- Isolation Demo --- */
+.isolation-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.isolation-box {
+  width: 220px;
+  height: 180px;
+  position: relative;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #0f1117 0%,
+    #1a1d27 40%,
+    #242836 100%
+  );
+  border: 1px solid var(--pe7-border);
+}
+
+.isolation-on {
+  isolation: isolate;
+}
+
+.isolation-label {
+  position: absolute; bottom: 0.5rem; left: 0; right: 0; text-align: center;
+  font-size: 0.72rem; font-family: var(--pe7-font-mono); color: var(--pe7-text-muted); z-index: 5;
+}
+.isolation-circle {
+  position: absolute; width: 90px; height: 90px; border-radius: 50%;
+  background: var(--c, #6c5ce7); left: var(--x, 50%); top: var(--y, 50%);
+  transform: translate(-50%, -50%); mix-blend-mode: screen; opacity: 0.85;
+}
+
+/* ================================================================
+   SECTION 5: Practical Patterns
+   ================================================================ */
+
+/* --- Grayscale-to-Color Hover --- */
+.grayscale-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.grayscale-card {
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--pe7-border);
+  transition: border-color 0.3s ease;
+}
+
+.grayscale-card:hover {
+  border-color: var(--pe7-accent);
+}
+
+.grayscale-img {
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card-hue, 260) 70% 45%),
+    hsl(var(--card-hue, 260) 55% 65%),
+    hsl(calc(var(--card-hue, 260) + 60) 65% 55%)
+  );
+  filter: grayscale(1);
+  transition: filter 0.4s ease;
+}
+
+.grayscale-card:hover .grayscale-img {
+  filter: grayscale(0) brightness(1.1) saturate(1.2);
+}
+
+.grayscale-card p {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.82rem;
+  color: var(--pe7-text-muted);
+  font-weight: 500;
+  background: var(--pe7-surface-2);
+}
+
+/* --- Frosted Glass Modal --- */
+.glass-modal-wrapper {
+  position: relative;
+}
+
+.glass-modal-trigger {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: var(--pe7-accent);
+  color: #fff;
+  border-radius: var(--pe7-radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--pe7-font);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.glass-modal-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 80%, black);
+}
+
+.glass-modal-checkbox ~ .glass-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.glass-modal-checkbox:checked ~ .glass-modal-backdrop {
+  opacity: 1;
+  visibility: visible;
+}
+
+.glass-modal-box {
+  background: rgba(26, 29, 39, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 460px;
+  width: 90%;
+  transform: scale(0.92) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  color: var(--pe7-text);
+}
+
+.glass-modal-checkbox:checked ~ .glass-modal-backdrop .glass-modal-box {
+  transform: scale(1) translateY(0);
+}
+
+.glass-modal-box h4 { font-size: 1.25rem; margin: 0 0 0.75rem; color: #fff; }
+.glass-modal-box p  { font-size: 0.9rem; color: var(--pe7-text-muted); line-height: 1.7; margin: 0 0 1rem; }
+.glass-modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+.glass-modal-btn {
+  display: inline-block; padding: 0.6rem 1.25rem; border-radius: var(--pe7-radius);
+  font-size: 0.9rem; font-weight: 600; font-family: var(--pe7-font); cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease; text-decoration: none;
+}
+.glass-modal-btn.primary { background: var(--pe7-accent); color: #fff; }
+.glass-modal-btn.primary:hover { background: color-mix(in oklch, var(--pe7-accent) 80%, black); }
+.glass-modal-btn.secondary { background: rgba(255, 255, 255, 0.08); color: var(--pe7-text-muted); border: 1px solid rgba(255, 255, 255, 0.1); }
+.glass-modal-btn.secondary:hover { background: rgba(255, 255, 255, 0.14); color: var(--pe7-text); }
+
+/* --- Text Knockout Effect --- */
+.knockout-stage {
+  position: relative;
+  height: 200px;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.knockout-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #6c5ce7,
+    #00cec9,
+    #fdcb6e,
+    #e17055,
+    #fd79a8,
+    #6c5ce7
+  );
+  background-size: 300% 300%;
+  animation: knockout-shift 8s ease infinite;
+}
+
+@keyframes knockout-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+.knockout-text-layer {
+  position: relative;
+  z-index: 1;
+  background: var(--pe7-bg);
+  mix-blend-mode: screen;
+  padding: 0.5rem 2rem;
+}
+
+.knockout-heading {
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #000;
+  margin: 0;
+  line-height: 1;
+  border: none;
+  display: block;
+  padding: 0;
+}
+
+/* --- Skeleton Shimmer --- */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.shimmer-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--pe7-surface-2) 0%,
+    var(--pe7-border) 40%,
+    var(--pe7-surface-2) 80%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.8s infinite linear;
+  border-radius: 6px;
+}
+
+.shimmer-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+}
+
+.shimmer-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.shimmer-rect {
+  width: 100%;
+  height: 80px;
+  border-radius: var(--pe7-radius);
+}
+
+.shimmer-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.shimmer-line {
+  height: 12px;
+}
+
+/* ================================================================
+   SECTION 6: Advanced Techniques
+   ================================================================ */
+
+/* --- Animated Hue Rotation --- */
+@keyframes hue-cycle {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.hue-cycle-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.hue-cycle-element {
+  width: 100%;
+  max-width: 400px;
+  height: 120px;
+  border-radius: var(--pe7-radius-lg);
+  background: linear-gradient(
+    135deg,
+    #6c5ce7 0%,
+    #0984e3 25%,
+    #00cec9 50%,
+    #fdcb6e 75%,
+    #e17055 100%
+  );
+  animation: hue-cycle 8s linear infinite;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.hue-cycle-label {
+  font-family: var(--pe7-font-mono);
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+}
+
+/* --- drop-shadow vs box-shadow Comparison --- */
+.shadow-compare-row {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+}
+
+.shadow-compare-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
+}
+
+/* Clipped shape (triangle/polygon) */
+.shadow-shape {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.shadow-shape span {
+  font-size: 0.7rem;
+  font-family: var(--pe7-font-mono);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* box-shadow version: shadow outlines bounding box */
+.shadow-box {
+  box-shadow: 6px 8px 16px rgba(108, 92, 231, 0.5);
+}
+
+/* drop-shadow wrapper: filter on the wrapper, shape inside */
+.shadow-shape-wrap {
+  filter: drop-shadow(6px 8px 16px rgba(108, 92, 231, 0.5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shadow-drop {
+  box-shadow: none;
+}
+
+/* ================================================================
+   Responsive Adjustments
+   ================================================================ */
+@media (max-width: 640px) {
+  .filter-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .blend-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .glass-cards-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .glass-card {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .duotone-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .duotone-card {
+    width: 100%;
+    max-width: 240px;
+  }
+
+  .isolation-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .isolation-box {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .grayscale-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bg-blend-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .glass-navbar-blocks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .glass-nav-links a:not(.glass-nav-cta) {
+    display: none;
+  }
+
+  .knockout-heading {
+    font-size: 3rem;
+  }
+
+  .shadow-compare-row {
+    gap: 1rem;
+  }
+}
+
+/* ================================================================
+   Accessibility: Reduced Motion
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .glass-bg::before,
+  .glass-bg::after {
+    animation: none;
+  }
+
+  .knockout-bg {
+    animation: none;
+    background-position: 50% 50%;
+  }
+
+  .hue-cycle-element {
+    animation: none;
+  }
+
+  .shimmer {
+    animation: none;
+  }
+
+  .filter-swatch,
+  .grayscale-img,
+  .duotone-tint,
+  .glass-card,
+  .glass-modal-box {
+    transition-duration: 0.01ms !important;
+  }
+}

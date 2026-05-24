@@ -22,6 +22,8 @@
   --pe7-level-5: #fd79a8;
   --pe7-level-6: #e84393;
   --pe7-level-7: #00b4d8;
+  --pe7-level-8: #f77f00;
+  --pe7-level-9: #ef233c;
 
   --pe7-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --pe7-font-mono: "Fira Code", "JetBrains Mono", "Cascadia Code", ui-monospace, monospace;
@@ -98,6 +100,8 @@ body {
 .level-badge.level-5 { background: color-mix(in oklch, var(--pe7-level-5) 20%, transparent); color: var(--pe7-level-5); }
 .level-badge.level-6 { background: color-mix(in oklch, var(--pe7-level-6) 20%, transparent); color: var(--pe7-level-6); }
 .level-badge.level-7 { background: color-mix(in oklch, var(--pe7-level-7) 20%, transparent); color: var(--pe7-level-7); }
+.level-badge.level-8 { background: color-mix(in oklch, var(--pe7-level-8) 20%, transparent); color: var(--pe7-level-8); }
+.level-badge.level-9 { background: color-mix(in oklch, var(--pe7-level-9) 20%, transparent); color: var(--pe7-level-9); }
 
 .lesson-header h1 {
   font-size: clamp(1.75rem, 4vw, 2.5rem);

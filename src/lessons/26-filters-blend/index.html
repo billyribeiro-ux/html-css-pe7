@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filters, Blend Modes &amp; Glassmorphism | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 26</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-8">Level 8 - Production Polish</span>
+    <h1>Filters, Blend Modes &amp; Glassmorphism</h1>
+    <p class="subtitle">Transform visuals with CSS filter functions, composite layers with blend modes, and build frosted-glass interfaces that feel like native apps.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         SECTION 1: CSS Filter Functions
+         ============================================================ -->
+    <section class="concept" id="css-filters">
+      <h2>CSS Filter Functions</h2>
+
+      <p>The <code>filter</code> property applies graphical effects to an element's rendering before it is composited into the page. Think of filters as Instagram-style adjustments you can apply to any element &mdash; not just images, but also text, containers, SVGs, videos, and even entire sections of your layout. The browser processes these effects on the GPU when possible, making them surprisingly performant for the visual impact they deliver.</p>
+
+      <p>CSS provides ten built-in filter functions. <code>blur()</code> applies a Gaussian blur measured in pixels &mdash; higher values produce a more diffuse, out-of-focus effect. <code>brightness()</code> adjusts the overall lightness of the element, where <code>1</code> is the original brightness, <code>0</code> is completely black, and values above <code>1</code> increase brightness beyond the original. <code>contrast()</code> controls the difference between light and dark areas &mdash; lower values wash out the image toward a flat gray, while higher values make darks darker and lights lighter.</p>
+
+      <p><code>grayscale()</code> removes color information, converting the element to shades of gray. A value of <code>1</code> (or <code>100%</code>) is fully desaturated, while <code>0</code> leaves the original colors intact. <code>hue-rotate()</code> shifts all colors around the color wheel by a specified angle in degrees &mdash; <code>180deg</code> gives you the complementary color palette. <code>invert()</code> flips all color values, turning a light image dark and vice versa. <code>saturate()</code> boosts or reduces color intensity, where <code>0</code> is grayscale and values above <code>1</code> produce hyper-vivid colors.</p>
+
+      <p><code>sepia()</code> applies a warm, yellowish-brown tone reminiscent of old photographs. <code>drop-shadow()</code> adds a shadow that follows the alpha channel of the element &mdash; unlike <code>box-shadow</code>, it respects transparent areas and irregular shapes, making it perfect for PNG images and SVG icons. <code>opacity()</code> works like the <code>opacity</code> property but can be composed with other filters in a single declaration. The key power move is <strong>chaining</strong>: you can apply multiple filters in sequence, and they process left to right, each operating on the output of the previous one.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> Filters let you create sophisticated visual effects entirely in CSS, without touching the source image. You can build hover effects that transition from grayscale to full color, create depth with dynamic blur, adjust brightness for dark-mode compatibility, and add contour-hugging shadows to complex shapes. They are composable, animatable, and GPU-accelerated.
+      </div>
+
+      <div class="code-block">
+        <h3>Filter Function Reference</h3>
+<pre><code><span class="cm">/* Individual filter functions */</span>
+<span class="prop">filter</span>: <span class="fn">blur</span>(<span class="num">4px</span>);
+<span class="prop">filter</span>: <span class="fn">brightness</span>(<span class="num">1.3</span>);
+<span class="prop">filter</span>: <span class="fn">contrast</span>(<span class="num">1.5</span>);
+<span class="prop">filter</span>: <span class="fn">grayscale</span>(<span class="num">1</span>);
+<span class="prop">filter</span>: <span class="fn">hue-rotate</span>(<span class="num">90deg</span>);
+<span class="prop">filter</span>: <span class="fn">invert</span>(<span class="num">1</span>);
+<span class="prop">filter</span>: <span class="fn">saturate</span>(<span class="num">2</span>);
+<span class="prop">filter</span>: <span class="fn">sepia</span>(<span class="num">0.8</span>);
+<span class="prop">filter</span>: <span class="fn">drop-shadow</span>(<span class="num">4px 4px 8px</span> <span class="val">rgba(0,0,0,0.5)</span>);
+<span class="prop">filter</span>: <span class="fn">opacity</span>(<span class="num">0.7</span>);
+
+<span class="cm">/* Chaining multiple filters (left to right) */</span>
+.photo-vintage {
+  <span class="prop">filter</span>: <span class="fn">sepia</span>(<span class="num">0.6</span>) <span class="fn">contrast</span>(<span class="num">1.1</span>) <span class="fn">brightness</span>(<span class="num">0.9</span>);
+}
+
+<span class="cm">/* Animated filter on hover */</span>
+.card-image {
+  <span class="prop">filter</span>: <span class="fn">grayscale</span>(<span class="num">1</span>);
+  <span class="prop">transition</span>: filter <span class="num">0.4s</span> ease;
+}
+.card-image:hover {
+  <span class="prop">filter</span>: <span class="fn">grayscale</span>(<span class="num">0</span>);
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-filters">
+        <h3>Demo: Filter Gallery</h3>
+        <p class="demo-instruction">Each tile shows a different CSS filter applied to the same gradient element. Hover over any tile to see it animate back to the unfiltered original.</p>
+        <div class="filter-gallery">
+          <div class="filter-tile">
+            <div class="filter-swatch filter-blur"></div>
+            <span class="filter-label">blur(4px)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-brightness"></div>
+            <span class="filter-label">brightness(1.6)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-contrast"></div>
+            <span class="filter-label">contrast(2)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-grayscale"></div>
+            <span class="filter-label">grayscale(1)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-hue-rotate"></div>
+            <span class="filter-label">hue-rotate(180deg)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-invert"></div>
+            <span class="filter-label">invert(1)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-saturate"></div>
+            <span class="filter-label">saturate(3)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-sepia"></div>
+            <span class="filter-label">sepia(1)</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-drop-shadow"></div>
+            <span class="filter-label">drop-shadow()</span>
+          </div>
+          <div class="filter-tile">
+            <div class="filter-swatch filter-chained"></div>
+            <span class="filter-label">chained</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: backdrop-filter & Glassmorphism
+         ============================================================ -->
+    <section class="concept" id="backdrop-filter">
+      <h2>backdrop-filter &amp; Glassmorphism</h2>
+
+      <p>While <code>filter</code> applies effects to the element itself, <code>backdrop-filter</code> applies them to the area <em>behind</em> the element. The element must have a semi-transparent or transparent background for the effect to be visible &mdash; the browser composites whatever is rendered beneath the element, applies the filter to that composited image, and then draws the element on top. The most common use is <code>backdrop-filter: blur()</code>, which creates a frosted-glass effect where background content is visible but blurred and diffused.</p>
+
+      <p>Glassmorphism is a design trend built on this foundation. The recipe has four ingredients: a semi-transparent background (typically <code>rgba()</code> or <code>oklch()</code> with 10-30% opacity), a <code>backdrop-filter: blur()</code> (usually 10-20px), a subtle border (often 1px white at 10-20% opacity), and a soft shadow for depth. Together, these create an effect that mimics frosted glass or translucent acrylic &mdash; the kind of UI treatment you see in macOS window chrome, iOS notification panels, and Windows 11 Mica surfaces.</p>
+
+      <p>Performance is the critical consideration with <code>backdrop-filter</code>. Unlike regular filters, backdrop filters require the browser to composite and re-render everything behind the element on every frame. This is computationally expensive, especially on mobile devices. Avoid applying backdrop-filter to large areas, and be cautious about animating elements that have it applied. If you notice jank, consider reducing the blur radius, limiting the filtered area, or providing a solid-color fallback with <code>@supports</code>.</p>
+
+      <p>The glassmorphism aesthetic works best on surfaces that sit atop rich, colorful backgrounds &mdash; gradients, images, or busy UI content. On a plain white or dark background, the blur effect is invisible and the translucent background just looks like a faded color. Design your layouts so that glass elements overlap something visually interesting, and make sure the content on the glass surface maintains sufficient contrast for readability (WCAG AA requires a 4.5:1 ratio for normal text).</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> Glassmorphism has become one of the defining visual languages of modern UI design. Apple, Microsoft, Linear, Stripe, and countless design systems use frosted-glass surfaces to create depth, hierarchy, and elegance. Mastering <code>backdrop-filter</code> lets you build these premium-feeling interfaces in pure CSS, with graceful fallbacks for older browsers.
+      </div>
+
+      <div class="code-block">
+        <h3>Glassmorphism Recipe</h3>
+<pre><code><span class="cm">/* The complete glassmorphism recipe */</span>
+.glass-card {
+  <span class="cm">/* 1. Semi-transparent background */</span>
+  <span class="prop">background</span>: <span class="fn">rgba</span>(<span class="num">255, 255, 255, 0.08</span>);
+
+  <span class="cm">/* 2. Backdrop blur */</span>
+  <span class="prop">backdrop-filter</span>: <span class="fn">blur</span>(<span class="num">16px</span>);
+  <span class="prop">-webkit-backdrop-filter</span>: <span class="fn">blur</span>(<span class="num">16px</span>);
+
+  <span class="cm">/* 3. Subtle border */</span>
+  <span class="prop">border</span>: <span class="num">1px</span> solid <span class="fn">rgba</span>(<span class="num">255, 255, 255, 0.12</span>);
+
+  <span class="cm">/* 4. Soft shadow for depth */</span>
+  <span class="prop">box-shadow</span>: <span class="num">0 8px 32px</span> <span class="fn">rgba</span>(<span class="num">0, 0, 0, 0.25</span>);
+  <span class="prop">border-radius</span>: <span class="num">16px</span>;
+}
+
+<span class="cm">/* Fallback for browsers without backdrop-filter */</span>
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-card {
+    <span class="prop">background</span>: <span class="fn">rgba</span>(<span class="num">30, 30, 50, 0.92</span>);
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-glass">
+        <h3>Demo: Glassmorphism Cards</h3>
+        <p class="demo-instruction">These cards use backdrop-filter to blur the gradient background beneath them. The left card uses a light glass treatment, the right uses dark glass. Hover to see the blur intensity increase.</p>
+        <div class="glass-scene">
+          <div class="glass-bg"></div>
+          <div class="glass-cards-row">
+            <div class="glass-card glass-light">
+              <h4>Light Glass</h4>
+              <p>Semi-transparent white background with backdrop blur and a subtle light border. Best on colorful backgrounds.</p>
+              <span class="glass-tag">backdrop-filter: blur(16px)</span>
+            </div>
+            <div class="glass-card glass-dark">
+              <h4>Dark Glass</h4>
+              <p>Semi-transparent dark background with backdrop blur. Popular in dark-theme UIs and dashboard designs.</p>
+              <span class="glass-tag">backdrop-filter: blur(16px)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-glass-navbar">
+        <h3>Demo: Frosted Glass Navbar</h3>
+        <p class="demo-instruction">A sticky navigation bar with a frosted-glass effect. Scroll the content below to see how background elements blur behind the navbar.</p>
+        <div class="glass-navbar-scene">
+          <nav class="glass-nav">
+            <span class="glass-nav-brand">Acme</span>
+            <div class="glass-nav-links">
+              <a href="#">Products</a>
+              <a href="#">Pricing</a>
+              <a href="#">Docs</a>
+              <a href="#" class="glass-nav-cta">Sign Up</a>
+            </div>
+          </nav>
+          <div class="glass-navbar-content">
+            <div class="glass-navbar-hero">
+              <h4>Scroll to see the frosted glass effect</h4>
+              <p>The navbar uses backdrop-filter: blur(12px) with a semi-transparent background. As colored content scrolls behind it, the blur effect becomes visible and creates that premium frosted-glass look.</p>
+            </div>
+            <div class="glass-navbar-blocks">
+              <div class="glass-block" style="--block-hue: 280"></div>
+              <div class="glass-block" style="--block-hue: 200"></div>
+              <div class="glass-block" style="--block-hue: 340"></div>
+              <div class="glass-block" style="--block-hue: 120"></div>
+              <div class="glass-block" style="--block-hue: 40"></div>
+              <div class="glass-block" style="--block-hue: 180"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: mix-blend-mode
+         ============================================================ -->
+    <section class="concept" id="mix-blend-mode">
+      <h2>mix-blend-mode</h2>
+
+      <p>The <code>mix-blend-mode</code> property controls how an element's content blends with whatever is painted directly beneath it &mdash; its parent's background, sibling elements, or any overlapping layers. If you have ever used blend modes in Photoshop, Figma, or After Effects, CSS blend modes work on exactly the same principles. Each mode defines a mathematical formula for combining the color values of the top layer (the element) and the bottom layer (what is behind it).</p>
+
+      <p>The sixteen blend modes break down into several groups. <strong>Darkening modes</strong> &mdash; <code>multiply</code>, <code>darken</code>, <code>color-burn</code> &mdash; always produce results that are equal to or darker than the input layers. <code>multiply</code> is the most commonly used: it multiplies the color values, so white disappears (anything times 1 is itself) and dark areas darken the result. This makes it perfect for overlaying textures, removing white backgrounds from images, and creating rich shadow effects.</p>
+
+      <p><strong>Lightening modes</strong> &mdash; <code>screen</code>, <code>lighten</code>, <code>color-dodge</code> &mdash; are the inverse: they always produce results equal to or lighter than the inputs. <code>screen</code> is <code>multiply</code> flipped: black disappears and light areas brighten the result. Use it to overlay light effects, lens flares, or to stack translucent light sources. <strong>Contrast modes</strong> &mdash; <code>overlay</code>, <code>hard-light</code>, <code>soft-light</code> &mdash; combine darkening and lightening based on whether the base color is light or dark, increasing overall contrast.</p>
+
+      <p><strong>Inversion modes</strong> &mdash; <code>difference</code> and <code>exclusion</code> &mdash; subtract color values, creating high-contrast, often psychedelic results useful for creative effects and ensuring text visibility on any background. <strong>Component modes</strong> &mdash; <code>hue</code>, <code>saturation</code>, <code>color</code>, <code>luminosity</code> &mdash; take individual components (hue, saturation, or luminosity) from one layer and combine them with the remaining components from the other. <code>color</code> mode is especially useful for tinting images: place a colored element over a grayscale image in <code>color</code> mode to colorize it without affecting its luminosity.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> Blend modes unlock visual effects that would otherwise require image editing software. You can create duotone photo effects, ensure text readability over variable backgrounds, build creative overlays for hero sections, apply texture to flat UI elements, and create colorization effects &mdash; all dynamically in the browser, responsive and animatable.
+      </div>
+
+      <div class="code-block">
+        <h3>mix-blend-mode Examples</h3>
+<pre><code><span class="cm">/* Text that adapts to any background */</span>
+.adaptive-text {
+  <span class="prop">color</span>: <span class="val">white</span>;
+  <span class="prop">mix-blend-mode</span>: <span class="val">difference</span>;
+}
+
+<span class="cm">/* Duotone image effect */</span>
+.duotone-container {
+  <span class="prop">position</span>: relative;
+  <span class="prop">background</span>: <span class="val">#6c5ce7</span>;
+}
+.duotone-container img {
+  <span class="prop">filter</span>: <span class="fn">grayscale</span>(<span class="num">1</span>) <span class="fn">contrast</span>(<span class="num">1.2</span>);
+  <span class="prop">mix-blend-mode</span>: <span class="val">multiply</span>;
+}
+
+<span class="cm">/* Creative text knockout */</span>
+.knockout-text {
+  <span class="prop">font-size</span>: <span class="num">6rem</span>;
+  <span class="prop">font-weight</span>: <span class="num">900</span>;
+  <span class="prop">color</span>: <span class="val">white</span>;
+  <span class="prop">mix-blend-mode</span>: <span class="val">overlay</span>;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-blend-modes">
+        <h3>Demo: Blend Mode Comparison Grid</h3>
+        <p class="demo-instruction">Each cell applies a different mix-blend-mode to a purple overlay on top of a gradient background. Compare how each mode interacts with the underlying colors.</p>
+        <div class="blend-grid">
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: normal">normal</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: multiply">multiply</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: screen">screen</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: overlay">overlay</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: darken">darken</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: lighten">lighten</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: color-dodge">color-dodge</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: color-burn">color-burn</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: difference">difference</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: exclusion">exclusion</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: hue">hue</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: saturation">saturation</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: color">color</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: luminosity">luminosity</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: hard-light">hard-light</div>
+          </div>
+          <div class="blend-cell">
+            <div class="blend-base"></div>
+            <div class="blend-overlay" style="mix-blend-mode: soft-light">soft-light</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-duotone">
+        <h3>Demo: Duotone Effect</h3>
+        <p class="demo-instruction">A gradient-filled image container with a blended overlay creates a duotone color effect. Hover to shift the tint color via hue-rotate.</p>
+        <div class="duotone-row">
+          <div class="duotone-card" style="--duo-color: #6c5ce7">
+            <div class="duotone-img"></div>
+            <div class="duotone-tint"></div>
+            <span class="duotone-label">Purple Tint</span>
+          </div>
+          <div class="duotone-card" style="--duo-color: #00cec9">
+            <div class="duotone-img"></div>
+            <div class="duotone-tint"></div>
+            <span class="duotone-label">Teal Tint</span>
+          </div>
+          <div class="duotone-card" style="--duo-color: #e17055">
+            <div class="duotone-img"></div>
+            <div class="duotone-tint"></div>
+            <span class="duotone-label">Coral Tint</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: background-blend-mode & isolation
+         ============================================================ -->
+    <section class="concept" id="bg-blend-isolation">
+      <h2>background-blend-mode &amp; isolation</h2>
+
+      <p><code>background-blend-mode</code> blends multiple background layers <em>within the same element</em>. While <code>mix-blend-mode</code> blends an element against whatever is behind it in the stacking order, <code>background-blend-mode</code> operates entirely within a single element's own background stack. CSS allows an element to have multiple backgrounds (comma-separated in the <code>background</code> shorthand), and <code>background-blend-mode</code> controls how those layers composite together.</p>
+
+      <p>The most practical use case is overlaying a gradient on a background image. By setting <code>background-blend-mode: overlay</code> (or <code>multiply</code>, <code>screen</code>, etc.) on an element with both a gradient and an image background, you can tint, darken, or add color effects to the image without needing a pseudo-element or an extra HTML wrapper. This is especially powerful for hero sections, where you want a background image with a color overlay to ensure text readability.</p>
+
+      <p>You can also blend a texture pattern with a solid or gradient background to add subtle visual interest &mdash; noise textures, paper textures, fabric patterns &mdash; all composited through CSS without any image editing. Each background layer can have its own blend mode by comma-separating the values in <code>background-blend-mode</code>.</p>
+
+      <p>The <code>isolation</code> property creates a new stacking context, which limits how blend modes propagate. By default, <code>mix-blend-mode</code> blends an element against everything beneath it in the stacking order, which can sometimes produce unexpected results when multiple blended elements interact. Setting <code>isolation: isolate</code> on a parent container creates a boundary: blend modes within that container only blend against other elements inside the same container, not against content outside of it. Think of it as a compositing firewall.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> <code>background-blend-mode</code> eliminates the need for pre-processing images in Photoshop to add tints, textures, or color effects. You can dynamically change the blend mode, animate between effects, and build responsive hero sections that adapt their visual treatment at different breakpoints. <code>isolation</code> keeps complex blend compositions predictable and prevents visual bugs in layered layouts.
+      </div>
+
+      <div class="code-block">
+        <h3>background-blend-mode &amp; isolation</h3>
+<pre><code><span class="cm">/* Gradient over image */</span>
+.hero {
+  <span class="prop">background</span>:
+    <span class="fn">linear-gradient</span>(<span class="num">135deg</span>, <span class="val">#6c5ce7cc</span>, <span class="val">#00cec9cc</span>),
+    <span class="fn">url</span>(<span class="str">"photo.jpg"</span>) center / cover;
+  <span class="prop">background-blend-mode</span>: <span class="val">overlay</span>;
+}
+
+<span class="cm">/* Noise texture blended with gradient */</span>
+.textured-surface {
+  <span class="prop">background</span>:
+    <span class="fn">url</span>(<span class="str">"noise.svg"</span>),
+    <span class="fn">linear-gradient</span>(<span class="num">135deg</span>, <span class="val">#1a1d27</span>, <span class="val">#242836</span>);
+  <span class="prop">background-blend-mode</span>: <span class="val">soft-light</span>;
+}
+
+<span class="cm">/* Contain blend modes to a section */</span>
+.card-grid {
+  <span class="prop">isolation</span>: <span class="val">isolate</span>;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-bg-blend">
+        <h3>Demo: Background Blend Modes</h3>
+        <p class="demo-instruction">Each panel blends a color gradient with a generated pattern using a different background-blend-mode. This technique is commonly used for hero sections and decorative panels.</p>
+        <div class="bg-blend-grid">
+          <div class="bg-blend-panel" data-mode="multiply">
+            <span>multiply</span>
+          </div>
+          <div class="bg-blend-panel" data-mode="screen">
+            <span>screen</span>
+          </div>
+          <div class="bg-blend-panel" data-mode="overlay">
+            <span>overlay</span>
+          </div>
+          <div class="bg-blend-panel" data-mode="soft-light">
+            <span>soft-light</span>
+          </div>
+          <div class="bg-blend-panel" data-mode="color-dodge">
+            <span>color-dodge</span>
+          </div>
+          <div class="bg-blend-panel" data-mode="difference">
+            <span>difference</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-isolation">
+        <h3>Demo: isolation: isolate</h3>
+        <p class="demo-instruction">The left group has <code>isolation: isolate</code>, so its blended circles only mix with siblings inside the container. The right group has no isolation, so blending leaks through to the background.</p>
+        <div class="isolation-row">
+          <div class="isolation-box isolation-on">
+            <span class="isolation-label">isolation: isolate</span>
+            <div class="isolation-circle" style="--c: #6c5ce7; --x: 30%; --y: 30%"></div>
+            <div class="isolation-circle" style="--c: #00cec9; --x: 55%; --y: 35%"></div>
+            <div class="isolation-circle" style="--c: #e17055; --x: 42%; --y: 58%"></div>
+          </div>
+          <div class="isolation-box isolation-off">
+            <span class="isolation-label">no isolation</span>
+            <div class="isolation-circle" style="--c: #6c5ce7; --x: 30%; --y: 30%"></div>
+            <div class="isolation-circle" style="--c: #00cec9; --x: 55%; --y: 35%"></div>
+            <div class="isolation-circle" style="--c: #e17055; --x: 42%; --y: 58%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: Practical Patterns
+         ============================================================ -->
+    <section class="concept" id="practical-patterns">
+      <h2>Practical Patterns</h2>
+
+      <p>The real value of filters and blend modes emerges when you combine them into practical, production-ready patterns. These are not edge-case curiosities &mdash; they are the exact techniques used in modern design systems to create hero sections, interactive image galleries, loading states, and premium-feeling UI chrome. Each pattern below is something you will encounter (or should consider) in real-world projects.</p>
+
+      <p>The key principle unifying all these patterns is <strong>progressive enhancement</strong>. Every effect in this section degrades gracefully when unsupported. Images without filters still display. Cards without glassmorphism still have readable backgrounds. Text without blend modes still has adequate contrast. The visual effects are a polish layer on top of a solid, accessible foundation &mdash; never a dependency.</p>
+
+      <p>Performance awareness matters here more than in most CSS topics. Filters and blend modes are GPU-composited, but they still have a cost. Applying <code>backdrop-filter: blur(20px)</code> to a full-screen element forces the browser to re-composite that entire region on every frame during scrolling. Keep blurred areas small, avoid animating blur values (animate opacity or transform instead), and test on mobile hardware. A beautiful glass effect that drops the frame rate to 15fps on a budget phone is not production-ready.</p>
+
+      <h3>Pattern: Grayscale-to-Color Image Hover</h3>
+
+      <p>One of the most common and effective interactive patterns is displaying images in grayscale by default, then transitioning to full color on hover. This reduces visual noise in image-heavy layouts (portfolios, team pages, product grids) while creating a satisfying interactive reveal. The implementation is trivially simple: apply <code>filter: grayscale(1)</code> by default and <code>filter: grayscale(0)</code> on hover, with a transition for smoothness.</p>
+
+      <div class="demo" id="demo-grayscale-hover">
+        <h3>Demo: Grayscale-to-Color Hover</h3>
+        <p class="demo-instruction">Hover over each image card to see it transition from desaturated to full color. The transition uses the filter property with a 0.4s ease timing.</p>
+        <div class="grayscale-grid">
+          <div class="grayscale-card" style="--card-hue: 260">
+            <div class="grayscale-img"></div>
+            <p>Architecture</p>
+          </div>
+          <div class="grayscale-card" style="--card-hue: 180">
+            <div class="grayscale-img"></div>
+            <p>Nature</p>
+          </div>
+          <div class="grayscale-card" style="--card-hue: 340">
+            <div class="grayscale-img"></div>
+            <p>Abstract</p>
+          </div>
+          <div class="grayscale-card" style="--card-hue: 40">
+            <div class="grayscale-img"></div>
+            <p>Warm Tones</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern: Frosted Glass Modal</h3>
+
+      <p>A frosted glass modal combines <code>backdrop-filter: blur()</code> with a semi-transparent overlay to create a premium-feeling dialog. The background content remains visible but blurred, maintaining spatial context for the user while directing attention to the modal content. This pattern is used extensively in iOS, macOS, and modern web applications.</p>
+
+      <div class="demo" id="demo-glass-modal">
+        <h3>Demo: Frosted Glass Modal</h3>
+        <p class="demo-instruction">Click "Open Modal" to see a frosted-glass modal that blurs the content behind it.</p>
+        <div class="glass-modal-wrapper">
+          <input type="checkbox" id="glass-modal-toggle" class="glass-modal-checkbox" hidden>
+          <label class="glass-modal-trigger" for="glass-modal-toggle">Open Modal</label>
+          <div class="glass-modal-backdrop">
+            <div class="glass-modal-box">
+              <h4>Frosted Glass Modal</h4>
+              <p>This modal uses <code>backdrop-filter: blur(20px)</code> on the overlay and the modal surface itself. The background content is still visible but fully blurred, maintaining spatial context while directing attention here.</p>
+              <div class="glass-modal-actions">
+                <label for="glass-modal-toggle" class="glass-modal-btn primary">Accept</label>
+                <label for="glass-modal-toggle" class="glass-modal-btn secondary">Dismiss</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern: Text Knockout with Blend Modes</h3>
+
+      <p>Text knockout effects use <code>mix-blend-mode</code> to make text "cut through" a background, creating a window into an underlying pattern or gradient. The classic approach uses <code>mix-blend-mode: screen</code> on a black background with white text &mdash; the white text becomes transparent to the layer below, while the black areas block it. This creates the illusion that the text is a cutout revealing a colorful layer beneath.</p>
+
+      <div class="demo" id="demo-knockout">
+        <h3>Demo: Text Knockout</h3>
+        <p class="demo-instruction">The large text uses mix-blend-mode to create a knockout effect that reveals the animated gradient beneath. The text appears to be a window into the background.</p>
+        <div class="knockout-stage">
+          <div class="knockout-bg"></div>
+          <div class="knockout-text-layer">
+            <h2 class="knockout-heading">BLEND</h2>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern: Loading Skeleton with Shimmer</h3>
+
+      <p>A shimmer loading skeleton uses a gradient animation combined with a semi-transparent overlay to create a pulsing, light-sweep effect. This pattern communicates "content is loading" far more effectively than a static placeholder. The shimmer is built with a moving linear gradient, animated with <code>@keyframes</code> and <code>background-position</code>.</p>
+
+      <div class="demo" id="demo-shimmer">
+        <h3>Demo: Skeleton Shimmer</h3>
+        <p class="demo-instruction">These loading skeletons use an animated gradient to create the shimmer effect. The gradient moves from left to right on a loop.</p>
+        <div class="shimmer-demo">
+          <div class="shimmer-card">
+            <div class="shimmer-avatar shimmer"></div>
+            <div class="shimmer-lines">
+              <div class="shimmer-line shimmer" style="width: 70%"></div>
+              <div class="shimmer-line shimmer" style="width: 100%"></div>
+              <div class="shimmer-line shimmer" style="width: 50%"></div>
+            </div>
+          </div>
+          <div class="shimmer-card">
+            <div class="shimmer-rect shimmer"></div>
+            <div class="shimmer-lines" style="margin-top: 0.75rem">
+              <div class="shimmer-line shimmer" style="width: 85%"></div>
+              <div class="shimmer-line shimmer" style="width: 60%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: Advanced Techniques
+         ============================================================ -->
+    <section class="concept" id="advanced-techniques">
+      <h2>Advanced Techniques</h2>
+
+      <p>With a solid understanding of the fundamentals, you can push filters and blend modes into more sophisticated territory. These advanced patterns combine multiple properties &mdash; filter chains, backdrop-filter, mix-blend-mode, custom properties, and animations &mdash; to create effects that rival dedicated image editing software, all rendered live in the browser and fully responsive.</p>
+
+      <h3>Animating Filters</h3>
+
+      <p>CSS filters are fully animatable with transitions and keyframes. You can smoothly interpolate between any two filter values, including complex chains. This opens up effects like pulsing brightness, rotating hue over time (great for loading indicators), and transitioning from a heavily processed state (blurred, desaturated, dark) to the final rendered state for dramatic entrance effects.</p>
+
+      <div class="code-block">
+        <h3>Animated Filter Chains</h3>
+<pre><code><span class="cm">/* Smooth hue rotation on hover */</span>
+.rainbow-shift {
+  <span class="prop">transition</span>: filter <span class="num">0.6s</span> ease;
+}
+.rainbow-shift:hover {
+  <span class="prop">filter</span>: <span class="fn">hue-rotate</span>(<span class="num">180deg</span>) <span class="fn">saturate</span>(<span class="num">1.3</span>);
+}
+
+<span class="cm">/* Continuous color cycling with @keyframes */</span>
+<span class="kw">@keyframes</span> hue-cycle {
+  <span class="num">0%</span>   { <span class="prop">filter</span>: <span class="fn">hue-rotate</span>(<span class="num">0deg</span>); }
+  <span class="num">100%</span> { <span class="prop">filter</span>: <span class="fn">hue-rotate</span>(<span class="num">360deg</span>); }
+}
+.cycling-element {
+  <span class="prop">animation</span>: hue-cycle <span class="num">8s</span> linear infinite;
+}
+
+<span class="cm">/* Dramatic entrance: blurred and faded to sharp and visible */</span>
+.reveal-element {
+  <span class="prop">filter</span>: <span class="fn">blur</span>(<span class="num">0</span>) <span class="fn">brightness</span>(<span class="num">1</span>);
+  <span class="prop">transition</span>: filter <span class="num">0.8s</span> ease;
+
+  <span class="kw">@starting-style</span> {
+    <span class="prop">filter</span>: <span class="fn">blur</span>(<span class="num">10px</span>) <span class="fn">brightness</span>(<span class="num">0.3</span>);
+  }
+}
+
+<span class="cm">/* drop-shadow vs box-shadow on irregular shapes */</span>
+.svg-icon {
+  <span class="cm">/* drop-shadow follows the alpha contour */</span>
+  <span class="prop">filter</span>: <span class="fn">drop-shadow</span>(<span class="num">2px 4px 6px</span> <span class="val">rgba(0,0,0,0.3)</span>);
+}
+
+<span class="cm">/* box-shadow only outlines the bounding box */</span>
+.svg-icon-box {
+  <span class="prop">box-shadow</span>: <span class="num">2px 4px 6px</span> <span class="val">rgba(0,0,0,0.3)</span>;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-hue-cycle">
+        <h3>Demo: Animated Hue Rotation</h3>
+        <p class="demo-instruction">This gradient element continuously rotates through the color spectrum using <code>filter: hue-rotate()</code> with a keyframe animation. The underlying gradient remains unchanged in the CSS &mdash; the filter transforms it in real time.</p>
+        <div class="hue-cycle-stage">
+          <div class="hue-cycle-element"></div>
+          <span class="hue-cycle-label">animation: hue-cycle 8s linear infinite</span>
+        </div>
+      </div>
+
+      <h3>drop-shadow vs box-shadow</h3>
+
+      <p>Understanding the difference between <code>filter: drop-shadow()</code> and <code>box-shadow</code> is critical for working with non-rectangular elements. <code>box-shadow</code> applies a rectangular shadow around the element's box model. <code>drop-shadow()</code> applies a shadow that follows the element's alpha channel &mdash; transparent areas cast no shadow, and irregular shapes (clipped images, SVGs, elements with clip-path) get contour-hugging shadows. Use <code>drop-shadow()</code> whenever your element is not a simple rectangle.</p>
+
+      <div class="demo" id="demo-drop-shadow">
+        <h3>Demo: drop-shadow vs box-shadow</h3>
+        <p class="demo-instruction">Compare the two shadow types on a non-rectangular (clipped) shape. The left uses <code>box-shadow</code> which outlines the bounding box. The right uses <code>filter: drop-shadow()</code> which follows the actual shape.</p>
+        <div class="shadow-compare-row">
+          <div class="shadow-compare-card">
+            <div class="shadow-shape shadow-box">
+              <span>box-shadow</span>
+            </div>
+          </div>
+          <div class="shadow-compare-card">
+            <div class="shadow-shape-wrap">
+              <div class="shadow-shape shadow-drop">
+                <span>drop-shadow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EXERCISE
+         ============================================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Glassmorphism Profile Card</h2>
+
+      <p>Build a profile card using the glassmorphism technique. The card should sit atop a rich gradient background and demonstrate the four-ingredient glass recipe covered in this module:</p>
+
+      <ol>
+        <li><strong>Gradient background:</strong> Create a vibrant, multi-color gradient behind the card so the glass effect has something to blur. Use at least three color stops.</li>
+        <li><strong>Glass card:</strong> Apply the full glassmorphism recipe: semi-transparent background (<code>rgba(255, 255, 255, 0.08)</code>), <code>backdrop-filter: blur(16px)</code> with the <code>-webkit-</code> prefix, a subtle <code>1px</code> border with <code>rgba(255, 255, 255, 0.15)</code>, and a soft box-shadow.</li>
+        <li><strong>Avatar with drop-shadow:</strong> Add a circular avatar placeholder that uses <code>filter: drop-shadow()</code> instead of box-shadow, so the shadow follows the circular shape cleanly.</li>
+        <li><strong>Hover effect:</strong> On hover, increase the backdrop-filter blur from 16px to 24px and slightly brighten the background opacity. Add a transition for smoothness.</li>
+      </ol>
+
+      <p><strong>Bonus:</strong> Add a <code>@supports</code> block that provides a solid fallback background when <code>backdrop-filter</code> is not supported. Use <code>@supports not (backdrop-filter: blur(1px))</code> to detect this.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="profile-scene">
+  <div class="profile-glass-card">
+    <div class="profile-avatar"></div>
+    <h3>Alex Chen</h3>
+    <p class="profile-role">Senior Frontend Engineer</p>
+    <p class="profile-bio">Building beautiful interfaces with CSS filters, blend modes, and glassmorphism. Passionate about performance and accessibility.</p>
+    <div class="profile-stats">
+      <div class="stat"><strong>142</strong><span>Projects</span></div>
+      <div class="stat"><strong>3.2k</strong><span>Followers</span></div>
+      <div class="stat"><strong>98%</strong><span>Success</span></div>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.profile-scene {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Vibrant gradient background */
+  background: linear-gradient(
+    135deg,
+    #6c5ce7 0%,
+    #00cec9 40%,
+    #e17055 70%,
+    #fd79a8 100%
+  );
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.profile-glass-card {
+  /* Glassmorphism recipe */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 340px;
+  text-align: center;
+  color: #fff;
+  transition: backdrop-filter 0.3s ease,
+              background 0.3s ease;
+}
+
+.profile-glass-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 4px 8px rgba(108, 92, 231, 0.5));
+}
+
+.profile-glass-card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+}
+
+.profile-role {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.profile-bio {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 1.5rem;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat strong { font-size: 1.1rem; }
+.stat span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Fallback */
+@supports not (backdrop-filter: blur(1px)) {
+  .profile-glass-card {
+    background: rgba(30, 30, 50, 0.92);
+  }
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHALLENGE
+         ============================================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Interactive Image Gallery with Filter Effects</h2>
+
+      <p>Build a responsive image gallery that combines filters, blend modes, and glassmorphism into a cohesive, interactive experience. This challenge ties together every concept from this module into a single, production-worthy component:</p>
+
+      <ol>
+        <li><strong>Grayscale-to-color grid:</strong> Display a 2x2 grid of image cards. Each card should render in grayscale by default, with a smooth 0.4s transition to full color on hover. On hover, also apply a subtle <code>brightness(1.1)</code> and <code>saturate(1.2)</code> to make the colors pop.</li>
+        <li><strong>Duotone overlay:</strong> Each card should have a colored overlay that uses <code>mix-blend-mode: color</code> to tint the grayscale image. Give each card a different tint color via a <code>--tint</code> custom property. On hover, the overlay should fade out (opacity 0) to reveal the true colors.</li>
+        <li><strong>Glass info panel:</strong> Each card should have a glassmorphism info panel at the bottom that slides up on hover. The panel should use <code>backdrop-filter: blur(10px)</code> with a semi-transparent background and display the image title and a brief description.</li>
+        <li><strong>Animated shimmer:</strong> Before the gallery "loads," show skeleton placeholders with the shimmer animation pattern. Use a checkbox toggle to switch between the skeleton and loaded states.</li>
+      </ol>
+
+      <p>The gallery must use <code>isolation: isolate</code> on the grid container to prevent blend mode leaking. Use CSS custom properties for the tint colors so each card can have its own color scheme. Add <code>@supports</code> fallbacks for the glass panel and ensure text meets WCAG AA contrast requirements over any background combination. No JavaScript allowed &mdash; use the checkbox hack for the loading state toggle.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="gallery-wrapper">
+  <input type="checkbox" id="loaded" checked hidden>
+  <label for="loaded" class="gallery-toggle">Toggle Loading State</label>
+
+  <!-- Skeleton state -->
+  <div class="gallery-skeleton">
+    <div class="skel-card shimmer-skel"></div>
+    <div class="skel-card shimmer-skel"></div>
+    <div class="skel-card shimmer-skel"></div>
+    <div class="skel-card shimmer-skel"></div>
+  </div>
+
+  <!-- Loaded state -->
+  <div class="gallery-grid">
+    <div class="gallery-card" style="--tint: #6c5ce7; --hue: 260">
+      <div class="gallery-img"></div>
+      <div class="gallery-tint"></div>
+      <div class="gallery-info">
+        <h4>Mountain Vista</h4>
+        <p>Alpine landscape at sunset</p>
+      </div>
+    </div>
+    <div class="gallery-card" style="--tint: #00cec9; --hue: 180">
+      <div class="gallery-img"></div>
+      <div class="gallery-tint"></div>
+      <div class="gallery-info">
+        <h4>Ocean Breeze</h4>
+        <p>Coastal waves in motion</p>
+      </div>
+    </div>
+    <div class="gallery-card" style="--tint: #e17055; --hue: 15">
+      <div class="gallery-img"></div>
+      <div class="gallery-tint"></div>
+      <div class="gallery-info">
+        <h4>Urban Glow</h4>
+        <p>City lights at dusk</p>
+      </div>
+    </div>
+    <div class="gallery-card" style="--tint: #fd79a8; --hue: 330">
+      <div class="gallery-img"></div>
+      <div class="gallery-tint"></div>
+      <div class="gallery-info">
+        <h4>Garden Bloom</h4>
+        <p>Spring flowers in detail</p>
+      </div>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.gallery-wrapper {
+  max-width: 560px;
+}
+
+.gallery-toggle {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #6c5ce7;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Skeleton state */
+.gallery-skeleton {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.skel-card {
+  height: 160px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg, #1a1d27 0%, #2e3345 40%, #1a1d27 80%
+  );
+  background-size: 800px 100%;
+  animation: skel-shimmer 1.8s infinite linear;
+}
+
+@keyframes skel-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* Toggle: when checked, show gallery; unchecked, show skeleton */
+#loaded:checked ~ .gallery-skeleton { display: none; }
+#loaded:checked ~ .gallery-grid { display: grid; }
+#loaded:not(:checked) ~ .gallery-skeleton { display: grid; }
+#loaded:not(:checked) ~ .gallery-grid { display: none; }
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  isolation: isolate;
+}
+
+.gallery-card {
+  position: relative;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-img {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--hue, 260) 70% 40%),
+    hsl(var(--hue, 260) 60% 65%),
+    hsl(calc(var(--hue, 260) + 40) 50% 50%)
+  );
+  filter: grayscale(1) contrast(1.1);
+  transition: filter 0.4s ease;
+}
+
+.gallery-card:hover .gallery-img {
+  filter: grayscale(0) brightness(1.1) saturate(1.2);
+}
+
+/* Duotone tint overlay */
+.gallery-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+  mix-blend-mode: color;
+  opacity: 0.7;
+  transition: opacity 0.4s ease;
+}
+
+.gallery-card:hover .gallery-tint {
+  opacity: 0;
+}
+
+/* Glass info panel */
+.gallery-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+}
+
+.gallery-card:hover .gallery-info {
+  transform: translateY(0);
+}
+
+.gallery-info h4 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+}
+
+.gallery-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .gallery-info {
+    background: rgba(0, 0, 0, 0.85);
+  }
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../25-advanced-typography/index.html">&larr; Previous</a>
+    <a href="../27-performance-containment/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

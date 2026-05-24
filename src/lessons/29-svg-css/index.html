@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG &amp; CSS Integration | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 29</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-9">Level 9 - PE7 Grand Mastery</span>
+    <h1>SVG &amp; CSS Integration</h1>
+    <p class="subtitle">Master inline SVG styling, currentColor icon systems, CSS-driven SVG animations, and production patterns for scalable vector graphics.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         SECTION 1: Inline SVG Styling with CSS
+         ============================================================ -->
+    <section class="concept" id="inline-svg-styling">
+      <h2>1. Inline SVG Styling with CSS</h2>
+
+      <p>SVG elements embedded directly in HTML &mdash; inline SVG &mdash; are part of the DOM. That means they are fully accessible to CSS selectors, class names, pseudo-classes, and the cascade. This is the single most important thing to understand about SVG and CSS integration: inline SVG elements are just DOM nodes. You style them the same way you style a <code>&lt;div&gt;</code> or a <code>&lt;span&gt;</code>, with the caveat that SVG uses a different set of visual properties inherited from its own specification.</p>
+
+      <p>The key CSS properties that apply to SVG presentation are <code>fill</code> (the interior color, analogous to <code>background-color</code>), <code>stroke</code> (the outline color, analogous to <code>border-color</code>), <code>stroke-width</code> (the outline thickness), <code>stroke-dasharray</code> (creates dashed or dotted strokes by defining alternating dash and gap lengths), <code>stroke-dashoffset</code> (shifts where the dash pattern begins, which is the foundation of line-drawing animations), <code>stroke-linecap</code> (controls the shape of stroke endpoints: <code>butt</code>, <code>round</code>, or <code>square</code>), <code>stroke-linejoin</code> (controls how stroke corners are rendered: <code>miter</code>, <code>round</code>, or <code>bevel</code>), <code>opacity</code>, and <code>transform</code>. Standard CSS properties like <code>filter</code>, <code>mix-blend-mode</code>, and <code>cursor</code> also work on SVG elements.</p>
+
+      <p>When you move SVG presentation attributes into CSS, you gain the full power of the cascade: media queries, pseudo-classes like <code>:hover</code> and <code>:focus</code>, custom properties, container queries, and animation. A <code>fill</code> attribute written directly on a <code>&lt;path&gt;</code> element has specificity equivalent to an inline style, which means CSS rules need either higher specificity or <code>!important</code> to override it. The cleaner approach is to remove presentation attributes from your SVG markup entirely and control everything through CSS classes.</p>
+
+      <p>Class-based SVG styling is the production pattern. You assign classes to SVG elements &mdash; <code>&lt;circle class="icon-bg"&gt;</code>, <code>&lt;path class="icon-stroke"&gt;</code> &mdash; and write CSS rules targeting those classes. This separates structure from style, makes your SVGs themeable, and lets you reuse the same SVG markup with different visual treatments across your application. It is the same principle as separating HTML structure from CSS presentation, applied to vector graphics.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> Inline SVG styled with CSS is the foundation of every modern icon system, animated illustration, and interactive data visualization on the web. Understanding which properties belong to SVG and how the cascade applies to SVG elements unlocks an entirely new category of design possibilities that raster images simply cannot deliver.
+      </div>
+
+      <div class="code-block">
+        <h3>SVG Presentation Properties in CSS</h3>
+<pre><code>/* Remove all presentation attributes from SVG markup,
+   then control everything through CSS */
+.icon-primary {
+  fill: #6c5ce7;
+  stroke: none;
+}
+
+.icon-outline {
+  fill: none;
+  stroke: #e4e6ef;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Stroke dash patterns */
+.icon-dashed {
+  stroke-dasharray: 8 4;        /* 8px dash, 4px gap */
+}
+
+.icon-dotted {
+  stroke-dasharray: 2 6;        /* 2px dot, 6px gap */
+  stroke-linecap: round;
+}
+
+/* Hover effects on SVG elements */
+.icon-interactive:hover {
+  fill: #a29bfe;
+  stroke: #6c5ce7;
+  cursor: pointer;
+}
+
+/* Transitions work on SVG properties */
+.icon-interactive {
+  transition: fill 0.25s ease,
+              stroke 0.25s ease,
+              stroke-width 0.25s ease;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-svg-properties">
+        <h3>Demo: SVG Presentation Properties</h3>
+        <p class="demo-instruction">Hover over each shape to see CSS-driven style changes on SVG elements. All colors and strokes are controlled via CSS classes.</p>
+        <div class="svg-props-grid">
+          <div class="svg-prop-card">
+            <svg viewBox="0 0 80 80" class="svg-prop-icon" aria-hidden="true">
+              <circle cx="40" cy="40" r="30" class="shape-fill"/>
+            </svg>
+            <span>fill</span>
+          </div>
+          <div class="svg-prop-card">
+            <svg viewBox="0 0 80 80" class="svg-prop-icon" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" class="shape-stroke"/>
+            </svg>
+            <span>stroke</span>
+          </div>
+          <div class="svg-prop-card">
+            <svg viewBox="0 0 80 80" class="svg-prop-icon" aria-hidden="true">
+              <rect x="15" y="15" width="50" height="50" rx="8" class="shape-dashed"/>
+            </svg>
+            <span>dasharray</span>
+          </div>
+          <div class="svg-prop-card">
+            <svg viewBox="0 0 80 80" class="svg-prop-icon" aria-hidden="true">
+              <polygon points="40,10 65,65 15,65" class="shape-linejoin"/>
+            </svg>
+            <span>linejoin</span>
+          </div>
+          <div class="svg-prop-card">
+            <svg viewBox="0 0 80 80" class="svg-prop-icon" aria-hidden="true">
+              <line x1="15" y1="65" x2="65" y2="15" class="shape-linecap"/>
+            </svg>
+            <span>linecap</span>
+          </div>
+          <div class="svg-prop-card">
+            <svg viewBox="0 0 80 80" class="svg-prop-icon" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" class="shape-opacity"/>
+            </svg>
+            <span>opacity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: currentColor in SVG
+         ============================================================ -->
+    <section class="concept" id="currentcolor-svg">
+      <h2>2. currentColor in SVG</h2>
+
+      <p>The CSS keyword <code>currentColor</code> resolves to whatever the element's computed <code>color</code> property is. This seemingly simple mechanism is profoundly powerful when applied to SVG icons. By setting <code>fill: currentColor</code> on your SVG paths, the icon automatically inherits the text color of its parent element. Place the icon inside a paragraph and it matches the paragraph color. Place it inside a button and it matches the button text. Change the parent's <code>color</code> on hover and the icon changes too &mdash; with zero additional CSS.</p>
+
+      <p>This is the foundation of a single-color icon system. You create a library of SVG icons where every <code>&lt;path&gt;</code> and <code>&lt;circle&gt;</code> uses <code>fill: currentColor</code> (or <code>stroke: currentColor</code> for outline-style icons). The icons become color-agnostic: they do not carry their own color; they inherit it from context. This means you can use the same icon in a dark header, a light sidebar, a colored badge, and a disabled state without creating color variants or writing icon-specific color overrides.</p>
+
+      <p>The pattern extends beyond simple color matching. You can set <code>color</code> on a wrapper element to control all <code>currentColor</code> references inside it, creating a single control point for icon color. This works beautifully with CSS custom properties: set <code>color: var(--icon-color)</code> on the wrapper and change <code>--icon-color</code> in different contexts. Combined with <code>transition: color 0.2s</code> on the parent, your icons animate smoothly between color states because <code>currentColor</code> tracks the animated <code>color</code> value in real time.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> Every major design system &mdash; Material, Ant Design, Radix, Heroicons &mdash; builds its icon set on <code>currentColor</code>. It is the standard technique for making icons that seamlessly integrate into any typographic context. If you are building an icon system without <code>currentColor</code>, you are fighting CSS instead of using it.
+      </div>
+
+      <div class="code-block">
+        <h3>currentColor Icon Pattern</h3>
+<pre><code>&lt;!-- SVG icon using currentColor --&gt;
+&lt;svg viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor"
+     stroke-width="2" stroke-linecap="round"&gt;
+  &lt;path d="M12 5v14M5 12h14"/&gt;
+&lt;/svg&gt;
+
+/* CSS: icon inherits color from parent */
+.nav-link {
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s ease;
+}
+.nav-link:hover {
+  color: #6c5ce7;  /* icon color changes too! */
+}
+
+/* Single-color icon system */
+.icon {
+  width: 1.25em;
+  height: 1.25em;
+  fill: currentColor;    /* for solid icons */
+  stroke: currentColor;  /* for outline icons */
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-currentcolor">
+        <h3>Demo: currentColor Icon Grid</h3>
+        <p class="demo-instruction">Hover over each item. The icon color changes automatically because it uses <code>currentColor</code> to inherit the parent's text color.</p>
+        <div class="cc-icon-grid">
+          <a href="#" class="cc-icon-item" onclick="return false">
+            <svg viewBox="0 0 24 24" class="cc-icon" aria-hidden="true">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span>Home</span>
+          </a>
+          <a href="#" class="cc-icon-item" onclick="return false">
+            <svg viewBox="0 0 24 24" class="cc-icon" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <span>Search</span>
+          </a>
+          <a href="#" class="cc-icon-item" onclick="return false">
+            <svg viewBox="0 0 24 24" class="cc-icon" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span>Favorites</span>
+          </a>
+          <a href="#" class="cc-icon-item" onclick="return false">
+            <svg viewBox="0 0 24 24" class="cc-icon" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="cc-icon-item" onclick="return false">
+            <svg viewBox="0 0 24 24" class="cc-icon" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span>Settings</span>
+          </a>
+          <a href="#" class="cc-icon-item" onclick="return false">
+            <svg viewBox="0 0 24 24" class="cc-icon" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span>Alerts</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: Custom Properties in SVG
+         ============================================================ -->
+    <section class="concept" id="custom-properties-svg">
+      <h2>3. Custom Properties in SVG</h2>
+
+      <p>CSS custom properties work inside SVG just as they do in HTML. You can reference <code>var(--color)</code> in <code>fill</code>, <code>stroke</code>, <code>stroke-width</code>, and any other SVG presentation property. This makes custom properties the most flexible mechanism for SVG theming &mdash; more flexible than <code>currentColor</code>, which is limited to a single color channel (the inherited <code>color</code>). With custom properties you can control multiple independent colors, stroke widths, opacities, and transforms from a single location.</p>
+
+      <p>The typical pattern for a themed SVG icon system is to define a set of semantic variables &mdash; <code>--icon-primary</code>, <code>--icon-secondary</code>, <code>--icon-accent</code> &mdash; on a wrapper or at <code>:root</code>, and reference them inside your SVG elements. A two-tone icon might use <code>fill: var(--icon-primary)</code> for its main shape and <code>fill: var(--icon-secondary)</code> for an accent detail. When you switch themes, you reassign those variables, and every icon in the system updates simultaneously. No class toggling, no JavaScript DOM manipulation, no icon sprites for different themes.</p>
+
+      <p>Dark mode SVG adaptation is where this truly shines. In a light theme, your icon strokes might be dark gray; in dark mode, they need to be light gray. With custom properties, you declare the defaults for light mode on <code>:root</code>, then override them inside a <code>@media (prefers-color-scheme: dark)</code> block or a <code>.dark-theme</code> class. The SVG icons respond instantly because they are reading live CSS values, not baked-in color attributes. This same technique works for high-contrast mode, branded sub-themes, or any context where visual style needs to change dynamically.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> <code>currentColor</code> gives you one color channel for free. Custom properties give you unlimited channels. For multi-color icons, themed illustrations, or any SVG that needs to adapt to more than just text color, custom properties are the correct tool. They make your SVG system as flexible as your CSS design token architecture.
+      </div>
+
+      <div class="code-block">
+        <h3>Theming SVGs with Custom Properties</h3>
+<pre><code>/* Define theme tokens */
+:root {
+  --icon-primary: #6c5ce7;
+  --icon-secondary: #a29bfe;
+  --icon-bg: #242836;
+  --icon-stroke-w: 2;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --icon-primary: #a29bfe;
+    --icon-secondary: #6c5ce7;
+    --icon-bg: #1a1d27;
+  }
+}
+
+/* Two-tone icon using multiple variables */
+.icon-duotone .icon-base {
+  fill: var(--icon-secondary);
+  opacity: 0.3;
+}
+.icon-duotone .icon-detail {
+  fill: var(--icon-primary);
+  stroke: var(--icon-primary);
+  stroke-width: var(--icon-stroke-w);
+}
+
+/* Theme switching via class */
+.theme-warm {
+  --icon-primary: #e17055;
+  --icon-secondary: #fab1a0;
+}
+.theme-ocean {
+  --icon-primary: #0984e3;
+  --icon-secondary: #74b9ff;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-custom-props-svg">
+        <h3>Demo: Themed SVG Icons</h3>
+        <p class="demo-instruction">Click the theme buttons to switch all icon colors simultaneously. The SVGs read from custom properties, so a single variable change updates every icon.</p>
+        <div class="theme-switcher">
+          <input type="radio" name="svg-theme" id="theme-default" checked hidden>
+          <input type="radio" name="svg-theme" id="theme-warm" hidden>
+          <input type="radio" name="svg-theme" id="theme-ocean" hidden>
+          <input type="radio" name="svg-theme" id="theme-forest" hidden>
+          <div class="theme-btns">
+            <label for="theme-default" class="theme-btn theme-btn-default">Default</label>
+            <label for="theme-warm" class="theme-btn theme-btn-warm">Warm</label>
+            <label for="theme-ocean" class="theme-btn theme-btn-ocean">Ocean</label>
+            <label for="theme-forest" class="theme-btn theme-btn-forest">Forest</label>
+          </div>
+          <div class="themed-icons-row">
+            <div class="themed-icon-card">
+              <svg viewBox="0 0 64 64" class="themed-icon" aria-hidden="true">
+                <rect x="8" y="8" width="48" height="48" rx="12" class="ti-bg"/>
+                <path d="M22 32l6 6 14-14" class="ti-fg" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Confirm</span>
+            </div>
+            <div class="themed-icon-card">
+              <svg viewBox="0 0 64 64" class="themed-icon" aria-hidden="true">
+                <circle cx="32" cy="32" r="24" class="ti-bg"/>
+                <path d="M32 20v12l8 4" class="ti-fg" fill="none" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+              <span>Schedule</span>
+            </div>
+            <div class="themed-icon-card">
+              <svg viewBox="0 0 64 64" class="themed-icon" aria-hidden="true">
+                <rect x="8" y="14" width="48" height="36" rx="6" class="ti-bg"/>
+                <polyline points="8,14 32,36 56,14" class="ti-fg" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Email</span>
+            </div>
+            <div class="themed-icon-card">
+              <svg viewBox="0 0 64 64" class="themed-icon" aria-hidden="true">
+                <path d="M32 8 L40 28 L56 28 L44 40 L48 56 L32 46 L16 56 L20 40 L8 28 L24 28 Z" class="ti-bg"/>
+                <circle cx="32" cy="34" r="6" class="ti-fg-fill"/>
+              </svg>
+              <span>Starred</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: SVG Animations with CSS
+         ============================================================ -->
+    <section class="concept" id="svg-animations">
+      <h2>4. SVG Animations with CSS</h2>
+
+      <p>CSS <code>@keyframes</code> animations work on SVG elements exactly as they do on HTML elements. You can animate <code>fill</code>, <code>stroke</code>, <code>stroke-dashoffset</code>, <code>opacity</code>, <code>transform</code>, and any other animatable SVG property. This is the modern approach to SVG animation &mdash; it replaces the older SMIL (<code>&lt;animate&gt;</code>) syntax with a system that is more familiar to web developers, integrates with the rest of CSS, and respects <code>prefers-reduced-motion</code>.</p>
+
+      <p>The line-drawing effect is the most iconic CSS-driven SVG animation. It works by leveraging <code>stroke-dasharray</code> and <code>stroke-dashoffset</code>. First, you set <code>stroke-dasharray</code> to the total length of the path (so there is one dash covering the entire stroke). Then you set <code>stroke-dashoffset</code> to that same length, which pushes the dash entirely off the path, making it invisible. Finally, you animate <code>stroke-dashoffset</code> from that value down to <code>0</code>, causing the stroke to progressively appear as if it is being drawn by an invisible pen. You can calculate the path length with JavaScript (<code>path.getTotalLength()</code>) or by trial and error, but for many paths, using a large round number like <code>200</code> or <code>1000</code> works if it exceeds the actual path length.</p>
+
+      <p>One important difference between SVG and HTML transforms: the <code>transform-origin</code> in SVG defaults to the top-left corner of the SVG canvas (<code>0 0</code>), not the center of the element as in HTML. When you rotate or scale an SVG element, it will pivot around the top-left of the SVG viewport unless you explicitly set <code>transform-origin</code> to <code>center</code> or to the element's visual center. Modern browsers now support <code>transform-box: fill-box</code>, which makes <code>transform-origin</code> relative to the element's bounding box rather than the SVG canvas, giving you the same intuitive behavior as HTML elements.</p>
+
+      <p>For complex SVG animations that need choreography &mdash; multiple elements animating in sequence with different timings &mdash; use <code>animation-delay</code> to stagger the start times. Combine this with custom properties for computed delays (<code>animation-delay: calc(var(--i) * 0.2s)</code>) and you can create sophisticated orchestrated animations that look like they were built with a JavaScript motion library, but run entirely in CSS.</p>
+
+      <div class="info-box">
+        <strong>SMIL vs CSS animations:</strong> SMIL animations (<code>&lt;animate&gt;</code>, <code>&lt;animateTransform&gt;</code>) are SVG-native and can do things CSS cannot, like morphing between two <code>&lt;path&gt;</code> <code>d</code> attributes (path morphing). However, SMIL was deprecated by Chrome in 2015, then un-deprecated, and its future remains uncertain. For most animation needs &mdash; color changes, transforms, opacity, stroke drawing &mdash; CSS is the preferred and more maintainable approach. For path morphing, consider the Web Animations API or the CSS <code>d</code> property (supported in Chrome/Edge).
+      </div>
+
+      <div class="code-block">
+        <h3>Line-Drawing Animation</h3>
+<pre><code>/* The line-drawing technique */
+.draw-path {
+  fill: none;
+  stroke: #6c5ce7;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 200;     /* one dash covering full path */
+  stroke-dashoffset: 200;    /* push it off-screen */
+  animation: draw 2s ease forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;    /* reveal the stroke */
+  }
+}
+
+/* Fix transform-origin for SVG elements */
+.svg-rotate {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 2s linear infinite;
+}
+
+/* Staggered path drawing */
+.draw-path:nth-child(1) { animation-delay: 0s; }
+.draw-path:nth-child(2) { animation-delay: 0.3s; }
+.draw-path:nth-child(3) { animation-delay: 0.6s; }</code></pre>
+      </div>
+
+      <div class="demo" id="demo-line-drawing">
+        <h3>Demo: Line-Drawing Animation</h3>
+        <p class="demo-instruction">Hover over the SVG to trigger the line-drawing effect. The stroke appears as if drawn by hand, using <code>stroke-dashoffset</code> animation.</p>
+        <div class="line-draw-stage">
+          <svg viewBox="0 0 300 200" class="line-draw-svg" aria-hidden="true">
+            <!-- Mountain landscape -->
+            <path d="M10,180 L80,60 L120,120 L150,40 L200,140 L250,80 L290,180" class="ld-path ld-mountain"/>
+            <!-- Sun -->
+            <circle cx="250" cy="40" r="20" class="ld-path ld-sun"/>
+            <!-- Sun rays -->
+            <line x1="250" y1="10" x2="250" y2="2" class="ld-path ld-ray"/>
+            <line x1="272" y1="18" x2="278" y2="12" class="ld-path ld-ray"/>
+            <line x1="280" y1="40" x2="288" y2="40" class="ld-path ld-ray"/>
+            <line x1="272" y1="62" x2="278" y2="68" class="ld-path ld-ray"/>
+            <line x1="250" y1="70" x2="250" y2="78" class="ld-path ld-ray"/>
+            <line x1="228" y1="62" x2="222" y2="68" class="ld-path ld-ray"/>
+            <line x1="220" y1="40" x2="212" y2="40" class="ld-path ld-ray"/>
+            <line x1="228" y1="18" x2="222" y2="12" class="ld-path ld-ray"/>
+            <!-- Ground line -->
+            <line x1="5" y1="180" x2="295" y2="180" class="ld-path ld-ground"/>
+            <!-- Trees -->
+            <path d="M30,180 L40,150 L50,180" class="ld-path ld-tree"/>
+            <path d="M55,180 L68,140 L81,180" class="ld-path ld-tree"/>
+          </svg>
+          <p class="line-draw-label">Hover to draw</p>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-animated-spinner">
+        <h3>Demo: Animated SVG Spinner</h3>
+        <p class="demo-instruction">A loading spinner built with SVG and CSS animations. The stroke dash rotates and pulses using two layered keyframe animations.</p>
+        <div class="spinner-stage">
+          <svg viewBox="0 0 50 50" class="svg-spinner" aria-label="Loading">
+            <circle cx="25" cy="25" r="20" class="spinner-track"/>
+            <circle cx="25" cy="25" r="20" class="spinner-fill"/>
+          </svg>
+          <svg viewBox="0 0 50 50" class="svg-spinner spinner-alt" aria-label="Loading">
+            <circle cx="25" cy="25" r="20" class="spinner-track"/>
+            <circle cx="25" cy="25" r="20" class="spinner-fill-alt"/>
+          </svg>
+          <svg viewBox="0 0 50 50" class="svg-spinner spinner-dots-svg" aria-label="Loading">
+            <circle cx="25" cy="6" r="4" class="spinner-dot" style="--i:0"/>
+            <circle cx="41" cy="13" r="4" class="spinner-dot" style="--i:1"/>
+            <circle cx="44" cy="31" r="4" class="spinner-dot" style="--i:2"/>
+            <circle cx="33" cy="44" r="4" class="spinner-dot" style="--i:3"/>
+            <circle cx="17" cy="44" r="4" class="spinner-dot" style="--i:4"/>
+            <circle cx="6" cy="31" r="4" class="spinner-dot" style="--i:5"/>
+            <circle cx="9" cy="13" r="4" class="spinner-dot" style="--i:6"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: SVG as Backgrounds vs Inline
+         ============================================================ -->
+    <section class="concept" id="svg-backgrounds">
+      <h2>5. SVG as Backgrounds vs Inline</h2>
+
+      <p>You have two fundamentally different ways to use SVG on the web: inline (embedded in the HTML DOM) and external (referenced via <code>&lt;img&gt;</code>, <code>background-image</code>, or <code>object</code>). The choice between them is not a matter of preference &mdash; it is a technical decision with real consequences for styling, performance, accessibility, and caching.</p>
+
+      <p>Inline SVG lives in the DOM and is fully styleable with CSS. You can target individual elements, apply hover effects, animate strokes, and use <code>currentColor</code>. The trade-off is that the SVG markup bloats your HTML, the browser must parse and lay out every SVG node as part of the document tree, and the SVG cannot be cached independently of the page. Use inline SVG when you need CSS styling, animation, or interactivity &mdash; icons, illustrations, charts, decorative elements that change with theme or state.</p>
+
+      <p>SVG referenced as a CSS <code>background-image</code> is treated as an opaque image. You cannot style its internal elements with CSS, <code>currentColor</code> does not work (because the SVG is not in the document's cascade), and JavaScript cannot access its nodes. However, background SVGs are cacheable, can be loaded lazily, and do not add DOM complexity. You can encode SVG directly in CSS using data URIs: <code>background-image: url("data:image/svg+xml,&lt;svg ...&gt;...&lt;/svg&gt;")</code>. This avoids a network request entirely but requires URL-encoding special characters (<code>#</code> becomes <code>%23</code>, for example).</p>
+
+      <p>SVG sprites are a middle-ground technique where you define multiple icons in a single SVG file using <code>&lt;symbol&gt;</code> elements, each with a unique <code>id</code>. You then reference individual icons anywhere in your HTML with <code>&lt;use href="#icon-name"&gt;</code>. The symbols are defined once (often in a hidden SVG block at the top of the page or in an external file), and <code>&lt;use&gt;</code> creates lightweight shadow-DOM clones. This gives you the DOM access and <code>currentColor</code> support of inline SVG with the deduplication benefits of a sprite sheet.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> Choosing the wrong SVG integration method leads to either over-engineered solutions (inline SVG for static decorations) or frustrating limitations (background SVG for icons that need to change color on hover). Knowing when to use each approach is a core architectural skill.
+      </div>
+
+      <div class="code-block">
+        <h3>SVG in CSS Backgrounds</h3>
+<pre><code>/* SVG as data URI in CSS background */
+.divider-wave {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120 Z' fill='%236c5ce7'/%3E%3C/svg%3E");
+  background-size: cover;
+  height: 60px;
+}
+
+/* SVG sprite usage */
+&lt;svg hidden&gt;
+  &lt;symbol id="icon-star" viewBox="0 0 24 24"&gt;
+    &lt;path d="M12 2l3.09 6.26L22 9.27l-5 ..." /&gt;
+  &lt;/symbol&gt;
+&lt;/svg&gt;
+
+&lt;!-- Use anywhere in the page --&gt;
+&lt;svg class="icon"&gt;
+  &lt;use href="#icon-star"&gt;&lt;/use&gt;
+&lt;/svg&gt;</code></pre>
+      </div>
+
+      <div class="demo" id="demo-svg-dividers">
+        <h3>Demo: SVG Decorative Dividers</h3>
+        <p class="demo-instruction">These section dividers use SVG backgrounds encoded as data URIs in CSS. No image files, no extra HTTP requests &mdash; pure CSS.</p>
+        <div class="divider-showcase">
+          <div class="divider-section divider-wave-section">
+            <span>Wave Divider</span>
+            <div class="divider-wave"></div>
+          </div>
+          <div class="divider-section divider-zigzag-section">
+            <span>Zigzag Divider</span>
+            <div class="divider-zigzag"></div>
+          </div>
+          <div class="divider-section divider-curve-section">
+            <span>Curve Divider</span>
+            <div class="divider-curve"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: SVG Filters & Blend Modes
+         ============================================================ -->
+    <section class="concept" id="svg-filters">
+      <h2>6. SVG Filters &amp; Blend Modes</h2>
+
+      <p>SVG has its own powerful filter system that predates the CSS <code>filter</code> property by over a decade. While CSS filters (<code>blur()</code>, <code>brightness()</code>, <code>grayscale()</code>) are convenient shorthands, SVG filters offer granular, composable primitives that can create effects impossible with CSS alone. An SVG filter is defined inside a <code>&lt;filter&gt;</code> element and applied to any element (SVG or HTML) using <code>filter: url(#filter-id)</code>.</p>
+
+      <p>The most commonly used SVG filter primitives are <code>&lt;feGaussianBlur&gt;</code> (blur with independent x/y control), <code>&lt;feColorMatrix&gt;</code> (manipulate color channels through matrix multiplication &mdash; powerful enough to create any color transformation), <code>&lt;feDropShadow&gt;</code> (drop shadow with color and offset), <code>&lt;feComposite&gt;</code> (combine two graphics using Porter-Duff composition), and <code>&lt;feTurbulence&gt;</code> (generate Perlin noise for textures). These primitives can be chained: the output of one becomes the input of the next, creating a filter pipeline.</p>
+
+      <p>CSS <code>mix-blend-mode</code> and <code>isolation</code> also work with SVG elements. You can set <code>mix-blend-mode: multiply</code> on an SVG group to blend it with whatever is behind it in the stacking context. The <code>isolation: isolate</code> property creates a new stacking context, preventing blend modes from "leaking" into parent layers. These techniques are especially useful for creating duotone effects, textured overlays, and photographic treatments &mdash; common in editorial and marketing designs.</p>
+
+      <div class="why">
+        <strong>Why it matters:</strong> SVG filters are the most powerful image-processing tool available in CSS. When CSS shorthand filters are not enough &mdash; when you need custom color channel manipulation, noise textures, or composite operations &mdash; SVG filters fill the gap. Understanding them gives you Photoshop-level control directly in the browser.
+      </div>
+
+      <div class="code-block">
+        <h3>SVG Filter Primitives</h3>
+<pre><code>&lt;!-- Define a glow filter --&gt;
+&lt;svg height="0" width="0"&gt;
+  &lt;filter id="glow"&gt;
+    &lt;feGaussianBlur in="SourceGraphic"
+                     stdDeviation="4"
+                     result="blur" /&gt;
+    &lt;feMerge&gt;
+      &lt;feMergeNode in="blur" /&gt;
+      &lt;feMergeNode in="SourceGraphic" /&gt;
+    &lt;/feMerge&gt;
+  &lt;/filter&gt;
+&lt;/svg&gt;
+
+/* Apply to any element */
+.glowing-icon {
+  filter: url(#glow);
+}
+
+/* feColorMatrix for color manipulation */
+&lt;feColorMatrix type="matrix" values="
+  0.33 0.33 0.33 0 0
+  0.33 0.33 0.33 0 0
+  0.33 0.33 0.33 0 0
+  0    0    0    1 0
+"/&gt;  /* converts to grayscale */
+
+/* mix-blend-mode on SVG */
+.svg-overlay {
+  mix-blend-mode: multiply;
+  isolation: isolate;
+}</code></pre>
+      </div>
+
+      <div class="demo" id="demo-svg-filters">
+        <h3>Demo: SVG Filter Effects</h3>
+        <p class="demo-instruction">Each card applies a different SVG filter to the same shape, demonstrating the range of effects available.</p>
+        <!-- Hidden SVG filter definitions -->
+        <svg width="0" height="0" aria-hidden="true">
+          <defs>
+            <filter id="blur-filter">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+            </filter>
+            <filter id="glow-filter">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="shadow-filter">
+              <feDropShadow dx="3" dy="3" stdDeviation="3" flood-color="#6c5ce7" flood-opacity="0.6"/>
+            </filter>
+            <filter id="noise-filter">
+              <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="6"/>
+            </filter>
+          </defs>
+        </svg>
+        <div class="filter-cards">
+          <div class="filter-card">
+            <svg viewBox="0 0 80 80" class="filter-shape" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" fill="#6c5ce7"/>
+            </svg>
+            <span>No Filter</span>
+          </div>
+          <div class="filter-card">
+            <svg viewBox="0 0 80 80" class="filter-shape" style="filter: url(#blur-filter)" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" fill="#6c5ce7"/>
+            </svg>
+            <span>Gaussian Blur</span>
+          </div>
+          <div class="filter-card">
+            <svg viewBox="0 0 80 80" class="filter-shape" style="filter: url(#glow-filter)" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" fill="#6c5ce7"/>
+            </svg>
+            <span>Glow</span>
+          </div>
+          <div class="filter-card">
+            <svg viewBox="0 0 80 80" class="filter-shape" style="filter: url(#shadow-filter)" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" fill="#6c5ce7"/>
+            </svg>
+            <span>Drop Shadow</span>
+          </div>
+          <div class="filter-card">
+            <svg viewBox="0 0 80 80" class="filter-shape" style="filter: url(#noise-filter)" aria-hidden="true">
+              <circle cx="40" cy="40" r="28" fill="#6c5ce7"/>
+            </svg>
+            <span>Displacement</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 7: Practical Patterns
+         ============================================================ -->
+    <section class="concept" id="practical-patterns">
+      <h2>7. Practical Patterns</h2>
+
+      <p>The techniques covered in this module combine into powerful production patterns. Animated icon systems, scroll-triggered line drawings, SVG decorative elements, and interactive charts are not hypothetical &mdash; they are features you will build in real projects. This section brings everything together with patterns you can adapt immediately.</p>
+
+      <p>The animated icon system pattern uses <code>currentColor</code> for color inheritance, CSS transitions for hover states, and <code>stroke-dashoffset</code> for draw-in effects on icon appearance. Each icon is a reusable component that works anywhere in the page without custom color overrides. The scroll-triggered line-drawing pattern sets the initial <code>stroke-dashoffset</code> to the path length and then reduces it as the user scrolls, creating the illusion that the path is being drawn as you read down the page. With scroll-driven animations in CSS, this can now be done without JavaScript.</p>
+
+      <p>SVG decorative dividers replace the old pattern of using raster PNGs for section separators. You define the wave, zigzag, or custom shape as an SVG path and embed it as a CSS <code>background-image</code> data URI. The vector scales perfectly at any width, never pixelates, and weighs a fraction of a raster equivalent. For animated logos, combine path drawing with fill transitions and transform animations to create sophisticated entrance sequences &mdash; the kind of branding touch that makes a site feel premium.</p>
+
+      <div class="demo" id="demo-icon-system">
+        <h3>Pattern: Animated Icon Button System</h3>
+        <p class="demo-instruction">Each button uses the same icon architecture: <code>currentColor</code> for base color, CSS transitions for hover, and stroke animations for visual feedback. Hover over each button to see the effect.</p>
+        <div class="icon-btn-row">
+          <button class="icon-btn">
+            <svg viewBox="0 0 24 24" class="icon-btn-svg" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" class="ib-stroke"/>
+            </svg>
+            <span>Add</span>
+          </button>
+          <button class="icon-btn icon-btn-danger">
+            <svg viewBox="0 0 24 24" class="icon-btn-svg" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6" class="ib-stroke"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" class="ib-stroke"/>
+            </svg>
+            <span>Delete</span>
+          </button>
+          <button class="icon-btn icon-btn-success">
+            <svg viewBox="0 0 24 24" class="icon-btn-svg" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" class="ib-stroke"/>
+              <polyline points="22 4 12 14.01 9 11.01" class="ib-stroke"/>
+            </svg>
+            <span>Confirm</span>
+          </button>
+          <button class="icon-btn icon-btn-warning">
+            <svg viewBox="0 0 24 24" class="icon-btn-svg" aria-hidden="true">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" class="ib-stroke"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" class="ib-stroke"/>
+            </svg>
+            <span>Edit</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-animated-logo">
+        <h3>Pattern: Animated SVG Logo</h3>
+        <p class="demo-instruction">This logo draws itself on page load using staggered <code>stroke-dashoffset</code> animations, then fills in with color. A production-ready branding animation.</p>
+        <div class="logo-stage">
+          <svg viewBox="0 0 260 80" class="animated-logo" aria-label="PE7 Logo">
+            <!-- P -->
+            <path d="M20,70 L20,10 L45,10 A20,20 0 0 1 45,45 L20,45" class="logo-letter" style="--i:0"/>
+            <!-- E -->
+            <path d="M75,10 L75,70 M75,10 L105,10 M75,40 L100,40 M75,70 L105,70" class="logo-letter" style="--i:1"/>
+            <!-- 7 -->
+            <path d="M120,10 L155,10 L135,70" class="logo-letter" style="--i:2"/>
+            <!-- Decorative dot -->
+            <circle cx="175" cy="65" r="6" class="logo-dot"/>
+            <!-- Decorative lines -->
+            <line x1="195" y1="40" x2="250" y2="40" class="logo-line" style="--i:3"/>
+            <line x1="195" y1="52" x2="235" y2="52" class="logo-line" style="--i:4"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="demo" id="demo-svg-chart">
+        <h3>Pattern: Interactive SVG Bar Chart</h3>
+        <p class="demo-instruction">Hover over each bar to see value labels and color transitions. The bars animate in on load with staggered delays. Built entirely with inline SVG and CSS.</p>
+        <div class="chart-stage">
+          <svg viewBox="0 0 320 200" class="bar-chart" aria-label="Monthly revenue chart">
+            <!-- Grid lines -->
+            <line x1="40" y1="20" x2="40" y2="170" class="chart-axis"/>
+            <line x1="40" y1="170" x2="310" y2="170" class="chart-axis"/>
+            <line x1="40" y1="50" x2="310" y2="50" class="chart-gridline"/>
+            <line x1="40" y1="90" x2="310" y2="90" class="chart-gridline"/>
+            <line x1="40" y1="130" x2="310" y2="130" class="chart-gridline"/>
+            <!-- Y-axis labels -->
+            <text x="35" y="54" class="chart-label chart-label-y">100</text>
+            <text x="35" y="94" class="chart-label chart-label-y">75</text>
+            <text x="35" y="134" class="chart-label chart-label-y">50</text>
+            <text x="35" y="174" class="chart-label chart-label-y">0</text>
+            <!-- Bars -->
+            <g class="chart-bar-group" style="--i:0">
+              <rect x="55" y="80" width="30" height="90" rx="4" class="chart-bar"/>
+              <text x="70" y="75" class="chart-val">75</text>
+              <text x="70" y="188" class="chart-label">Jan</text>
+            </g>
+            <g class="chart-bar-group" style="--i:1">
+              <rect x="100" y="50" width="30" height="120" rx="4" class="chart-bar"/>
+              <text x="115" y="45" class="chart-val">100</text>
+              <text x="115" y="188" class="chart-label">Feb</text>
+            </g>
+            <g class="chart-bar-group" style="--i:2">
+              <rect x="145" y="100" width="30" height="70" rx="4" class="chart-bar"/>
+              <text x="160" y="95" class="chart-val">58</text>
+              <text x="160" y="188" class="chart-label">Mar</text>
+            </g>
+            <g class="chart-bar-group" style="--i:3">
+              <rect x="190" y="60" width="30" height="110" rx="4" class="chart-bar"/>
+              <text x="205" y="55" class="chart-val">92</text>
+              <text x="205" y="188" class="chart-label">Apr</text>
+            </g>
+            <g class="chart-bar-group" style="--i:4">
+              <rect x="235" y="40" width="30" height="130" rx="4" class="chart-bar"/>
+              <text x="250" y="35" class="chart-val">108</text>
+              <text x="250" y="188" class="chart-label">May</text>
+            </g>
+            <g class="chart-bar-group" style="--i:5">
+              <rect x="280" y="55" width="30" height="115" rx="4" class="chart-bar"/>
+              <text x="295" y="50" class="chart-val">96</text>
+              <text x="295" y="188" class="chart-label">Jun</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EXERCISE
+         ============================================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Themed Icon Card with Line-Drawing Effect</h2>
+
+      <p>Build a card component containing a line-drawn SVG icon that responds to CSS custom property theming. This exercise combines three core techniques from this module:</p>
+
+      <ol>
+        <li><strong>currentColor icon:</strong> The SVG icon should use <code>stroke: currentColor</code> so it automatically inherits the card's text color. Set <code>fill: none</code> for an outline icon style.</li>
+        <li><strong>Line-drawing on hover:</strong> Set up <code>stroke-dasharray</code> and <code>stroke-dashoffset</code> on the icon's paths. On card hover, animate <code>stroke-dashoffset</code> to <code>0</code> so the icon appears to draw itself. Use a <code>0.8s ease</code> transition.</li>
+        <li><strong>Custom property theming:</strong> Define <code>--card-accent</code> and <code>--card-text</code> on the card. On hover, change <code>--card-accent</code> to a brighter color. Use a <code>.themed-alt</code> class to demonstrate a second color scheme on a separate card.</li>
+      </ol>
+
+      <p><strong>Bonus:</strong> Add <code>transform-box: fill-box</code> and <code>transform-origin: center</code> to the SVG circle element, then rotate it on hover using a CSS transition. This demonstrates proper transform handling for SVG elements.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="icon-card">
+  <svg viewBox="0 0 64 64" class="ic-svg" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" class="ic-ring"/>
+    <polyline points="22,32 30,40 44,24" class="ic-check"/>
+  </svg>
+  <h3>Verification</h3>
+  <p>Hover to see the line-drawing effect and color transition.</p>
+</div>
+
+<div class="icon-card themed-alt">
+  <svg viewBox="0 0 64 64" class="ic-svg" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" class="ic-ring"/>
+    <polyline points="22,32 30,40 44,24" class="ic-check"/>
+  </svg>
+  <h3>Approved</h3>
+  <p>Same component, different custom properties.</p>
+</div>
+        </template>
+        <template class="starter-css">
+.icon-card {
+  --card-accent: #6c5ce7;
+  --card-text: #e4e6ef;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: #1a1d27;
+  border: 1px solid #2d3148;
+  border-radius: 12px;
+  color: var(--card-text);
+  max-width: 260px;
+  display: inline-flex;
+  margin: 0.5rem;
+  transition: border-color 0.3s ease,
+              color 0.3s ease;
+}
+
+.icon-card:hover {
+  --card-accent: #a29bfe;
+  border-color: var(--card-accent);
+}
+
+/* Alternate theme */
+.themed-alt {
+  --card-accent: #00cec9;
+}
+.themed-alt:hover {
+  --card-accent: #55efc4;
+}
+
+/* SVG icon setup */
+.ic-svg {
+  width: 64px;
+  height: 64px;
+}
+
+.ic-ring {
+  fill: none;
+  stroke: var(--card-accent);
+  stroke-width: 2;
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  transition: stroke-dashoffset 0.8s ease,
+              stroke 0.3s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ic-check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  transition: stroke-dashoffset 0.6s ease 0.3s;
+}
+
+/* Draw on hover */
+.icon-card:hover .ic-ring {
+  stroke-dashoffset: 0;
+}
+
+.icon-card:hover .ic-check {
+  stroke-dashoffset: 0;
+}
+
+.icon-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--card-accent);
+  transition: color 0.3s ease;
+}
+
+.icon-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHALLENGE
+         ============================================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: SVG Dashboard with Animated Charts</h2>
+
+      <p>Build a mini dashboard that showcases every SVG-CSS integration technique from this module in a cohesive, production-quality interface. This is a Grand Mastery challenge &mdash; it should look and feel like a real analytics dashboard.</p>
+
+      <ol>
+        <li><strong>Animated ring chart:</strong> Create a donut/ring chart using SVG <code>&lt;circle&gt;</code> elements with <code>stroke-dasharray</code> and <code>stroke-dashoffset</code>. The segments should animate in on page load with staggered delays. Each segment should use a different custom property color (<code>--chart-1</code>, <code>--chart-2</code>, etc.) and show a percentage value in the center.</li>
+        <li><strong>Stat cards with icons:</strong> Create 3-4 stat cards, each containing a <code>currentColor</code> SVG icon, a metric value, and a label. The icons should use <code>stroke: currentColor</code> and match the card's text color. On hover, apply a subtle glow filter defined in SVG <code>&lt;filter&gt;</code>.</li>
+        <li><strong>Line-drawing sparkline:</strong> Add a mini sparkline chart using an SVG <code>&lt;polyline&gt;</code> that draws itself on load using the <code>stroke-dashoffset</code> technique. The line should have a gradient stroke and a subtle area fill beneath it.</li>
+        <li><strong>Theme toggle:</strong> Use a radio-button or checkbox hack to switch between a dark theme and a light theme. All SVG elements should respond to the theme change through CSS custom properties. Transitions should be smooth.</li>
+      </ol>
+
+      <p>All SVG elements must be inline, use semantic <code>aria-label</code> attributes, and respect <code>prefers-reduced-motion</code>. No JavaScript. The layout should use CSS Grid for the dashboard structure.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="dashboard">
+  <!-- Theme toggle -->
+  <input type="checkbox" id="dash-theme" hidden>
+  <label for="dash-theme" class="dash-theme-toggle">
+    <svg viewBox="0 0 24 24" class="toggle-icon" aria-hidden="true">
+      <circle cx="12" cy="12" r="5" class="sun-center"/>
+      <line x1="12" y1="1" x2="12" y2="3" class="sun-ray"/>
+      <line x1="12" y1="21" x2="12" y2="23" class="sun-ray"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-ray"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-ray"/>
+      <line x1="1" y1="12" x2="3" y2="12" class="sun-ray"/>
+      <line x1="21" y1="12" x2="23" y2="12" class="sun-ray"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-ray"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-ray"/>
+    </svg>
+  </label>
+
+  <h2 class="dash-title">Analytics Overview</h2>
+
+  <!-- Stat cards -->
+  <div class="dash-stats">
+    <div class="stat-card">
+      <svg viewBox="0 0 24 24" class="stat-icon" aria-hidden="true">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <div class="stat-value">2,847</div>
+      <div class="stat-label">Users</div>
+    </div>
+    <div class="stat-card">
+      <svg viewBox="0 0 24 24" class="stat-icon" aria-hidden="true">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <div class="stat-value">94.2%</div>
+      <div class="stat-label">Uptime</div>
+    </div>
+    <div class="stat-card">
+      <svg viewBox="0 0 24 24" class="stat-icon" aria-hidden="true">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+      <div class="stat-value">$12.4k</div>
+      <div class="stat-label">Revenue</div>
+    </div>
+  </div>
+
+  <!-- Ring chart -->
+  <div class="dash-ring-area">
+    <svg viewBox="0 0 120 120" class="ring-chart" aria-label="Usage breakdown: 45% Direct, 30% Referral, 25% Organic">
+      <circle cx="60" cy="60" r="50" class="ring-bg"/>
+      <circle cx="60" cy="60" r="50" class="ring-seg ring-seg-1" style="--offset: 0"/>
+      <circle cx="60" cy="60" r="50" class="ring-seg ring-seg-2" style="--offset: 141"/>
+      <circle cx="60" cy="60" r="50" class="ring-seg ring-seg-3" style="--offset: 235"/>
+    </svg>
+    <div class="ring-center-label">
+      <span class="ring-pct">45%</span>
+      <span class="ring-sub">Direct</span>
+    </div>
+  </div>
+
+  <!-- Sparkline -->
+  <div class="dash-sparkline-area">
+    <span class="spark-label">Weekly trend</span>
+    <svg viewBox="0 0 200 60" class="sparkline" aria-label="Weekly trend line">
+      <polyline points="0,50 30,35 60,42 90,20 120,28 150,10 180,18 200,5" class="spark-line"/>
+      <polygon points="0,50 30,35 60,42 90,20 120,28 150,10 180,18 200,5 200,60 0,60" class="spark-area"/>
+    </svg>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.dashboard {
+  --dash-bg: #0f1117;
+  --dash-surface: #1a1d27;
+  --dash-border: #2d3148;
+  --dash-text: #e4e6ef;
+  --dash-muted: #8b8fa3;
+  --dash-accent: #6c5ce7;
+  --chart-1: #6c5ce7;
+  --chart-2: #00cec9;
+  --chart-3: #fd79a8;
+
+  background: var(--dash-bg);
+  color: var(--dash-text);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1rem;
+  max-width: 560px;
+  font-family: system-ui, sans-serif;
+  position: relative;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* Light theme override */
+#dash-theme:checked ~ * {
+  --dash-bg: #f0f0f5;
+  --dash-surface: #ffffff;
+  --dash-border: #d1d5db;
+  --dash-text: #1e293b;
+  --dash-muted: #64748b;
+}
+#dash-theme:checked ~ .dash-stats,
+#dash-theme:checked ~ .dash-ring-area,
+#dash-theme:checked ~ .dash-sparkline-area,
+#dash-theme:checked ~ .dash-title {
+  --dash-bg: #f0f0f5;
+  --dash-surface: #ffffff;
+  --dash-border: #d1d5db;
+  --dash-text: #1e293b;
+  --dash-muted: #64748b;
+}
+
+.dash-theme-toggle {
+  position: absolute; top: 1rem; right: 1rem;
+  cursor: pointer;
+}
+.toggle-icon {
+  width: 24px; height: 24px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round;
+}
+
+.dash-title {
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--dash-text);
+}
+
+/* Stat cards */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+.stat-card {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  transition: border-color 0.3s, background 0.4s;
+}
+.stat-card:hover { border-color: var(--dash-accent); }
+.stat-icon {
+  width: 28px; height: 28px;
+  fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-bottom: 0.5rem;
+  color: var(--dash-accent);
+}
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--dash-muted);
+  margin-top: 0.25rem;
+}
+
+/* Ring chart */
+.dash-ring-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.ring-chart { width: 120px; height: 120px; }
+.ring-bg {
+  fill: none;
+  stroke: var(--dash-border);
+  stroke-width: 10;
+}
+.ring-seg {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  stroke-dasharray: 314;
+  animation: ring-draw 1s ease forwards;
+}
+.ring-seg-1 {
+  stroke: var(--chart-1);
+  stroke-dasharray: 141 314;
+  stroke-dashoffset: 0;
+}
+.ring-seg-2 {
+  stroke: var(--chart-2);
+  stroke-dasharray: 94 314;
+  stroke-dashoffset: -141;
+}
+.ring-seg-3 {
+  stroke: var(--chart-3);
+  stroke-dasharray: 79 314;
+  stroke-dashoffset: -235;
+}
+
+@keyframes ring-draw {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ring-center-label {
+  position: absolute;
+  text-align: center;
+}
+.ring-pct { display: block; font-size: 1.4rem; font-weight: 700; }
+.ring-sub { font-size: 0.7rem; color: var(--dash-muted); }
+
+/* Sparkline */
+.dash-sparkline-area {
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 1rem;
+  transition: background 0.4s;
+}
+.spark-label {
+  font-size: 0.8rem;
+  color: var(--dash-muted);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.sparkline { width: 100%; height: 60px; }
+.spark-line {
+  fill: none;
+  stroke: var(--dash-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: draw-spark 1.5s ease forwards 0.5s;
+}
+.spark-area {
+  fill: var(--dash-accent);
+  opacity: 0.1;
+}
+
+@keyframes draw-spark {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-seg,
+  .spark-line {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../28-counters-generated/index.html">&larr; Previous</a>
+    <a href="../30-grand-capstone/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

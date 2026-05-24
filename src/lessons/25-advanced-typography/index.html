@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Typography &amp; Variable Fonts | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 25</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-8">Level 8 - Production Polish</span>
+    <h1>Advanced Typography &amp; Variable Fonts</h1>
+    <p class="subtitle">Fonts are not decorations. They are the interface. Every word your users read passes through your typographic choices &mdash; weight, width, spacing, size, decoration, ligatures, numerals. This module takes you past <code>font-size</code> and <code>font-weight</code> into the territory where type becomes a living, responsive, precisely controlled system. Variable fonts, fluid scales, text balancing, drop caps, color fonts, and OpenType features &mdash; the full arsenal for production-grade typography.</p>
+  </header>
+
+  <main>
+
+    <!-- ====================================== -->
+    <!-- SECTION 1: VARIABLE FONTS              -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="variable-fonts">
+      <h2>1. Variable Fonts</h2>
+      <p>Traditional web fonts ship one file per weight: <code>Regular.woff2</code>, <code>Bold.woff2</code>, <code>SemiBold.woff2</code>. Want six weights? That is six HTTP requests and six separate files. Variable fonts collapse all of that into a single file that contains an entire <strong>design space</strong> &mdash; every weight from hairline to ultra-black, every width from condensed to expanded, all packed into one binary. You interpolate between extremes with CSS, getting any value along the axis.</p>
+
+      <p>The performance gains are immediate: one file replaces many. But the real power is <em>precision</em>. You are no longer locked to the weights the designer exported. You can set <code>font-weight: 473</code> and get exactly that. You can animate weight on hover. You can adjust optical size at every breakpoint. Variable fonts turn typography from a discrete set of presets into a continuous, controllable spectrum.</p>
+
+      <h3>Registered Axes</h3>
+      <p>The OpenType specification defines five <strong>registered axes</strong> that variable fonts can expose. These are standardized, four-letter lowercase tags:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* The five registered axes */
+.text {
+  font-weight: 473;            /* wght axis: 100-900 typically */
+  font-stretch: 87%;           /* wdth axis: percentage-based */
+  font-style: italic;          /* ital axis: 0 (normal) or 1 (italic) */
+  font-style: oblique 12deg;   /* slnt axis: angle of slant */
+  font-optical-sizing: auto;   /* opsz axis: auto-adjusts to font-size */
+}
+
+/* Direct axis control via font-variation-settings */
+.precise {
+  font-variation-settings:
+    "wght" 473,
+    "wdth" 87,
+    "ital" 1,
+    "slnt" -12,
+    "opsz" 48;
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Best practice:</strong> Use high-level CSS properties (<code>font-weight</code>, <code>font-stretch</code>, <code>font-style</code>) for registered axes whenever possible. Reserve <code>font-variation-settings</code> for custom axes or when you need to set multiple axes at once. High-level properties cascade and inherit correctly; <code>font-variation-settings</code> replaces the entire value on override, which means you can accidentally reset one axis when changing another.
+      </div>
+
+      <h3>Declaring Variable Fonts with @font-face</h3>
+      <p>When you load a variable font, your <code>@font-face</code> rule must declare the <em>range</em> of each axis. This tells the browser that a single file covers the entire spectrum:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@font-face {
+  font-family: "Inter Variable";
+  src: url("InterVariable.woff2") format("woff2-variations");
+  font-weight: 100 900;       /* full weight range */
+  font-stretch: 75% 125%;     /* full width range */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Use it */
+body {
+  font-family: "Inter Variable", system-ui, sans-serif;
+}
+
+h1 { font-weight: 800; }
+h2 { font-weight: 650; }
+p  { font-weight: 380; }
+.caption { font-weight: 320; }</code></pre>
+      </div>
+
+      <h3>Custom Axes</h3>
+      <p>Beyond the five registered axes, type designers can create <strong>custom axes</strong> &mdash; identified by uppercase four-letter tags. These unlock unique design dimensions specific to that font:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Custom axes (uppercase tags) */
+.expressive {
+  font-variation-settings:
+    "wght" 600,           /* registered: weight */
+    "GRAD" 88,            /* custom: grade (visual weight without size change) */
+    "XTRA" 468,           /* custom: x-axis transparency */
+    "YOPQ" 79,            /* custom: y-axis opacity */
+    "CASL" 0.7,           /* custom: casualness */
+    "CRSV" 1,             /* custom: cursive */
+    "MONO" 0;             /* custom: monospace proportion */
+}</code></pre>
+      </div>
+
+      <h3>Animating Variable Fonts</h3>
+      <p>Because variable font axes are continuous numeric ranges, you can animate them with CSS transitions and keyframes. This is impossible with static fonts:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.heading {
+  font-weight: 400;
+  transition: font-weight 0.3s ease;
+}
+
+.heading:hover {
+  font-weight: 700;
+}
+
+/* Keyframe animation across axes */
+@keyframes breathe {
+  0%, 100% {
+    font-variation-settings: "wght" 300, "wdth" 80;
+  }
+  50% {
+    font-variation-settings: "wght" 700, "wdth" 120;
+  }
+}
+
+.animated-text {
+  animation: breathe 3s ease-in-out infinite;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Variable Font Weight Axis</h4>
+        <p class="demo-note">Move your mouse over each card to see the weight transition in real time. These all use the same system-ui font family &mdash; a single variable font covering the entire weight range.</p>
+
+        <div class="vf-weight-demo">
+          <div class="vf-card" style="--target-weight: 100;">
+            <span class="vf-weight-label">100</span>
+            <p class="vf-sample">Typography</p>
+          </div>
+          <div class="vf-card" style="--target-weight: 300;">
+            <span class="vf-weight-label">300</span>
+            <p class="vf-sample">Typography</p>
+          </div>
+          <div class="vf-card" style="--target-weight: 500;">
+            <span class="vf-weight-label">500</span>
+            <p class="vf-sample">Typography</p>
+          </div>
+          <div class="vf-card" style="--target-weight: 700;">
+            <span class="vf-weight-label">700</span>
+            <p class="vf-sample">Typography</p>
+          </div>
+          <div class="vf-card" style="--target-weight: 900;">
+            <span class="vf-weight-label">900</span>
+            <p class="vf-sample">Typography</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 2: TEXT WRAP & BALANCING        -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="text-wrap">
+      <h2>2. Text Wrapping: balance &amp; pretty</h2>
+      <p>For decades, web typography had one ugly secret: line breaks were dumb. The browser filled each line to the max, then dumped whatever was left onto the next line. This produced ragged last lines, orphaned words dangling alone, and headings where one line had twenty words and the next had two. Print designers solved this manually. CSS now solves it automatically.</p>
+
+      <h3>text-wrap: balance</h3>
+      <p><code>text-wrap: balance</code> redistributes text across lines so that each line has roughly equal length. It is designed for <strong>short blocks</strong> &mdash; headings, pull quotes, captions &mdash; not full paragraphs. The browser tries to minimize the difference between the longest and shortest lines:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Balance headings for even line lengths */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+/* Also great for: */
+blockquote {
+  text-wrap: balance;
+}
+
+figcaption {
+  text-wrap: balance;
+}
+
+/* Performance note: browsers limit balance
+   to ~6 lines. Beyond that, it falls back
+   to normal wrapping. Use it for headings,
+   not body text. */</code></pre>
+      </div>
+
+      <h3>text-wrap: pretty</h3>
+      <p><code>text-wrap: pretty</code> is for <strong>paragraphs</strong>. It does not try to equalize line lengths. Instead, it looks ahead to prevent typographic crimes: orphans (a single word on the last line of a paragraph) and widows (the last line of a paragraph that lands alone at the top of a column). It also avoids awkward hyphenation breaks:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Prevent orphans in body text */
+p {
+  text-wrap: pretty;
+}
+
+/* Combine with hyphenation for maximum control */
+.article-body {
+  text-wrap: pretty;
+  hyphens: auto;
+  hyphenate-limit-chars: 6 3 3;
+  hyphenate-limit-lines: 2;
+  hyphenate-limit-zone: 8%;
+}
+
+/* white-space-collapse controls whitespace handling */
+.code-output {
+  white-space-collapse: preserve;  /* keep all whitespace */
+}
+
+.normalized {
+  white-space-collapse: collapse;  /* default: collapse runs */
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: text-wrap Comparison</h4>
+        <p class="demo-note">Compare the same heading text with different <code>text-wrap</code> values. Notice how <code>balance</code> distributes words evenly across lines, while the default leaves a short orphaned last line.</p>
+
+        <div class="tw-demo">
+          <div class="tw-panel">
+            <span class="tw-label">text-wrap: auto (default)</span>
+            <h3 class="tw-heading tw-auto">Advanced Typography Techniques for Modern Web Applications</h3>
+            <p class="tw-body tw-auto-p">This paragraph uses default text wrapping. Notice how the last line might end up with just a single lonely word sitting there all by itself, which looks awkward and unprofessional in production layouts.</p>
+          </div>
+          <div class="tw-panel">
+            <span class="tw-label">text-wrap: balance</span>
+            <h3 class="tw-heading tw-balanced">Advanced Typography Techniques for Modern Web Applications</h3>
+            <p class="tw-body tw-pretty-p">This paragraph uses <code>text-wrap: pretty</code> instead. The browser adjusts line breaks to prevent that orphaned last word, pulling an extra word down to keep the final line from looking stranded.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>When to use which:</strong> Use <code>balance</code> for anything short &mdash; headings, pull quotes, figure captions, card titles. Use <code>pretty</code> for anything long &mdash; paragraphs, article text, descriptions. Never use <code>balance</code> on body text; it is computationally expensive for long blocks and browsers will ignore it past roughly six lines anyway. Both properties are progressive enhancements &mdash; browsers that do not support them simply fall back to normal wrapping.
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 3: INITIAL-LETTER & DROP CAPS  -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="initial-letter">
+      <h2>3. Drop Caps with initial-letter</h2>
+      <p>Drop caps are one of the oldest typographic traditions. The first letter of a chapter, enlarged and dropped into the paragraph, draws the eye and signals "start here." For years, web developers faked this with floats, manual font sizes, and fragile line-height hacks. The <code>initial-letter</code> property does it in one line, and it handles the alignment mathematics automatically.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Basic drop cap: spans 3 lines */
+.article p:first-of-type::first-letter {
+  initial-letter: 3;
+  /* The letter occupies 3 lines of text.
+     The browser calculates the font-size,
+     line-height, and vertical alignment
+     automatically. */
+}
+
+/* Raised cap: size 4, sink 2 */
+.fancy p::first-letter {
+  initial-letter: 4 2;
+  /* First value: how tall (4 lines).
+     Second value: how many lines it sinks into (2).
+     The remaining 2 lines sit above the paragraph. */
+}
+
+/* Styling the dropped letter */
+.styled p::first-letter {
+  initial-letter: 3;
+  color: #6c5ce7;
+  font-weight: 800;
+  font-family: Georgia, serif;
+  margin-inline-end: 0.5rem;
+  padding-inline: 0.15rem;
+  background: rgba(108, 92, 231, 0.1);
+  border-radius: 4px;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Drop Caps with initial-letter</h4>
+        <p class="demo-note">Each paragraph below shows a different drop cap configuration using <code>initial-letter</code>. No floats, no manual sizing &mdash; the browser handles the geometry.</p>
+
+        <div class="drop-cap-demo">
+          <div class="dc-example">
+            <span class="dc-label">initial-letter: 3</span>
+            <p class="dc-text dc-three">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          </div>
+
+          <div class="dc-example">
+            <span class="dc-label">initial-letter: 4 (styled)</span>
+            <p class="dc-text dc-four">Typography is the craft of endowing human language with a durable visual form. It is a discipline that touches everything from ancient inscriptions carved in stone to the glowing text on your screen right now. Good typography is invisible; bad typography is everywhere.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Browser support note:</strong> <code>initial-letter</code> has shipped in Safari and Chromium-based browsers. Firefox support is progressing. Since drop caps are purely cosmetic, this is a perfect progressive enhancement &mdash; browsers that do not support it simply show a normal first letter. No fallback needed.
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 4: FONT PALETTE & COLOR FONTS  -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="color-fonts">
+      <h2>4. Font Palettes &amp; Color Fonts</h2>
+      <p>Color fonts are fonts that contain color information embedded directly in the glyphs. Instead of solid black outlines that you fill with <code>color</code>, each glyph can have multiple colored layers, gradients, or even bitmap textures. Think of emoji fonts &mdash; those are color fonts. But the technology extends far beyond emoji into decorative typefaces, brand fonts, icon sets, and artistic lettering.</p>
+
+      <p>The modern standard is <strong>COLRv1</strong> (Color OpenType version 1), which supports gradients, compositing, and transformations. It is vector-based, resolution-independent, and compact.</p>
+
+      <h3>Using Color Fonts</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Color fonts work out of the box */
+.emoji-heading {
+  font-family: "Noto Color Emoji", sans-serif;
+  font-size: 3rem;
+}
+
+/* The font-palette property selects a built-in palette */
+.heading {
+  font-family: "Bungee Spice", cursive;
+  font-palette: --brand-colors;  /* custom palette */
+}
+
+/* Or use numbered palettes the font provides */
+.alt-colors {
+  font-palette: light;   /* predefined light palette */
+}
+.dark-alt {
+  font-palette: dark;    /* predefined dark palette */
+}</code></pre>
+      </div>
+
+      <h3>@font-palette-values</h3>
+      <p>You can define your own color palettes that override specific colors within a color font. This is the <code>@font-palette-values</code> at-rule:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Define a custom palette */
+@font-palette-values --brand-palette {
+  font-family: "Bungee Spice";
+  base-palette: 0;           /* start from the font's first palette */
+  override-colors:
+    0 #6c5ce7,                /* replace color index 0 */
+    1 #a29bfe,                /* replace color index 1 */
+    2 #0f1117;                /* replace color index 2 */
+}
+
+.brand-heading {
+  font-family: "Bungee Spice";
+  font-palette: --brand-palette;
+}
+
+/* Dark mode palette */
+@font-palette-values --dark-palette {
+  font-family: "Bungee Spice";
+  base-palette: 0;
+  override-colors:
+    0 #a29bfe,
+    1 #6c5ce7,
+    2 #e4e6ef;
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-heading {
+    font-palette: --dark-palette;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Font Palette Simulation</h4>
+        <p class="demo-note">Color fonts embed color data in glyphs. Below, we simulate the concept by showing how different palette overrides change a heading's appearance. In production, these palettes would remap actual glyph layers in a COLRv1 font.</p>
+
+        <div class="palette-demo">
+          <div class="palette-card palette-default">
+            <span class="palette-label">Default Palette</span>
+            <p class="palette-text">Color Fonts</p>
+          </div>
+          <div class="palette-card palette-brand">
+            <span class="palette-label">--brand-palette</span>
+            <p class="palette-text">Color Fonts</p>
+          </div>
+          <div class="palette-card palette-dark">
+            <span class="palette-label">--dark-palette</span>
+            <p class="palette-text">Color Fonts</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>COLRv1 advantages:</strong> Unlike SVG-based color fonts or bitmap color fonts (CBDT/sbix), COLRv1 glyphs are fully vector, support gradients and blending modes, compress well, and can be subset like any other OpenType font. Google Fonts has been shipping COLRv1 fonts since 2022. They are production-ready.
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 5: ADVANCED TEXT DECORATION     -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="text-decoration">
+      <h2>5. Advanced Text Decoration</h2>
+      <p>The old <code>text-decoration: underline</code> gave you a thin line jammed against the text baseline, clipping through descenders. Modern CSS gives you complete control: thickness, offset, skip behavior, style, and an entirely separate emphasis system. Text decoration is now a precision tool, not a blunt instrument.</p>
+
+      <h3>Thickness, Offset &amp; Skip</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Full control over underlines */
+.refined-link {
+  text-decoration: underline;
+  text-decoration-color: #6c5ce7;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-skip-ink: auto;  /* default: skips descenders */
+}
+
+/* Thick decorative underline */
+.highlight {
+  text-decoration: underline;
+  text-decoration-color: rgba(108, 92, 231, 0.3);
+  text-decoration-thickness: 0.4em;
+  text-underline-offset: -0.1em;  /* negative pulls it up into text */
+}
+
+/* Remove descender skipping for clean lines */
+.no-skip {
+  text-decoration-skip-ink: none;
+}</code></pre>
+      </div>
+
+      <h3>Decoration Styles</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Available decoration styles */
+.solid     { text-decoration-style: solid; }
+.double    { text-decoration-style: double; }
+.dotted    { text-decoration-style: dotted; }
+.dashed    { text-decoration-style: dashed; }
+.wavy      { text-decoration-style: wavy; }
+
+/* Combine line types */
+.double-strike {
+  text-decoration-line: underline overline;
+  text-decoration-style: double;
+  text-decoration-color: #ef4444;
+  text-decoration-thickness: 1px;
+}
+
+/* Shorthand */
+.full-shorthand {
+  text-decoration: underline wavy #6c5ce7 2px;
+}</code></pre>
+      </div>
+
+      <h3>text-emphasis</h3>
+      <p><code>text-emphasis</code> places marks <em>above</em> (or below) each character. This is different from underlines &mdash; it is used in East Asian typography to indicate stress or importance, but it works beautifully as a decorative tool in any language:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Emphasis dots above text */
+.emphasis-dot {
+  text-emphasis: dot;
+  text-emphasis-color: #6c5ce7;
+}
+
+/* Other emphasis styles */
+.emphasis-circle    { text-emphasis: circle; }
+.emphasis-double    { text-emphasis: double-circle; }
+.emphasis-triangle  { text-emphasis: triangle; }
+.emphasis-sesame    { text-emphasis: sesame; }
+
+/* Custom character as emphasis mark */
+.emphasis-custom    { text-emphasis: "&#x2605;"; }
+
+/* Position: above or below */
+.emphasis-below {
+  text-emphasis: dot;
+  text-emphasis-position: under;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Text Decoration Showcase</h4>
+        <p class="demo-note">Each line demonstrates a different text decoration technique. Hover where indicated to see interactive effects.</p>
+
+        <div class="td-demo">
+          <p class="td-example td-thick-underline">Thick underline with offset</p>
+          <p class="td-example td-wavy">Wavy colored underline</p>
+          <p class="td-example td-dotted">Dotted decoration style</p>
+          <p class="td-example td-double-line">Double underline + overline</p>
+          <p class="td-example td-highlight-style">Highlight-style underline</p>
+          <p class="td-example td-emphasis-dots">Emphasis dots above text</p>
+          <p class="td-example td-skip-demo">Typography descenders: gjpqy</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 6: OPENTYPE FEATURES           -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="opentype-features">
+      <h2>6. OpenType Features: font-feature-settings &amp; font-variant</h2>
+      <p>Professional typefaces ship with dozens of hidden features baked into the font file: ligatures that merge character pairs, small caps designed at their own optical size, old-style numerals that blend into body text, tabular figures that align in tables, stylistic alternates that offer variant letter shapes, and swashes for decorative flourishes. Most of these features are <em>off by default</em>. CSS lets you activate them.</p>
+
+      <h3>The High-Level Way: font-variant</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Ligatures */
+.ligatures-all {
+  font-variant-ligatures: common-ligatures;           /* fi, fl, ff */
+  font-variant-ligatures: discretionary-ligatures;    /* ct, st (decorative) */
+  font-variant-ligatures: no-common-ligatures;        /* disable */
+}
+
+/* Small caps */
+.small-caps {
+  font-variant-caps: small-caps;        /* lowercase &rarr; small caps */
+  font-variant-caps: all-small-caps;    /* everything small caps */
+  font-variant-caps: petite-caps;       /* even smaller */
+}
+
+/* Numerals */
+.oldstyle-nums {
+  font-variant-numeric: oldstyle-nums;   /* 3 and 7 hang below baseline */
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums;    /* equal-width digits for tables */
+}
+.lining-nums {
+  font-variant-numeric: lining-nums;     /* uniform height digits */
+}
+.proportional-nums {
+  font-variant-numeric: proportional-nums; /* natural-width digits */
+}
+
+/* Fractions */
+.fractions {
+  font-variant-numeric: diagonal-fractions;  /* 1/2 &rarr; proper fraction */
+}
+
+/* Stylistic alternates */
+.alternates {
+  font-variant-alternates: stylistic(alt-a);  /* alt glyph for "a" */
+}
+
+/* Combined */
+.pro-typography {
+  font-variant-ligatures: common-ligatures discretionary-ligatures;
+  font-variant-caps: small-caps;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}</code></pre>
+      </div>
+
+      <h3>The Low-Level Way: font-feature-settings</h3>
+      <p>The <code>font-feature-settings</code> property uses four-letter OpenType feature tags directly. It is more powerful (you can access any feature) but less maintainable (it overrides everything in one declaration):</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Common feature tags */
+.text {
+  font-feature-settings:
+    "liga" 1,   /* standard ligatures */
+    "dlig" 1,   /* discretionary ligatures */
+    "smcp" 1,   /* small caps */
+    "onum" 1,   /* oldstyle numerals */
+    "tnum" 1,   /* tabular numerals */
+    "frac" 1,   /* fractions */
+    "swsh" 1,   /* swashes */
+    "salt" 1,   /* stylistic alternates */
+    "ss01" 1,   /* stylistic set 1 */
+    "ss02" 1,   /* stylistic set 2 */
+    "kern" 1,   /* kerning (usually on by default) */
+    "calt" 1;   /* contextual alternates */
+}
+
+/* Turn off a specific feature */
+.code-block {
+  font-feature-settings:
+    "liga" 0,   /* disable ligatures in code */
+    "calt" 0;   /* disable contextual alternates */
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>font-variant vs. font-feature-settings:</strong> Use <code>font-variant-*</code> properties as your default. They cascade properly, they are readable, and they do not clobber each other. Use <code>font-feature-settings</code> only when you need to access a feature that has no <code>font-variant</code> equivalent (like specific stylistic sets <code>ss01</code>-<code>ss20</code>) or when you need precise on/off control of multiple features at once.
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: OpenType Features</h4>
+        <p class="demo-note">These examples demonstrate common OpenType features. The availability of each feature depends on the font &mdash; system-ui supports many of them.</p>
+
+        <div class="ot-demo">
+          <div class="ot-example">
+            <span class="ot-label">Standard ligatures</span>
+            <p class="ot-text ot-ligatures">fi fl ff ffi ffl</p>
+          </div>
+          <div class="ot-example">
+            <span class="ot-label">Small Caps</span>
+            <p class="ot-text ot-smallcaps">The Quick Brown Fox</p>
+          </div>
+          <div class="ot-example">
+            <span class="ot-label">Oldstyle Numerals</span>
+            <p class="ot-text ot-oldstyle">0123456789</p>
+          </div>
+          <div class="ot-example">
+            <span class="ot-label">Tabular Numerals</span>
+            <div class="ot-text ot-tabular">
+              <span>1,234.56</span>
+              <span>78,901.23</span>
+              <span>456.78</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 7: FLUID TYPOGRAPHY            -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="fluid-typography">
+      <h2>7. Fluid Typography &amp; Modular Scales</h2>
+      <p>Module 6 introduced <code>clamp()</code> for responsive sizing. Now we go deeper. Fluid typography is not just "font-size that scales." It is a system: every typographic property &mdash; font size, line height, letter spacing, paragraph width &mdash; should respond to the viewport in a coordinated, proportional way. A modular type scale ensures that your heading sizes relate to each other mathematically, not arbitrarily.</p>
+
+      <h3>The clamp() Pattern</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* clamp(minimum, preferred, maximum) */
+
+/* Body text: 1rem at 320px, grows to 1.125rem at 1200px */
+body {
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+}
+
+/* H1: 2rem at small, scales to 3.5rem at large */
+h1 {
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+}
+
+/* H2: 1.5rem to 2.5rem */
+h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+}
+
+/* The formula:
+   preferred = min + (max - min) * (100vw - minVP) / (maxVP - minVP)
+   Example for h1 (320px to 1200px):
+   preferred = 2rem + (3.5 - 2) * (100vw - 320px) / (1200 - 320)
+   simplified = 2rem + 1.5 * (100vw - 320px) / 880
+              = ~1.45rem + 1.7vw
+*/</code></pre>
+      </div>
+
+      <h3>Modular Type Scales</h3>
+      <p>A modular scale uses a consistent ratio between sizes. Common ratios: 1.2 (minor third), 1.25 (major third), 1.333 (perfect fourth), 1.5 (perfect fifth). Pick a base size and multiply up:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Modular scale with custom properties */
+:root {
+  --scale-ratio: 1.25;  /* major third */
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+
+  /* Each step = previous * ratio */
+  --text-sm:   calc(var(--text-base) / var(--scale-ratio));
+  --text-md:   var(--text-base);
+  --text-lg:   calc(var(--text-base) * var(--scale-ratio));
+  --text-xl:   calc(var(--text-lg) * var(--scale-ratio));
+  --text-2xl:  calc(var(--text-xl) * var(--scale-ratio));
+  --text-3xl:  calc(var(--text-2xl) * var(--scale-ratio));
+  --text-4xl:  calc(var(--text-3xl) * var(--scale-ratio));
+}
+
+h1 { font-size: var(--text-4xl); }
+h2 { font-size: var(--text-3xl); }
+h3 { font-size: var(--text-2xl); }
+h4 { font-size: var(--text-xl); }
+h5 { font-size: var(--text-lg); }
+p  { font-size: var(--text-md); }
+small { font-size: var(--text-sm); }</code></pre>
+      </div>
+
+      <h3>Fluid Line Height</h3>
+      <p>Line height should decrease as font size increases. Large headings need tight leading; body text needs breathing room. Make it fluid:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Viewport-aware line height */
+body {
+  line-height: clamp(1.5, 1.4 + 0.5vw, 1.8);
+}
+
+h1 {
+  line-height: clamp(1.05, 1.0 + 0.25vw, 1.2);
+}
+
+h2 {
+  line-height: clamp(1.1, 1.05 + 0.25vw, 1.3);
+}
+
+/* Fluid letter-spacing: tighter at large sizes */
+h1 {
+  letter-spacing: clamp(-0.03em, -0.01em + -0.1vw, -0.02em);
+}
+
+/* Fluid measure (line length) */
+.prose {
+  max-inline-size: clamp(45ch, 50ch + 10vw, 75ch);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Modular Type Scale</h4>
+        <p class="demo-note">A complete type scale using a 1.25 ratio. Each step is exactly 1.25 times the previous size. Resize your browser to see the base size (and therefore all sizes) respond fluidly.</p>
+
+        <div class="scale-demo">
+          <div class="scale-step scale-4xl">
+            <span class="scale-label">4xl</span>
+            <span class="scale-text">Heading One</span>
+          </div>
+          <div class="scale-step scale-3xl">
+            <span class="scale-label">3xl</span>
+            <span class="scale-text">Heading Two</span>
+          </div>
+          <div class="scale-step scale-2xl">
+            <span class="scale-label">2xl</span>
+            <span class="scale-text">Heading Three</span>
+          </div>
+          <div class="scale-step scale-xl">
+            <span class="scale-label">xl</span>
+            <span class="scale-text">Heading Four</span>
+          </div>
+          <div class="scale-step scale-lg">
+            <span class="scale-label">lg</span>
+            <span class="scale-text">Large text</span>
+          </div>
+          <div class="scale-step scale-base">
+            <span class="scale-label">base</span>
+            <span class="scale-text">Body text (1rem)</span>
+          </div>
+          <div class="scale-step scale-sm">
+            <span class="scale-label">sm</span>
+            <span class="scale-text">Small text / captions</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- SECTION 8: EXERCISE & CHALLENGE        -->
+    <!-- ====================================== -->
+    <section class="concept-section" id="exercises">
+      <h2>8. Exercises</h2>
+
+      <h3>Exercise: Build a Typographic Article Header</h3>
+      <p>Create an article header that uses variable font weight, balanced text wrapping, a drop cap on the first paragraph, and refined text decoration on the byline link. The starter code gives you the HTML structure &mdash; your job is to write the CSS that brings it to life.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<article class="article">
+  <header class="article-header">
+    <span class="category">Typography</span>
+    <h1 class="article-title">The Art of Setting Type on the Modern Web</h1>
+    <p class="byline">
+      By <a href="#" class="author-link">Elena Voss</a>
+      &middot; May 2026 &middot; 8 min read
+    </p>
+  </header>
+  <div class="article-body">
+    <p>Typography has always been the foundation of visual communication. From Gutenberg's movable type to today's variable fonts, the craft of arranging text has evolved continuously. What remains constant is the goal: make reading effortless, make meaning clear, make the page beautiful.</p>
+    <p>Modern CSS gives us tools that print designers could only dream of. Fluid sizing that responds to the viewport. Variable fonts that interpolate across design axes. Text wrapping that prevents orphans automatically. The gap between web and print typography has never been smaller.</p>
+  </div>
+</article>
+        </template>
+        <template class="starter-css">
+/* Article container */
+.article {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  color: #e4e6ef;
+  background: #1a1d27;
+  border-radius: 12px;
+}
+
+/* Category label */
+.category {
+  /* TODO: small caps, letter-spacing, accent color */
+}
+
+/* Article title */
+.article-title {
+  /* TODO: fluid font-size with clamp()
+     TODO: text-wrap: balance
+     TODO: variable font weight
+     TODO: tight line-height */
+}
+
+/* Byline */
+.byline {
+  /* TODO: muted color, small size */
+}
+
+/* Author link */
+.author-link {
+  /* TODO: text-decoration-thickness
+     TODO: text-underline-offset
+     TODO: accent color underline */
+}
+
+/* Drop cap on first paragraph */
+.article-body p:first-of-type::first-letter {
+  /* TODO: initial-letter: 3
+     TODO: accent color
+     TODO: bold weight
+     TODO: serif font */
+}
+
+/* Body text */
+.article-body p {
+  /* TODO: text-wrap: pretty
+     TODO: comfortable line-height
+     TODO: paragraph spacing */
+}
+        </template>
+      </div>
+
+      <h3>Challenge: Typographic Dashboard Panel</h3>
+      <p>Build a financial dashboard panel that demonstrates tabular numerals for aligned numbers, a fluid type scale, oldstyle numerals in the description, and animated variable font weight on hover. This pulls together multiple techniques from the module into one practical component.</p>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="dashboard">
+  <div class="stat-card">
+    <h3 class="stat-label">Revenue</h3>
+    <p class="stat-value">$1,284,903</p>
+    <p class="stat-change positive">+12.4%</p>
+    <p class="stat-desc">Compared to $1,142,780 last quarter</p>
+  </div>
+  <div class="stat-card">
+    <h3 class="stat-label">Users</h3>
+    <p class="stat-value">847,291</p>
+    <p class="stat-change positive">+8.7%</p>
+    <p class="stat-desc">Active users across 14 regions in 2026</p>
+  </div>
+  <div class="stat-card">
+    <h3 class="stat-label">Costs</h3>
+    <p class="stat-value">$392,104</p>
+    <p class="stat-change negative">-3.2%</p>
+    <p class="stat-desc">Operating costs down from $405,120</p>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* Dashboard grid */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  background: #0f1117;
+  border-radius: 12px;
+}
+
+/* Stat card */
+.stat-card {
+  background: #1a1d27;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* TODO: transition for hover effects */
+}
+
+.stat-card:hover {
+  /* TODO: subtle lift or glow on hover */
+}
+
+/* Stat label */
+.stat-label {
+  /* TODO: small caps via font-variant
+     TODO: letter-spacing
+     TODO: muted color
+     TODO: fluid font-size */
+  font-size: 0.8rem;
+  color: #8b8fa3;
+  margin: 0 0 0.75rem;
+}
+
+/* Stat value - the big number */
+.stat-value {
+  /* TODO: tabular numerals (font-variant-numeric)
+     TODO: large fluid font-size with clamp()
+     TODO: heavy font-weight
+     TODO: animate font-weight on card hover */
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e4e6ef;
+  margin: 0 0 0.5rem;
+}
+
+/* Change percentage */
+.stat-change {
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.positive { color: #22c55e; }
+.negative { color: #ef4444; }
+
+/* Description text */
+.stat-desc {
+  /* TODO: oldstyle numerals (font-variant-numeric)
+     TODO: text-wrap: pretty
+     TODO: small, muted */
+  font-size: 0.8rem;
+  color: #8b8fa3;
+  margin: 0;
+  line-height: 1.5;
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../24-shapes-clipping/index.html">&larr; Previous</a>
+    <a href="../26-filters-blend/index.html">Next &rarr;</a>
+  </footer>
+
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

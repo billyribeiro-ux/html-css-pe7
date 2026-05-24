@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Performance &amp; Containment | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 27</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-8">Level 8 - Production Polish</span>
+    <h1>CSS Performance &amp; Containment</h1>
+    <p class="subtitle">Understand the browser rendering pipeline, isolate layout and paint work with <code>contain</code> and <code>content-visibility</code>, use <code>will-change</code> responsibly, and build interfaces that stay fast at any scale.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: THE RENDERING PIPELINE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="rendering-pipeline">
+      <h2>1. The Rendering Pipeline</h2>
+      <p>Every time the browser draws your page, it follows a strict sequence of steps. Understanding this pipeline is the foundation of CSS performance work. If you know which stages your CSS changes trigger, you can make informed decisions about what to animate, what to contain, and what to avoid.</p>
+
+      <p>The five stages are: <strong>Parse</strong>, <strong>Style</strong>, <strong>Layout</strong>, <strong>Paint</strong>, and <strong>Composite</strong>. Each stage depends on the output of the previous one. The later in the pipeline you trigger work, the cheaper the change. The earlier you trigger it, the more downstream work the browser must redo.</p>
+
+      <div class="pipeline-diagram">
+        <div class="pipeline-stage pipeline-parse">
+          <span class="pipeline-num">1</span>
+          <h4>Parse</h4>
+          <p>HTML &rarr; DOM tree<br>CSS &rarr; CSSOM tree</p>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-stage pipeline-style">
+          <span class="pipeline-num">2</span>
+          <h4>Style</h4>
+          <p>Match selectors, resolve cascade, compute final values</p>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-stage pipeline-layout">
+          <span class="pipeline-num">3</span>
+          <h4>Layout</h4>
+          <p>Calculate geometry: position, size, relationships</p>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-stage pipeline-paint">
+          <span class="pipeline-num">4</span>
+          <h4>Paint</h4>
+          <p>Fill pixels: colors, borders, shadows, text</p>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-stage pipeline-composite">
+          <span class="pipeline-num">5</span>
+          <h4>Composite</h4>
+          <p>Assemble layers, apply transforms, draw to screen</p>
+        </div>
+      </div>
+
+      <h3>Which Properties Trigger Which Stages</h3>
+      <p>This is the critical knowledge. Not all CSS property changes are equal. Some only touch compositing (cheap), others force a full layout recalculation (expensive).</p>
+
+      <div class="trigger-grid">
+        <div class="trigger-card trigger-layout">
+          <h4>Layout Triggers</h4>
+          <p class="trigger-label">Layout &rarr; Paint &rarr; Composite</p>
+          <ul>
+            <li><code>width</code> / <code>height</code></li>
+            <li><code>margin</code> / <code>padding</code></li>
+            <li><code>top</code> / <code>left</code> / <code>right</code> / <code>bottom</code></li>
+            <li><code>display</code> / <code>position</code></li>
+            <li><code>font-size</code> / <code>line-height</code></li>
+            <li><code>border-width</code></li>
+          </ul>
+          <span class="trigger-cost">Most expensive</span>
+        </div>
+        <div class="trigger-card trigger-paint">
+          <h4>Paint Triggers</h4>
+          <p class="trigger-label">Paint &rarr; Composite</p>
+          <ul>
+            <li><code>color</code> / <code>background</code></li>
+            <li><code>border-color</code> / <code>border-style</code></li>
+            <li><code>box-shadow</code></li>
+            <li><code>border-radius</code></li>
+            <li><code>outline</code></li>
+            <li><code>visibility</code></li>
+          </ul>
+          <span class="trigger-cost">Moderate</span>
+        </div>
+        <div class="trigger-card trigger-comp">
+          <h4>Composite Only</h4>
+          <p class="trigger-label">Composite</p>
+          <ul>
+            <li><code>transform</code></li>
+            <li><code>opacity</code></li>
+            <li><code>filter</code> (on promoted layer)</li>
+            <li><code>will-change</code></li>
+            <li><code>perspective</code></li>
+            <li><code>clip-path</code> (on promoted layer)</li>
+          </ul>
+          <span class="trigger-cost">Cheapest</span>
+        </div>
+      </div>
+
+      <h3>Why Reflows Are Expensive</h3>
+      <p>A <strong>reflow</strong> (also called layout recalculation) happens when the browser must recalculate the geometry of elements. This is expensive because layout is <em>global</em> by default: changing the width of one element can push siblings, shift their children, alter the height of their parent, and cascade through the entire document tree. A single reflow on a complex page can block the main thread for tens of milliseconds, causing visible jank during scrolling or animation.</p>
+
+      <p>Containment exists specifically to break this chain. When you contain an element's layout, the browser knows that changes inside that element cannot affect anything outside it, so it can skip the global recalculation and only reflow the contained subtree.</p>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The rendering pipeline is not optional knowledge for performance work. When you see a janky animation, the first question should always be: "Which pipeline stage is this change triggering?" If the answer is "layout," you have found your bottleneck. Move the animation to <code>transform</code> or <code>opacity</code> to keep it in the composite-only lane.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: CSS CONTAIN         -->
+    <!-- ============================== -->
+    <section class="concept-section" id="css-contain">
+      <h2>2. The <code>contain</code> Property</h2>
+      <p>The <code>contain</code> property tells the browser that an element's internals are independent from the rest of the document. This is a performance contract: you promise the browser that certain things about this element will not leak outward, and in return the browser can optimize rendering by skipping work it would normally have to do.</p>
+
+      <p>There are five individual containment types, plus two shorthand values that combine them.</p>
+
+      <h3>Individual Containment Types</h3>
+      <div class="contain-grid">
+        <div class="contain-card">
+          <h4><code>contain: layout</code></h4>
+          <p>The element's internal layout does not affect the rest of the page, and vice versa. The element establishes an independent formatting context. Floats inside cannot poke out, and layout changes inside cannot trigger reflows outside.</p>
+          <div class="contain-when">
+            <strong>Use when:</strong> You have a widget or component whose internal layout changes frequently (e.g., a live feed, a chat window) and you want to prevent those changes from causing page-wide reflows.
+          </div>
+        </div>
+        <div class="contain-card">
+          <h4><code>contain: paint</code></h4>
+          <p>Nothing inside the element can be painted outside its bounds. The element becomes a scroll container clipping boundary and establishes a new stacking context. This lets the browser skip painting descendants when the element is off-screen.</p>
+          <div class="contain-when">
+            <strong>Use when:</strong> You have scroll containers, off-screen content, or components with <code>overflow: hidden</code> already applied. Paint containment formalizes what you are already doing and lets the browser skip paint for clipped-away content.
+          </div>
+        </div>
+        <div class="contain-card">
+          <h4><code>contain: size</code></h4>
+          <p>The element's size does not depend on its children. You must give it an explicit width and height. The browser can determine the element's size without examining any of its descendants.</p>
+          <div class="contain-when">
+            <strong>Use when:</strong> You know the exact dimensions of a container and want the browser to skip measuring its children for sizing. Common with fixed-size card grids, video players, and ad slots.
+          </div>
+        </div>
+        <div class="contain-card">
+          <h4><code>contain: style</code></h4>
+          <p>Counters and <code>quotes</code> scoping. Prevents CSS counter increments and named styles inside the element from affecting counters and quotes outside. This is the narrowest containment type.</p>
+          <div class="contain-when">
+            <strong>Use when:</strong> You have nested ordered lists or generated content using CSS counters and you want to scope the counter state to a subtree.
+          </div>
+        </div>
+      </div>
+
+      <h3>Shorthand Values</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* contain: strict = layout + paint + size + style */
+.card-grid .card {
+  contain: strict;
+  width: 300px;
+  height: 400px;
+}
+
+/* contain: content = layout + paint + style (no size) */
+/* This is the most commonly useful shorthand.
+   It lets the element size itself normally based
+   on content, but contains everything else. */
+.feed-item {
+  contain: content;
+}
+
+/* You can combine individual values */
+.sidebar-widget {
+  contain: layout paint;
+}</code></pre>
+      </div>
+
+      <h3>How Containment Skips Work</h3>
+      <p>When you set <code>contain: layout</code> on an element, the browser creates an optimization boundary. During a reflow, if the browser encounters a contained element and determines that the change originates outside the container, it skips the entire contained subtree. Conversely, if the change originates inside the container, the browser knows it does not need to reflow anything outside. This is a bidirectional optimization fence.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Containment Comparison</h4>
+        <p class="demo-note">The left card has no containment. The right card has <code>contain: content</code>. Watch how the contained card establishes an independent formatting context -- overflow is clipped, and it creates its own stacking context.</p>
+
+        <div class="contain-comparison">
+          <div class="contain-demo-card contain-none">
+            <h5>No Containment</h5>
+            <div class="contain-demo-inner">
+              <div class="contain-demo-overflow">This content overflows its parent naturally. No clipping boundary is established without explicit overflow rules.</div>
+            </div>
+            <code class="contain-demo-label">contain: none</code>
+          </div>
+          <div class="contain-demo-card contain-content">
+            <h5>With Containment</h5>
+            <div class="contain-demo-inner">
+              <div class="contain-demo-overflow">This content is clipped by paint containment. The element acts as a containing block for positioned descendants and clips overflow.</div>
+            </div>
+            <code class="contain-demo-label">contain: content</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Start with <code>contain: content</code>. It is the safest shorthand because it does not require explicit sizing (unlike <code>strict</code>). Add <code>size</code> containment only when you can provide fixed dimensions. If you use <code>contain: strict</code> without setting a size, the element collapses to zero height.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: CONTENT-VISIBILITY  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="content-visibility">
+      <h2>3. <code>content-visibility</code></h2>
+      <p>If <code>contain</code> is a scalpel, <code>content-visibility</code> is a sledgehammer -- in the best way. It allows the browser to skip <em>all rendering work</em> for off-screen elements: no style resolution, no layout, no paint, no compositing. On long pages with hundreds of elements, this can cut initial render time by 50% or more.</p>
+
+      <h3><code>content-visibility: auto</code></h3>
+      <p>This is the headline feature. When an element has <code>content-visibility: auto</code>, the browser will fully render it only when it is near the viewport (using the intersection observer internally). Off-screen elements get <code>contain: layout paint style size</code> applied automatically, and their rendering is deferred entirely.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Skip rendering for off-screen sections */
+.page-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* The browser will:
+   1. Not render sections far from the viewport
+   2. Render them as the user scrolls near
+   3. Keep them rendered after they've been seen
+   4. Use 500px as placeholder height to
+      prevent layout shift */</code></pre>
+      </div>
+
+      <h3><code>content-visibility: hidden</code></h3>
+      <p>This is like <code>display: none</code> but better. The element is hidden and takes no space, but the browser <strong>preserves its rendering state</strong>. When you make it visible again, there is no re-render cost -- the cached state is reused. This is perfect for tab panels, off-screen slides, and preloaded content.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Hide inactive tabs without destroying state */
+.tab-panel {
+  content-visibility: hidden;
+}
+
+.tab-panel.active {
+  content-visibility: visible;
+}
+
+/* Compare with display: none --
+   display: none destroys the rendering state.
+   When you show the element again, the browser
+   must redo style, layout, and paint from scratch.
+   content-visibility: hidden preserves the cache. */</code></pre>
+      </div>
+
+      <h3><code>contain-intrinsic-size</code></h3>
+      <p>When <code>content-visibility: auto</code> hides an element, the element has zero height by default (because size containment is applied). This causes massive layout shift as sections pop into existence during scroll. The <code>contain-intrinsic-size</code> property gives the browser a placeholder size to use for hidden elements, preventing the shift.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Fixed placeholder height */
+.section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
+/* auto keyword: remember the last rendered height */
+.section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+  /* Uses 600px initially, then remembers the
+     actual rendered height for future visits */
+}
+
+/* Width and height */
+.card {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Content-Visibility Scroll List</h4>
+        <p class="demo-note">This scrollable list contains 50 items. Each item uses <code>content-visibility: auto</code> with <code>contain-intrinsic-size</code>. Scroll through -- the browser only renders items near the viewport, drastically reducing initial render cost. The scrollbar height remains consistent thanks to the intrinsic size placeholder.</p>
+
+        <div class="cv-scroll-container">
+          <div class="cv-item"><span class="cv-num">01</span><div class="cv-body"><strong>Server Monitoring Dashboard</strong><p>CPU usage: 23% | Memory: 4.2 GB / 16 GB | Disk: 67% used | Network: 145 Mbps in, 89 Mbps out</p></div></div>
+          <div class="cv-item"><span class="cv-num">02</span><div class="cv-body"><strong>Authentication Service</strong><p>Active sessions: 12,847 | Failed logins (24h): 23 | Token refresh rate: 340/min | Avg response: 12ms</p></div></div>
+          <div class="cv-item"><span class="cv-num">03</span><div class="cv-body"><strong>Payment Processing</strong><p>Transactions today: 8,923 | Success rate: 99.7% | Avg processing: 850ms | Revenue: $142,800</p></div></div>
+          <div class="cv-item"><span class="cv-num">04</span><div class="cv-body"><strong>CDN Edge Nodes</strong><p>Active nodes: 47/50 | Cache hit rate: 94.3% | Avg latency: 18ms | Bandwidth: 2.4 TB served today</p></div></div>
+          <div class="cv-item"><span class="cv-num">05</span><div class="cv-body"><strong>Database Cluster</strong><p>Primary: healthy | Replicas: 3/3 synced | Query rate: 4,500/s | Slow queries: 2 in last hour</p></div></div>
+          <div class="cv-item"><span class="cv-num">06</span><div class="cv-body"><strong>Email Service</strong><p>Sent today: 34,500 | Bounce rate: 0.3% | Queue depth: 120 | Avg delivery: 2.1s</p></div></div>
+          <div class="cv-item"><span class="cv-num">07</span><div class="cv-body"><strong>Search Indexer</strong><p>Documents indexed: 2.3M | Index size: 8.7 GB | Reindex rate: 500 docs/s | Last full rebuild: 6h ago</p></div></div>
+          <div class="cv-item"><span class="cv-num">08</span><div class="cv-body"><strong>Message Queue</strong><p>Messages in flight: 1,247 | Consumer lag: 340ms | Dead letter queue: 3 messages | Throughput: 12K/min</p></div></div>
+          <div class="cv-item"><span class="cv-num">09</span><div class="cv-body"><strong>Object Storage</strong><p>Total objects: 14.2M | Storage used: 3.8 TB | Upload rate: 230 MB/min | GET requests: 45K/min</p></div></div>
+          <div class="cv-item"><span class="cv-num">10</span><div class="cv-body"><strong>API Gateway</strong><p>Requests/sec: 8,400 | Error rate: 0.02% | P99 latency: 120ms | Rate-limited: 47 IPs today</p></div></div>
+          <div class="cv-item"><span class="cv-num">11</span><div class="cv-body"><strong>Cron Scheduler</strong><p>Active jobs: 84 | Completed today: 2,340 | Failed: 1 | Next critical job: backup in 23 min</p></div></div>
+          <div class="cv-item"><span class="cv-num">12</span><div class="cv-body"><strong>WebSocket Server</strong><p>Active connections: 3,200 | Messages/sec: 14,000 | Reconnect rate: 0.1% | Memory: 1.2 GB</p></div></div>
+          <div class="cv-item"><span class="cv-num">13</span><div class="cv-body"><strong>Log Aggregator</strong><p>Ingestion rate: 45 GB/day | Retention: 30 days | Active alerts: 2 | Search latency: 340ms</p></div></div>
+          <div class="cv-item"><span class="cv-num">14</span><div class="cv-body"><strong>Feature Flag Service</strong><p>Active flags: 127 | Evaluations/sec: 22,000 | Stale flags: 8 | Last deploy: 45 min ago</p></div></div>
+          <div class="cv-item"><span class="cv-num">15</span><div class="cv-body"><strong>CI/CD Pipeline</strong><p>Builds today: 89 | Success rate: 96.6% | Avg build time: 4m 12s | Currently running: 3</p></div></div>
+          <div class="cv-item"><span class="cv-num">16</span><div class="cv-body"><strong>DNS Management</strong><p>Zones: 34 | Records: 890 | Query rate: 120K/min | Propagation delay: &lt;60s avg</p></div></div>
+          <div class="cv-item"><span class="cv-num">17</span><div class="cv-body"><strong>SSL Certificate Monitor</strong><p>Active certs: 67 | Expiring &lt;30 days: 2 | Auto-renewed today: 5 | OCSP stapling: enabled</p></div></div>
+          <div class="cv-item"><span class="cv-num">18</span><div class="cv-body"><strong>Container Orchestrator</strong><p>Running pods: 234 | Pending: 0 | Failed: 1 | Node utilization: 72% avg across 12 nodes</p></div></div>
+          <div class="cv-item"><span class="cv-num">19</span><div class="cv-body"><strong>Backup Service</strong><p>Last backup: 2h ago | Size: 340 GB | Duration: 12 min | Next scheduled: 10:00 PM UTC</p></div></div>
+          <div class="cv-item"><span class="cv-num">20</span><div class="cv-body"><strong>Rate Limiter</strong><p>Rules active: 23 | Requests throttled (1h): 890 | Top blocked IP: 203.0.113.42 | False positives: 0</p></div></div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Always pair <code>content-visibility: auto</code> with <code>contain-intrinsic-size</code>. Without the intrinsic size, the scrollbar height changes as elements render, the scroll position jumps, and users lose their place. The <code>auto</code> keyword in <code>contain-intrinsic-size: auto 500px</code> is especially valuable -- it uses 500px initially but remembers the real height once the element has been rendered, so the placeholder becomes accurate after the first scroll.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: WILL-CHANGE         -->
+    <!-- ============================== -->
+    <section class="concept-section" id="will-change">
+      <h2>4. <code>will-change</code></h2>
+      <p>The <code>will-change</code> property is an optimization hint that tells the browser to prepare for a specific kind of change before it happens. When you say <code>will-change: transform</code>, the browser promotes the element to its own compositor layer in advance, so that when the transform actually changes, the browser can handle it entirely in the compositor thread without touching layout or paint.</p>
+
+      <p>This sounds like free performance, but it is not. Layer promotion has a cost: each layer consumes GPU memory, and too many layers can actually make things slower. Use <code>will-change</code> surgically, not as a blanket optimization.</p>
+
+      <h3>What It Does: Layer Promotion</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Before animation starts: promote to own layer */
+.modal {
+  will-change: transform, opacity;
+}
+
+/* The browser now:
+   1. Creates a separate GPU texture for this element
+   2. Rasterizes the element into that texture
+   3. When transform/opacity change, it only needs
+      to re-composite the layer (no repaint)
+   4. The main thread is freed up for other work */</code></pre>
+      </div>
+
+      <h3>When to Use</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* GOOD: Apply on hover, before animation starts */
+.card {
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  will-change: transform;
+}
+.card:active {
+  transform: scale(0.98);
+}
+
+/* GOOD: Apply when parent signals an upcoming change */
+.sidebar.is-animating .sidebar-content {
+  will-change: transform;
+}
+
+/* GOOD: Apply via JavaScript right before animation */
+/* element.style.willChange = 'transform';
+   // ... start animation ...
+   // on animation end:
+   element.style.willChange = 'auto'; */</code></pre>
+      </div>
+
+      <h3>When NOT to Use</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* BAD: On every element "just in case" */
+* {
+  will-change: transform, opacity;
+  /* This promotes EVERYTHING to its own layer.
+     Hundreds of layers = GPU memory exhaustion. */
+}
+
+/* BAD: On elements that never actually change */
+.static-header {
+  will-change: transform;
+  /* Wastes GPU memory for no benefit. */
+}
+
+/* BAD: On too many list items at once */
+.list-item {
+  will-change: transform;
+  /* 500 list items = 500 GPU layers.
+     The browser was already optimizing this. */
+}
+
+/* BAD: Left on permanently after animation ends */
+.modal.closed {
+  will-change: transform;
+  /* The modal is closed. Remove the hint. */
+}</code></pre>
+      </div>
+
+      <h3>Cleanup Patterns</h3>
+      <p>The best practice is to apply <code>will-change</code> <em>just before</em> an animation starts and remove it when the animation ends. This limits GPU memory usage to only the moments when the optimization is actually needed.</p>
+
+      <div class="code-block">
+        <h4>CSS + JavaScript</h4>
+        <pre><code>/* CSS-only cleanup via :hover */
+.card {
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  will-change: transform;
+  transform: translateY(-4px);
+}
+/* When hover ends, will-change is removed
+   automatically because :hover no longer applies */
+
+/* JavaScript cleanup for complex animations */
+/* element.addEventListener('mouseenter', () =&gt; {
+  element.style.willChange = 'transform';
+});
+element.addEventListener('transitionend', () =&gt; {
+  element.style.willChange = 'auto';
+}); */</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: will-change Animation</h4>
+        <p class="demo-note">Hover over these cards. The left card uses <code>will-change: transform</code> on hover for smooth promotion. The right card uses <code>will-change: transform</code> permanently (wasteful). Both animate, but the left pattern is correct -- the hint is applied only when needed and removed when hover ends.</p>
+
+        <div class="wc-demo-grid">
+          <div class="wc-card wc-card--good">
+            <div class="wc-badge wc-badge--good">Correct Pattern</div>
+            <h5>Hover-Scoped will-change</h5>
+            <p>Layer promoted only on hover. GPU memory freed when the cursor leaves.</p>
+            <code>will-change: transform</code>
+            <span class="wc-status">On hover only</span>
+          </div>
+          <div class="wc-card wc-card--bad">
+            <div class="wc-badge wc-badge--bad">Anti-Pattern</div>
+            <h5>Permanent will-change</h5>
+            <p>Layer promoted at all times. GPU memory consumed even when idle.</p>
+            <code>will-change: transform</code>
+            <span class="wc-status">Always active</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> <code>will-change</code> is not a performance silver bullet. It is a hint, not a command. The browser is already good at optimizing animations. Only use <code>will-change</code> when you have <em>measured</em> a jank problem and identified the specific element and property causing it. Apply it just before the animation, remove it after. Never use <code>will-change</code> on more than a handful of elements simultaneously.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: PAINT CONTAINMENT   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="paint-containment">
+      <h2>5. Paint Containment Patterns</h2>
+      <p>Paint containment is arguably the most practically useful containment type. When you apply <code>contain: paint</code> to an element, you are telling the browser that nothing inside this element will ever be visible outside its bounds. The browser can then skip painting descendants entirely when the element is off-screen, and it can limit repaint areas to just the contained region when something inside changes.</p>
+
+      <h3>Scroll Containers</h3>
+      <p>Any element with <code>overflow: hidden</code> or <code>overflow: auto</code> is already visually clipping its children. Adding <code>contain: paint</code> makes this explicit to the browser's rendering engine, allowing it to make the same optimization formally rather than heuristically.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Scroll container with paint containment */
+.scrollable-feed {
+  height: 400px;
+  overflow-y: auto;
+  contain: paint;
+  /* The browser can now skip painting items
+     that have scrolled out of view. Without
+     containment, it might still paint them
+     into the layer "just in case." */
+}
+
+/* Infinite scroll list with full containment */
+.infinite-list {
+  contain: content;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.infinite-list .item {
+  contain: content;
+  /* Each item is independently contained.
+     Adding a new item at the bottom doesn't
+     force a repaint of existing items. */
+}</code></pre>
+      </div>
+
+      <h3>Isolating Repaint Areas</h3>
+      <p>Without containment, when you change the background color of a nested element, the browser may repaint a much larger area than necessary, because it cannot be sure the change does not affect surrounding content (due to filters, blend modes, or overflow). Paint containment guarantees the repaint stays within the element's bounds.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Widget that updates frequently */
+.live-ticker {
+  contain: paint;
+  /* Price updates cause repaints, but they
+     are now isolated to just this widget.
+     The rest of the page is untouched. */
+}
+
+/* Chat message list */
+.chat-messages {
+  contain: paint;
+  overflow-y: auto;
+}
+
+.chat-message {
+  contain: content;
+  /* New messages only repaint themselves,
+     not the entire chat container. */
+}</code></pre>
+      </div>
+
+      <h3>Containment for Infinite Scroll</h3>
+      <p>Infinite scroll lists are the poster child for containment. As the list grows to hundreds or thousands of items, rendering performance degrades without containment because every new item triggers style recalculation and potentially layout for the entire list. With containment on each item, the browser processes each addition in isolation.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Contained Scroll List</h4>
+        <p class="demo-note">Each item in this list has <code>contain: content</code> applied. Hover over items to trigger a repaint (background color change). The repaint is isolated to the hovered item's bounds -- surrounding items are untouched. In DevTools Paint Flashing mode, you would see only the hovered item flash green.</p>
+
+        <div class="paint-list-container">
+          <div class="paint-list-item">
+            <span class="paint-dot"></span>
+            <div class="paint-item-content">
+              <strong>Network Request Logger</strong>
+              <small>contain: content applied -- repaint isolated</small>
+            </div>
+            <span class="paint-status paint-status--ok">Contained</span>
+          </div>
+          <div class="paint-list-item">
+            <span class="paint-dot"></span>
+            <div class="paint-item-content">
+              <strong>WebSocket Event Stream</strong>
+              <small>contain: content applied -- repaint isolated</small>
+            </div>
+            <span class="paint-status paint-status--ok">Contained</span>
+          </div>
+          <div class="paint-list-item">
+            <span class="paint-dot"></span>
+            <div class="paint-item-content">
+              <strong>DOM Mutation Observer</strong>
+              <small>contain: content applied -- repaint isolated</small>
+            </div>
+            <span class="paint-status paint-status--ok">Contained</span>
+          </div>
+          <div class="paint-list-item">
+            <span class="paint-dot"></span>
+            <div class="paint-item-content">
+              <strong>Performance Timeline Entry</strong>
+              <small>contain: content applied -- repaint isolated</small>
+            </div>
+            <span class="paint-status paint-status--ok">Contained</span>
+          </div>
+          <div class="paint-list-item">
+            <span class="paint-dot"></span>
+            <div class="paint-item-content">
+              <strong>Service Worker Message</strong>
+              <small>contain: content applied -- repaint isolated</small>
+            </div>
+            <span class="paint-status paint-status--ok">Contained</span>
+          </div>
+          <div class="paint-list-item">
+            <span class="paint-dot"></span>
+            <div class="paint-item-content">
+              <strong>Intersection Observer Callback</strong>
+              <small>contain: content applied -- repaint isolated</small>
+            </div>
+            <span class="paint-status paint-status--ok">Contained</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Paint containment is almost always safe to apply. Unlike size containment (which requires explicit dimensions) or layout containment (which changes formatting context behavior), paint containment only affects rendering optimization. If your element already clips its children via <code>overflow: hidden</code>, adding <code>contain: paint</code> is a free performance upgrade with no visual side effects.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: BEST PRACTICES      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="best-practices">
+      <h2>6. CSS Performance Best Practices</h2>
+      <p>Beyond containment and <code>will-change</code>, there are broader CSS performance patterns that matter in production. Some are well-known, some are widely misunderstood, and some are only relevant at scale. This section separates the real optimizations from the myths.</p>
+
+      <h3>Avoiding Layout Thrashing</h3>
+      <p>Layout thrashing happens when JavaScript repeatedly reads layout properties and then writes style changes in an interleaved pattern, forcing the browser to perform a synchronous layout calculation on every read. This is not a CSS problem per se, but CSS properties are what trigger it.</p>
+
+      <div class="code-block">
+        <h4>JavaScript (the problem)</h4>
+        <pre><code>// BAD: Read-write-read-write pattern
+// Each .offsetHeight read forces a synchronous layout
+for (const el of elements) {
+  const h = el.offsetHeight;    // FORCED LAYOUT
+  el.style.height = h + 10 + 'px'; // invalidate
+}
+
+// GOOD: Batch reads, then batch writes
+const heights = elements.map(el =&gt; el.offsetHeight);
+elements.forEach((el, i) =&gt; {
+  el.style.height = heights[i] + 10 + 'px';
+});</code></pre>
+      </div>
+
+      <h3>Efficient Selectors: Myth vs Reality</h3>
+      <p>You have probably heard that CSS selector performance matters -- that deeply nested selectors are slow, that <code>*</code> is expensive, that you should use BEM or flat selectors for speed. In modern browsers, this is <strong>mostly a myth</strong>. Selector matching is extraordinarily fast (microseconds per element). The browser reads selectors right-to-left and uses bloom filters and hash maps for matching.</p>
+
+      <p>Where selectors <em>do</em> matter is in <strong>style recalculation scope</strong>. When a class changes on one element, the browser must check which elements' styles are invalidated. With a flat selector like <code>.card-title</code>, invalidation is simple. With a complex selector like <code>.sidebar:has(.nav-item:hover) ~ .main .card:nth-child(odd) .title</code>, the browser must evaluate a wider scope.</p>
+
+      <div class="best-grid">
+        <div class="best-card best-do">
+          <h4>Effective Optimizations</h4>
+          <ul>
+            <li>Use <code>transform</code> and <code>opacity</code> for animations (composite-only)</li>
+            <li>Apply <code>contain: content</code> to independent components</li>
+            <li>Use <code>content-visibility: auto</code> on long scrollable lists</li>
+            <li>Batch DOM reads and writes to avoid layout thrashing</li>
+            <li>Avoid animating <code>box-shadow</code> -- animate a pseudo-element's <code>opacity</code> instead</li>
+            <li>Reduce the scope of style recalculations with containment</li>
+            <li>Use the <code>auto</code> keyword with <code>contain-intrinsic-size</code></li>
+          </ul>
+        </div>
+        <div class="best-card best-dont">
+          <h4>Common Myths</h4>
+          <ul>
+            <li>"Avoid descendant selectors for performance" -- negligible in modern engines</li>
+            <li>"IDs are faster than classes" -- difference is unmeasurable</li>
+            <li>"Use will-change on everything for speed" -- causes memory bloat</li>
+            <li>"Inline styles are faster" -- style recalculation is the same</li>
+            <li>"Fewer CSS rules = faster rendering" -- true only at extreme scale</li>
+            <li>"GPU acceleration is always better" -- layer management has overhead</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Composite-Only Animations</h3>
+      <p>The golden rule of CSS animation performance: if you can express the animation using only <code>transform</code> and <code>opacity</code>, the browser can run it entirely on the compositor thread, off the main thread. This means the animation will stay smooth even if the main thread is busy running JavaScript.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* BAD: Animating left triggers layout on every frame */
+.slide-in {
+  animation: slide-bad 0.3s ease;
+}
+@keyframes slide-bad {
+  from { left: -100%; }
+  to   { left: 0; }
+}
+
+/* GOOD: Animating transform stays in compositor */
+.slide-in {
+  animation: slide-good 0.3s ease;
+}
+@keyframes slide-good {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* BAD: Animating box-shadow repaints every frame */
+.card:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+/* GOOD: Animate a pseudo-element's opacity instead */
+.card {
+  position: relative;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.card:hover::after {
+  opacity: 1;
+}</code></pre>
+      </div>
+
+      <h3>Avoiding <code>filter</code> on Scroll</h3>
+      <p>CSS <code>filter</code> effects like <code>blur()</code>, <code>brightness()</code>, and <code>saturate()</code> are GPU-accelerated, but they still require the browser to re-render the affected pixels. Applying filters to elements that change frequently during scroll (like a sticky header with a backdrop blur) can cause dropped frames on lower-end devices.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* CAUTION: blur filter recalculated during scroll */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(10px);
+  /* This works fine on powerful devices but can
+     cause jank on mid-range phones. Test on real
+     hardware before shipping. */
+}
+
+/* SAFER: Solid background with opacity */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: rgba(15, 17, 23, 0.95);
+  /* No filter recalculation during scroll. */
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: MEASURING           -->
+    <!-- ============================== -->
+    <section class="concept-section" id="measuring-performance">
+      <h2>7. Measuring Performance</h2>
+      <p>All of the techniques in this module are only useful if you can measure their impact. Chrome DevTools provides several specialized panels for CSS performance analysis. Knowing which tool to reach for is as important as knowing the optimization itself.</p>
+
+      <h3>Chrome DevTools Performance Panel</h3>
+      <p>Record a performance trace while interacting with your page. The trace breaks down time spent in each pipeline stage:</p>
+      <ul class="feature-list">
+        <li><strong>Recalculate Style (purple):</strong> Time spent matching CSS selectors and computing styles. If this is high, look at your selector complexity and containment boundaries.</li>
+        <li><strong>Layout (purple):</strong> Time spent calculating geometry. If this is high, look for layout thrashing or missing containment on frequently-changing elements.</li>
+        <li><strong>Paint (green):</strong> Time spent filling pixels. If this is high, look for large repaint areas, animated <code>box-shadow</code>, or filters applied to large elements.</li>
+        <li><strong>Composite Layers (green):</strong> Time spent assembling layers. If this is high, you may have too many promoted layers (over-use of <code>will-change</code>).</li>
+      </ul>
+
+      <h3>Paint Flashing</h3>
+      <p>In the DevTools Rendering panel, enable <strong>Paint flashing</strong>. This highlights every area that gets repainted in green. Ideally, during a scroll or animation, you should see minimal green flashing. Large green areas on every frame indicate repaint waste that containment can fix.</p>
+
+      <h3>Layout Shift Visualization</h3>
+      <p>Also in the Rendering panel, enable <strong>Layout Shift Regions</strong>. This highlights elements that move unexpectedly, which contributes to the Cumulative Layout Shift (CLS) metric. <code>contain-intrinsic-size</code> with <code>content-visibility: auto</code> directly addresses this.</p>
+
+      <h3>Layers Panel</h3>
+      <p>The Layers panel (under More Tools) shows every compositor layer, its memory usage, and why it was promoted. This is essential for debugging <code>will-change</code> usage. If you see dozens of layers you did not intend to create, you have an over-promotion problem.</p>
+
+      <div class="devtools-checklist">
+        <h4>Performance Audit Checklist</h4>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Record a Performance trace during scroll. Are there long Layout tasks (&gt;16ms)?</span>
+        </div>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Enable Paint Flashing. Are large areas repainting on scroll or hover?</span>
+        </div>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Check the Layers panel. Are there more than 20 promoted layers?</span>
+        </div>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Enable Layout Shift Regions. Are elements jumping during load or scroll?</span>
+        </div>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Run a Lighthouse audit. Is CLS below 0.1? Is Total Blocking Time under 200ms?</span>
+        </div>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Test animations at 4x CPU throttle. Do they stay at 60fps?</span>
+        </div>
+        <div class="check-item">
+          <span class="check-box"></span>
+          <span>Verify <code>will-change</code> elements have cleanup (removed after animation ends).</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Do not optimize blindly. Always measure first. The Performance panel recording is your source of truth. If Layout takes 2ms total, adding <code>contain: layout</code> everywhere will not make a meaningful difference. Focus your containment work on the elements that the Performance panel shows are causing the most layout and paint time.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Optimize a Dashboard Feed</h2>
+      <p>Apply containment and <code>content-visibility</code> to optimize a scrollable dashboard feed. The feed has many items, and each item updates independently. Your goal is to minimize layout and paint cost.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Apply <code>content-visibility: auto</code> to each feed item so off-screen items skip rendering.</li>
+          <li>Set <code>contain-intrinsic-size</code> with the <code>auto</code> keyword and a reasonable fallback height to prevent layout shift.</li>
+          <li>Apply <code>contain: content</code> to the feed container to isolate its layout from the page.</li>
+          <li>Ensure the hover effect on each item uses <code>transform</code> (composite-only) instead of properties that trigger layout.</li>
+          <li>Add a <code>will-change: transform</code> on <code>:hover</code> only, with automatic cleanup when hover ends.</li>
+          <li>Style the feed with the PE7 dark theme.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <h4>HTML + CSS</h4>
+          <pre><code>&lt;div class="feed"&gt;
+  &lt;div class="feed-item"&gt;
+    &lt;strong&gt;Item Title&lt;/strong&gt;
+    &lt;p&gt;Item description text...&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;!-- repeat for 10+ items --&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.feed {
+  contain: content;
+  overflow-y: auto;
+  max-height: 500px;
+}
+.feed-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 80px;
+}
+&lt;/style&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="feed">
+  <div class="feed-item">
+    <strong>Build #4812 passed</strong>
+    <p>main branch - all 847 tests passed in 3m 42s. Coverage: 94.2%.</p>
+  </div>
+  <div class="feed-item">
+    <strong>Deployment to staging</strong>
+    <p>v2.14.0-rc.3 deployed to staging environment. 12 pods healthy.</p>
+  </div>
+  <div class="feed-item">
+    <strong>Security scan complete</strong>
+    <p>No vulnerabilities found. 234 dependencies scanned. Last scan: 2 min ago.</p>
+  </div>
+  <div class="feed-item">
+    <strong>Database migration #89</strong>
+    <p>Added index on users.email_verified. Migration completed in 1.2s.</p>
+  </div>
+  <div class="feed-item">
+    <strong>Alert resolved: High CPU</strong>
+    <p>CPU usage on node-07 returned to normal (18%). Duration: 4 minutes.</p>
+  </div>
+  <div class="feed-item">
+    <strong>New team member added</strong>
+    <p>Alex Chen joined the Engineering team with Developer role access.</p>
+  </div>
+  <div class="feed-item">
+    <strong>Cache purge completed</strong>
+    <p>CDN cache cleared for 12 edge locations. Propagation: 45 seconds.</p>
+  </div>
+  <div class="feed-item">
+    <strong>API rate limit adjusted</strong>
+    <p>Rate limit increased from 1000 to 2000 req/min for Pro tier accounts.</p>
+  </div>
+  <div class="feed-item">
+    <strong>SSL certificate renewed</strong>
+    <p>Wildcard cert for *.example.com renewed. Expires: 2027-05-24.</p>
+  </div>
+  <div class="feed-item">
+    <strong>Feature flag enabled</strong>
+    <p>dark-mode-v2 flag enabled for 25% of users. Rollout started.</p>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.feed {
+  contain: content;
+  overflow-y: auto;
+  max-height: 420px;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  background: #1a1d27;
+  font-family: system-ui, sans-serif;
+}
+
+.feed-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 80px;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #2e3345;
+  color: #e4e6ef;
+  transition: transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.feed-item:last-child {
+  border-bottom: none;
+}
+
+.feed-item:hover {
+  will-change: transform;
+  transform: translateX(4px);
+  background: #242836;
+}
+
+.feed-item strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.feed-item p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8b8fa7;
+  line-height: 1.6;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Performance-Optimized Card Grid</h2>
+      <p>Build a card grid that uses every containment technique from this module. The grid should handle hundreds of cards efficiently, with smooth hover animations, optimized scroll performance, and proper layer management.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Grid layout:</strong> Use CSS Grid with <code>auto-fill</code> and <code>minmax(280px, 1fr)</code> for responsive columns.</li>
+          <li><strong>Card containment:</strong> Each card uses <code>contain: content</code> to isolate layout and paint.</li>
+          <li><strong>Off-screen optimization:</strong> Apply <code>content-visibility: auto</code> with <code>contain-intrinsic-size</code> to cards so off-screen cards skip rendering.</li>
+          <li><strong>Hover animation:</strong> Animate the card lift effect using <code>transform: translateY(-6px)</code> and a shadow via pseudo-element opacity -- no <code>box-shadow</code> transitions.</li>
+          <li><strong>will-change cleanup:</strong> Apply <code>will-change: transform</code> only on <code>:hover</code> so the hint is removed when the cursor leaves.</li>
+          <li><strong>Status indicators:</strong> Each card has a colored status dot (green for healthy, yellow for warning, red for error) that pulses using an <code>opacity</code>-only animation (composite safe).</li>
+          <li><strong>Performance proof:</strong> If you open DevTools Paint Flashing during hover, only the hovered card should flash green, not the entire grid.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>For the shadow trick: create a <code>.card::after</code> pseudo-element with the final <code>box-shadow</code> value, <code>opacity: 0</code>, and transition <code>opacity</code> on hover. This is cheaper than transitioning <code>box-shadow</code> directly because opacity is composite-only.</li>
+          <li>For the pulsing dot: use <code>@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }</code> -- this animates only opacity, which is compositor-friendly.</li>
+          <li>Set the grid container itself to <code>contain: layout style</code> so style recalculations from card hovers do not propagate upward.</li>
+          <li>Remember: <code>contain: content</code> is <code>layout + paint + style</code> without size containment, so cards can still size based on their content.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="perf-grid">
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--ok"></span>
+    <h3>API Gateway</h3>
+    <p>Requests: 8,400/s | Latency: 45ms | Uptime: 99.99%</p>
+    <span class="perf-tag">Production</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--ok"></span>
+    <h3>Auth Service</h3>
+    <p>Sessions: 12,800 | Token refresh: 340/min | Failures: 0</p>
+    <span class="perf-tag">Production</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--warn"></span>
+    <h3>Search Index</h3>
+    <p>Documents: 2.3M | Reindex lag: 12min | CPU: 78%</p>
+    <span class="perf-tag">Warning</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--ok"></span>
+    <h3>Database Primary</h3>
+    <p>Queries: 4,500/s | Connections: 89/200 | Disk: 67%</p>
+    <span class="perf-tag">Production</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--err"></span>
+    <h3>Email Worker</h3>
+    <p>Queue: 3,400 | Failed: 23 | Retry backlog: 890</p>
+    <span class="perf-tag">Error</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--ok"></span>
+    <h3>CDN Edge</h3>
+    <p>Nodes: 47/50 | Cache hit: 94% | Bandwidth: 2.4 TB/day</p>
+    <span class="perf-tag">Production</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--ok"></span>
+    <h3>WebSocket Hub</h3>
+    <p>Connections: 3,200 | Messages: 14K/s | Memory: 1.2 GB</p>
+    <span class="perf-tag">Production</span>
+  </div>
+  <div class="perf-card">
+    <span class="perf-dot perf-dot--warn"></span>
+    <h3>Log Pipeline</h3>
+    <p>Ingestion: 45 GB/day | Storage: 82% | Alerts: 2 active</p>
+    <span class="perf-tag">Warning</span>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.perf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  contain: layout style;
+  font-family: system-ui, sans-serif;
+}
+
+.perf-card {
+  contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 150px;
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.25rem;
+  color: #e4e6ef;
+  position: relative;
+  transition: transform 0.25s ease;
+}
+
+/* Shadow via pseudo-element (composite-safe) */
+.perf-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 12px 32px rgba(108, 92, 231, 0.2);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.perf-card:hover {
+  will-change: transform;
+  transform: translateY(-6px);
+}
+
+.perf-card:hover::after {
+  opacity: 1;
+}
+
+.perf-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+}
+
+.perf-card p {
+  font-size: 0.82rem;
+  color: #8b8fa7;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.perf-dot {
+  position: absolute;
+  top: 1.45rem;
+  left: 1.25rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.perf-dot--ok {
+  background: #00cec9;
+  animation: pulse 2s ease-in-out infinite;
+}
+.perf-dot--warn {
+  background: #fdcb6e;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.perf-dot--err {
+  background: #ff7675;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.perf-tag {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(108, 92, 231, 0.15);
+  color: #a29bfe;
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../26-filters-blend/index.html">&larr; Previous</a>
+    <a href="../28-counters-generated/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>
