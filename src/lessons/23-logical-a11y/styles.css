@@ -1,0 +1,794 @@
+/* ============================================
+   Module 23: Logical Properties & Accessibility CSS
+   Logical properties, writing modes, prefers-*,
+   focus management, progressive enhancement
+   ============================================ */
+
+/* ---- Lesson-level Custom Properties ---- */
+:root {
+  --m23-bg: #0f1117;
+  --m23-surface: #1a1d27;
+  --m23-surface-2: #242836;
+  --m23-text: #e4e6ef;
+  --m23-text-muted: #8b8fa3;
+  --m23-accent: #6c5ce7;
+  --m23-accent-light: #a29bfe;
+  --m23-border: rgba(255, 255, 255, 0.08);
+  --m23-radius: 8px;
+  --m23-radius-lg: 12px;
+  --m23-transition: 0.25s ease;
+  --m23-success: #22c55e;
+  --m23-warning: #f59e0b;
+  --m23-danger: #ef4444;
+}
+
+/* ---- Section Spacing (logical properties) ---- */
+.concept-section {
+  margin-block-end: 4rem;
+  padding-block-end: 3rem;
+  border-block-end: 1px solid var(--m23-border);
+}
+
+.concept-section:last-of-type {
+  border-block-end: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-block-end: 1rem;
+  padding-block-end: 0.5rem;
+  border-block-end: 2px solid var(--m23-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-block-start: 2rem;
+  margin-block-end: 0.75rem;
+  color: var(--m23-accent-light);
+}
+
+.concept-section p {
+  margin-block-end: 1rem;
+  line-height: 1.8;
+  color: var(--m23-text);
+}
+
+/* ---- Info Boxes (logical properties) ---- */
+.info-box {
+  padding-block: 1.25rem;
+  padding-inline: 1.5rem;
+  border-radius: var(--m23-radius-lg);
+  margin-block: 2rem;
+  background: color-mix(in oklch, var(--m23-accent) 8%, transparent);
+  border-inline-start: 4px solid var(--m23-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--m23-text);
+}
+
+.info-box strong {
+  color: var(--m23-accent-light);
+}
+
+/* ---- Demo Container (logical properties) ---- */
+.demo-container {
+  background: var(--m23-surface);
+  border: 1px solid var(--m23-border);
+  border-radius: var(--m23-radius-lg);
+  padding-block: 1.5rem;
+  padding-inline: 1.5rem;
+  margin-block: 2rem;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  inset-block-start: -0.7em;
+  inset-inline-start: 1rem;
+  background: var(--m23-success);
+  color: var(--m23-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding-block: 0.15rem;
+  padding-inline: 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-block-end: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--m23-text);
+}
+
+/* ---- Demo Note ---- */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--m23-text-muted);
+  font-style: italic;
+  margin-block-end: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block Overrides ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m23-text-muted);
+  margin-block-end: 0.5rem;
+}
+
+/* =============================================
+   Section 1: LTR vs. RTL Demo
+   ============================================= */
+
+.ltr-rtl-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.ltr-rtl-panel {
+  position: relative;
+}
+
+.ltr-rtl-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m23-text-muted);
+  margin-block-end: 0.75rem;
+  font-weight: 700;
+}
+
+.ltr-rtl-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--m23-surface-2);
+  border: 1px solid var(--m23-border);
+  border-inline-start: 4px solid var(--m23-accent);
+  border-radius: var(--m23-radius-lg);
+  padding-block: 1.25rem;
+  padding-inline: 1.25rem;
+}
+
+.ltr-rtl-icon {
+  font-size: 2rem;
+  color: var(--m23-accent-light);
+  flex-shrink: 0;
+  margin-inline-end: 0.25rem;
+}
+
+.ltr-rtl-content {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.ltr-rtl-content h5 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-block-end: 0.5rem;
+  color: var(--m23-text);
+}
+
+.ltr-rtl-content p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m23-text-muted);
+  margin-block-end: 0.75rem;
+}
+
+.ltr-rtl-btn {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 36px;
+  padding-block: 0.4rem;
+  padding-inline: 1rem;
+  background: var(--m23-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--m23-radius);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .ltr-rtl-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 3: Writing Modes Demo
+   ============================================= */
+
+.writing-mode-demo {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.wm-card {
+  background: var(--m23-surface-2);
+  border: 1px solid var(--m23-border);
+  border-inline-start: 4px solid var(--m23-accent);
+  border-radius: var(--m23-radius-lg);
+  padding-block: 1rem;
+  padding-inline: 1rem;
+  position: relative;
+}
+
+.wm-label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m23-accent-light);
+  font-weight: 700;
+  margin-block-end: 0.5rem;
+}
+
+.wm-text {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--m23-text);
+  margin-block-end: 0;
+}
+
+.wm-horizontal {
+  writing-mode: horizontal-tb;
+  inline-size: 260px;
+}
+
+.wm-vertical-rl {
+  writing-mode: vertical-rl;
+  block-size: 260px;
+  inline-size: auto;
+}
+
+.wm-vertical-lr {
+  writing-mode: vertical-lr;
+  block-size: 260px;
+  inline-size: auto;
+}
+
+/* =============================================
+   Section 4: Motion Preference Demo
+   ============================================= */
+
+.motion-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.motion-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+.motion-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m23-text-muted);
+  font-weight: 700;
+  margin-block-end: 0.5rem;
+}
+
+.motion-card {
+  background: var(--m23-surface-2);
+  border: 1px solid var(--m23-border);
+  border-radius: var(--m23-radius-lg);
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Full motion panel */
+.motion-panel--full .motion-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 36px rgba(108, 92, 231, 0.3);
+}
+
+/* Reduced motion panel */
+.motion-card--reduced {
+  transition: opacity 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.motion-card--reduced:hover {
+  transform: none !important;
+  opacity: 0.85;
+  box-shadow: 0 0 0 2px var(--m23-accent) !important;
+}
+
+.motion-card-icon {
+  font-size: 1.75rem;
+  margin-block-end: 0.5rem;
+  color: var(--m23-accent-light);
+  display: block;
+}
+
+/* Spinning icon */
+.motion-card-icon--spin {
+  animation: m23-spin 2s linear infinite;
+}
+
+@keyframes m23-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Bouncing icon */
+.motion-card-icon--bounce {
+  animation: m23-bounce 1s ease infinite;
+}
+
+@keyframes m23-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Still icon (reduced motion replacement) */
+.motion-card-icon--still {
+  animation: m23-pulse-opacity 2.5s ease infinite;
+}
+
+@keyframes m23-pulse-opacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.motion-card h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-block-end: 0.3rem;
+  color: var(--m23-text);
+}
+
+.motion-card p {
+  font-size: 0.78rem;
+  color: var(--m23-text-muted);
+  margin-block-end: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .motion-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 6: Focus Ring Showcase
+   ============================================= */
+
+.focus-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.focus-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Shared button base */
+.focus-btn {
+  padding-block: 0.6rem;
+  padding-inline: 1.25rem;
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  background: var(--m23-surface-2);
+  color: var(--m23-text);
+  border: 1px solid var(--m23-border);
+  border-radius: var(--m23-radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.focus-btn:focus {
+  outline: none;
+}
+
+/* Solid ring */
+.focus-btn--solid:focus-visible {
+  outline: 3px solid var(--m23-accent);
+  outline-offset: 3px;
+}
+
+/* Dashed ring */
+.focus-btn--dashed:focus-visible {
+  outline: 3px dashed var(--m23-accent-light);
+  outline-offset: 4px;
+}
+
+/* Glow effect */
+.focus-btn--glow:focus-visible {
+  outline: 2px solid var(--m23-accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(108, 92, 231, 0.3), 0 0 20px rgba(108, 92, 231, 0.2);
+}
+
+/* Offset ring */
+.focus-btn--offset:focus-visible {
+  outline: 3px solid var(--m23-success);
+  outline-offset: 8px;
+}
+
+/* Link focus */
+.focus-link {
+  color: var(--m23-accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding-block: 0.5rem;
+  padding-inline: 0.5rem;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.focus-link:focus-visible {
+  outline: 2px dashed var(--m23-accent);
+  outline-offset: 4px;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+/* Input focus */
+.focus-input {
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem;
+  min-block-size: 44px;
+  inline-size: 180px;
+  background: var(--m23-surface-2);
+  border: 1px solid var(--m23-border);
+  border-radius: var(--m23-radius);
+  color: var(--m23-text);
+  font-size: 0.9rem;
+}
+
+.focus-input:focus {
+  outline: none;
+}
+
+.focus-input:focus-visible {
+  outline: 2px solid var(--m23-accent);
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+}
+
+/* Checkbox focus */
+.focus-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.5rem;
+  min-block-size: 44px;
+  cursor: pointer;
+  color: var(--m23-text);
+  font-size: 0.9rem;
+  border-radius: var(--m23-radius);
+}
+
+.focus-checkbox input[type="checkbox"] {
+  inline-size: 20px;
+  block-size: 20px;
+  accent-color: var(--m23-accent);
+  cursor: pointer;
+}
+
+.focus-checkbox:has(input:focus-visible) {
+  outline: 2px solid var(--m23-accent);
+  outline-offset: 2px;
+}
+
+/* Touch target sizing demo */
+.focus-row--targets {
+  gap: 0.75rem;
+  align-items: center;
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--m23-border);
+  margin-block-start: 0.5rem;
+}
+
+.target-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--m23-surface-2);
+  border: 1px solid var(--m23-border);
+  color: var(--m23-text);
+  cursor: pointer;
+  border-radius: var(--m23-radius);
+  font-size: 0.75rem;
+}
+
+.target-btn:focus-visible {
+  outline: 2px solid var(--m23-accent);
+  outline-offset: 2px;
+}
+
+.target-btn--small {
+  min-block-size: 24px;
+  min-inline-size: 24px;
+  padding: 0;
+}
+
+.target-btn--recommended {
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.target-label {
+  font-size: 0.78rem;
+  color: var(--m23-text-muted);
+  margin-inline-end: 1rem;
+}
+
+/* =============================================
+   Section 7: Enhancement Steps
+   ============================================= */
+
+.enhancement-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-block: 2rem;
+}
+
+.enhancement-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--m23-surface-2);
+  border: 1px solid var(--m23-border);
+  border-radius: var(--m23-radius-lg);
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
+  transition: border-color var(--m23-transition);
+}
+
+.enhancement-step:hover {
+  border-color: var(--m23-accent);
+}
+
+.enhancement-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 36px;
+  min-block-size: 36px;
+  background: var(--m23-accent);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.enhancement-step-content h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-block-end: 0.35rem;
+  color: var(--m23-text);
+}
+
+.enhancement-step-content p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--m23-text-muted);
+  margin-block-end: 0;
+}
+
+/* ---- Exercise & Challenge Sections ---- */
+
+.exercise, .challenge {
+  margin-block-end: 4rem;
+  padding-block: 2rem;
+}
+
+.exercise h2, .challenge h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-block-end: 0.75rem;
+  color: var(--m23-text);
+}
+
+.exercise > p, .challenge > p {
+  margin-block-end: 1.5rem;
+  line-height: 1.8;
+  color: var(--m23-text);
+}
+
+.exercise-requirements, .challenge-requirements,
+.exercise-starter, .challenge-hints {
+  margin-block-end: 2rem;
+}
+
+.exercise-requirements h3, .challenge-requirements h3,
+.exercise-starter h3, .challenge-hints h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-block-end: 0.75rem;
+  color: var(--m23-accent-light);
+}
+
+.exercise-requirements ul, .challenge-requirements ul,
+.challenge-hints ul {
+  list-style: none;
+  padding-inline-start: 0;
+  margin-block: 0;
+}
+
+.exercise-requirements li, .challenge-requirements li,
+.challenge-hints li {
+  padding-block: 0.5rem;
+  padding-inline-start: 2rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--m23-text);
+  font-size: 0.95rem;
+}
+
+.exercise-requirements li::before, .challenge-requirements li::before {
+  content: "\2713";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m23-success);
+  font-weight: 700;
+}
+
+.challenge-hints li::before {
+  content: "\2192";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m23-accent-light);
+  font-weight: 700;
+}
+
+/* =============================================
+   Reduced Motion (for this lesson page itself)
+   ============================================= */
+
+@media (prefers-reduced-motion: no-preference) {
+  .enhancement-step {
+    transition: border-color var(--m23-transition), transform var(--m23-transition);
+  }
+
+  .enhancement-step:hover {
+    transform: translateX(4px);
+  }
+
+  .ltr-rtl-card {
+    transition: border-color var(--m23-transition), box-shadow var(--m23-transition);
+  }
+
+  .ltr-rtl-card:hover {
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.15);
+  }
+
+  .wm-card {
+    transition: border-color var(--m23-transition);
+  }
+
+  .focus-btn {
+    transition: background var(--m23-transition), color var(--m23-transition);
+  }
+
+  .focus-btn:hover {
+    background: color-mix(in oklch, var(--m23-accent) 20%, var(--m23-surface-2));
+    color: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-card-icon--spin {
+    animation: none;
+  }
+
+  .motion-card-icon--bounce {
+    animation: none;
+  }
+
+  .enhancement-step:hover {
+    transform: none;
+  }
+}
+
+/* =============================================
+   High Contrast Overrides (this lesson page)
+   ============================================= */
+
+@media (prefers-contrast: more) {
+  .ltr-rtl-card,
+  .wm-card,
+  .motion-card,
+  .focus-btn,
+  .enhancement-step {
+    border-width: 2px;
+    border-color: var(--m23-text);
+  }
+
+  .info-box {
+    border-inline-start-width: 5px;
+    background: rgba(108, 92, 231, 0.15);
+  }
+
+  .demo-container {
+    border-width: 2px;
+  }
+
+  .target-btn {
+    border-width: 2px;
+    border-color: var(--m23-text);
+  }
+}
+
+/* =============================================
+   Forced Colors (Windows High Contrast)
+   ============================================= */
+
+@media (forced-colors: active) {
+  .ltr-rtl-card, .wm-card, .motion-card,
+  .enhancement-step, .demo-container {
+    border: 2px solid ButtonText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .info-box {
+    border-inline-start: 4px solid Highlight;
+    background: Canvas;
+  }
+
+  .demo-container::before,
+  .enhancement-step-num {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .focus-btn, .target-btn {
+    border: 2px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .ltr-rtl-btn {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 480px) {
+  .writing-mode-demo { flex-direction: column; }
+  .wm-horizontal { inline-size: 100%; }
+  .wm-vertical-rl, .wm-vertical-lr { block-size: 200px; }
+  .focus-row { gap: 0.5rem; }
+  .focus-input { inline-size: 100%; }
+}

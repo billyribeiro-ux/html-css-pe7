@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exclusive Accordions & Details Styling | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 22</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-7">Level 7 - Expert Systems</span>
+    <h1>Exclusive Accordions &amp; Details Styling</h1>
+    <p class="subtitle">Master the native <code>&lt;details&gt;</code> disclosure widget: build exclusive accordion groups with zero JavaScript, animate open/close with <code>::details-content</code>, and create production-ready FAQ panels, settings interfaces, and nested navigation systems using only HTML and CSS.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: DETAILS & SUMMARY   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="details-summary-basics">
+      <h2>1. &lt;details&gt; and &lt;summary&gt; Basics</h2>
+      <p>The <code>&lt;details&gt;</code> element is HTML's native disclosure widget. It creates a collapsible section that the user can toggle open or closed. The <code>&lt;summary&gt;</code> child element provides the visible heading that acts as the toggle control. Everything else inside <code>&lt;details&gt;</code> is the content that gets shown or hidden.</p>
+
+      <p>This is not a hack or a clever CSS trick. The <code>&lt;details&gt;</code> element is part of the HTML specification, carries built-in keyboard and screen reader support, and requires zero JavaScript to function. It is the correct semantic element for expandable content sections.</p>
+
+      <h3>Basic Structure</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;details&gt;
+  &lt;summary&gt;What is the return policy?&lt;/summary&gt;
+  &lt;p&gt;You can return any item within 30 days
+     of purchase for a full refund.&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;!-- Open by default --&gt;
+&lt;details open&gt;
+  &lt;summary&gt;Shipping Information&lt;/summary&gt;
+  &lt;p&gt;Free shipping on orders over $50.
+     Standard delivery takes 3-5 business days.&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+      </div>
+
+      <h3>Key Behaviors</h3>
+      <ul class="feature-list">
+        <li><strong>Toggle on click:</strong> Clicking <code>&lt;summary&gt;</code> toggles the <code>open</code> attribute on <code>&lt;details&gt;</code>.</li>
+        <li><strong>Keyboard accessible:</strong> <kbd>Enter</kbd> and <kbd>Space</kbd> toggle the element when <code>&lt;summary&gt;</code> has focus.</li>
+        <li><strong>Default marker:</strong> Browsers render a disclosure triangle (&#9656;) via the <code>::marker</code> pseudo-element on <code>&lt;summary&gt;</code>.</li>
+        <li><strong>The <code>open</code> attribute:</strong> A boolean HTML attribute. When present, the content is visible. You can set it in HTML or toggle it via JavaScript.</li>
+        <li><strong>Semantic meaning:</strong> Screen readers announce <code>&lt;summary&gt;</code> as a button with an expanded/collapsed state.</li>
+      </ul>
+
+      <div class="demo-container">
+        <h4>Demo: Native Details Behavior</h4>
+        <p class="demo-note">Click any summary to toggle it. The second item starts open because of the <code>open</code> attribute. Notice the default browser triangle marker.</p>
+
+        <div class="basics-demo">
+          <details class="basic-details">
+            <summary>What is the &lt;details&gt; element?</summary>
+            <p>The <code>&lt;details&gt;</code> element is a native HTML disclosure widget that creates expandable/collapsible content sections. It requires no JavaScript and is fully accessible out of the box.</p>
+          </details>
+
+          <details class="basic-details" open>
+            <summary>This one starts open</summary>
+            <p>Because the <code>open</code> attribute is present in the HTML, this section is visible by default. The user can click to close it, or it can be programmatically controlled.</p>
+          </details>
+
+          <details class="basic-details">
+            <summary>Can it contain any content?</summary>
+            <p>Yes. The content area can contain paragraphs, lists, images, code blocks, other <code>&lt;details&gt;</code> elements (nesting), tables, forms -- anything that makes sense semantically.</p>
+            <ul>
+              <li>Paragraphs and text</li>
+              <li>Images and media</li>
+              <li>Nested details elements</li>
+              <li>Code blocks and tables</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>&lt;details&gt;</code> element fires a <code>toggle</code> event when it opens or closes. You can listen for this in JavaScript, but you never need JavaScript just to make the toggle work. The browser handles it natively.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: EXCLUSIVE ACCORDIONS -->
+    <!-- ============================== -->
+    <section class="concept-section" id="exclusive-accordions">
+      <h2>2. Exclusive Accordions</h2>
+      <p>Traditionally, building an accordion where only one panel is open at a time required JavaScript event listeners to close all other panels when one opens. The <code>name</code> attribute on <code>&lt;details&gt;</code> eliminates this entirely.</p>
+
+      <p>When multiple <code>&lt;details&gt;</code> elements share the same <code>name</code> attribute value, they form an <strong>exclusive accordion group</strong>. Opening one automatically closes the others. The browser handles the mutual exclusion natively -- no scripts, no state management, no event delegation.</p>
+
+      <h3>Syntax</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- These three form an exclusive group --&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Question 1&lt;/summary&gt;
+  &lt;p&gt;Answer 1...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Question 2&lt;/summary&gt;
+  &lt;p&gt;Answer 2...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Question 3&lt;/summary&gt;
+  &lt;p&gt;Answer 3...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;!-- This one is in a DIFFERENT group --&gt;
+&lt;details name="settings"&gt;
+  &lt;summary&gt;Account Settings&lt;/summary&gt;
+  &lt;p&gt;Does not affect the "faq" group.&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+      </div>
+
+      <h3>Multiple Groups on One Page</h3>
+      <p>You can have as many accordion groups as you need. Each group is identified by its <code>name</code> value. Groups are completely independent of each other: opening an item in one group does not affect items in another group.</p>
+
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- Group 1: FAQ --&gt;
+&lt;details name="faq"&gt;...&lt;/details&gt;
+&lt;details name="faq"&gt;...&lt;/details&gt;
+
+&lt;!-- Group 2: Settings --&gt;
+&lt;details name="settings"&gt;...&lt;/details&gt;
+&lt;details name="settings"&gt;...&lt;/details&gt;
+
+&lt;!-- Standalone (no name = independent toggle) --&gt;
+&lt;details&gt;...&lt;/details&gt;</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Exclusive FAQ Accordion</h4>
+        <p class="demo-note">Click any question below. Only one answer can be visible at a time because all items share <code>name="faq-demo"</code>. No JavaScript is involved.</p>
+
+        <div class="exclusive-demo">
+          <details name="faq-demo" class="accordion-item" open>
+            <summary class="accordion-trigger">How does the exclusive accordion work?</summary>
+            <div class="accordion-content">
+              <p>When multiple <code>&lt;details&gt;</code> elements share the same <code>name</code> attribute, the browser automatically closes the currently open one when you open another. This is called an "exclusive accordion" or "mutually exclusive disclosure group."</p>
+            </div>
+          </details>
+
+          <details name="faq-demo" class="accordion-item">
+            <summary class="accordion-trigger">Do I need JavaScript for this?</summary>
+            <div class="accordion-content">
+              <p>No. The <code>name</code> attribute is a native HTML feature. The browser handles the mutual exclusion logic entirely on its own. This has been supported in all major browsers since 2024.</p>
+            </div>
+          </details>
+
+          <details name="faq-demo" class="accordion-item">
+            <summary class="accordion-trigger">Can I have multiple groups on the same page?</summary>
+            <div class="accordion-content">
+              <p>Absolutely. Each group is identified by its unique <code>name</code> value. You can have <code>name="faq"</code>, <code>name="settings"</code>, and <code>name="specs"</code> all on the same page, and they will operate independently.</p>
+            </div>
+          </details>
+
+          <details name="faq-demo" class="accordion-item">
+            <summary class="accordion-trigger">What happens if I omit the name attribute?</summary>
+            <div class="accordion-content">
+              <p>Without a <code>name</code> attribute, each <code>&lt;details&gt;</code> element operates independently. Multiple items can be open simultaneously, which is sometimes the desired behavior (e.g., a documentation page where users want to compare multiple sections).</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Two Independent Groups</h4>
+        <p class="demo-note">The "Product" group (purple) and the "Support" group (teal) operate independently. Opening an item in one group does not affect the other.</p>
+
+        <div class="dual-group-demo">
+          <div class="group-column">
+            <h5 class="group-label group-label--purple">Product Info <code>name="product"</code></h5>
+            <details name="product" class="accordion-item accordion-item--purple" open>
+              <summary class="accordion-trigger">Features</summary>
+              <div class="accordion-content">
+                <p>Advanced dashboard, real-time analytics, team collaboration tools, and API access included in all plans.</p>
+              </div>
+            </details>
+            <details name="product" class="accordion-item accordion-item--purple">
+              <summary class="accordion-trigger">Pricing</summary>
+              <div class="accordion-content">
+                <p>Starts at $12/month for individuals. Team plans from $8/user/month with volume discounts available.</p>
+              </div>
+            </details>
+            <details name="product" class="accordion-item accordion-item--purple">
+              <summary class="accordion-trigger">Integrations</summary>
+              <div class="accordion-content">
+                <p>Native integrations with Slack, GitHub, Jira, Figma, and 200+ other tools via our API and Zapier.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="group-column">
+            <h5 class="group-label group-label--teal">Support <code>name="support"</code></h5>
+            <details name="support" class="accordion-item accordion-item--teal" open>
+              <summary class="accordion-trigger">Contact Us</summary>
+              <div class="accordion-content">
+                <p>Email support@example.com or use the in-app chat. Business hours: Monday through Friday, 9am to 6pm EST.</p>
+              </div>
+            </details>
+            <details name="support" class="accordion-item accordion-item--teal">
+              <summary class="accordion-trigger">Response Times</summary>
+              <div class="accordion-content">
+                <p>Standard support: 24 hours. Priority support: 4 hours. Enterprise: 1 hour with dedicated account manager.</p>
+              </div>
+            </details>
+            <details name="support" class="accordion-item accordion-item--teal">
+              <summary class="accordion-trigger">Documentation</summary>
+              <div class="accordion-content">
+                <p>Full API docs, video tutorials, and community forum available at docs.example.com. Updated weekly.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>name</code> attribute works across sibling <code>&lt;details&gt;</code> elements regardless of wrapper elements between them. The group is scoped to the document, not to a parent container. This means <code>&lt;details name="faq"&gt;</code> elements will form one group even if they are separated by <code>&lt;div&gt;</code> wrappers or other markup.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: ::details-content    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="details-content-pseudo">
+      <h2>3. The ::details-content Pseudo-Element</h2>
+      <p>The <code>::details-content</code> pseudo-element targets the <em>content wrapper</em> inside a <code>&lt;details&gt;</code> element -- everything except the <code>&lt;summary&gt;</code>. This pseudo-element is the key to animating the open/close transition, because it gives you a CSS handle on the collapsible region itself.</p>
+
+      <h3>What It Targets</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;details&gt;
+  &lt;summary&gt;Click me&lt;/summary&gt;
+  &lt;!-- Everything below is ::details-content --&gt;
+  &lt;p&gt;This paragraph...&lt;/p&gt;
+  &lt;p&gt;...and this paragraph...&lt;/p&gt;
+  &lt;ul&gt;&lt;li&gt;...and this list&lt;/li&gt;&lt;/ul&gt;
+  &lt;!-- All wrapped by ::details-content --&gt;
+&lt;/details&gt;</code></pre>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Target the content area */
+details::details-content {
+  /* This is the wrapper around everything
+     except &lt;summary&gt; */
+  padding: 1rem;
+  background: #1a1d27;
+  border-top: 1px solid #2e3345;
+}
+
+/* Style differently when open */
+details[open]::details-content {
+  /* Styles applied only when expanded */
+  opacity: 1;
+}</code></pre>
+      </div>
+
+      <h3>Why It Matters for Animation</h3>
+      <p>Before <code>::details-content</code>, there was no clean way to target the collapsible region. You had to wrap your content in an extra <code>&lt;div&gt;</code> and style that instead, but you still could not animate the actual show/hide because the browser controlled it. With <code>::details-content</code>, you can directly apply <code>height</code>, <code>opacity</code>, and <code>overflow</code> transitions to the content wrapper, giving you full control over the open/close animation.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Styling ::details-content</h4>
+        <p class="demo-note">Each details element below has its <code>::details-content</code> region styled with distinct backgrounds and padding. The content area is visually separated from the summary.</p>
+
+        <div class="pseudo-demo">
+          <details class="styled-details" open>
+            <summary>Styled Content Region</summary>
+            <div class="styled-details-body">
+              <p>This content area is targeted by <code>::details-content</code>. It has its own background color, padding, and border treatment distinct from the summary above.</p>
+            </div>
+          </details>
+
+          <details class="styled-details">
+            <summary>With Custom Border</summary>
+            <div class="styled-details-body">
+              <p>The <code>::details-content</code> pseudo-element receives a top border that acts as a visual separator between the summary trigger and the expandable content area.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>::details-content</code> pseudo-element has <code>display: block</code> when the <code>&lt;details&gt;</code> is open and the browser's default hidden state when closed. This is what makes height transitions possible -- you are transitioning an element between <code>display: none</code> (closed) and <code>display: block</code> (open), which now works with <code>transition-behavior: allow-discrete</code>.
+      </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- SECTION 4: ANIMATING OPEN/CLOSE          -->
+    <!-- ======================================== -->
+    <section class="concept-section" id="animating-open-close">
+      <h2>4. Animating Open/Close</h2>
+      <p>This is where the real magic happens. Combining <code>::details-content</code> with modern CSS transition features gives you smooth, animated accordion open/close without a single line of JavaScript. The recipe involves four ingredients working together.</p>
+
+      <h3>The Four Ingredients</h3>
+      <div class="ingredients-grid">
+        <div class="ingredient-card">
+          <span class="ingredient-num">1</span>
+          <h4><code>::details-content</code></h4>
+          <p>Targets the collapsible content wrapper. Set its closed state to <code>height: 0</code> with <code>overflow: hidden</code>, and its open state to <code>height: auto</code>.</p>
+        </div>
+        <div class="ingredient-card">
+          <span class="ingredient-num">2</span>
+          <h4><code>interpolate-size</code></h4>
+          <p>The property <code>interpolate-size: allow-keywords</code> on <code>:root</code> tells the browser it is allowed to transition to and from keyword sizes like <code>auto</code>. Without this, <code>height: 0</code> to <code>height: auto</code> cannot animate.</p>
+        </div>
+        <div class="ingredient-card">
+          <span class="ingredient-num">3</span>
+          <h4><code>@starting-style</code></h4>
+          <p>Defines the initial style that applies at the moment an element first appears (entry animation). This lets you animate the content appearing from <code>height: 0</code> when the details opens.</p>
+        </div>
+        <div class="ingredient-card">
+          <span class="ingredient-num">4</span>
+          <h4><code>transition-behavior</code></h4>
+          <p>The value <code>allow-discrete</code> permits transitions on discrete properties like <code>display</code> and <code>content-visibility</code>. This prevents the content from vanishing instantly on close.</p>
+        </div>
+      </div>
+
+      <h3>The Complete Recipe</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Step 1: Enable keyword interpolation globally */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+/* Step 2: Style the closed state */
+details::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.4s ease,
+    opacity 0.4s ease,
+    content-visibility 0.4s ease allow-discrete;
+}
+
+/* Step 3: Style the open state */
+details[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+/* Step 4: Define the entry animation start point */
+@starting-style {
+  details[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}</code></pre>
+      </div>
+
+      <h3>How It Works Step by Step</h3>
+      <ol class="steps-list">
+        <li><strong>Closed state:</strong> <code>::details-content</code> has <code>height: 0</code> and <code>overflow: hidden</code>, so the content is invisible and takes no space.</li>
+        <li><strong>User clicks summary:</strong> The browser adds the <code>open</code> attribute. The <code>[open]::details-content</code> rule applies, setting <code>height: auto</code>.</li>
+        <li><strong>Entry transition:</strong> Because <code>@starting-style</code> says "start from <code>height: 0</code>", the browser transitions from 0 to auto (possible because of <code>interpolate-size: allow-keywords</code>).</li>
+        <li><strong>User clicks again:</strong> The <code>open</code> attribute is removed. The element transitions back from <code>height: auto</code> to <code>height: 0</code>.</li>
+        <li><strong>Discrete cleanup:</strong> <code>content-visibility</code> with <code>allow-discrete</code> ensures the content remains visible during the closing transition instead of disappearing instantly.</li>
+      </ol>
+
+      <div class="demo-container">
+        <h4>Demo: Animated Exclusive Accordion</h4>
+        <p class="demo-note">Click any item below. The content smoothly animates open while the previously open item animates closed. This uses the full recipe: <code>::details-content</code> + <code>interpolate-size</code> + <code>@starting-style</code>.</p>
+
+        <div class="animated-accordion">
+          <details name="animated-demo" class="anim-item" open>
+            <summary class="anim-trigger">
+              <span class="anim-icon"></span>
+              <span>What makes this animation smooth?</span>
+            </summary>
+            <div class="anim-content">
+              <p>The combination of <code>interpolate-size: allow-keywords</code> (enabling height: 0 to height: auto transitions), <code>::details-content</code> (targeting the collapsible wrapper), and <code>@starting-style</code> (defining the entry state) creates a smooth CSS-only open/close animation.</p>
+              <p>There is zero JavaScript involved. The browser handles everything: the mutual exclusion logic, the transition timing, and the discrete property changes.</p>
+            </div>
+          </details>
+
+          <details name="animated-demo" class="anim-item">
+            <summary class="anim-trigger">
+              <span class="anim-icon"></span>
+              <span>Is interpolate-size safe to use globally?</span>
+            </summary>
+            <div class="anim-content">
+              <p>Yes. Setting <code>interpolate-size: allow-keywords</code> on <code>:root</code> is safe. It simply enables the browser to interpolate between keyword values (like <code>auto</code>) and explicit values (like <code>0</code>) during transitions. It does not change any existing behavior -- it only unlocks new capabilities.</p>
+            </div>
+          </details>
+
+          <details name="animated-demo" class="anim-item">
+            <summary class="anim-trigger">
+              <span class="anim-icon"></span>
+              <span>What about browser support?</span>
+            </summary>
+            <div class="anim-content">
+              <p>As of 2026, <code>::details-content</code>, <code>interpolate-size</code>, and <code>@starting-style</code> are supported in Chrome, Edge, Safari, and Firefox. The <code>&lt;details name="..."&gt;</code> exclusive accordion feature has been in all browsers since late 2024.</p>
+              <p>For older browsers, the accordion still works perfectly -- it just opens and closes instantly without animation. This is ideal progressive enhancement.</p>
+            </div>
+          </details>
+
+          <details name="animated-demo" class="anim-item">
+            <summary class="anim-trigger">
+              <span class="anim-icon"></span>
+              <span>Can I customize the easing and duration?</span>
+            </summary>
+            <div class="anim-content">
+              <p>Absolutely. The transition properties on <code>::details-content</code> accept all standard timing functions: <code>ease</code>, <code>ease-in-out</code>, <code>cubic-bezier()</code>, <code>linear()</code>, and <code>spring()</code>. Duration and delay work exactly as you would expect from any CSS transition.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>@starting-style</code> block is essential for the opening animation. Without it, the browser has no "from" state when the element first appears, so the transition would not play on open -- only on close. Think of <code>@starting-style</code> as defining the "from" keyframe of an entry transition.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: STYLING PATTERNS     -->
+    <!-- ============================== -->
+    <section class="concept-section" id="styling-patterns">
+      <h2>5. Styling Patterns</h2>
+      <p>With the fundamentals in place, let us build real-world components. These patterns cover the most common accordion use cases you will encounter in production: FAQ layouts, settings panels, specification tables, and custom markers.</p>
+
+      <h3>Custom Markers &amp; Icon Rotation</h3>
+      <p>The default disclosure triangle comes from the <code>::marker</code> pseudo-element on <code>&lt;summary&gt;</code>. You can remove it and replace it with a custom icon that rotates on open.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Remove the default marker */
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Add a custom chevron */
+summary::after {
+  content: "\276F"; /* right chevron */
+  transition: rotate 0.3s ease;
+}
+
+/* Rotate when open */
+details[open] &gt; summary::after {
+  rotate: 90deg;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: FAQ Layout</h4>
+        <p class="demo-note">A production-ready FAQ component with custom chevron markers, smooth animation, and an exclusive accordion group. The icon rotates when the panel opens.</p>
+
+        <div class="faq-panel">
+          <h5 class="faq-title">Frequently Asked Questions</h5>
+
+          <details name="faq-styled" class="faq-item" open>
+            <summary class="faq-question">
+              <span>How do I reset my password?</span>
+              <span class="faq-chevron"></span>
+            </summary>
+            <div class="faq-answer">
+              <p>Go to the login page and click "Forgot password." Enter your email address and we will send you a reset link within 5 minutes. The link expires after 24 hours. If you do not receive the email, check your spam folder or contact support.</p>
+            </div>
+          </details>
+
+          <details name="faq-styled" class="faq-item">
+            <summary class="faq-question">
+              <span>Can I change my subscription plan?</span>
+              <span class="faq-chevron"></span>
+            </summary>
+            <div class="faq-answer">
+              <p>Yes. Navigate to Settings &gt; Billing &gt; Change Plan. Upgrades take effect immediately with prorated billing. Downgrades take effect at the start of your next billing cycle. You can switch between plans as often as needed.</p>
+            </div>
+          </details>
+
+          <details name="faq-styled" class="faq-item">
+            <summary class="faq-question">
+              <span>Is my data backed up automatically?</span>
+              <span class="faq-chevron"></span>
+            </summary>
+            <div class="faq-answer">
+              <p>All data is backed up continuously with point-in-time recovery. We maintain backups for 30 days on standard plans and 90 days on enterprise plans. You can also trigger a manual export at any time from your dashboard.</p>
+            </div>
+          </details>
+
+          <details name="faq-styled" class="faq-item">
+            <summary class="faq-question">
+              <span>Do you offer a free trial?</span>
+              <span class="faq-chevron"></span>
+            </summary>
+            <div class="faq-answer">
+              <p>Yes, we offer a 14-day free trial with full access to all features. No credit card required. At the end of the trial, you can choose a plan or your account will be paused (not deleted) until you subscribe.</p>
+            </div>
+          </details>
+
+          <details name="faq-styled" class="faq-item">
+            <summary class="faq-question">
+              <span>What payment methods do you accept?</span>
+              <span class="faq-chevron"></span>
+            </summary>
+            <div class="faq-answer">
+              <p>We accept all major credit cards (Visa, MasterCard, American Express), PayPal, bank transfers for annual plans, and cryptocurrency (Bitcoin, Ethereum) for enterprise accounts.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <h3>Settings Panel</h3>
+      <p>Accordions are perfect for settings interfaces where each category expands to reveal its options. The exclusive group ensures only one settings category is expanded at a time, reducing visual clutter.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Settings Panel</h4>
+        <p class="demo-note">A settings interface built entirely with <code>&lt;details name="settings"&gt;</code>. Each category is an exclusive accordion item. Icons indicate the category type.</p>
+
+        <div class="settings-panel">
+          <h5 class="settings-title">Settings</h5>
+
+          <details name="settings-demo" class="settings-item" open>
+            <summary class="settings-trigger">
+              <span class="settings-icon">&#9881;</span>
+              <span class="settings-label">
+                <strong>General</strong>
+                <small>Language, timezone, display preferences</small>
+              </span>
+              <span class="settings-chevron"></span>
+            </summary>
+            <div class="settings-content">
+              <div class="settings-row">
+                <span>Language</span>
+                <span class="settings-value">English (US)</span>
+              </div>
+              <div class="settings-row">
+                <span>Timezone</span>
+                <span class="settings-value">UTC-5 (Eastern)</span>
+              </div>
+              <div class="settings-row">
+                <span>Date Format</span>
+                <span class="settings-value">MM/DD/YYYY</span>
+              </div>
+              <div class="settings-row">
+                <span>Theme</span>
+                <span class="settings-value">Dark</span>
+              </div>
+            </div>
+          </details>
+
+          <details name="settings-demo" class="settings-item">
+            <summary class="settings-trigger">
+              <span class="settings-icon">&#128274;</span>
+              <span class="settings-label">
+                <strong>Privacy &amp; Security</strong>
+                <small>Two-factor auth, session management</small>
+              </span>
+              <span class="settings-chevron"></span>
+            </summary>
+            <div class="settings-content">
+              <div class="settings-row">
+                <span>Two-Factor Authentication</span>
+                <span class="settings-value settings-value--on">Enabled</span>
+              </div>
+              <div class="settings-row">
+                <span>Login Notifications</span>
+                <span class="settings-value settings-value--on">Enabled</span>
+              </div>
+              <div class="settings-row">
+                <span>Active Sessions</span>
+                <span class="settings-value">3 devices</span>
+              </div>
+              <div class="settings-row">
+                <span>Password Last Changed</span>
+                <span class="settings-value">14 days ago</span>
+              </div>
+            </div>
+          </details>
+
+          <details name="settings-demo" class="settings-item">
+            <summary class="settings-trigger">
+              <span class="settings-icon">&#128276;</span>
+              <span class="settings-label">
+                <strong>Notifications</strong>
+                <small>Email, push, and in-app alerts</small>
+              </span>
+              <span class="settings-chevron"></span>
+            </summary>
+            <div class="settings-content">
+              <div class="settings-row">
+                <span>Email Notifications</span>
+                <span class="settings-value settings-value--on">Enabled</span>
+              </div>
+              <div class="settings-row">
+                <span>Push Notifications</span>
+                <span class="settings-value settings-value--off">Disabled</span>
+              </div>
+              <div class="settings-row">
+                <span>Weekly Digest</span>
+                <span class="settings-value settings-value--on">Enabled</span>
+              </div>
+              <div class="settings-row">
+                <span>Marketing Emails</span>
+                <span class="settings-value settings-value--off">Disabled</span>
+              </div>
+            </div>
+          </details>
+
+          <details name="settings-demo" class="settings-item">
+            <summary class="settings-trigger">
+              <span class="settings-icon">&#127912;</span>
+              <span class="settings-label">
+                <strong>Appearance</strong>
+                <small>Colors, fonts, layout density</small>
+              </span>
+              <span class="settings-chevron"></span>
+            </summary>
+            <div class="settings-content">
+              <div class="settings-row">
+                <span>Accent Color</span>
+                <span class="settings-value"><span class="settings-swatch"></span> Purple</span>
+              </div>
+              <div class="settings-row">
+                <span>Font Size</span>
+                <span class="settings-value">Medium (16px)</span>
+              </div>
+              <div class="settings-row">
+                <span>Layout Density</span>
+                <span class="settings-value">Comfortable</span>
+              </div>
+              <div class="settings-row">
+                <span>Sidebar Position</span>
+                <span class="settings-value">Left</span>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <h3>Nested Accordions</h3>
+      <p>You can nest <code>&lt;details&gt;</code> elements inside each other. Each nesting level can have its own exclusive group (via different <code>name</code> values), creating multi-level navigation trees or categorized content hierarchies.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Nested Accordion</h4>
+        <p class="demo-note">A two-level accordion where the outer items form one exclusive group and the inner items within each section form their own independent groups.</p>
+
+        <div class="nested-accordion">
+          <details name="outer-group" class="nested-outer" open>
+            <summary class="nested-outer-trigger">
+              <span class="nested-icon">&#128193;</span>
+              Front-End Technologies
+            </summary>
+            <div class="nested-outer-content">
+              <details name="frontend-inner" class="nested-inner" open>
+                <summary class="nested-inner-trigger">HTML &amp; Semantics</summary>
+                <div class="nested-inner-content">
+                  <p>Semantic HTML provides meaning to your content. Elements like <code>&lt;article&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;details&gt;</code>, and <code>&lt;dialog&gt;</code> communicate structure to browsers and assistive technology.</p>
+                </div>
+              </details>
+              <details name="frontend-inner" class="nested-inner">
+                <summary class="nested-inner-trigger">CSS Layout</summary>
+                <div class="nested-inner-content">
+                  <p>Modern CSS layout uses Flexbox for one-dimensional flow and Grid for two-dimensional placement. Container queries and subgrid add component-level responsive design.</p>
+                </div>
+              </details>
+              <details name="frontend-inner" class="nested-inner">
+                <summary class="nested-inner-trigger">JavaScript Frameworks</summary>
+                <div class="nested-inner-content">
+                  <p>Popular frameworks include React, Vue, Svelte, and Angular. Each offers component-based architecture with different trade-offs in bundle size, performance, and developer experience.</p>
+                </div>
+              </details>
+            </div>
+          </details>
+
+          <details name="outer-group" class="nested-outer">
+            <summary class="nested-outer-trigger">
+              <span class="nested-icon">&#128193;</span>
+              Back-End Technologies
+            </summary>
+            <div class="nested-outer-content">
+              <details name="backend-inner" class="nested-inner" open>
+                <summary class="nested-inner-trigger">Runtime Environments</summary>
+                <div class="nested-inner-content">
+                  <p>Node.js, Deno, and Bun provide server-side JavaScript execution. Python, Go, and Rust offer alternatives with different performance and ecosystem trade-offs.</p>
+                </div>
+              </details>
+              <details name="backend-inner" class="nested-inner">
+                <summary class="nested-inner-trigger">Databases</summary>
+                <div class="nested-inner-content">
+                  <p>PostgreSQL and MySQL for relational data. MongoDB and Redis for document and key-value stores. SQLite for embedded databases. Choose based on your data model and scale requirements.</p>
+                </div>
+              </details>
+            </div>
+          </details>
+
+          <details name="outer-group" class="nested-outer">
+            <summary class="nested-outer-trigger">
+              <span class="nested-icon">&#128193;</span>
+              DevOps &amp; Infrastructure
+            </summary>
+            <div class="nested-outer-content">
+              <details name="devops-inner" class="nested-inner" open>
+                <summary class="nested-inner-trigger">Containers &amp; Orchestration</summary>
+                <div class="nested-inner-content">
+                  <p>Docker for containerization, Kubernetes for orchestration at scale. Alternatives like Podman and Docker Swarm serve smaller deployments.</p>
+                </div>
+              </details>
+              <details name="devops-inner" class="nested-inner">
+                <summary class="nested-inner-trigger">CI/CD Pipelines</summary>
+                <div class="nested-inner-content">
+                  <p>GitHub Actions, GitLab CI, and Jenkins automate testing, building, and deployment. Infrastructure as Code with Terraform and Pulumi manages cloud resources declaratively.</p>
+                </div>
+              </details>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: ADVANCED PATTERNS    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="advanced-patterns">
+      <h2>6. Advanced Patterns</h2>
+      <p>With a solid foundation in details/summary, exclusive groups, and animation, we can build more sophisticated interfaces. These patterns use <code>:has()</code>, creative selectors, and structural composition to solve real design problems.</p>
+
+      <h3>Styling Parents with :has(details[open])</h3>
+      <p>The <code>:has()</code> selector lets you style a container based on whether any of its <code>&lt;details&gt;</code> children are open. This enables effects like changing the container background, adding a glow, or adjusting layout when content is expanded.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Highlight the container when any accordion is open */
+.accordion-wrapper:has(details[open]) {
+  border-color: #6c5ce7;
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.15);
+}
+
+/* Show a "collapse all" hint when something is open */
+.accordion-wrapper:has(details[open])::after {
+  content: "Click another item to switch";
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #8b8fa7;
+  padding-top: 0.75rem;
+}
+
+/* Count open items (with non-exclusive accordions) */
+.multi-accordion:has(details[open] ~ details[open]) {
+  /* Two or more are open */
+  border-left: 3px solid #fdcb6e;
+}</code></pre>
+      </div>
+
+      <h3>Specification Table Accordion</h3>
+      <p>Technical specifications, API parameters, and configuration references often need expandable rows. Each spec category opens to reveal its data while keeping the interface scannable.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Specification Table</h4>
+        <p class="demo-note">A technical specification display using <code>&lt;details&gt;</code> for each category. The parent container highlights when any section is expanded, using <code>:has(details[open])</code>.</p>
+
+        <div class="spec-table">
+          <h5 class="spec-title">Technical Specifications</h5>
+
+          <details name="specs" class="spec-row" open>
+            <summary class="spec-trigger">
+              <span class="spec-category">Display</span>
+              <span class="spec-preview">6.7" OLED, 120Hz</span>
+            </summary>
+            <div class="spec-details">
+              <div class="spec-detail-row">
+                <span>Screen Size</span><span>6.7 inches</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Technology</span><span>LTPO AMOLED</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Resolution</span><span>2796 x 1290 pixels</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Refresh Rate</span><span>1-120Hz adaptive</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Peak Brightness</span><span>2000 nits</span>
+              </div>
+            </div>
+          </details>
+
+          <details name="specs" class="spec-row">
+            <summary class="spec-trigger">
+              <span class="spec-category">Performance</span>
+              <span class="spec-preview">A18 Pro, 8GB RAM</span>
+            </summary>
+            <div class="spec-details">
+              <div class="spec-detail-row">
+                <span>Chipset</span><span>A18 Pro</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>CPU</span><span>6-core (2 performance + 4 efficiency)</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>GPU</span><span>6-core Apple GPU</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>RAM</span><span>8 GB</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Neural Engine</span><span>16-core</span>
+              </div>
+            </div>
+          </details>
+
+          <details name="specs" class="spec-row">
+            <summary class="spec-trigger">
+              <span class="spec-category">Camera</span>
+              <span class="spec-preview">48MP main, 5x optical</span>
+            </summary>
+            <div class="spec-details">
+              <div class="spec-detail-row">
+                <span>Main Sensor</span><span>48 MP, f/1.78</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Ultra Wide</span><span>12 MP, f/2.2, 120&deg;</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Telephoto</span><span>12 MP, f/2.8, 5x optical</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Front Camera</span><span>12 MP, f/1.9</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Video</span><span>4K@120fps, Dolby Vision HDR</span>
+              </div>
+            </div>
+          </details>
+
+          <details name="specs" class="spec-row">
+            <summary class="spec-trigger">
+              <span class="spec-category">Battery</span>
+              <span class="spec-preview">4685 mAh, USB-C</span>
+            </summary>
+            <div class="spec-details">
+              <div class="spec-detail-row">
+                <span>Capacity</span><span>4685 mAh</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Wired Charging</span><span>27W USB-C</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Wireless</span><span>15W MagSafe / 7.5W Qi</span>
+              </div>
+              <div class="spec-detail-row">
+                <span>Estimated Life</span><span>Up to 29 hours video playback</span>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <h3>Accordion Navigation</h3>
+      <p>Documentation sidebars and admin navigation menus are ideal candidates for nested accordion patterns. Each top-level section expands to reveal navigation links, with exclusive groups keeping the sidebar compact.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Accordion-based sidebar navigation */
+.sidebar-nav details {
+  border-bottom: 1px solid #2e3345;
+}
+
+.sidebar-nav summary {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.sidebar-nav details[open] &gt; summary {
+  color: #6c5ce7;
+  background: rgba(108, 92, 231, 0.08);
+}
+
+.sidebar-nav ul {
+  padding: 0.25rem 0 0.5rem 1.5rem;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  color: #8b8fa7;
+  border-radius: 6px;
+}
+
+.sidebar-nav a:hover {
+  color: #e4e6ef;
+  background: rgba(108, 92, 231, 0.1);
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> When using <code>:has(details[open])</code>, remember that <code>:has()</code> is a live selector -- it responds instantly to state changes. Combined with CSS transitions on the parent, you get reactive container styling that responds to the accordion state without any JavaScript observers or event listeners.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: ACCESSIBILITY        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="accessibility">
+      <h2>7. Accessibility</h2>
+      <p>The <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> elements come with built-in accessibility features. However, there are best practices to follow and pitfalls to avoid to ensure your accordions work well for all users.</p>
+
+      <h3>Built-In Behaviors</h3>
+      <ul class="feature-list">
+        <li><strong>Keyboard navigation:</strong> <code>&lt;summary&gt;</code> is focusable by default. <kbd>Enter</kbd> and <kbd>Space</kbd> toggle the open state. <kbd>Tab</kbd> moves focus to the next focusable element.</li>
+        <li><strong>Screen reader announcements:</strong> <code>&lt;summary&gt;</code> is announced as a disclosure widget with its current state (expanded or collapsed). Most readers say something like "disclosure triangle, collapsed" or "button, expanded."</li>
+        <li><strong>Implicit role:</strong> <code>&lt;summary&gt;</code> has an implicit ARIA role of <code>button</code> (when it is the first child of <code>&lt;details&gt;</code>). You do not need to add <code>role="button"</code>.</li>
+        <li><strong>State communication:</strong> The expanded/collapsed state is communicated automatically. You do not need <code>aria-expanded</code> on summary elements -- the browser handles this.</li>
+      </ul>
+
+      <h3>Best Practices</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- GOOD: summary is the first child --&gt;
+&lt;details&gt;
+  &lt;summary&gt;Descriptive label here&lt;/summary&gt;
+  &lt;p&gt;Content...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;!-- GOOD: Accordion group with headings --&gt;
+&lt;h2&gt;Frequently Asked Questions&lt;/h2&gt;
+&lt;details name="faq"&gt;
+  &lt;summary&gt;Clear, concise question text&lt;/summary&gt;
+  &lt;p&gt;Detailed answer...&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;!-- AVOID: Non-descriptive summary --&gt;
+&lt;details&gt;
+  &lt;summary&gt;Click here&lt;/summary&gt;
+  &lt;p&gt;Not helpful for screen reader users.&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;!-- AVOID: Adding role="button" (already implicit) --&gt;
+&lt;details&gt;
+  &lt;summary role="button"&gt;Redundant&lt;/summary&gt;
+&lt;/details&gt;
+
+&lt;!-- AVOID: Interactive elements inside summary --&gt;
+&lt;details&gt;
+  &lt;summary&gt;
+    Topic
+    &lt;button&gt;Edit&lt;/button&gt; &lt;!-- Bad: nested interactive --&gt;
+  &lt;/summary&gt;
+&lt;/details&gt;</code></pre>
+      </div>
+
+      <h3>Animation Accessibility</h3>
+      <p>Always respect the user's motion preferences. If they have <code>prefers-reduced-motion</code> enabled, remove or minimize accordion animations.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  details::details-content {
+    transition-duration: 0.01s;
+  }
+}
+
+/* Or remove transitions entirely */
+@media (prefers-reduced-motion: reduce) {
+  details::details-content {
+    transition: none;
+  }
+}</code></pre>
+      </div>
+
+      <h3>ARIA Considerations</h3>
+      <div class="a11y-grid">
+        <div class="a11y-card a11y-do">
+          <h4>Do</h4>
+          <ul>
+            <li>Use descriptive text in <code>&lt;summary&gt;</code></li>
+            <li>Keep <code>&lt;summary&gt;</code> as the first child</li>
+            <li>Provide visible focus styles on summary</li>
+            <li>Respect <code>prefers-reduced-motion</code></li>
+            <li>Use heading elements before accordion groups for context</li>
+            <li>Test with a screen reader (VoiceOver, NVDA, JAWS)</li>
+          </ul>
+        </div>
+        <div class="a11y-card a11y-dont">
+          <h4>Don't</h4>
+          <ul>
+            <li>Put interactive elements (buttons, links) inside <code>&lt;summary&gt;</code></li>
+            <li>Add <code>role="button"</code> or <code>aria-expanded</code> to <code>&lt;summary&gt;</code></li>
+            <li>Use <code>&lt;details&gt;</code> for content that should always be visible</li>
+            <li>Hide critical information (like error messages) in closed accordions</li>
+            <li>Rely solely on color changes to indicate the open/closed state</li>
+            <li>Remove the focus outline without providing an alternative</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The browser's built-in accessibility for <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> is already excellent. The most common mistake is adding ARIA attributes that conflict with the native semantics. Trust the platform: use the elements correctly and the accessibility comes for free.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Build a Product FAQ Accordion</h2>
+      <p>Create a fully styled, animated FAQ accordion using <code>&lt;details name="..."&gt;</code> for exclusive behavior and <code>::details-content</code> for smooth animation.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create at least 5 FAQ items using <code>&lt;details&gt;</code> with a shared <code>name</code> attribute for exclusive behavior.</li>
+          <li>Replace the default marker with a custom chevron icon using <code>::after</code> on <code>&lt;summary&gt;</code> that rotates on open.</li>
+          <li>Animate the open/close using <code>::details-content</code>, <code>interpolate-size: allow-keywords</code>, and <code>@starting-style</code>.</li>
+          <li>Add <code>prefers-reduced-motion</code> support that disables the animation.</li>
+          <li>Style the summary with hover and focus states.</li>
+          <li>Add a border-left accent color that changes when an item is open.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <h4>HTML + CSS</h4>
+          <pre><code>&lt;div class="my-faq"&gt;
+  &lt;details name="my-faq-group"&gt;
+    &lt;summary&gt;Question 1 text&lt;/summary&gt;
+    &lt;div class="my-faq-answer"&gt;
+      &lt;p&gt;Answer text...&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/details&gt;
+  &lt;!-- Repeat for 5+ items --&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.my-faq details::details-content {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.my-faq details[open]::details-content {
+  height: auto;
+}
+
+@starting-style {
+  .my-faq details[open]::details-content {
+    height: 0;
+  }
+}
+&lt;/style&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="my-faq">
+  <details name="my-faq-group" open>
+    <summary>How do I get started?</summary>
+    <div class="my-faq-answer">
+      <p>Sign up for a free account, complete the onboarding wizard, and you'll be ready to go in under 5 minutes.</p>
+    </div>
+  </details>
+
+  <details name="my-faq-group">
+    <summary>What browsers are supported?</summary>
+    <div class="my-faq-answer">
+      <p>We support all modern browsers: Chrome, Firefox, Safari, and Edge. We recommend keeping your browser up to date for the best experience.</p>
+    </div>
+  </details>
+
+  <details name="my-faq-group">
+    <summary>Can I export my data?</summary>
+    <div class="my-faq-answer">
+      <p>Yes. Go to Settings and click "Export Data." You can download your data in CSV, JSON, or PDF format at any time.</p>
+    </div>
+  </details>
+
+  <details name="my-faq-group">
+    <summary>Is there a mobile app?</summary>
+    <div class="my-faq-answer">
+      <p>Our mobile apps for iOS and Android are available on the App Store and Google Play. They sync with your web account in real-time.</p>
+    </div>
+  </details>
+
+  <details name="my-faq-group">
+    <summary>How do I cancel my subscription?</summary>
+    <div class="my-faq-answer">
+      <p>Navigate to Settings, then Billing, then click "Cancel Subscription." You'll retain access until the end of your current billing period.</p>
+    </div>
+  </details>
+</div>
+        </template>
+        <template class="starter-css">
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.my-faq {
+  max-width: 600px;
+  font-family: system-ui, sans-serif;
+}
+
+.my-faq details {
+  border-bottom: 1px solid #2e3345;
+  border-left: 3px solid transparent;
+}
+
+.my-faq details[open] {
+  border-left-color: #6c5ce7;
+}
+
+.my-faq summary {
+  list-style: none;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #e4e6ef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1a1d27;
+}
+
+.my-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.my-faq summary::after {
+  content: "\276F";
+  font-size: 0.85rem;
+  transition: rotate 0.3s ease;
+  color: #8b8fa7;
+}
+
+.my-faq details[open] > summary::after {
+  rotate: 90deg;
+  color: #6c5ce7;
+}
+
+.my-faq summary:hover {
+  background: #242836;
+}
+
+.my-faq summary:focus-visible {
+  outline: 2px solid #6c5ce7;
+  outline-offset: -2px;
+}
+
+.my-faq details::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.my-faq details[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .my-faq details[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.my-faq-answer {
+  padding: 0.75rem 1.25rem 1rem;
+  color: #8b8fa7;
+  line-height: 1.7;
+  background: #12141c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-faq details::details-content {
+    transition: none;
+  }
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Multi-Section Dashboard</h2>
+      <p>Build a dashboard-style interface with multiple independent accordion groups, nested accordions, and parent-aware styling using <code>:has()</code>. This combines everything from the module into one cohesive component.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Two independent accordion groups:</strong> A "Quick Actions" panel (<code>name="actions"</code>) and a "System Status" panel (<code>name="status"</code>) side by side.</li>
+          <li><strong>Nested accordion:</strong> Inside at least one panel, nest a second-level accordion with its own exclusive group.</li>
+          <li><strong>Animated open/close:</strong> Use the full animation recipe (<code>::details-content</code>, <code>interpolate-size</code>, <code>@starting-style</code>) on all accordion items.</li>
+          <li><strong>Parent-aware styling:</strong> Use <code>:has(details[open])</code> to add a subtle glow or border change to the panel container when any of its items is expanded.</li>
+          <li><strong>Custom markers:</strong> Replace default triangles with plus/minus icons or rotating chevrons.</li>
+          <li><strong>Responsive layout:</strong> Side-by-side panels on desktop, stacked on mobile.</li>
+          <li><strong>Accessibility:</strong> Proper focus styles and <code>prefers-reduced-motion</code> support.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Use CSS Grid with <code>grid-template-columns: 1fr 1fr</code> for the two-panel layout, switching to <code>1fr</code> on narrow screens.</li>
+          <li>For plus/minus markers: use <code>summary::after { content: "+"; }</code> and <code>details[open] &gt; summary::after { content: "\2212"; }</code> (the minus sign).</li>
+          <li>For the <code>:has()</code> glow effect: <code>.panel:has(details[open]) { box-shadow: 0 0 20px rgba(108, 92, 231, 0.15); }</code></li>
+          <li>Use different <code>name</code> values for each group: <code>name="actions"</code>, <code>name="status"</code>, and <code>name="nested-sub"</code> for the nested level.</li>
+          <li>Wrap each panel in a container div for the <code>:has()</code> targeting to work correctly.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="dash-layout">
+  <!-- Quick Actions Panel -->
+  <div class="dash-panel">
+    <h3 class="dash-panel-title">Quick Actions</h3>
+
+    <details name="actions" open>
+      <summary>Deploy Latest Build</summary>
+      <div class="dash-content">
+        <p>Push the current staging build to production. Last deploy: 2 hours ago.</p>
+        <details name="deploy-options">
+          <summary>Advanced Options</summary>
+          <div class="dash-content">
+            <p>Rolling deployment | Blue-green | Canary</p>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details name="actions">
+      <summary>Run Test Suite</summary>
+      <div class="dash-content">
+        <p>Execute the full test suite: 847 unit tests, 123 integration tests, 45 e2e tests.</p>
+      </div>
+    </details>
+
+    <details name="actions">
+      <summary>Clear Cache</summary>
+      <div class="dash-content">
+        <p>Purge CDN cache and Redis instance. Estimated time: ~30 seconds.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- System Status Panel -->
+  <div class="dash-panel">
+    <h3 class="dash-panel-title">System Status</h3>
+
+    <details name="status" open>
+      <summary>API Servers</summary>
+      <div class="dash-content">
+        <p>All 12 instances healthy. Average response: 45ms. Uptime: 99.98%</p>
+      </div>
+    </details>
+
+    <details name="status">
+      <summary>Database Cluster</summary>
+      <div class="dash-content">
+        <p>Primary: healthy. 3 replicas synced. Storage: 67% used (340 GB / 512 GB).</p>
+      </div>
+    </details>
+
+    <details name="status">
+      <summary>Background Jobs</summary>
+      <div class="dash-content">
+        <p>Queue depth: 142 jobs. Processing rate: 85/min. No failed jobs in last hour.</p>
+      </div>
+    </details>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.dash-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  font-family: system-ui, sans-serif;
+  color: #e4e6ef;
+}
+
+.dash-panel {
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Parent-aware styling with :has() */
+.dash-panel:has(details[open]) {
+  border-color: #6c5ce7;
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.12);
+}
+
+.dash-panel-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8b8fa7;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2e3345;
+}
+
+.dash-panel details {
+  border-bottom: 1px solid #2e3345;
+}
+
+.dash-panel details:last-of-type {
+  border-bottom: none;
+}
+
+.dash-panel summary {
+  list-style: none;
+  padding: 0.85rem 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dash-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.dash-panel summary::after {
+  content: "+";
+  font-size: 1.1rem;
+  color: #8b8fa7;
+  transition: all 0.2s ease;
+}
+
+.dash-panel details[open] > summary::after {
+  content: "\2212";
+  color: #6c5ce7;
+}
+
+.dash-panel summary:hover {
+  color: #a29bfe;
+}
+
+.dash-panel summary:focus-visible {
+  outline: 2px solid #6c5ce7;
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+/* Animated open/close */
+.dash-panel details::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.3s ease,
+    opacity 0.3s ease,
+    content-visibility 0.3s ease allow-discrete;
+}
+
+.dash-panel details[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .dash-panel details[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.dash-content {
+  padding: 0.25rem 0.5rem 1rem;
+  color: #8b8fa7;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+/* Nested accordion styling */
+.dash-content details {
+  margin-top: 0.75rem;
+  border: 1px solid #2e3345;
+  border-radius: 8px;
+}
+
+.dash-content summary {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .dash-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-panel details::details-content {
+    transition: none;
+  }
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../21-css-math/index.html">&larr; Previous</a>
+    <a href="../23-logical-a11y/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

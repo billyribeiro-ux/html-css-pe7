@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Mixins & @apply | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 16</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-6">Level 6 - 2026 Deep Dives</span>
+    <h1>CSS Mixins &amp; @apply</h1>
+    <p class="subtitle">Declare reusable style blocks with <code>@mixin</code>, apply them with <code>@apply</code>, compose design system primitives, and understand when mixins beat functions. Native CSS finally gets the pattern that preprocessors made indispensable.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: @mixin DEFINITION   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="mixin-definition">
+      <h2>1. @mixin Definition</h2>
+      <p>A CSS mixin is a named, reusable block of declarations. You define one with <code>@mixin</code>, give it a dashed-ident name (like custom properties), and fill it with the styles you want to reuse. Think of it as a stamp: define the stamp once, press it anywhere.</p>
+
+      <h3>Basic Syntax</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Define a mixin */
+@mixin --visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Another mixin: a card surface */
+@mixin --card-surface {
+  background: var(--surface, #1a1d27);
+  border: 1px solid var(--border, #2e3345);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}</code></pre>
+      </div>
+
+      <h3>Parameters &amp; Defaults</h3>
+      <p>Mixins accept parameters using the same <code>--dashed-ident</code> syntax as custom properties. You can set defaults right in the parameter list so callers can omit values they do not need to override.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Mixin with parameters and defaults */
+@mixin --button(--bg: #6c5ce7, --color: white, --radius: 8px) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.4rem;
+  background: var(--bg);
+  color: var(--color);
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+/* Mixin with a required parameter (no default) */
+@mixin --gradient-text(--from, --to) {
+  background: linear-gradient(135deg, var(--from), var(--to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Naming Convention:</strong> Mixin names must start with two dashes (<code>--</code>) just like custom properties. This keeps them in the same namespace and avoids collisions with future CSS keywords. Use descriptive, lowercase, hyphen-separated names: <code>--card-surface</code>, <code>--flex-center</code>, <code>--sr-only</code>.
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Mixin Anatomy</h4>
+        <p class="demo-note">Visual breakdown of a mixin definition showing the name, parameters with defaults, and the declaration block.</p>
+
+        <div class="mixin-anatomy-demo">
+          <div class="anatomy-line anatomy-keyword">
+            <span class="anatomy-label">Keyword</span>
+            <code>@mixin</code>
+          </div>
+          <div class="anatomy-line anatomy-name">
+            <span class="anatomy-label">Name</span>
+            <code>--button</code>
+          </div>
+          <div class="anatomy-line anatomy-params">
+            <span class="anatomy-label">Parameters</span>
+            <code>(--bg: #6c5ce7, --color: white, --radius: 8px)</code>
+          </div>
+          <div class="anatomy-line anatomy-body">
+            <span class="anatomy-label">Body</span>
+            <div class="anatomy-body-block">
+              <code>{ padding: 0.6rem 1.4rem; background: var(--bg); ... }</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: USING MIXINS        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="using-mixins">
+      <h2>2. Using Mixins with @apply</h2>
+      <p>Once you have defined a mixin, you apply it inside any rule with <code>@apply</code>. The mixin's declarations get stamped directly into the rule as if you had written them by hand. Pass arguments to override defaults.</p>
+
+      <h3>Basic Application</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Apply a mixin with no arguments (uses all defaults) */
+.btn-primary {
+  @apply --button;
+}
+
+/* Apply a mixin with arguments */
+.btn-danger {
+  @apply --button(--bg: #ff7675, --color: white, --radius: 6px);
+}
+
+/* Only override what you need */
+.btn-rounded {
+  @apply --button(--radius: 999px);
+}
+
+/* Apply the visually-hidden mixin */
+.sr-only {
+  @apply --visually-hidden;
+}</code></pre>
+      </div>
+
+      <h3>Resulting CSS</h3>
+      <p>When the browser processes <code>@apply --button(--radius: 999px);</code>, it resolves to the full declaration block with the overridden radius. The output is equivalent to writing every property by hand:</p>
+
+      <div class="code-block">
+        <h4>CSS (resolved)</h4>
+        <pre><code>/* What .btn-rounded actually computes to */
+.btn-rounded {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.4rem;
+  background: #6c5ce7;     /* default --bg */
+  color: white;             /* default --color */
+  border: none;
+  border-radius: 999px;     /* overridden --radius */
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Button Variants from One Mixin</h4>
+        <p class="demo-note">All four buttons share the same <code>--button</code> mixin. Only the arguments differ, producing distinct visual variants from a single definition.</p>
+
+        <div class="mixin-button-demo">
+          <button class="mx-btn mx-btn--primary">Primary</button>
+          <button class="mx-btn mx-btn--danger">Danger</button>
+          <button class="mx-btn mx-btn--ghost">Ghost</button>
+          <button class="mx-btn mx-btn--pill">Pill Shape</button>
+        </div>
+
+        <div class="mixin-button-labels">
+          <span><code>@apply --button;</code></span>
+          <span><code>--bg: #ff7675</code></span>
+          <span><code>--bg: transparent</code></span>
+          <span><code>--radius: 999px</code></span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> <code>@apply</code> is not inheritance and not a class. It physically stamps declarations into the rule at author time. The mixin's declarations participate in the cascade exactly where <code>@apply</code> appears. This means specificity is determined by the rule that contains <code>@apply</code>, not by the mixin definition.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: COMPOSING MIXINS    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="composing-mixins">
+      <h2>3. Composing Mixins</h2>
+      <p>Mixins can call other mixins. This lets you build a layered design system where high-level components compose low-level primitives. A card mixin might compose a surface mixin and a spacing mixin. A hero section mixin might compose a gradient-text mixin with a layout mixin.</p>
+
+      <h3>Composition Pattern</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Low-level primitives */
+@mixin --flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin --surface(--bg: #1a1d27, --border-clr: #2e3345) {
+  background: var(--bg);
+  border: 1px solid var(--border-clr);
+  border-radius: 12px;
+}
+
+@mixin --spacing(--px: 1.5rem, --py: 1.5rem) {
+  padding: var(--py) var(--px);
+}
+
+/* High-level component composing primitives */
+@mixin --card {
+  @apply --surface;
+  @apply --spacing;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@mixin --card-interactive {
+  @apply --card;
+  cursor: pointer;
+}
+
+/* Usage */
+.feature-card {
+  @apply --card-interactive;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}</code></pre>
+      </div>
+
+      <h3>Design System Architecture</h3>
+      <p>A well-structured mixin system has three layers:</p>
+
+      <div class="mixin-layers-demo">
+        <div class="mixin-layer mixin-layer--primitives">
+          <h5>Primitives</h5>
+          <div class="mixin-layer-items">
+            <code>--flex-center</code>
+            <code>--surface</code>
+            <code>--spacing</code>
+            <code>--text-truncate</code>
+            <code>--sr-only</code>
+          </div>
+          <p>Single-purpose utility blocks. Never compose other mixins.</p>
+        </div>
+        <div class="mixin-layer-arrow">&#9660;</div>
+        <div class="mixin-layer mixin-layer--patterns">
+          <h5>Patterns</h5>
+          <div class="mixin-layer-items">
+            <code>--card</code>
+            <code>--button</code>
+            <code>--input-field</code>
+            <code>--badge</code>
+          </div>
+          <p>Compose 2-3 primitives into reusable UI patterns.</p>
+        </div>
+        <div class="mixin-layer-arrow">&#9660;</div>
+        <div class="mixin-layer mixin-layer--components">
+          <h5>Components</h5>
+          <div class="mixin-layer-items">
+            <code>--feature-card</code>
+            <code>--nav-button</code>
+            <code>--modal-surface</code>
+          </div>
+          <p>Compose patterns into specific, project-level components.</p>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Composed Card System</h4>
+        <p class="demo-note">Each card composes the same base mixins but overrides different parameters. The "Featured" card adds extra surface styling, and the "Minimal" card strips back the shadow.</p>
+
+        <div class="mixin-cards-demo">
+          <div class="mx-card mx-card--default">
+            <div class="mx-card-header">Default</div>
+            <p>Composes <code>--surface</code> + <code>--spacing</code> with all defaults.</p>
+          </div>
+          <div class="mx-card mx-card--featured">
+            <div class="mx-card-header">Featured</div>
+            <p>Overrides <code>--bg</code> with a gradient and adds a glow border.</p>
+          </div>
+          <div class="mx-card mx-card--minimal">
+            <div class="mx-card-header">Minimal</div>
+            <p>No shadow, thinner border. Uses <code>--spacing(--px: 1rem, --py: 1rem)</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: PRACTICAL PATTERNS  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="practical-patterns">
+      <h2>4. Practical Patterns</h2>
+      <p>Mixins shine in real-world scenarios where you need consistent styles applied across many selectors. Here are the patterns that come up most often.</p>
+
+      <h3>Responsive Mixins</h3>
+      <p>Wrap media-query-aware declarations in a mixin so breakpoint logic stays centralized. When you change a breakpoint, every consumer updates automatically.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* A responsive container mixin */
+@mixin --responsive-grid(--cols-sm: 1, --cols-md: 2, --cols-lg: 3, --gap: 1.5rem) {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(var(--cols-sm), 1fr);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(var(--cols-md), 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(var(--cols-lg), 1fr);
+  }
+}
+
+/* Usage */
+.product-grid {
+  @apply --responsive-grid(--cols-sm: 1, --cols-md: 2, --cols-lg: 4);
+}
+
+.blog-grid {
+  @apply --responsive-grid(--cols-lg: 3, --gap: 2rem);
+}</code></pre>
+      </div>
+
+      <h3>Theme Mixins</h3>
+      <p>Define theme-aware surfaces that automatically adapt to light and dark modes. The mixin encapsulates both variants.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Theme-aware surface mixin */
+@mixin --themed-surface(--light-bg: #ffffff, --dark-bg: #1a1d27) {
+  background: light-dark(var(--light-bg), var(--dark-bg));
+  color: light-dark(#1a1a2e, #e4e6ef);
+  border: 1px solid light-dark(#e2e8f0, #2e3345);
+  border-radius: 12px;
+}
+
+/* Theme-aware text mixin */
+@mixin --themed-text(--light-clr: #1a1a2e, --dark-clr: #e4e6ef) {
+  color: light-dark(var(--light-clr), var(--dark-clr));
+}
+
+.card {
+  @apply --themed-surface;
+  @apply --spacing(--px: 1.5rem, --py: 1.5rem);
+}
+
+.card-title {
+  @apply --themed-text(--light-clr: #0f172a, --dark-clr: #f1f5f9);
+  font-weight: 700;
+}</code></pre>
+      </div>
+
+      <h3>Utility Mixins</h3>
+      <p>Small, single-purpose mixins that solve recurring problems.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Text truncation with line clamping */
+@mixin --line-clamp(--lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: var(--lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Aspect ratio container */
+@mixin --aspect(--ratio: 16 / 9) {
+  aspect-ratio: var(--ratio);
+  overflow: hidden;
+  object-fit: cover;
+}
+
+/* Focus ring for accessibility */
+@mixin --focus-ring(--color: #6c5ce7, --offset: 2px) {
+  outline: 2px solid var(--color);
+  outline-offset: var(--offset);
+}
+
+/* Usage */
+.card-desc {
+  @apply --line-clamp(--lines: 3);
+}
+
+.thumbnail {
+  @apply --aspect(--ratio: 4 / 3);
+  border-radius: 8px;
+}
+
+.interactive:focus-visible {
+  @apply --focus-ring;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Responsive Grid Mixin in Action</h4>
+        <p class="demo-note">This grid simulates a <code>--responsive-grid</code> mixin with 1 column on small screens, 2 on medium, and 3 on large. Resize the browser to see the columns adapt.</p>
+
+        <div class="mx-responsive-grid">
+          <div class="mx-grid-item">
+            <span class="mx-grid-icon">&#9733;</span>
+            <h5>Analytics</h5>
+            <p>Track user behavior and engagement across your platform.</p>
+          </div>
+          <div class="mx-grid-item">
+            <span class="mx-grid-icon">&#9878;</span>
+            <h5>Automation</h5>
+            <p>Streamline workflows with intelligent task automation.</p>
+          </div>
+          <div class="mx-grid-item">
+            <span class="mx-grid-icon">&#9881;</span>
+            <h5>Integration</h5>
+            <p>Connect with your favorite tools and services seamlessly.</p>
+          </div>
+          <div class="mx-grid-item">
+            <span class="mx-grid-icon">&#9889;</span>
+            <h5>Performance</h5>
+            <p>Optimize load times and runtime efficiency at every layer.</p>
+          </div>
+          <div class="mx-grid-item">
+            <span class="mx-grid-icon">&#10004;</span>
+            <h5>Security</h5>
+            <p>Enterprise-grade protection for your data and users.</p>
+          </div>
+          <div class="mx-grid-item">
+            <span class="mx-grid-icon">&#9829;</span>
+            <h5>Support</h5>
+            <p>24/7 dedicated support from our engineering team.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: MIXINS vs @function -->
+    <!-- ============================== -->
+    <section class="concept-section" id="mixins-vs-function">
+      <h2>5. Mixins vs @function</h2>
+      <p>CSS now has both <code>@mixin</code> (stamps declarations) and <code>@function</code> (returns a single value). They solve different problems and are not interchangeable. Understanding the distinction is critical for writing clean CSS architecture.</p>
+
+      <h3>The Core Difference</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* @function returns a VALUE — use in property values */
+@function --spacing(--n) {
+  result: calc(var(--n) * 0.25rem);
+}
+
+.card {
+  padding: --spacing(6);          /* returns 1.5rem */
+  margin-bottom: --spacing(8);    /* returns 2rem */
+}
+
+/* @mixin applies DECLARATIONS — stamps into a rule */
+@mixin --card-base {
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card {
+  @apply --card-base;  /* stamps 4 declarations */
+}</code></pre>
+      </div>
+
+      <h3>When to Use Each</h3>
+
+      <div class="mx-comparison-table">
+        <div class="mx-compare-row mx-compare-header">
+          <div>Scenario</div>
+          <div>Use @function</div>
+          <div>Use @mixin</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Spacing scale</div>
+          <div class="mx-check">&#10004;</div>
+          <div class="mx-cross">&#10008;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Color palette generator</div>
+          <div class="mx-check">&#10004;</div>
+          <div class="mx-cross">&#10008;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Fluid typography scale</div>
+          <div class="mx-check">&#10004;</div>
+          <div class="mx-cross">&#10008;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Button styles</div>
+          <div class="mx-cross">&#10008;</div>
+          <div class="mx-check">&#10004;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Card surface patterns</div>
+          <div class="mx-cross">&#10008;</div>
+          <div class="mx-check">&#10004;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Visually hidden utility</div>
+          <div class="mx-cross">&#10008;</div>
+          <div class="mx-check">&#10004;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Responsive grid layout</div>
+          <div class="mx-cross">&#10008;</div>
+          <div class="mx-check">&#10004;</div>
+        </div>
+        <div class="mx-compare-row">
+          <div>Unit conversion (px to rem)</div>
+          <div class="mx-check">&#10004;</div>
+          <div class="mx-cross">&#10008;</div>
+        </div>
+      </div>
+
+      <h3>Using Both Together</h3>
+      <p>The real power comes from combining them. Functions compute values, mixins stamp declarations that use those values.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Function for the spacing scale */
+@function --sp(--n) {
+  result: calc(var(--n) * 0.25rem);
+}
+
+/* Function for brand colors */
+@function --brand(--lightness) {
+  result: oklch(var(--lightness) 0.18 265);
+}
+
+/* Mixin uses both functions */
+@mixin --card(--size: medium) {
+  background: --brand(0.15);
+  border: 1px solid --brand(0.25);
+  border-radius: --sp(3);
+  padding: if(
+    style(--size: small):  --sp(3) --sp(4);
+    style(--size: large):  --sp(8) --sp(10);
+    else:                  --sp(6) --sp(8)
+  );
+}
+
+.card-sm { @apply --card(--size: small); }
+.card    { @apply --card; }
+.card-lg { @apply --card(--size: large); }</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Rule of Thumb:</strong> If you need a <em>value</em> to plug into a property, write a <code>@function</code>. If you need a <em>set of declarations</em> to stamp into a rule, write a <code>@mixin</code>. If you catch yourself writing a mixin with a single declaration, it probably should be a function instead.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: PROGRESSIVE ENHANCE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="progressive-enhancement">
+      <h2>6. Progressive Enhancement</h2>
+      <p>CSS <code>@mixin</code> is a cutting-edge feature. Not all browsers support it yet, so you need a progressive enhancement strategy. The good news: <code>@supports</code> can detect mixin support, and the fallback patterns are straightforward.</p>
+
+      <h3>Detecting @mixin Support</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Feature detection for @mixin / @apply */
+@supports (--mixin: @apply --test) {
+  /* Mixin-powered styles go here */
+  .card {
+    @apply --card-surface;
+  }
+}
+
+/* Alternative: detect via the at-rule itself */
+@supports at-rule(@mixin) {
+  /* Browser understands @mixin syntax */
+  @mixin --elevated {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .floating-panel {
+    @apply --elevated;
+  }
+}</code></pre>
+      </div>
+
+      <h3>Fallback Strategy</h3>
+      <p>Write your baseline styles without mixins. Then layer mixin-powered enhancements on top inside <code>@supports</code>. Browsers that do not understand <code>@mixin</code> skip the block entirely and get the baseline.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* 1. Baseline: works everywhere */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.4rem;
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 2. Enhanced: when @mixin is supported */
+@supports at-rule(@mixin) {
+  @mixin --button(--bg: #6c5ce7, --radius: 8px) {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.4rem;
+    background: var(--bg);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+  }
+
+  .btn         { @apply --button; }
+  .btn-danger  { @apply --button(--bg: #ff7675); }
+  .btn-pill    { @apply --button(--radius: 999px); }
+}</code></pre>
+      </div>
+
+      <h3>Migration Path from Preprocessors</h3>
+      <p>If you are coming from Sass/Less, the migration is nearly 1:1. The main differences:</p>
+
+      <div class="mx-migration-table">
+        <div class="mx-migrate-row mx-migrate-header">
+          <div>Sass</div>
+          <div>Native CSS</div>
+        </div>
+        <div class="mx-migrate-row">
+          <div><code>@mixin name($param: default)</code></div>
+          <div><code>@mixin --name(--param: default)</code></div>
+        </div>
+        <div class="mx-migrate-row">
+          <div><code>@include name;</code></div>
+          <div><code>@apply --name;</code></div>
+        </div>
+        <div class="mx-migrate-row">
+          <div><code>@include name($param: value);</code></div>
+          <div><code>@apply --name(--param: value);</code></div>
+        </div>
+        <div class="mx-migrate-row">
+          <div><code>$variable</code> in mixin body</div>
+          <div><code>var(--variable)</code> in mixin body</div>
+        </div>
+        <div class="mx-migrate-row">
+          <div><code>@content</code> block passing</div>
+          <div>Not supported (use composition instead)</div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Feature Detection Dashboard</h4>
+        <p class="demo-note">This panel uses <code>@supports</code> to show whether your current browser supports <code>@mixin</code>, <code>@function</code>, and related features. Green means supported.</p>
+
+        <div class="mx-feature-dashboard">
+          <div class="mx-feature-check">
+            <div class="mx-feature-dot mx-dot--mixin"></div>
+            <div>
+              <strong>@mixin / @apply</strong>
+              <p>Native CSS mixin definitions and application</p>
+            </div>
+          </div>
+          <div class="mx-feature-check">
+            <div class="mx-feature-dot mx-dot--function"></div>
+            <div>
+              <strong>@function</strong>
+              <p>Custom CSS function definitions</p>
+            </div>
+          </div>
+          <div class="mx-feature-check">
+            <div class="mx-feature-dot mx-dot--nesting"></div>
+            <div>
+              <strong>CSS Nesting</strong>
+              <p>Native nesting with &amp; selector</p>
+            </div>
+          </div>
+          <div class="mx-feature-check">
+            <div class="mx-feature-dot mx-dot--layers"></div>
+            <div>
+              <strong>@layer</strong>
+              <p>Cascade layers for style organization</p>
+            </div>
+          </div>
+          <div class="mx-feature-check">
+            <div class="mx-feature-dot mx-dot--container"></div>
+            <div>
+              <strong>Container Queries</strong>
+              <p>Element-based responsive design</p>
+            </div>
+          </div>
+          <div class="mx-feature-check">
+            <div class="mx-feature-dot mx-dot--color-mix"></div>
+            <div>
+              <strong>color-mix()</strong>
+              <p>Dynamic color blending in CSS</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Build a Component Library with Mixins</h2>
+      <p>Create a mini component library using <code>@mixin</code> and <code>@apply</code>. You will define primitive mixins, compose them into component mixins, then use them to style a set of UI elements.</p>
+
+      <h3>Requirements</h3>
+      <ul>
+        <li>Define a <code>--surface</code> mixin with parameters for <code>--bg</code>, <code>--border-clr</code>, and <code>--radius</code> with sensible defaults.</li>
+        <li>Define a <code>--flex-center</code> mixin that centers content both axes.</li>
+        <li>Define a <code>--button</code> mixin that composes <code>--flex-center</code> and accepts <code>--bg</code>, <code>--color</code>, and <code>--radius</code>.</li>
+        <li>Create at least 3 button variants: primary, secondary, and destructive.</li>
+        <li>Define a <code>--card</code> mixin that composes <code>--surface</code> and adds shadow + transition.</li>
+        <li>Create 2 card variants: default and elevated.</li>
+        <li>Add <code>:hover</code> styles for buttons (darken background) and cards (lift with shadow).</li>
+        <li>Wrap mixin-dependent styles in <code>@supports at-rule(@mixin)</code> with a baseline fallback outside.</li>
+      </ul>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="component-library">
+  <h2>Component Library</h2>
+
+  <section class="lib-section">
+    <h3>Buttons</h3>
+    <div class="button-row">
+      <button class="btn btn-primary">Primary</button>
+      <button class="btn btn-secondary">Secondary</button>
+      <button class="btn btn-destructive">Destructive</button>
+    </div>
+  </section>
+
+  <section class="lib-section">
+    <h3>Cards</h3>
+    <div class="card-row">
+      <div class="card card-default">
+        <h4>Default Card</h4>
+        <p>Uses --surface + --spacing with all defaults.</p>
+      </div>
+      <div class="card card-elevated">
+        <h4>Elevated Card</h4>
+        <p>Adds a stronger shadow and subtle border glow.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lib-section">
+    <h3>Badges</h3>
+    <div class="badge-row">
+      <span class="badge badge-info">Info</span>
+      <span class="badge badge-success">Success</span>
+      <span class="badge badge-warning">Warning</span>
+    </div>
+  </section>
+</div>
+        </template>
+        <template class="starter-css">
+/* =============================================
+   Exercise: Component Library with CSS Mixins
+   ============================================= */
+
+/* --- Baseline styles (no mixin support) --- */
+.component-library {
+  font-family: system-ui, sans-serif;
+  padding: 2rem;
+  color: #e4e6ef;
+}
+
+.component-library h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.lib-section {
+  margin-bottom: 2rem;
+}
+
+.lib-section h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #a29bfe;
+}
+
+.button-row, .badge-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* --- Baseline: Button --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.2s;
+}
+
+.btn-primary { background: #6c5ce7; color: white; }
+.btn-secondary { background: #2e3345; color: #e4e6ef; }
+.btn-destructive { background: #ff7675; color: white; }
+
+.btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* --- Baseline: Card --- */
+.card {
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #8b8fa7;
+  line-height: 1.6;
+}
+
+.card-elevated {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* --- Baseline: Badge --- */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-info { background: rgba(108, 92, 231, 0.2); color: #a29bfe; }
+.badge-success { background: rgba(0, 206, 201, 0.2); color: #00cec9; }
+.badge-warning { background: rgba(253, 203, 110, 0.2); color: #fdcb6e; }
+
+/* ========================================
+   TODO: Add @supports at-rule(@mixin) block
+   with mixin definitions and @apply usage.
+   Replace the baseline styles above with
+   mixin-powered equivalents.
+   ======================================== */
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Mixin-Powered Design System</h2>
+      <p>Build a complete design system dashboard using CSS mixins for every component. The dashboard should demonstrate a real-world architecture where primitives compose into patterns, and patterns compose into components.</p>
+
+      <h3>Requirements</h3>
+      <ul>
+        <li><strong>Primitive Mixins:</strong> Create <code>--surface</code>, <code>--flex-center</code>, <code>--spacing</code>, <code>--text-truncate</code>, and <code>--focus-ring</code> primitives.</li>
+        <li><strong>Pattern Mixins:</strong> Compose primitives into <code>--card</code>, <code>--button</code>, <code>--input-field</code>, and <code>--badge</code> patterns.</li>
+        <li><strong>Dashboard Layout:</strong> A header with navigation buttons, a stats row with 4 metric cards, and a content area with a sidebar.</li>
+        <li><strong>Theme Support:</strong> Use a <code>--themed-surface</code> mixin with <code>light-dark()</code> for automatic light/dark mode switching.</li>
+        <li><strong>Responsive Grid:</strong> Use a <code>--responsive-grid</code> mixin for the stats row (4 cols desktop, 2 cols tablet, 1 col mobile).</li>
+        <li><strong>Functions + Mixins:</strong> Use a <code>@function --sp()</code> for spacing values inside your mixins.</li>
+        <li><strong>Progressive Enhancement:</strong> Wrap all mixin usage in <code>@supports</code> with complete baseline fallbacks.</li>
+        <li><strong>Interactive Elements:</strong> All buttons and cards should have hover/focus states using mixin-applied transitions.</li>
+      </ul>
+
+      <h3>Architecture Hints</h3>
+      <ul>
+        <li>Define all primitives first, then patterns, then apply them. This keeps the dependency tree clean.</li>
+        <li>For the responsive grid, nest <code>@media</code> rules inside the mixin body.</li>
+        <li>Use <code>@layer primitives, patterns, components;</code> to organize your mixin definitions by abstraction level.</li>
+        <li>Test your baseline styles by temporarily removing the <code>@supports</code> block.</li>
+      </ul>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="ds-dashboard">
+  <!-- Header -->
+  <header class="ds-header">
+    <h1 class="ds-logo">DesignSys</h1>
+    <nav class="ds-nav">
+      <button class="ds-btn ds-btn--primary">Dashboard</button>
+      <button class="ds-btn ds-btn--ghost">Analytics</button>
+      <button class="ds-btn ds-btn--ghost">Settings</button>
+    </nav>
+  </header>
+
+  <!-- Stats Row -->
+  <section class="ds-stats">
+    <div class="ds-stat-card">
+      <span class="ds-stat-label">Revenue</span>
+      <span class="ds-stat-value">$48,250</span>
+      <span class="ds-badge ds-badge--success">+12%</span>
+    </div>
+    <div class="ds-stat-card">
+      <span class="ds-stat-label">Users</span>
+      <span class="ds-stat-value">1,284</span>
+      <span class="ds-badge ds-badge--info">+5%</span>
+    </div>
+    <div class="ds-stat-card">
+      <span class="ds-stat-label">Orders</span>
+      <span class="ds-stat-value">846</span>
+      <span class="ds-badge ds-badge--warning">-2%</span>
+    </div>
+    <div class="ds-stat-card">
+      <span class="ds-stat-label">Rating</span>
+      <span class="ds-stat-value">4.8</span>
+      <span class="ds-badge ds-badge--success">+0.3</span>
+    </div>
+  </section>
+
+  <!-- Content Area -->
+  <div class="ds-content">
+    <main class="ds-main">
+      <div class="ds-card">
+        <h3>Recent Activity</h3>
+        <ul class="ds-activity-list">
+          <li>New user signup: alex@example.com</li>
+          <li>Order #1042 shipped</li>
+          <li>Support ticket #89 resolved</li>
+          <li>Product review posted (5 stars)</li>
+        </ul>
+      </div>
+    </main>
+    <aside class="ds-sidebar">
+      <div class="ds-card">
+        <h3>Quick Actions</h3>
+        <div class="ds-action-buttons">
+          <button class="ds-btn ds-btn--primary ds-btn--full">New Order</button>
+          <button class="ds-btn ds-btn--secondary ds-btn--full">Add User</button>
+          <button class="ds-btn ds-btn--outline ds-btn--full">Export Data</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* =============================================
+   Challenge: Mixin-Powered Design System
+   ============================================= */
+
+/* --- Baseline (no mixin support) --- */
+.ds-dashboard {
+  font-family: system-ui, sans-serif;
+  background: #0f1117;
+  color: #e4e6ef;
+  padding: 1.5rem;
+  min-height: 500px;
+}
+
+.ds-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2e3345;
+}
+
+.ds-logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #a29bfe;
+}
+
+.ds-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Baseline buttons */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ds-btn--primary { background: #6c5ce7; color: white; }
+.ds-btn--secondary { background: #2e3345; color: #e4e6ef; }
+.ds-btn--ghost { background: transparent; color: #8b8fa7; }
+.ds-btn--outline { background: transparent; color: #a29bfe; border: 1px solid #2e3345; }
+.ds-btn--full { width: 100%; }
+
+.ds-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+/* Baseline stats */
+.ds-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ds-stat-card {
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.ds-stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #8b8fa7;
+  margin-bottom: 0.25rem;
+}
+
+.ds-stat-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Baseline badges */
+.ds-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ds-badge--success { background: rgba(0,206,201,0.15); color: #00cec9; }
+.ds-badge--info { background: rgba(108,92,231,0.15); color: #a29bfe; }
+.ds-badge--warning { background: rgba(253,203,110,0.15); color: #fdcb6e; }
+
+/* Baseline content area */
+.ds-content {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.5rem;
+}
+
+.ds-card {
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.ds-card h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.ds-activity-list {
+  list-style: none;
+  padding: 0;
+}
+
+.ds-activity-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #2e3345;
+  font-size: 0.9rem;
+  color: #8b8fa7;
+}
+
+.ds-activity-list li:last-child {
+  border-bottom: none;
+}
+
+.ds-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ds-stats { grid-template-columns: repeat(2, 1fr); }
+  .ds-content { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .ds-stats { grid-template-columns: 1fr; }
+  .ds-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+}
+
+/* =============================================
+   TODO: Add mixin definitions and @apply usage
+   inside @supports at-rule(@mixin) { ... }
+
+   1. Define primitive mixins:
+      --flex-center, --surface, --spacing, --focus-ring
+
+   2. Define pattern mixins:
+      --button, --card, --badge
+
+   3. Replace baseline selectors with @apply calls
+
+   4. Add a @function --sp(--n) for spacing
+   ============================================= */
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../15-capstone-project/index.html">&larr; Previous</a>
+    <a href="../17-masonry-layout/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

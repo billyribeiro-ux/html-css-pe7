@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logical Properties &amp; Accessibility CSS | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 23</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-7">Level 7 - Expert Systems</span>
+    <h1>Logical Properties &amp; Accessibility CSS</h1>
+    <p class="subtitle">Stop hard-coding directions. Stop ignoring user preferences. CSS has evolved beyond left/right/top/bottom into a world of logical axes, writing-mode awareness, and media queries that respect the humans on the other side of the screen. This module rewires how you think about layout direction and makes your CSS a better citizen of the accessible web.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: LOGICAL PROPERTIES  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="logical-properties">
+      <h2>1. Logical Properties</h2>
+      <p>For decades, CSS used <strong>physical</strong> directions: <code>left</code>, <code>right</code>, <code>top</code>, <code>bottom</code>. These work fine if your entire audience reads left-to-right, top-to-bottom English. But the web is global. Arabic reads right-to-left. Japanese can flow vertically. Physical directions break the moment text direction changes. Logical properties fix this permanently.</p>
+
+      <p>Logical properties replace physical directions with two axes: the <strong>inline axis</strong> (the direction text flows) and the <strong>block axis</strong> (the direction blocks stack). In English, inline runs left-to-right and block runs top-to-bottom. In Arabic, inline runs right-to-left. In vertical Japanese, inline runs top-to-bottom and block runs right-to-left. The same logical property adapts automatically.</p>
+
+      <h3>The Mapping</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Physical (old) &rarr; Logical (new) */
+
+/* MARGINS */
+margin-left    &rarr;  margin-inline-start
+margin-right   &rarr;  margin-inline-end
+margin-top     &rarr;  margin-block-start
+margin-bottom  &rarr;  margin-block-end
+
+/* PADDING */
+padding-left   &rarr;  padding-inline-start
+padding-right  &rarr;  padding-inline-end
+padding-top    &rarr;  padding-block-start
+padding-bottom &rarr;  padding-block-end
+
+/* SIZING */
+width          &rarr;  inline-size
+height         &rarr;  block-size
+min-width      &rarr;  min-inline-size
+max-height     &rarr;  max-block-size
+
+/* POSITIONING */
+left           &rarr;  inset-inline-start
+right          &rarr;  inset-inline-end
+top            &rarr;  inset-block-start
+bottom         &rarr;  inset-block-end
+
+/* BORDERS */
+border-left    &rarr;  border-inline-start
+border-right   &rarr;  border-inline-end
+border-top     &rarr;  border-block-start
+border-bottom  &rarr;  border-block-end</code></pre>
+      </div>
+
+      <h3>Shorthands</h3>
+      <p>Logical properties come with convenient shorthands that set both sides of an axis at once:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Set both inline sides (left + right in LTR) */
+.card {
+  margin-inline: 2rem;       /* margin-inline-start + margin-inline-end */
+  padding-inline: 1.5rem;    /* padding-inline-start + padding-inline-end */
+  border-inline: 2px solid;  /* border-inline-start + border-inline-end */
+}
+
+/* Set both block sides (top + bottom in horizontal-tb) */
+.section {
+  margin-block: 3rem;
+  padding-block: 2rem;
+}
+
+/* Asymmetric shorthand: start end */
+.aside {
+  margin-inline: 0 auto;   /* start: 0, end: auto */
+  padding-block: 1rem 2rem; /* start: 1rem, end: 2rem */
+}
+
+/* Inset shorthand for positioning */
+.overlay {
+  position: absolute;
+  inset-inline: 0;  /* left: 0; right: 0 in LTR */
+  inset-block: 0;   /* top: 0; bottom: 0 */
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Once you adopt logical properties, you never need to write separate RTL stylesheets. A single <code>margin-inline-start: 1rem</code> becomes left-margin in English and right-margin in Arabic, automatically. No overrides, no <code>[dir="rtl"]</code> hacks, no duplication. This is not a convenience feature &mdash; it is the correct way to write CSS for a global web.
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: LTR vs. RTL with Logical Properties</h4>
+        <p class="demo-note">Both cards below use identical CSS with logical properties. The only difference is the <code>dir</code> attribute on the container. Notice how the icon, text alignment, and border all flip automatically.</p>
+
+        <div class="ltr-rtl-demo">
+          <div class="ltr-rtl-panel" dir="ltr">
+            <span class="ltr-rtl-label">dir="ltr" (English)</span>
+            <div class="ltr-rtl-card">
+              <div class="ltr-rtl-icon" aria-hidden="true">&#9733;</div>
+              <div class="ltr-rtl-content">
+                <h5>Premium Feature</h5>
+                <p>This card uses <code>margin-inline-start</code>, <code>border-inline-start</code>, and <code>padding-inline</code>. No physical directions anywhere.</p>
+                <button class="ltr-rtl-btn">Learn More &rarr;</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ltr-rtl-panel" dir="rtl">
+            <span class="ltr-rtl-label">dir="rtl" (Arabic)</span>
+            <div class="ltr-rtl-card">
+              <div class="ltr-rtl-icon" aria-hidden="true">&#9733;</div>
+              <div class="ltr-rtl-content">
+                <h5>&#x645;&#x64A;&#x632;&#x629; &#x645;&#x645;&#x64A;&#x632;&#x629;</h5>
+                <p>&#x646;&#x641;&#x633; &#x627;&#x644;&#x643;&#x648;&#x62F;. &#x646;&#x641;&#x633; &#x627;&#x644;&#x62E;&#x635;&#x627;&#x626;&#x635;. &#x627;&#x644;&#x627;&#x62A;&#x62C;&#x627;&#x647; &#x64A;&#x646;&#x639;&#x643;&#x633; &#x62A;&#x644;&#x642;&#x627;&#x626;&#x64A;&#x64B;&#x627;.</p>
+                <button class="ltr-rtl-btn">&larr; &#x627;&#x639;&#x631;&#x641; &#x627;&#x644;&#x645;&#x632;&#x64A;&#x62F;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: LOGICAL VALUES      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="logical-values">
+      <h2>2. Logical Values</h2>
+      <p>Logical properties handle the <em>where</em>, but CSS also has logical <em>values</em> that replace physical keywords in property values. If you set <code>text-align: left</code>, you are still hard-coding a physical direction. The logical equivalent is <code>text-align: start</code>, which follows the inline direction of the current writing mode.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Physical values &rarr; Logical values */
+
+/* Text alignment */
+text-align: left   &rarr;  text-align: start
+text-align: right  &rarr;  text-align: end
+
+/* Floating */
+float: left        &rarr;  float: inline-start
+float: right       &rarr;  float: inline-end
+
+/* Clearing */
+clear: left        &rarr;  clear: inline-start
+clear: right       &rarr;  clear: inline-end
+clear: both        &rarr;  clear: both  /* unchanged */
+
+/* Resize */
+resize: horizontal &rarr;  resize: inline
+resize: vertical   &rarr;  resize: block
+
+/* Overflow */
+overflow-x         &rarr;  overflow-inline
+overflow-y         &rarr;  overflow-block
+
+/* Overscroll */
+overscroll-behavior-x &rarr; overscroll-behavior-inline
+overscroll-behavior-y &rarr; overscroll-behavior-block</code></pre>
+      </div>
+
+      <h3>Practical Application</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* A float-based layout that works in any direction */
+.article-image {
+  float: inline-start;
+  margin-inline-end: 1.5rem;
+  margin-block-end: 1rem;
+  max-inline-size: 40%;
+}
+
+/* A resizable sidebar */
+.sidebar {
+  resize: inline;
+  overflow-inline: auto;
+  min-inline-size: 200px;
+  max-inline-size: 500px;
+  border-inline-end: 1px solid #ccc;
+}
+
+/* Text alignment that respects direction */
+.card-footer {
+  text-align: end;  /* Right in LTR, left in RTL */
+}
+
+.card-header {
+  text-align: start;  /* Left in LTR, right in RTL */
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The mental shift here is real. Stop thinking "left" and "right." Start thinking "start" and "end." Stop thinking "horizontal" and "vertical." Start thinking "inline" and "block." This is not about learning synonyms &mdash; it is about thinking in flow-relative terms. Once you do, your CSS works correctly in every language, every writing mode, every direction, without you changing a single line.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: WRITING MODES       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="writing-modes">
+      <h2>3. Writing Modes</h2>
+      <p>The <code>writing-mode</code> property controls how blocks of text are laid out. In English, text flows horizontally and blocks stack top-to-bottom. But not all languages work this way, and not all design needs are horizontal. Writing modes unlock vertical text, sideways headings, and layouts that would otherwise require transforms and hacks.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Default: horizontal top-to-bottom */
+.english {
+  writing-mode: horizontal-tb;
+}
+
+/* Vertical: right-to-left columns (traditional Japanese/Chinese) */
+.japanese {
+  writing-mode: vertical-rl;
+}
+
+/* Vertical: left-to-right columns (Mongolian) */
+.mongolian {
+  writing-mode: vertical-lr;
+}
+
+/* Sideways: rotated text (artistic/labels) */
+.sideways-label {
+  writing-mode: sideways-lr; /* or sideways-rl */
+}</code></pre>
+      </div>
+
+      <h3>How Logical Properties Adapt</h3>
+      <p>This is where the power of logical properties becomes undeniable. When writing mode changes, inline and block axes swap. <code>inline-size</code> measures the dimension along the text flow &mdash; horizontal in <code>horizontal-tb</code>, vertical in <code>vertical-rl</code>. Everything adapts:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* This single rule adapts to any writing mode */
+.text-block {
+  inline-size: 300px;        /* width in horizontal, height in vertical */
+  block-size: auto;           /* height in horizontal, width in vertical */
+  margin-block-start: 2rem;   /* top in horizontal, right in vertical-rl */
+  padding-inline: 1rem;       /* left+right in horizontal, top+bottom in vertical */
+  border-block-end: 2px solid; /* bottom in horizontal, left in vertical-rl */
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Writing Modes in Action</h4>
+        <p class="demo-note">The same text with identical logical properties rendered in three different writing modes. Notice how <code>inline-size</code>, <code>margin-block-start</code>, and <code>border-inline-start</code> all reorient to match the text flow.</p>
+
+        <div class="writing-mode-demo">
+          <div class="wm-card wm-horizontal">
+            <span class="wm-label">horizontal-tb</span>
+            <p class="wm-text">CSS logical properties adapt to any writing mode automatically. No overrides needed.</p>
+          </div>
+
+          <div class="wm-card wm-vertical-rl">
+            <span class="wm-label">vertical-rl</span>
+            <p class="wm-text">CSS logical properties adapt to any writing mode automatically. No overrides needed.</p>
+          </div>
+
+          <div class="wm-card wm-vertical-lr">
+            <span class="wm-label">vertical-lr</span>
+            <p class="wm-text">CSS logical properties adapt to any writing mode automatically. No overrides needed.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Practical Uses Beyond Internationalization</h3>
+      <p>Vertical writing modes are not just for Asian languages. They are a design tool:</p>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Vertical sidebar label */
+.sidebar-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding-block: 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+
+/* Vertical timeline axis */
+.timeline-axis {
+  writing-mode: vertical-lr;
+  text-align: center;
+  inline-size: 2rem;
+}
+
+/* Rotated table headers */
+.data-table th.rotated {
+  writing-mode: vertical-rl;
+  text-align: start;
+  white-space: nowrap;
+  block-size: 120px;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: REDUCED MOTION      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="reduced-motion">
+      <h2>4. prefers-reduced-motion</h2>
+      <p>Animations and transitions make interfaces feel alive &mdash; unless they make someone feel physically ill. Vestibular disorders, migraines, epilepsy, and motion sensitivity affect millions of people. Every operating system now provides a "reduce motion" setting. CSS can detect it. There is no excuse for ignoring it.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Default: full animation experience */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+    /* Keep opacity + shadow (non-spatial), remove transform */
+  }
+
+  .card:hover {
+    transform: none;
+    opacity: 0.92;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Kill all keyframe animations */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}</code></pre>
+      </div>
+
+      <h3>The Nuclear Option vs. Surgical Approach</h3>
+      <p>The wildcard rule above is the nuclear option. It works, but it eliminates <em>all</em> motion, including loading spinners and progress bars that rely on animation. A better approach is surgical &mdash; target specific animations and replace them with non-motion alternatives:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Surgical: replace motion with non-motion feedback */
+@media (prefers-reduced-motion: reduce) {
+  /* Slide-in becomes fade-in */
+  .slide-in {
+    animation: fade-only 0.3s ease;
+  }
+
+  @keyframes fade-only {
+    from { opacity: 0; }
+  }
+
+  /* Bouncing indicator becomes pulsing opacity */
+  .notification-dot {
+    animation: pulse-opacity 2s ease infinite;
+  }
+
+  @keyframes pulse-opacity {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Scrolling marquee becomes static */
+  .marquee {
+    animation: none;
+    overflow: visible;
+    white-space: normal;
+  }
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The related <code>update</code> media feature detects how frequently the display refreshes. Use <code>@media (update: slow)</code> to disable transitions on e-ink screens, and <code>@media (update: none)</code> for print. Together with <code>prefers-reduced-motion</code>, you can tailor motion to any output device.
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Motion Preference Comparison</h4>
+        <p class="demo-note">The left panel shows full motion. The right panel simulates <code>prefers-reduced-motion: reduce</code>, replacing spatial movement with opacity-only transitions. Hover over the cards to compare.</p>
+
+        <div class="motion-demo">
+          <div class="motion-panel motion-panel--full">
+            <span class="motion-label">Full Motion</span>
+            <div class="motion-card">
+              <div class="motion-card-icon">&#9889;</div>
+              <h5>Hover Me</h5>
+              <p>Transform + shadow transition</p>
+            </div>
+            <div class="motion-card">
+              <div class="motion-card-icon motion-card-icon--spin">&#9881;</div>
+              <h5>Spinning</h5>
+              <p>Continuous rotation</p>
+            </div>
+            <div class="motion-card">
+              <div class="motion-card-icon motion-card-icon--bounce">&#9650;</div>
+              <h5>Bouncing</h5>
+              <p>Repeating bounce animation</p>
+            </div>
+          </div>
+
+          <div class="motion-panel motion-panel--reduced">
+            <span class="motion-label">Reduced Motion</span>
+            <div class="motion-card motion-card--reduced">
+              <div class="motion-card-icon">&#9889;</div>
+              <h5>Hover Me</h5>
+              <p>Opacity-only transition</p>
+            </div>
+            <div class="motion-card motion-card--reduced">
+              <div class="motion-card-icon motion-card-icon--still">&#9881;</div>
+              <h5>Still</h5>
+              <p>No rotation, subtle opacity pulse</p>
+            </div>
+            <div class="motion-card motion-card--reduced">
+              <div class="motion-card-icon">&#9650;</div>
+              <h5>Static</h5>
+              <p>No bounce, color change only</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Reduced motion does not mean no feedback. It means no spatial movement. Opacity changes, color shifts, border changes, and box-shadow transitions are all safe because they do not trigger vestibular responses. The goal is to keep the interface communicative while removing the parts that can cause physical discomfort.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: CONTRAST + COLORS   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="contrast-color-scheme">
+      <h2>5. prefers-contrast &amp; prefers-color-scheme</h2>
+      <p>Two more preference queries that separate amateur CSS from professional CSS. These are not optional considerations &mdash; they are user-expressed needs that your styles should honor.</p>
+
+      <h3>prefers-contrast</h3>
+      <p>Some users need higher contrast than your design defaults provide. Low-vision users, people in bright sunlight, anyone with aging eyes. The <code>prefers-contrast</code> query detects this preference:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Default: your standard design contrast */
+.card {
+  background: #1a1d27;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #c0c4d0;
+}
+
+/* More contrast requested */
+@media (prefers-contrast: more) {
+  .card {
+    background: #000;
+    border: 2px solid #fff;
+    color: #fff;
+  }
+
+  /* Remove subtle gradients that reduce readability */
+  .hero-gradient {
+    background: #000;
+  }
+
+  /* Boost link visibility */
+  a {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* Less contrast (rare, but exists) */
+@media (prefers-contrast: less) {
+  .card {
+    border-color: transparent;
+    box-shadow: none;
+  }
+}</code></pre>
+      </div>
+
+      <h3>forced-colors &amp; prefers-color-scheme</h3>
+      <p>Windows High Contrast Mode overrides your colors entirely. Detect it with <code>@media (forced-colors: active)</code> and use system color keywords (<code>ButtonText</code>, <code>Canvas</code>, <code>CanvasText</code>, <code>Highlight</code>) to ensure your layout survives. Use <code>forced-color-adjust: none</code> sparingly to preserve critical decorative colors, but always add a visible border as a fallback.</p>
+
+      <h3>prefers-color-scheme</h3>
+      <p>Dark mode is no longer a novelty &mdash; it is an expectation. Users set light or dark preference at the OS level, and your CSS should respond:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* CSS custom properties for theming */
+:root {
+  --bg: #ffffff;
+  --text: #1a1a2e;
+  --surface: #f0f0f5;
+  --accent: #6c5ce7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1117;
+    --text: #e4e6ef;
+    --surface: #1a1d27;
+    --accent: #a29bfe;
+  }
+}
+
+/* The light-dark() function: inline theme switching */
+.card {
+  background: light-dark(#ffffff, #1a1d27);
+  color: light-dark(#1a1a2e, #e4e6ef);
+  border-color: light-dark(#e0e0e8, #2a2d3a);
+}
+
+/* Must declare color-scheme for light-dark() to work */
+:root {
+  color-scheme: light dark;
+}
+
+/* Or force a specific scheme on a subtree */
+.always-dark-section {
+  color-scheme: dark;
+  background: light-dark(white, #111);  /* picks #111 */
+  color: light-dark(black, #eee);       /* picks #eee */
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>light-dark()</code> function is a game-changer. Instead of duplicating entire custom property blocks in a <code>@media</code> query, you can inline both values directly where they are used. This is especially powerful for one-off colors that do not warrant a custom property. Combined with <code>color-scheme: light dark</code> on the root, it gives you system-aware theming with minimal code.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: FOCUS MANAGEMENT    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="focus-management">
+      <h2>6. Focus Management &amp; Touch Targets</h2>
+      <p>If a user cannot see where they are on the page, your interface is broken for them. If they cannot tap a button because it is too small, your interface is broken for them. Focus rings and touch target sizing are not design embellishments &mdash; they are infrastructure.</p>
+
+      <h3>:focus-visible vs. :focus</h3>
+      <p>The old <code>:focus</code> pseudo-class fires on every focus event, including mouse clicks. This annoyed designers who hated seeing focus rings after clicking a button. Many developers "fixed" this by writing <code>outline: none</code>, destroying keyboard accessibility in the process. The <code>:focus-visible</code> pseudo-class solves this properly: it only matches when the browser determines the user <em>needs</em> a visible focus indicator (typically keyboard navigation).</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Remove the default outline (only if you replace it!) */
+button:focus {
+  outline: none;
+}
+
+/* Show custom focus ring only for keyboard users */
+button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Different focus styles for different elements */
+a:focus-visible {
+  outline: 2px dashed var(--accent);
+  outline-offset: 4px;
+  text-decoration: none;
+}
+
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+}
+
+/* Skip links: visible only on focus */
+.skip-link {
+  position: absolute;
+  inset-block-start: -100%;
+  inset-inline-start: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: white;
+  z-index: 1000;
+  transition: inset-block-start 0.2s;
+}
+
+.skip-link:focus-visible {
+  inset-block-start: 1rem;
+}</code></pre>
+      </div>
+
+      <h3>Touch Target Sizing</h3>
+      <p>WCAG 2.2 requires interactive targets to be at least <strong>24&times;24px</strong>, with a recommendation of <strong>44&times;44px</strong> for comfortable touch interaction. This matters on mobile, but also for users with motor impairments who need larger targets:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Minimum target size for all interactive elements */
+button, a, input, select, textarea {
+  min-block-size: 44px;
+  min-inline-size: 44px;
+}
+
+/* Icon buttons: small icon, big target */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 44px;
+  min-inline-size: 44px;
+}
+
+/* Expanding tap area without visual size change */
+.compact-link {
+  position: relative;
+}
+.compact-link::after {
+  content: "";
+  position: absolute;
+  inset: -8px;  /* expand tap area by 8px in all directions */
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Focus Ring Showcase</h4>
+        <p class="demo-note">Tab through these elements to see different <code>:focus-visible</code> styles. Click them with a mouse &mdash; no focus ring appears. This is the power of <code>:focus-visible</code>: keyboard users get clear indicators, mouse users get a clean interface.</p>
+
+        <div class="focus-demo">
+          <div class="focus-row">
+            <button class="focus-btn focus-btn--solid">Solid Ring</button>
+            <button class="focus-btn focus-btn--dashed">Dashed Ring</button>
+            <button class="focus-btn focus-btn--glow">Glow Effect</button>
+            <button class="focus-btn focus-btn--offset">Offset Ring</button>
+          </div>
+          <div class="focus-row">
+            <a href="#focus-management" class="focus-link">Link with focus</a>
+            <input type="text" class="focus-input" placeholder="Tab to me..." aria-label="Focus demo input">
+            <label class="focus-checkbox">
+              <input type="checkbox" aria-label="Focus demo checkbox">
+              <span>Checkbox</span>
+            </label>
+          </div>
+          <div class="focus-row focus-row--targets">
+            <button class="target-btn target-btn--small" aria-label="Small target example">
+              <span aria-hidden="true">&#x2716;</span>
+            </button>
+            <span class="target-label">24px (minimum)</span>
+            <button class="target-btn target-btn--recommended" aria-label="Recommended target example">
+              <span aria-hidden="true">&#x2716;</span>
+            </button>
+            <span class="target-label">44px (recommended)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The rule is simple: never write <code>outline: none</code> without immediately providing an alternative visible focus indicator via <code>:focus-visible</code>. If you remove the outline and provide nothing, you have made your site unusable for the roughly 8 million Americans who rely on keyboard navigation. The <code>outline-offset</code> property is your friend &mdash; it creates space between the element and its focus ring, making the indicator distinct without crowding the content.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: PROGRESSIVE ENHANCE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="progressive-enhancement">
+      <h2>7. Progressive Enhancement</h2>
+      <p>Accessibility features are not progressive enhancements &mdash; they are the baseline. But the <em>implementation strategy</em> should be progressive: start with a fully accessible foundation, then layer on visual richness for capable browsers and user preferences.</p>
+
+      <h3>The Accessible-First Mindset</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* LAYER 1: Baseline (works everywhere, accessible by default) */
+.card {
+  /* Logical properties for i18n */
+  padding-inline: 1.5rem;
+  padding-block: 1rem;
+  margin-block-end: 1rem;
+
+  /* Sufficient contrast */
+  color: #1a1a2e;
+  background: #ffffff;
+  border: 1px solid #ccc;
+
+  /* Keyboard-accessible focus */
+  &amp;:focus-visible {
+    outline: 3px solid #6c5ce7;
+    outline-offset: 2px;
+  }
+}
+
+/* LAYER 2: Enhanced visuals (motion-safe users) */
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* LAYER 3: Dark mode adaptation */
+@media (prefers-color-scheme: dark) {
+  .card {
+    color: #e4e6ef;
+    background: #1a1d27;
+    border-color: #2a2d3a;
+  }
+}
+
+/* LAYER 4: High contrast override */
+@media (prefers-contrast: more) {
+  .card {
+    border: 2px solid currentColor;
+    box-shadow: none;
+  }
+}</code></pre>
+      </div>
+
+      <h3>The @supports Guard Pattern</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Base: physical properties (maximum compatibility) */
+.navigation {
+  margin-left: 1rem;
+  padding-left: 1.5rem;
+  border-left: 3px solid var(--accent);
+}
+
+/* Upgrade: logical properties when supported */
+@supports (margin-inline-start: 1rem) {
+  .navigation {
+    margin-left: unset;
+    margin-inline-start: 1rem;
+    padding-left: unset;
+    padding-inline-start: 1.5rem;
+    border-left: unset;
+    border-inline-start: 3px solid var(--accent);
+  }
+}
+
+/* light-dark() requires color-scheme support */
+@supports (color: light-dark(black, white)) {
+  :root {
+    color-scheme: light dark;
+  }
+
+  .text {
+    color: light-dark(#1a1a2e, #e4e6ef);
+  }
+}</code></pre>
+      </div>
+
+      <div class="enhancement-steps">
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">1</div>
+          <div class="enhancement-step-content">
+            <h4>Semantic HTML</h4>
+            <p>Start with correct elements: <code>&lt;button&gt;</code> not <code>&lt;div onclick&gt;</code>, <code>&lt;nav&gt;</code> not <code>&lt;div class="nav"&gt;</code>. This gives you keyboard access and screen reader support for free.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">2</div>
+          <div class="enhancement-step-content">
+            <h4>Logical Properties</h4>
+            <p>Use logical properties for all spacing, sizing, and positioning. Your layout automatically supports RTL and vertical writing modes without any extra work.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">3</div>
+          <div class="enhancement-step-content">
+            <h4>Respect Preferences</h4>
+            <p>Add <code>prefers-reduced-motion</code>, <code>prefers-contrast</code>, and <code>prefers-color-scheme</code> media queries. Design the defaults to be safe, then enhance for users who can handle more.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">4</div>
+          <div class="enhancement-step-content">
+            <h4>Focus Indicators</h4>
+            <p>Custom <code>:focus-visible</code> styles on every interactive element. Touch targets at 44px minimum. Skip links for bypassing navigation. Never remove <code>outline</code> without replacement.</p>
+          </div>
+        </div>
+        <div class="enhancement-step">
+          <div class="enhancement-step-num">5</div>
+          <div class="enhancement-step-content">
+            <h4>Test</h4>
+            <p>Navigate your entire site with only a keyboard. Use a screen reader. Enable reduced motion. Switch to high contrast mode. Enable RTL. If anything breaks, fix it before shipping.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Progressive enhancement for accessibility means your <em>default</em> CSS is the accessible version. Animations, complex gradients, and subtle color differences are the enhancements, gated behind preference queries. If you build this way from the start, accessibility is never a retrofit &mdash; it is the foundation everything else is built on.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Accessible Navigation Bar</h2>
+      <p>Build a navigation bar that uses logical properties for all spacing, supports RTL with zero code changes, has proper <code>:focus-visible</code> indicators, respects <code>prefers-reduced-motion</code>, and meets the 44px minimum touch target requirement.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Use <strong>only</strong> logical properties for all margins, padding, borders, and sizing &mdash; no <code>left</code>, <code>right</code>, <code>top</code>, or <code>bottom</code>.</li>
+          <li>Include a logo and at least 4 nav links using <code>&lt;a&gt;</code> elements inside a <code>&lt;nav&gt;</code>.</li>
+          <li>Add a <code>:focus-visible</code> style on every link with at least <code>3px</code> outline and <code>2px</code> offset.</li>
+          <li>Hover transitions should be gated behind <code>@media (prefers-reduced-motion: no-preference)</code>.</li>
+          <li>All nav links must have a minimum touch target of <code>44px</code> in both dimensions.</li>
+          <li>Include a skip link (<code>&lt;a href="#main" class="skip-link"&gt;Skip to content&lt;/a&gt;</code>) that appears on focus.</li>
+          <li>The navigation should look correct in both <code>dir="ltr"</code> and <code>dir="rtl"</code> without any RTL-specific CSS.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <pre><code>&lt;a href="#main" class="skip-link"&gt;Skip to content&lt;/a&gt;
+&lt;nav class="main-nav"&gt;
+  &lt;a href="/" class="nav-logo"&gt;PE7&lt;/a&gt;
+  &lt;ul class="nav-links"&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Courses&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+&lt;style&gt;
+  /* Use logical properties for all spacing */
+  .main-nav {
+    display: flex;
+    align-items: center;
+    padding-inline: 2rem;
+    padding-block: 0.5rem;
+    gap: 2rem;
+  }
+  /* ... complete the implementation */
+&lt;/style&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<a href="#main" class="skip-link">Skip to content</a>
+<nav class="main-nav">
+  <a href="/" class="nav-logo">PE7</a>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Courses</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+<main id="main">
+  <p>Main content area. The skip link jumps here.</p>
+</main>
+        </template>
+        <template class="starter-css">
+/* Skip link: hidden until focused */
+.skip-link {
+  position: absolute;
+  inset-block-start: -100%;
+  inset-inline-start: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #6c5ce7;
+  color: white;
+  font-weight: 700;
+  border-radius: 0 0 8px 8px;
+  z-index: 1000;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  inset-block-start: 0;
+}
+
+/* Navigation bar */
+.main-nav {
+  display: flex;
+  align-items: center;
+  padding-inline: 2rem;
+  padding-block: 0.5rem;
+  background: #1a1d27;
+  border-block-end: 1px solid #2a2d3a;
+  gap: 2rem;
+  font-family: system-ui, sans-serif;
+}
+
+.nav-logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #6c5ce7;
+  text-decoration: none;
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-inline-start: auto;
+}
+
+.nav-links a {
+  color: #c0c4d0;
+  text-decoration: none;
+  padding-inline: 1rem;
+  padding-block: 0.625rem;
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+}
+
+/* Focus visible indicator */
+.nav-links a:focus-visible {
+  outline: 3px solid #6c5ce7;
+  outline-offset: 2px;
+}
+
+/* Hover: gated behind motion preference */
+@media (prefers-reduced-motion: no-preference) {
+  .nav-links a {
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+}
+
+.nav-links a:hover {
+  background: rgba(108, 92, 231, 0.15);
+  color: #e4e6ef;
+}
+
+#main {
+  padding-inline: 2rem;
+  padding-block: 2rem;
+  color: #e4e6ef;
+  font-family: system-ui, sans-serif;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Fully Accessible Card Grid</h2>
+      <p>Build a responsive card grid that combines every concept from this module: logical properties, writing-mode awareness, all three preference queries (<code>prefers-reduced-motion</code>, <code>prefers-contrast</code>, <code>prefers-color-scheme</code>), focus management, touch targets, and progressive enhancement.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Logical Layout:</strong> All spacing, borders, and sizing must use logical properties. Zero physical direction keywords (<code>left</code>, <code>right</code>, <code>top</code>, <code>bottom</code>, <code>width</code>, <code>height</code>).</li>
+          <li><strong>Cards:</strong> At least 4 cards with image placeholder, title, description, and a link/button. Each card must be focusable (use <code>tabindex="0"</code> or wrap in <code>&lt;a&gt;</code>).</li>
+          <li><strong>Dark/Light Mode:</strong> Use <code>light-dark()</code> for at least 3 color properties. Declare <code>color-scheme: light dark</code>.</li>
+          <li><strong>Reduced Motion:</strong> Default hover effect uses <code>transform</code>. Under <code>prefers-reduced-motion: reduce</code>, replace with opacity change.</li>
+          <li><strong>High Contrast:</strong> Under <code>prefers-contrast: more</code>, increase border widths, remove gradients, boost text contrast.</li>
+          <li><strong>Focus Rings:</strong> Custom <code>:focus-visible</code> on cards with visible outline and offset.</li>
+          <li><strong>Touch Targets:</strong> The card's interactive area (link/button) must meet the 44px minimum in both axes.</li>
+          <li><strong>Vertical Text:</strong> Include at least one element that uses <code>writing-mode: vertical-rl</code> (e.g., a category label on the card).</li>
+          <li><strong>Responsive:</strong> Grid should collapse from multi-column to single column on narrow viewports using logical sizing.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Use CSS custom properties for your color palette and switch them inside <code>@media (prefers-color-scheme: dark)</code>, or use <code>light-dark()</code> directly in property values.</li>
+          <li>Layer your media queries: start with the base accessible version, then add <code>prefers-reduced-motion: no-preference</code> for animations, then <code>prefers-contrast: more</code> for high-contrast overrides.</li>
+          <li>For the vertical text label, a <code>&lt;span&gt;</code> inside the card with <code>writing-mode: vertical-rl</code> works well as a category badge on the side of the card.</li>
+          <li>Test with your OS settings: toggle dark mode, enable reduced motion, and switch to high contrast to verify all three queries respond correctly.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="card-grid">
+  <article class="a11y-card" tabindex="0">
+    <span class="card-category">Design</span>
+    <div class="card-image"></div>
+    <div class="card-body">
+      <h3>Responsive Layouts</h3>
+      <p>Build layouts that adapt to any screen size, language, and user preference.</p>
+      <a href="#" class="card-link">Read More</a>
+    </div>
+  </article>
+  <article class="a11y-card" tabindex="0">
+    <span class="card-category">Code</span>
+    <div class="card-image"></div>
+    <div class="card-body">
+      <h3>Logical Properties</h3>
+      <p>Replace physical directions with flow-relative properties for true i18n support.</p>
+      <a href="#" class="card-link">Read More</a>
+    </div>
+  </article>
+  <article class="a11y-card" tabindex="0">
+    <span class="card-category">A11y</span>
+    <div class="card-image"></div>
+    <div class="card-body">
+      <h3>Focus Management</h3>
+      <p>Custom focus indicators that serve keyboard users without annoying mouse users.</p>
+      <a href="#" class="card-link">Read More</a>
+    </div>
+  </article>
+  <article class="a11y-card" tabindex="0">
+    <span class="card-category">UX</span>
+    <div class="card-image"></div>
+    <div class="card-body">
+      <h3>Motion Sensitivity</h3>
+      <p>Respect user preferences for reduced motion while keeping interfaces communicative.</p>
+      <a href="#" class="card-link">Read More</a>
+    </div>
+  </article>
+</div>
+        </template>
+        <template class="starter-css">
+/* Enable light-dark() function */
+:root {
+  color-scheme: light dark;
+}
+
+/* Card grid using logical properties only */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  padding-inline: 1.5rem;
+  padding-block: 2rem;
+  font-family: system-ui, sans-serif;
+  background: light-dark(#f0f0f5, #0f1117);
+  color: light-dark(#1a1a2e, #e4e6ef);
+}
+
+.a11y-card {
+  position: relative;
+  background: light-dark(#ffffff, #1a1d27);
+  border: 1px solid light-dark(#e0e0e8, #2a2d3a);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Vertical category label */
+.card-category {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  writing-mode: vertical-rl;
+  padding-block: 0.75rem;
+  padding-inline: 0.35rem;
+  background: #6c5ce7;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.card-image {
+  block-size: 140px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+}
+
+.card-body {
+  padding-inline: 1.25rem;
+  padding-block: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-body h3 {
+  margin-block-end: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.card-body p {
+  margin-block-end: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: light-dark(#555, #aaa);
+  flex: 1;
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  min-inline-size: 44px;
+  padding-inline: 1.25rem;
+  background: #6c5ce7;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Focus visible: keyboard only */
+.a11y-card:focus-visible {
+  outline: 3px solid #6c5ce7;
+  outline-offset: 3px;
+}
+
+.card-link:focus-visible {
+  outline: 3px solid #a29bfe;
+  outline-offset: 2px;
+}
+
+/* Motion: only for users who want it */
+@media (prefers-reduced-motion: no-preference) {
+  .a11y-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .a11y-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Reduced motion: opacity only */
+@media (prefers-reduced-motion: reduce) {
+  .a11y-card:hover {
+    opacity: 0.88;
+  }
+}
+
+/* High contrast */
+@media (prefers-contrast: more) {
+  .a11y-card {
+    border-width: 2px;
+    border-color: light-dark(#000, #fff);
+  }
+  .card-image {
+    background: light-dark(#333, #555);
+  }
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../22-details-accordions/index.html">&larr; Previous</a>
+    <a href="../15-capstone-project/index.html">Next &rarr;</a>
+  </footer>
+
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,892 @@
+/* ============================================
+   Module 21: CSS Math Functions
+   Rounding, Sign/Abs, Stepped Values,
+   Trigonometry, Exponentials, Practical Patterns
+   ============================================ */
+
+/* ---- Level 7 Badge (not in course.css) ---- */
+.level-badge.level-7 {
+  background: color-mix(in oklch, #e84393 20%, transparent);
+  color: #e84393;
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ---- Code Block Overrides ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* =============================================
+   Section 1: Grid Snapping Demo
+   ============================================= */
+
+.snap-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.snap-demo-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 60px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.snap-label {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.snap-track {
+  height: 24px;
+  background: var(--pe7-surface-2);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.snap-bar {
+  height: 100%;
+  border-radius: 6px;
+  width: var(--raw);
+  transition: width 0.5s ease;
+}
+
+.snap-bar--raw {
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-accent-light));
+  opacity: 0.5;
+}
+
+.snap-bar--snapped {
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-accent-light));
+}
+
+.snap-grid-lines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(5% - 1px),
+    color-mix(in oklch, var(--pe7-text) 15%, transparent) calc(5% - 1px),
+    color-mix(in oklch, var(--pe7-text) 15%, transparent) 5%
+  );
+  pointer-events: none;
+}
+
+.snap-value {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--pe7-accent-light);
+  font-family: var(--pe7-font-mono);
+}
+
+@media (max-width: 500px) {
+  .snap-demo-row {
+    grid-template-columns: 90px 1fr 50px;
+  }
+  .snap-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* =============================================
+   Section 2: abs() Distance Demo
+   ============================================= */
+
+.abs-demo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.abs-card {
+  --center: 2;
+  --dist: calc(var(--i) - var(--center));
+  /* Use abs() for positive distance */
+  --abs-dist: max(var(--dist), calc(-1 * var(--dist)));
+  width: 80px;
+  height: 100px;
+  background: var(--pe7-surface-2);
+  border: 2px solid var(--pe7-accent);
+  border-radius: var(--pe7-radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  /* Opacity decreases with distance from center */
+  opacity: calc(1 - var(--abs-dist) * 0.2);
+  /* Scale decreases with distance */
+  scale: calc(1 - var(--abs-dist) * 0.06);
+}
+
+/* Modern browsers: use abs() directly */
+@supports (margin: abs(-1px)) {
+  .abs-card {
+    --abs-dist: abs(var(--dist));
+  }
+}
+
+.abs-card:hover {
+  opacity: 1;
+  scale: 1.1;
+  box-shadow: 0 0 20px color-mix(in oklch, var(--pe7-accent) 40%, transparent);
+  border-color: var(--pe7-accent-light);
+}
+
+.abs-card-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--pe7-accent-light);
+}
+
+.abs-card-label {
+  font-size: 0.65rem;
+  color: var(--pe7-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* =============================================
+   Section 3: Spacing Token Demo
+   ============================================= */
+
+.token-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.token-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 130px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.token-name {
+  font-size: 0.8rem;
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  padding: 0.2em 0.5em;
+  border-radius: 4px;
+  font-weight: 600;
+  color: var(--pe7-accent-light);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.token-bar-track {
+  height: 20px;
+  background: var(--pe7-surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.token-bar {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-accent-light));
+  /* Scale the visual width: 1rem = ~60px for visibility */
+  width: calc(var(--w) * 3.5);
+  min-width: 4px;
+  transition: width 0.5s ease;
+}
+
+.token-val {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  white-space: nowrap;
+  font-family: var(--pe7-font-mono);
+}
+
+@media (max-width: 600px) {
+  .token-row {
+    grid-template-columns: 100px 1fr 100px;
+  }
+  .token-name {
+    font-size: 0.7rem;
+  }
+  .token-val {
+    font-size: 0.7rem;
+  }
+}
+
+/* =============================================
+   Section 4: Trigonometry Demos
+   ============================================= */
+
+/* ---- Circular Navigation Menu ---- */
+.circular-demo {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.circular-ring {
+  --radius: 130px;
+  --total: 8;
+  position: relative;
+  width: calc(var(--radius) * 2 + 80px);
+  height: calc(var(--radius) * 2 + 80px);
+}
+
+.circular-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--pe7-accent), #8b5cf6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 20px color-mix(in oklch, var(--pe7-accent) 40%, transparent);
+  z-index: 2;
+}
+
+.circular-item {
+  --angle: calc(var(--i) * (360deg / var(--total)) - 90deg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  background: var(--pe7-surface-2);
+  border: 2px solid var(--pe7-border);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1;
+  /* The magic: position using cos/sin */
+  translate:
+    calc(cos(var(--angle)) * var(--radius))
+    calc(sin(var(--angle)) * var(--radius));
+}
+
+.circular-item:hover {
+  background: var(--pe7-accent);
+  border-color: var(--pe7-accent-light);
+  scale: 1.2;
+  box-shadow: 0 0 24px color-mix(in oklch, var(--pe7-accent) 50%, transparent);
+}
+
+.circular-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.circular-label {
+  font-size: 0.55rem;
+  color: var(--pe7-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 600;
+}
+.circular-item:hover .circular-label { color: white; }
+
+/* Connector lines from center to items */
+.circular-ring::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--radius) * 2);
+  height: calc(var(--radius) * 2);
+  margin: calc(-1 * var(--radius)) 0 0 calc(-1 * var(--radius));
+  border: 1px dashed color-mix(in oklch, var(--pe7-border) 60%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@media (max-width: 420px) {
+  .circular-ring {
+    --radius: 90px;
+  }
+  .circular-item {
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+  }
+  .circular-icon {
+    font-size: 0.9rem;
+  }
+  .circular-label {
+    display: none;
+  }
+}
+
+/* ---- Wave Divider Demo ---- */
+@property --wave-phase {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+.wave-demo {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  animation: wave-animate 5s linear infinite;
+}
+
+@keyframes wave-animate {
+  to {
+    --wave-phase: 360deg;
+  }
+}
+
+.wave-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  --amplitude: 25px;
+}
+
+.wave-row--offset {
+  --amplitude: 18px;
+  opacity: 0.5;
+}
+
+.wave-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: oklch(0.7 0.2 calc(265 + var(--i) * 5));
+  flex-shrink: 0;
+  transition: scale 0.2s;
+  /* The magic: sin() positions each dot vertically */
+  translate: 0 calc(
+    sin(var(--i) * 18deg + var(--wave-phase)) * var(--amplitude)
+  );
+}
+
+.wave-row--offset .wave-dot {
+  /* Offset phase for the second row */
+  translate: 0 calc(
+    sin(var(--i) * 18deg + var(--wave-phase) + 90deg) * var(--amplitude)
+  );
+  background: oklch(0.65 0.15 calc(180 + var(--i) * 5));
+}
+
+.wave-dot:hover {
+  scale: 2.5;
+  z-index: 1;
+}
+
+/* ---- Clock Face Demo ---- */
+.clock-demo {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
+.clock-face {
+  --clock-radius: 110px;
+  position: relative;
+  width: calc(var(--clock-radius) * 2 + 40px);
+  height: calc(var(--clock-radius) * 2 + 40px);
+  border: 3px solid var(--pe7-border);
+  border-radius: 50%;
+  background: var(--pe7-surface-2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.clock-marker {
+  /* Clock starts at 12 (top), so offset by -90deg */
+  --angle: calc(var(--i) * 30deg - 90deg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  translate:
+    calc(cos(var(--angle)) * var(--clock-radius))
+    calc(sin(var(--angle)) * var(--clock-radius));
+}
+
+.clock-marker span {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+/* Highlight 12, 3, 6, 9 */
+.clock-marker:nth-child(1) span,
+.clock-marker:nth-child(4) span,
+.clock-marker:nth-child(7) span,
+.clock-marker:nth-child(10) span {
+  color: var(--pe7-accent-light);
+  font-size: 1.05rem;
+}
+
+.clock-center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--pe7-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--pe7-accent);
+}
+
+/* Tick marks using a radial pattern on the face */
+.clock-face::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in oklch, var(--pe7-border) 50%, transparent);
+}
+
+@media (max-width: 420px) {
+  .clock-face {
+    --clock-radius: 80px;
+  }
+  .clock-marker span {
+    font-size: 0.75rem;
+  }
+}
+
+/* =============================================
+   Section 5: Exponential Demo
+   ============================================= */
+
+.exp-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.exp-section {
+  padding: 1rem;
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius);
+  border: 1px solid var(--pe7-border);
+}
+
+.exp-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+  font-family: var(--pe7-font-mono);
+}
+
+.exp-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 140px;
+  padding-top: 0.5rem;
+}
+
+.exp-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 0.5s ease;
+  position: relative;
+}
+
+.exp-bar--linear {
+  height: calc(var(--i) * 16px);
+  background: linear-gradient(
+    to top,
+    var(--pe7-accent),
+    var(--pe7-accent-light)
+  );
+}
+
+.exp-bar--exponential {
+  /* pow(i, 2) * 2px produces the quadratic curve */
+  height: calc(var(--i) * var(--i) * 2px);
+  background: linear-gradient(
+    to top,
+    #e84393,
+    #fd79a8
+  );
+}
+
+.exp-bar::after {
+  content: "";
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: var(--pe7-text-muted);
+  white-space: nowrap;
+}
+
+.exp-bar--linear::after {
+  content: counter(i);
+  counter-reset: i var(--i);
+}
+
+.exp-bar:hover {
+  filter: brightness(1.3);
+}
+
+/* =============================================
+   Section 6: Practical Patterns
+   ============================================= */
+
+/* ---- Orbital Animation ---- */
+@property --orbit-angle-1 {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --orbit-angle-2 {
+  syntax: "<angle>";
+  initial-value: 120deg;
+  inherits: false;
+}
+
+@property --orbit-angle-3 {
+  syntax: "<angle>";
+  initial-value: 240deg;
+  inherits: false;
+}
+
+.orbit-demo {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.orbit-system {
+  position: relative;
+  width: 280px;
+  height: 280px;
+}
+
+.orbit-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  background: var(--pe7-warning);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--pe7-warning), 0 0 40px color-mix(in oklch, var(--pe7-warning) 30%, transparent);
+  z-index: 3;
+}
+
+.orbit-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px dashed color-mix(in oklch, var(--pe7-border) 40%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  width: calc(var(--r) * 2);
+  height: calc(var(--r) * 2);
+  margin: calc(-1 * var(--r)) 0 0 calc(-1 * var(--r));
+}
+
+.orbit-track--1 { --r: 55px; }
+.orbit-track--2 { --r: 90px; }
+.orbit-track--3 { --r: 125px; }
+
+.orbit-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.orbit-particle--1 {
+  --radius: 55px; --sz: 14px; --clr: #00cec9;
+  width: var(--sz); height: var(--sz); margin: calc(-0.5 * var(--sz)) 0 0 calc(-0.5 * var(--sz));
+  background: var(--clr); box-shadow: 0 0 12px var(--clr);
+  animation: orbit-1 3s linear infinite;
+  translate: calc(cos(var(--orbit-angle-1)) * var(--radius)) calc(sin(var(--orbit-angle-1)) * var(--radius));
+}
+.orbit-particle--2 {
+  --radius: 90px; --sz: 10px; --clr: #6c5ce7;
+  width: var(--sz); height: var(--sz); margin: calc(-0.5 * var(--sz)) 0 0 calc(-0.5 * var(--sz));
+  background: var(--clr); box-shadow: 0 0 12px var(--clr);
+  animation: orbit-2 5s linear infinite;
+  translate: calc(cos(var(--orbit-angle-2)) * var(--radius)) calc(sin(var(--orbit-angle-2)) * var(--radius));
+}
+.orbit-particle--3 {
+  --radius: 125px; --sz: 8px; --clr: #e84393;
+  width: var(--sz); height: var(--sz); margin: calc(-0.5 * var(--sz)) 0 0 calc(-0.5 * var(--sz));
+  background: var(--clr); box-shadow: 0 0 12px var(--clr);
+  animation: orbit-3 8s linear infinite;
+  translate: calc(cos(var(--orbit-angle-3)) * var(--radius)) calc(sin(var(--orbit-angle-3)) * var(--radius));
+}
+
+@keyframes orbit-1 { to { --orbit-angle-1: 360deg; } }
+@keyframes orbit-2 { to { --orbit-angle-2: 480deg; } }
+@keyframes orbit-3 { to { --orbit-angle-3: 600deg; } }
+
+/* ---- Star Rating Demo ---- */
+.star-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.star-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 110px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.star-label {
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+  font-family: var(--pe7-font-mono);
+  text-align: right;
+}
+
+.star-track {
+  position: relative;
+  font-size: 1.8rem;
+  line-height: 1;
+  letter-spacing: 4px;
+  height: 1.8rem;
+  overflow: hidden;
+}
+
+.star-bg {
+  color: var(--pe7-surface-2);
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+}
+
+.star-fill {
+  color: var(--pe7-warning);
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  /* Width based on rating out of 5 */
+  width: calc(var(--rating) / 5 * 100%);
+}
+
+.star-result {
+  font-size: 0.8rem;
+  color: var(--pe7-accent-light);
+  font-family: var(--pe7-font-mono);
+  font-weight: 600;
+}
+
+@media (max-width: 520px) {
+  .star-row {
+    grid-template-columns: 80px 1fr 90px;
+  }
+  .star-track {
+    font-size: 1.4rem;
+    height: 1.4rem;
+  }
+}
+
+/* =============================================
+   Section 7: Browser Support Table
+   ============================================= */
+
+.support-table {
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+.support-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.support-table th,
+.support-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--pe7-border);
+  color: var(--pe7-text);
+}
+
+.support-table th {
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.support-table td code {
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+
+.support-good {
+  color: var(--pe7-success);
+  font-weight: 700;
+}
+
+/* ---- Exercise & Challenge Shared ---- */
+.exercise-requirements, .challenge-requirements, .challenge-hints { margin: 1.5rem 0; }
+.exercise-requirements h3, .challenge-requirements h3,
+.exercise-starter h3, .challenge-hints h3 {
+  font-size: 1rem; margin-bottom: 0.75rem; font-weight: 700; color: var(--pe7-text);
+}
+.exercise-requirements ul, .challenge-requirements ul, .challenge-hints ul {
+  padding-left: 1.5rem; line-height: 1.8;
+}
+.exercise-requirements li, .challenge-requirements li, .challenge-hints li {
+  margin-bottom: 0.5rem; font-size: 0.925rem; color: var(--pe7-text);
+}
+.exercise-starter { margin-top: 2rem; }
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .abs-demo { gap: 0.5rem; }
+  .abs-card { width: 64px; height: 80px; }
+  .abs-card-num { font-size: 1.2rem; }
+  .star-row { grid-template-columns: 70px 1fr 80px; gap: 0.5rem; }
+  .orbit-system { width: 220px; height: 220px; }
+  .orbit-track--1 { --r: 40px; } .orbit-track--2 { --r: 70px; } .orbit-track--3 { --r: 100px; }
+  .orbit-particle--1 { --radius: 40px; } .orbit-particle--2 { --radius: 70px; } .orbit-particle--3 { --radius: 100px; }
+}
+
+@media (max-width: 480px) {
+  .exp-bars { height: 100px; }
+  .exp-bar--linear { height: calc(var(--i) * 11px); }
+  .exp-bar--exponential { height: calc(var(--i) * var(--i) * 1.4px); }
+  .wave-dot { width: 6px; height: 6px; }
+}

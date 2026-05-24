@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relative Colors &amp; contrast-color() | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 19</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-6">Level 6 - 2026 Deep Dives</span>
+    <h1>Relative Colors &amp; contrast-color()</h1>
+    <p class="subtitle">Derive entire palettes from a single base color. Lighten, darken, shift hue, adjust alpha &mdash; all in pure CSS. Then let the browser pick accessible text colors for you with <code>contrast-color()</code>. One custom property in, a complete design system out.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: RELATIVE COLOR SYNTAX -->
+    <!-- ============================== -->
+    <section class="concept-section" id="relative-syntax">
+      <h2>1. Relative Color Syntax</h2>
+      <p>Module 11 taught you OKLCH, color-mix, and the foundations of modern color in CSS. Relative color syntax is the next leap: instead of defining every color from scratch, you derive new colors <em>from existing ones</em>. You take a base color and say "give me the same hue but lighter" or "same color, half the chroma." The browser does the math.</p>
+
+      <h3>The <code>from</code> Keyword</h3>
+      <p>The magic word is <code>from</code>. It goes inside any color function and tells the browser to decompose an origin color into its channels, which you can then reference and manipulate individually.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Basic syntax: oklch(from &lt;origin&gt; L C H) */
+--base: oklch(0.65 0.2 265);
+
+/* Reference channels directly */
+--same-color: oklch(from var(--base) l c h);
+
+/* Works in any color function */
+--via-hsl: hsl(from var(--base) h s l);
+--via-lab: lab(from var(--base) l a b);
+--via-lch: lch(from var(--base) l c h);
+
+/* The origin can be any valid color */
+--from-hex: oklch(from #6c5ce7 l c h);
+--from-named: oklch(from rebeccapurple l c h);
+--from-rgb: oklch(from rgb(108 92 231) l c h);</code></pre>
+      </div>
+
+      <h3>Channel References</h3>
+      <p>When you use <code>from</code>, the browser converts the origin color into the target color space and exposes each channel as a single-letter variable. In OKLCH, those are <code>l</code> (lightness, 0&ndash;1), <code>c</code> (chroma, 0&ndash;0.4), and <code>h</code> (hue, 0&ndash;360). You can use them as-is, wrap them in <code>calc()</code>, or replace them with constants.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>--brand: oklch(0.65 0.2 265);
+
+/* Use channel references directly */
+--identical: oklch(from var(--brand) l c h);
+
+/* Replace one channel */
+--lighter: oklch(from var(--brand) 0.85 c h);
+
+/* Compute from the channel */
+--lighter-calc: oklch(from var(--brand) calc(l + 0.2) c h);
+
+/* Mix and match */
+--muted-shifted: oklch(from var(--brand) l calc(c * 0.5) calc(h + 30));</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The channel variables (<code>l</code>, <code>c</code>, <code>h</code>, <code>s</code>, etc.) are only available inside the color function that uses <code>from</code>. They are not custom properties &mdash; they are ephemeral references scoped to that single declaration. You cannot use <code>l</code> outside of a relative color expression.
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Channel Decomposition</h4>
+        <p class="demo-note">The base color is decomposed into its OKLCH channels. Each swatch shows a different channel held constant while the others change.</p>
+
+        <div class="channel-decompose-demo">
+          <div class="channel-row">
+            <div class="channel-label">Base Color</div>
+            <div class="channel-swatch channel-base"></div>
+            <code class="channel-value">oklch(0.65 0.2 265)</code>
+          </div>
+          <div class="channel-row">
+            <div class="channel-label">Same L &amp; C, Hue = 30</div>
+            <div class="channel-swatch channel-hue-shift"></div>
+            <code class="channel-value">oklch(from var(--base) l c 30)</code>
+          </div>
+          <div class="channel-row">
+            <div class="channel-label">Same H &amp; C, L = 0.85</div>
+            <div class="channel-swatch channel-light-shift"></div>
+            <code class="channel-value">oklch(from var(--base) 0.85 c h)</code>
+          </div>
+          <div class="channel-row">
+            <div class="channel-label">Same L &amp; H, C = 0.05</div>
+            <div class="channel-swatch channel-chroma-shift"></div>
+            <code class="channel-value">oklch(from var(--base) l 0.05 h)</code>
+          </div>
+          <div class="channel-row">
+            <div class="channel-label">All channels preserved</div>
+            <div class="channel-swatch channel-identity"></div>
+            <code class="channel-value">oklch(from var(--base) l c h)</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: CHANNEL MANIPULATION -->
+    <!-- ============================== -->
+    <section class="concept-section" id="channel-manipulation">
+      <h2>2. Channel Manipulation</h2>
+      <p>The real power of relative colors is <code>calc()</code> on individual channels. You are not limited to swapping in constants &mdash; you can scale, offset, clamp, and compose channel values with full CSS math. This is how you build an entire tonal palette from one line of CSS.</p>
+
+      <h3>Lightening &amp; Darkening</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>--base: oklch(0.55 0.2 265);
+
+/* Lighten by adding to L */
+--light-10: oklch(from var(--base) calc(l + 0.10) c h);
+--light-20: oklch(from var(--base) calc(l + 0.20) c h);
+--light-30: oklch(from var(--base) calc(l + 0.30) c h);
+
+/* Darken by subtracting from L */
+--dark-10: oklch(from var(--base) calc(l - 0.10) c h);
+--dark-20: oklch(from var(--base) calc(l - 0.20) c h);
+
+/* Scale lightness (multiplicative) */
+--lighter: oklch(from var(--base) calc(l * 1.3) c h);
+--darker:  oklch(from var(--base) calc(l * 0.7) c h);</code></pre>
+      </div>
+
+      <h3>Hue Shifting</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>--base: oklch(0.65 0.2 265);
+
+/* Analogous colors: shift by 30 degrees */
+--analog-left:  oklch(from var(--base) l c calc(h - 30));
+--analog-right: oklch(from var(--base) l c calc(h + 30));
+
+/* Complementary: shift by 180 degrees */
+--complement: oklch(from var(--base) l c calc(h + 180));
+
+/* Triadic: shift by 120 degrees */
+--triad-1: oklch(from var(--base) l c calc(h + 120));
+--triad-2: oklch(from var(--base) l c calc(h + 240));</code></pre>
+      </div>
+
+      <h3>Chroma (Saturation) Control</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>--base: oklch(0.65 0.2 265);
+
+/* Desaturate by scaling chroma */
+--muted:  oklch(from var(--base) l calc(c * 0.5) h);
+--pastel: oklch(from var(--base) l calc(c * 0.3) h);
+--gray:   oklch(from var(--base) l 0 h);
+
+/* Boost saturation */
+--vivid: oklch(from var(--base) l calc(c * 1.5) h);</code></pre>
+      </div>
+
+      <h3>Alpha Manipulation</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>--base: oklch(0.65 0.2 265);
+
+/* Add transparency */
+--semi:     oklch(from var(--base) l c h / 0.5);
+--ghost:    oklch(from var(--base) l c h / 0.15);
+--overlay:  oklch(from var(--base) l c h / 0.8);
+
+/* Use HSL if you prefer */
+--hsl-semi: hsl(from var(--base) h s l / 50%);</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Manipulation Toolkit</h4>
+        <p class="demo-note">Each row shows a different channel manipulation applied to the same base color. Hover any swatch to see its CSS formula.</p>
+
+        <div class="manipulation-demo">
+          <div class="manip-group">
+            <h5>Lightness Scale</h5>
+            <div class="manip-row">
+              <div class="manip-swatch manip-l-1" title="calc(l - 0.20)"><span>-20</span></div>
+              <div class="manip-swatch manip-l-2" title="calc(l - 0.10)"><span>-10</span></div>
+              <div class="manip-swatch manip-l-base" title="base"><span>Base</span></div>
+              <div class="manip-swatch manip-l-3" title="calc(l + 0.10)"><span>+10</span></div>
+              <div class="manip-swatch manip-l-4" title="calc(l + 0.20)"><span>+20</span></div>
+              <div class="manip-swatch manip-l-5" title="calc(l + 0.30)"><span>+30</span></div>
+            </div>
+          </div>
+          <div class="manip-group">
+            <h5>Hue Rotation</h5>
+            <div class="manip-row">
+              <div class="manip-swatch manip-h-1" title="calc(h - 60)"><span>-60</span></div>
+              <div class="manip-swatch manip-h-2" title="calc(h - 30)"><span>-30</span></div>
+              <div class="manip-swatch manip-h-base" title="base"><span>Base</span></div>
+              <div class="manip-swatch manip-h-3" title="calc(h + 30)"><span>+30</span></div>
+              <div class="manip-swatch manip-h-4" title="calc(h + 60)"><span>+60</span></div>
+              <div class="manip-swatch manip-h-5" title="calc(h + 180)"><span>+180</span></div>
+            </div>
+          </div>
+          <div class="manip-group">
+            <h5>Chroma Scale</h5>
+            <div class="manip-row">
+              <div class="manip-swatch manip-c-1" title="c * 0"><span>0%</span></div>
+              <div class="manip-swatch manip-c-2" title="c * 0.25"><span>25%</span></div>
+              <div class="manip-swatch manip-c-3" title="c * 0.5"><span>50%</span></div>
+              <div class="manip-swatch manip-c-base" title="base"><span>100%</span></div>
+              <div class="manip-swatch manip-c-4" title="c * 1.25"><span>125%</span></div>
+              <div class="manip-swatch manip-c-5" title="c * 1.5"><span>150%</span></div>
+            </div>
+          </div>
+          <div class="manip-group">
+            <h5>Alpha</h5>
+            <div class="manip-row manip-row-alpha">
+              <div class="manip-swatch manip-a-1" title="alpha 10%"><span>10%</span></div>
+              <div class="manip-swatch manip-a-2" title="alpha 25%"><span>25%</span></div>
+              <div class="manip-swatch manip-a-3" title="alpha 50%"><span>50%</span></div>
+              <div class="manip-swatch manip-a-4" title="alpha 75%"><span>75%</span></div>
+              <div class="manip-swatch manip-a-base" title="alpha 100%"><span>100%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> OKLCH channel values are automatically clamped to valid ranges by the browser. If <code>calc(l + 0.5)</code> exceeds 1.0, it is clamped to 1.0 (pure white). If <code>calc(c * 2)</code> pushes chroma beyond what the display can render, the browser gamut-maps the color to the nearest displayable equivalent. You do not need to guard against overflow.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: contrast-color()    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="contrast-color">
+      <h2>3. contrast-color()</h2>
+      <p>Picking text colors that are readable against arbitrary backgrounds has always been painful. Dark background? White text. Light background? Black text. Somewhere in between? Break out the contrast calculator. <code>contrast-color()</code> eliminates that guesswork entirely. You give it a background color and it returns a text color that meets WCAG contrast requirements.</p>
+
+      <h3>Syntax</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Automatic: returns black or white for best contrast */
+color: contrast-color(var(--bg));
+
+/* Against a specific background */
+.badge {
+  --bg: oklch(0.55 0.2 265);
+  background: var(--bg);
+  color: contrast-color(var(--bg));
+}
+
+/* Works with any color format */
+color: contrast-color(#6c5ce7);
+color: contrast-color(rgb(108 92 231));
+color: contrast-color(oklch(0.65 0.2 265));</code></pre>
+      </div>
+
+      <h3>Why This Matters</h3>
+      <p>Before <code>contrast-color()</code>, building a badge component that accepted arbitrary user-chosen colors was a nightmare. You either limited colors to a safe set, or you wrote JavaScript to compute relative luminance and pick text color at runtime. Now the browser handles it natively.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* The accessible badge pattern: one line does it all */
+.tag {
+  --tag-color: var(--color, oklch(0.55 0.2 265));
+  background: var(--tag-color);
+  color: contrast-color(var(--tag-color));
+  padding: 0.25em 0.75em;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* Usage in HTML: any color, guaranteed readable text */
+/* &lt;span class="tag" style="--color: #e74c3c"&gt;Urgent&lt;/span&gt; */
+/* &lt;span class="tag" style="--color: #f1c40f"&gt;Pending&lt;/span&gt; */
+/* &lt;span class="tag" style="--color: #2ecc71"&gt;Done&lt;/span&gt;    */</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Automatic Contrast Text</h4>
+        <p class="demo-note">Each badge uses <code>contrast-color()</code> to pick readable text. Notice how light backgrounds get dark text and dark backgrounds get light text &mdash; automatically.</p>
+
+        <div class="contrast-demo">
+          <div class="contrast-badge" style="--badge-bg: oklch(0.75 0.18 145);">Success</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.85 0.15 85);">Warning</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.55 0.22 25);">Danger</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.50 0.20 265);">Info</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.90 0.04 265);">Subtle</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.25 0.05 265);">Dark</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.65 0.25 330);">Pink</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.70 0.17 195);">Teal</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.40 0.12 55);">Olive</div>
+          <div class="contrast-badge" style="--badge-bg: oklch(0.95 0.02 90);">Light</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> <code>contrast-color()</code> is not just about convenience &mdash; it is about correctness. It uses the same WCAG 2.1 relative luminance algorithm that accessibility auditors use, so a passing <code>contrast-color()</code> result means your text genuinely meets AA contrast ratio (at minimum 4.5:1 for normal text). No more eyeballing it.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: PALETTE GENERATION  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="palette-generation">
+      <h2>4. Palette Generation</h2>
+      <p>The killer application of relative colors is building complete design system palettes from a single base color. Instead of hand-picking 10 shades of your brand blue, you define one <code>--brand</code> and derive every tint, shade, and surface from it. Change the base, and the entire system updates.</p>
+
+      <h3>Tint &amp; Shade Scale</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  --brand: oklch(0.55 0.22 265);
+
+  /* Tints: increase lightness, decrease chroma */
+  --brand-50:  oklch(from var(--brand) 0.97 calc(c * 0.1) h);
+  --brand-100: oklch(from var(--brand) 0.93 calc(c * 0.2) h);
+  --brand-200: oklch(from var(--brand) 0.87 calc(c * 0.35) h);
+  --brand-300: oklch(from var(--brand) 0.78 calc(c * 0.55) h);
+  --brand-400: oklch(from var(--brand) 0.68 calc(c * 0.8) h);
+
+  /* Base */
+  --brand-500: var(--brand);
+
+  /* Shades: decrease lightness, slightly decrease chroma */
+  --brand-600: oklch(from var(--brand) calc(l - 0.06) calc(c * 0.95) h);
+  --brand-700: oklch(from var(--brand) calc(l - 0.13) calc(c * 0.85) h);
+  --brand-800: oklch(from var(--brand) calc(l - 0.20) calc(c * 0.70) h);
+  --brand-900: oklch(from var(--brand) calc(l - 0.27) calc(c * 0.50) h);
+  --brand-950: oklch(from var(--brand) calc(l - 0.33) calc(c * 0.30) h);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Generated Palette</h4>
+        <p class="demo-note">This entire 11-step palette is derived from a single base color using relative color syntax. Every swatch is a <code>calc()</code> on the base OKLCH channels.</p>
+
+        <div class="palette-gen-demo">
+          <div class="palette-scale">
+            <div class="palette-step palette-50"><span>50</span></div>
+            <div class="palette-step palette-100"><span>100</span></div>
+            <div class="palette-step palette-200"><span>200</span></div>
+            <div class="palette-step palette-300"><span>300</span></div>
+            <div class="palette-step palette-400"><span>400</span></div>
+            <div class="palette-step palette-500"><span>500</span></div>
+            <div class="palette-step palette-600"><span>600</span></div>
+            <div class="palette-step palette-700"><span>700</span></div>
+            <div class="palette-step palette-800"><span>800</span></div>
+            <div class="palette-step palette-900"><span>900</span></div>
+            <div class="palette-step palette-950"><span>950</span></div>
+          </div>
+          <p class="palette-formula">Base: <code>oklch(0.55 0.22 265)</code> &mdash; all other stops derived with <code>oklch(from var(--brand) ...)</code></p>
+        </div>
+
+        <h5 class="palette-variant-heading">Same formula, different base hues</h5>
+        <div class="palette-variants">
+          <div class="palette-scale palette-scale--alt" style="--alt-hue: 145;">
+            <div class="palette-step-alt" style="--step-l: 0.97; --step-c-mult: 0.1;"><span>50</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.87; --step-c-mult: 0.35;"><span>200</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.68; --step-c-mult: 0.8;"><span>400</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.55; --step-c-mult: 1;"><span>500</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.42; --step-c-mult: 0.85;"><span>700</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.28; --step-c-mult: 0.5;"><span>900</span></div>
+          </div>
+          <div class="palette-scale palette-scale--alt" style="--alt-hue: 25;">
+            <div class="palette-step-alt" style="--step-l: 0.97; --step-c-mult: 0.1;"><span>50</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.87; --step-c-mult: 0.35;"><span>200</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.68; --step-c-mult: 0.8;"><span>400</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.55; --step-c-mult: 1;"><span>500</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.42; --step-c-mult: 0.85;"><span>700</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.28; --step-c-mult: 0.5;"><span>900</span></div>
+          </div>
+          <div class="palette-scale palette-scale--alt" style="--alt-hue: 330;">
+            <div class="palette-step-alt" style="--step-l: 0.97; --step-c-mult: 0.1;"><span>50</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.87; --step-c-mult: 0.35;"><span>200</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.68; --step-c-mult: 0.8;"><span>400</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.55; --step-c-mult: 1;"><span>500</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.42; --step-c-mult: 0.85;"><span>700</span></div>
+            <div class="palette-step-alt" style="--step-l: 0.28; --step-c-mult: 0.5;"><span>900</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Semantic Palette from Brand</h3>
+      <p>You can generate success, warning, and danger colors by hue-shifting your brand color. This keeps the entire palette feeling cohesive because chroma and lightness relationships remain consistent.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  --brand: oklch(0.55 0.22 265);
+
+  /* Derive semantic colors by hue-shifting the brand */
+  --success: oklch(from var(--brand) 0.65 0.18 145);
+  --warning: oklch(from var(--brand) 0.80 0.16 85);
+  --danger:  oklch(from var(--brand) 0.60 0.22 25);
+  --info:    oklch(from var(--brand) 0.65 0.14 230);
+
+  /* Surface colors from the brand's own hue */
+  --surface-1: oklch(from var(--brand) 0.15 calc(c * 0.08) h);
+  --surface-2: oklch(from var(--brand) 0.20 calc(c * 0.06) h);
+  --surface-3: oklch(from var(--brand) 0.25 calc(c * 0.04) h);
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: DARK MODE           -->
+    <!-- ============================== -->
+    <section class="concept-section" id="dark-mode">
+      <h2>5. Dark Mode from One Palette</h2>
+      <p>The traditional approach to dark mode requires maintaining two complete sets of color tokens. With relative colors, you can derive dark mode from the same base &mdash; invert lightness, reduce chroma slightly, and you are done. The palette transforms itself.</p>
+
+      <h3>The Lightness Inversion Technique</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  --brand: oklch(0.55 0.22 265);
+
+  /* Light mode surfaces */
+  --bg:       oklch(from var(--brand) 0.98 calc(c * 0.02) h);
+  --surface:  oklch(from var(--brand) 0.95 calc(c * 0.04) h);
+  --text:     oklch(from var(--brand) 0.15 calc(c * 0.03) h);
+  --muted:    oklch(from var(--brand) 0.45 calc(c * 0.05) h);
+
+  /* Accent stays the same */
+  --accent: var(--brand);
+}
+
+/* Dark mode: flip lightness values */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      oklch(from var(--brand) 0.12 calc(c * 0.04) h);
+    --surface: oklch(from var(--brand) 0.18 calc(c * 0.06) h);
+    --text:    oklch(from var(--brand) 0.92 calc(c * 0.03) h);
+    --muted:   oklch(from var(--brand) 0.65 calc(c * 0.05) h);
+
+    /* Accent brightens slightly in dark mode */
+    --accent:  oklch(from var(--brand) calc(l + 0.1) c h);
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Light / Dark Mode Comparison</h4>
+        <p class="demo-note">Both cards below are generated from the same <code>--brand</code> color. The left card shows light mode; the right shows dark mode. All surface, text, and accent colors derive from the single base via relative color syntax.</p>
+
+        <div class="mode-comparison">
+          <div class="mode-card mode-card--light">
+            <div class="mode-card-header">
+              <span class="mode-label">Light Mode</span>
+            </div>
+            <div class="mode-card-body">
+              <h5>Dashboard Overview</h5>
+              <p>Revenue is up 12% this quarter. The new feature rollout has exceeded engagement targets across all segments.</p>
+              <div class="mode-card-tags">
+                <span class="mode-tag mode-tag--primary">Active</span>
+                <span class="mode-tag mode-tag--success">Growing</span>
+                <span class="mode-tag mode-tag--muted">Q2 2026</span>
+              </div>
+              <button class="mode-card-btn">View Report</button>
+            </div>
+          </div>
+
+          <div class="mode-card mode-card--dark">
+            <div class="mode-card-header">
+              <span class="mode-label">Dark Mode</span>
+            </div>
+            <div class="mode-card-body">
+              <h5>Dashboard Overview</h5>
+              <p>Revenue is up 12% this quarter. The new feature rollout has exceeded engagement targets across all segments.</p>
+              <div class="mode-card-tags">
+                <span class="mode-tag mode-tag--primary">Active</span>
+                <span class="mode-tag mode-tag--success">Growing</span>
+                <span class="mode-tag mode-tag--muted">Q2 2026</span>
+              </div>
+              <button class="mode-card-btn">View Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> When inverting lightness for dark mode, you should also reduce chroma slightly. High-chroma colors on dark backgrounds can appear overwhelming or even vibrate visually. A common pattern is <code>calc(c * 0.85)</code> in dark mode. The human eye perceives saturated colors differently against dark versus light backgrounds.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: GAMUT MAPPING       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="gamut-mapping">
+      <h2>6. Gamut Mapping</h2>
+      <p>When you manipulate color channels with <code>calc()</code>, you might push a color outside the gamut of the target color space. What happens when <code>calc(c * 2)</code> demands a chroma that sRGB simply cannot display? The browser performs <strong>gamut mapping</strong> &mdash; it finds the closest displayable color automatically.</p>
+
+      <h3>How Gamut Mapping Works</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* This chroma is too high for sRGB */
+--hyper-saturated: oklch(0.65 0.35 265);
+/* Browser maps it to the nearest sRGB color automatically */
+
+/* For wide-gamut displays, use display-p3 */
+--wide-gamut: color(display-p3 0.3 0.2 0.9);
+
+/* Relative colors work with display-p3 too */
+--p3-lighter: oklch(from var(--wide-gamut) calc(l + 0.15) c h);
+
+/* Check for wide gamut support */
+@media (color-gamut: p3) {
+  :root {
+    --brand: oklch(0.55 0.28 265); /* higher chroma on P3 */
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Gamut Boundaries</h4>
+        <p class="demo-note">The top row shows colors with increasing chroma. On an sRGB display, high-chroma values get clipped. The bottom row shows what a P3 wide-gamut display can render &mdash; notice the more vivid blues and greens.</p>
+
+        <div class="gamut-demo">
+          <div class="gamut-row">
+            <div class="gamut-label">sRGB Gamut</div>
+            <div class="gamut-swatches">
+              <div class="gamut-swatch" style="background: oklch(0.65 0.05 265);"><span>c: 0.05</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.10 265);"><span>c: 0.10</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.15 265);"><span>c: 0.15</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.20 265);"><span>c: 0.20</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.25 265);"><span>c: 0.25</span></div>
+              <div class="gamut-swatch gamut-clipped" style="background: oklch(0.65 0.30 265);"><span>c: 0.30</span></div>
+            </div>
+          </div>
+          <div class="gamut-row">
+            <div class="gamut-label">Display P3</div>
+            <div class="gamut-swatches">
+              <div class="gamut-swatch" style="background: oklch(0.65 0.05 265);"><span>c: 0.05</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.10 265);"><span>c: 0.10</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.15 265);"><span>c: 0.15</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.20 265);"><span>c: 0.20</span></div>
+              <div class="gamut-swatch" style="background: oklch(0.65 0.25 265);"><span>c: 0.25</span></div>
+              <div class="gamut-swatch gamut-p3" style="background: oklch(0.65 0.30 265);"><span>c: 0.30</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Gamut mapping is lossy. If you push a color to <code>oklch(0.65 0.35 265)</code> on an sRGB display, the browser will clamp chroma to the sRGB boundary &mdash; roughly <code>c: 0.24</code> for that hue/lightness. The mapped color is a visual approximation, not the original. Use <code>@media (color-gamut: p3)</code> to provide enhanced colors only to displays that can render them.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: PRACTICAL PATTERNS  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="practical-patterns">
+      <h2>7. Practical Patterns</h2>
+      <p>Relative colors and <code>contrast-color()</code> are not theoretical luxuries. They solve real, everyday UI problems. Here are the patterns you will reach for constantly.</p>
+
+      <h3>Hover &amp; Active States</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.btn {
+  --btn-color: oklch(0.55 0.22 265);
+  background: var(--btn-color);
+  color: contrast-color(var(--btn-color));
+}
+
+/* Darken by 10% on hover */
+.btn:hover {
+  background: oklch(from var(--btn-color) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+/* Darken more on active / press */
+.btn:active {
+  background: oklch(from var(--btn-color) calc(l - 0.12) c h);
+}</code></pre>
+      </div>
+
+      <h3>Disabled States</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.btn:disabled {
+  /* Reduce chroma (desaturate) and increase lightness */
+  background: oklch(from var(--btn-color) calc(l + 0.15) calc(c * 0.3) h);
+  color: oklch(from var(--btn-color) calc(l + 0.05) calc(c * 0.2) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}</code></pre>
+      </div>
+
+      <h3>Focus Rings</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.btn:focus-visible {
+  /* Translucent version of button color for focus ring */
+  outline: 3px solid oklch(from var(--btn-color) l c h / 0.5);
+  outline-offset: 2px;
+}</code></pre>
+      </div>
+
+      <h3>Status Colors from Brand</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  --brand: oklch(0.55 0.22 265);
+}
+
+/* Derive every status color from brand, keeping visual harmony */
+.alert--success {
+  --alert-color: oklch(from var(--brand) 0.70 0.16 145);
+  background: oklch(from var(--alert-color) 0.95 calc(c * 0.3) h);
+  border-left: 4px solid var(--alert-color);
+  color: oklch(from var(--alert-color) 0.25 calc(c * 0.5) h);
+}
+
+.alert--warning {
+  --alert-color: oklch(from var(--brand) 0.82 0.14 85);
+  background: oklch(from var(--alert-color) 0.96 calc(c * 0.4) h);
+  border-left: 4px solid var(--alert-color);
+  color: oklch(from var(--alert-color) 0.30 calc(c * 0.6) h);
+}
+
+.alert--danger {
+  --alert-color: oklch(from var(--brand) 0.60 0.22 25);
+  background: oklch(from var(--alert-color) 0.95 calc(c * 0.3) h);
+  border-left: 4px solid var(--alert-color);
+  color: oklch(from var(--alert-color) 0.25 calc(c * 0.5) h);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Interactive Button States</h4>
+        <p class="demo-note">Each button derives its hover, active, focus, and disabled states from a single <code>--btn-color</code> using relative colors. The text color is chosen by <code>contrast-color()</code>. Try hovering, clicking, and tabbing through them.</p>
+
+        <div class="button-states-demo">
+          <div class="btn-state-group">
+            <button class="state-btn state-btn--purple">Primary</button>
+            <button class="state-btn state-btn--purple" disabled>Disabled</button>
+          </div>
+          <div class="btn-state-group">
+            <button class="state-btn state-btn--green">Success</button>
+            <button class="state-btn state-btn--green" disabled>Disabled</button>
+          </div>
+          <div class="btn-state-group">
+            <button class="state-btn state-btn--red">Danger</button>
+            <button class="state-btn state-btn--red" disabled>Disabled</button>
+          </div>
+          <div class="btn-state-group">
+            <button class="state-btn state-btn--yellow">Warning</button>
+            <button class="state-btn state-btn--yellow" disabled>Disabled</button>
+          </div>
+          <div class="btn-state-group">
+            <button class="state-btn state-btn--teal">Info</button>
+            <button class="state-btn state-btn--teal" disabled>Disabled</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Alert Components</h4>
+        <p class="demo-note">Each alert derives background, border, icon, and text colors from a single semantic hue. The entire family stays visually harmonious because the same lightness/chroma formulas are applied to each hue.</p>
+
+        <div class="alert-demo">
+          <div class="rel-alert rel-alert--success">
+            <span class="rel-alert-icon">&#10004;</span>
+            <div>
+              <strong>Deployment successful.</strong>
+              <p>Version 2.4.1 is live in production. All health checks passing.</p>
+            </div>
+          </div>
+          <div class="rel-alert rel-alert--warning">
+            <span class="rel-alert-icon">&#9888;</span>
+            <div>
+              <strong>Rate limit approaching.</strong>
+              <p>API usage is at 85% of the monthly quota. Consider upgrading your plan.</p>
+            </div>
+          </div>
+          <div class="rel-alert rel-alert--danger">
+            <span class="rel-alert-icon">&#10006;</span>
+            <div>
+              <strong>Build failed.</strong>
+              <p>TypeScript compilation error in <code>src/auth.ts</code>. Check CI logs for details.</p>
+            </div>
+          </div>
+          <div class="rel-alert rel-alert--info">
+            <span class="rel-alert-icon">&#8505;</span>
+            <div>
+              <strong>Maintenance scheduled.</strong>
+              <p>A brief downtime window is planned for Sunday 02:00&ndash;02:30 UTC.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Build a Color System</h2>
+      <p>Build a complete color system from a single base color. Define tints, shades, a complementary accent, and semantic status colors. Then apply them to a set of UI components using <code>contrast-color()</code> for automatic text readability.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Start with a single <code>--brand</code> custom property using <code>oklch()</code>.</li>
+          <li>Generate at least 5 tint/shade steps (e.g., 100, 300, 500, 700, 900) using relative color syntax with <code>calc()</code> on the lightness channel.</li>
+          <li>Create a complementary accent by hue-shifting +180 degrees.</li>
+          <li>Define <code>--success</code>, <code>--warning</code>, and <code>--danger</code> colors by hue-shifting the brand.</li>
+          <li>Build at least 3 badges that use <code>contrast-color()</code> for their text color.</li>
+          <li>Add a button with hover (darken 7%), active (darken 12%), and disabled (desaturate) states using relative colors.</li>
+          <li>Include a focus ring using a translucent version of the button color (<code>/ 0.4</code> alpha).</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <pre><code>&lt;div class="color-system"&gt;
+  &lt;div class="palette"&gt;
+    &lt;div class="swatch swatch-100"&gt;100&lt;/div&gt;
+    &lt;div class="swatch swatch-300"&gt;300&lt;/div&gt;
+    &lt;div class="swatch swatch-500"&gt;500&lt;/div&gt;
+    &lt;div class="swatch swatch-700"&gt;700&lt;/div&gt;
+    &lt;div class="swatch swatch-900"&gt;900&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="badges"&gt;
+    &lt;span class="badge badge-brand"&gt;Brand&lt;/span&gt;
+    &lt;span class="badge badge-success"&gt;Success&lt;/span&gt;
+    &lt;span class="badge badge-danger"&gt;Danger&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;button class="action-btn"&gt;Take Action&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="color-system">
+  <h3>Palette</h3>
+  <div class="palette">
+    <div class="swatch swatch-100">100</div>
+    <div class="swatch swatch-300">300</div>
+    <div class="swatch swatch-500">500</div>
+    <div class="swatch swatch-700">700</div>
+    <div class="swatch swatch-900">900</div>
+  </div>
+
+  <h3>Complement</h3>
+  <div class="palette">
+    <div class="swatch comp-300">300</div>
+    <div class="swatch comp-500">500</div>
+    <div class="swatch comp-700">700</div>
+  </div>
+
+  <h3>Badges</h3>
+  <div class="badges">
+    <span class="badge badge-brand">Brand</span>
+    <span class="badge badge-success">Success</span>
+    <span class="badge badge-warning">Warning</span>
+    <span class="badge badge-danger">Danger</span>
+  </div>
+
+  <h3>Button States</h3>
+  <div class="buttons">
+    <button class="action-btn">Take Action</button>
+    <button class="action-btn" disabled>Disabled</button>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.color-system {
+  --brand: oklch(0.55 0.22 265);
+  font-family: system-ui, sans-serif;
+  padding: 1.5rem;
+  background: #1a1d27;
+  color: #e4e6ef;
+  border-radius: 12px;
+}
+
+.color-system h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8b8fa7;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.color-system h3:first-child {
+  margin-top: 0;
+}
+
+/* TODO: Define tint/shade steps using relative color syntax */
+/* --brand-100: oklch(from var(--brand) 0.93 calc(c * 0.2) h); */
+/* --brand-300: oklch(from var(--brand) 0.78 calc(c * 0.55) h); */
+/* --brand-500: var(--brand); */
+/* --brand-700: oklch(from var(--brand) calc(l - 0.13) calc(c * 0.85) h); */
+/* --brand-900: oklch(from var(--brand) calc(l - 0.27) calc(c * 0.5) h); */
+
+.palette {
+  display: flex;
+  gap: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.swatch {
+  flex: 1;
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Apply your palette colors to each swatch */
+.swatch-100 { background: oklch(from var(--brand) 0.93 calc(c * 0.2) h); color: oklch(from var(--brand) 0.25 calc(c * 0.5) h); }
+.swatch-300 { background: oklch(from var(--brand) 0.78 calc(c * 0.55) h); color: oklch(from var(--brand) 0.20 calc(c * 0.5) h); }
+.swatch-500 { background: var(--brand); color: white; }
+.swatch-700 { background: oklch(from var(--brand) calc(l - 0.13) calc(c * 0.85) h); color: white; }
+.swatch-900 { background: oklch(from var(--brand) calc(l - 0.27) calc(c * 0.5) h); color: white; }
+
+/* TODO: Complement swatches (hue + 180) */
+.comp-300 { background: oklch(from var(--brand) 0.78 calc(c * 0.55) calc(h + 180)); color: black; }
+.comp-500 { background: oklch(from var(--brand) l c calc(h + 180)); color: black; }
+.comp-700 { background: oklch(from var(--brand) calc(l - 0.13) calc(c * 0.85) calc(h + 180)); color: white; }
+
+/* Badges with contrast-color() */
+.badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.badge {
+  padding: 0.3em 0.85em;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-brand {
+  --bg: var(--brand);
+  background: var(--bg);
+  color: contrast-color(var(--bg));
+}
+
+.badge-success {
+  --bg: oklch(from var(--brand) 0.65 0.18 145);
+  background: var(--bg);
+  color: contrast-color(var(--bg));
+}
+
+.badge-warning {
+  --bg: oklch(from var(--brand) 0.82 0.14 85);
+  background: var(--bg);
+  color: contrast-color(var(--bg));
+}
+
+.badge-danger {
+  --bg: oklch(from var(--brand) 0.60 0.22 25);
+  background: var(--bg);
+  color: contrast-color(var(--bg));
+}
+
+/* TODO: Button with hover, active, disabled, focus states */
+.buttons { display: flex; gap: 1rem; margin-top: 0.5rem; }
+
+.action-btn {
+  --btn-bg: var(--brand);
+  background: var(--btn-bg);
+  color: contrast-color(var(--btn-bg));
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.action-btn:hover {
+  background: oklch(from var(--btn-bg) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.action-btn:active {
+  background: oklch(from var(--btn-bg) calc(l - 0.12) c h);
+}
+
+.action-btn:focus-visible {
+  outline: 3px solid oklch(from var(--btn-bg) l c h / 0.4);
+  outline-offset: 2px;
+}
+
+.action-btn:disabled {
+  background: oklch(from var(--btn-bg) calc(l + 0.15) calc(c * 0.3) h);
+  color: oklch(from var(--btn-bg) calc(l + 0.05) calc(c * 0.2) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Adaptive Theme Engine</h2>
+      <p>Build a theme engine that takes a single hue angle as input and generates an entire UI &mdash; backgrounds, surfaces, text, buttons, badges, alerts, and cards &mdash; all derived from that one hue using relative colors and <code>contrast-color()</code>. Include both light and dark mode variants.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Single input:</strong> The entire theme must derive from one <code>--hue</code> custom property (a number from 0 to 360).</li>
+          <li><strong>Base color:</strong> Construct <code>--brand</code> as <code>oklch(0.55 0.22 var(--hue))</code>.</li>
+          <li><strong>Surfaces:</strong> Generate at least 3 surface levels (bg, surface-1, surface-2) from the brand using near-zero chroma and the brand's hue.</li>
+          <li><strong>Text colors:</strong> Derive primary text and muted text from the brand hue using very low chroma and appropriate lightness.</li>
+          <li><strong>Palette scale:</strong> Generate at least a 5-step tint/shade scale (100 through 900) and display it.</li>
+          <li><strong>Complementary accent:</strong> Derive an accent at <code>calc(var(--hue) + 180)</code> and use it for secondary buttons or highlights.</li>
+          <li><strong>Status colors:</strong> Derive success (hue 145), warning (hue 85), and danger (hue 25) colors, keeping the brand's chroma and lightness relationships.</li>
+          <li><strong>Contrast text:</strong> All text on colored backgrounds must use <code>contrast-color()</code>.</li>
+          <li><strong>Dark mode:</strong> Include a dark variant (via a <code>.dark</code> class or media query) that inverts lightness while keeping the hue.</li>
+          <li><strong>UI components:</strong> Display at least a card with heading/body/button, 3 status badges, and an alert.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Define all tokens in <code>:root</code> using relative colors so changing <code>--hue</code> cascades everywhere.</li>
+          <li>For surfaces, use extremely low chroma: <code>oklch(0.15 0.01 var(--hue))</code> for dark backgrounds, <code>oklch(0.97 0.01 var(--hue))</code> for light.</li>
+          <li>A good disabled state formula: <code>oklch(from var(--color) calc(l + 0.15) calc(c * 0.3) h)</code>.</li>
+          <li>Use <code>color-mix()</code> alongside relative colors for overlays: <code>color-mix(in oklch, var(--brand) 10%, transparent)</code>.</li>
+          <li>Test your engine by changing <code>--hue</code> to 0 (red), 145 (green), 265 (blue), and 330 (pink). Everything should look harmonious at every hue.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="theme-engine" style="--hue: 265;">
+  <header class="theme-header">
+    <h2>Adaptive Theme</h2>
+    <p>Change <code>--hue</code> to any value 0-360</p>
+  </header>
+
+  <div class="theme-palette">
+    <div class="t-swatch t-100">100</div>
+    <div class="t-swatch t-300">300</div>
+    <div class="t-swatch t-500">500</div>
+    <div class="t-swatch t-700">700</div>
+    <div class="t-swatch t-900">900</div>
+  </div>
+
+  <div class="theme-badges">
+    <span class="t-badge t-badge--brand">Brand</span>
+    <span class="t-badge t-badge--accent">Accent</span>
+    <span class="t-badge t-badge--success">Success</span>
+    <span class="t-badge t-badge--warning">Warning</span>
+    <span class="t-badge t-badge--danger">Danger</span>
+  </div>
+
+  <div class="theme-card">
+    <h3>Project Update</h3>
+    <p>All systems operational. Performance metrics are within expected ranges. Next review scheduled for Friday.</p>
+    <div class="theme-card-actions">
+      <button class="t-btn t-btn--primary">Confirm</button>
+      <button class="t-btn t-btn--accent">Details</button>
+    </div>
+  </div>
+
+  <div class="theme-alert">
+    <strong>Heads up:</strong> Scheduled maintenance this weekend. Services may be briefly unavailable.
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+.theme-engine {
+  /* THE ONE INPUT */
+  --brand: oklch(0.55 0.22 var(--hue));
+  --accent: oklch(from var(--brand) l c calc(h + 180));
+
+  /* Surfaces */
+  --bg: oklch(from var(--brand) 0.13 0.01 h);
+  --surface-1: oklch(from var(--brand) 0.18 0.015 h);
+  --surface-2: oklch(from var(--brand) 0.23 0.02 h);
+
+  /* Text */
+  --text: oklch(from var(--brand) 0.92 0.02 h);
+  --text-muted: oklch(from var(--brand) 0.65 0.03 h);
+
+  /* Status */
+  --success: oklch(0.65 0.18 145);
+  --warning: oklch(0.80 0.15 85);
+  --danger: oklch(0.60 0.22 25);
+
+  /* Palette scale */
+  --brand-100: oklch(from var(--brand) 0.93 calc(c * 0.2) h);
+  --brand-300: oklch(from var(--brand) 0.78 calc(c * 0.55) h);
+  --brand-500: var(--brand);
+  --brand-700: oklch(from var(--brand) calc(l - 0.13) calc(c * 0.85) h);
+  --brand-900: oklch(from var(--brand) calc(l - 0.27) calc(c * 0.5) h);
+
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 2rem;
+  border-radius: 16px;
+}
+
+.theme-header { margin-bottom: 1.5rem; }
+.theme-header h2 { font-size: 1.4rem; margin-bottom: 0.25rem; }
+.theme-header p { color: var(--text-muted); font-size: 0.9rem; }
+.theme-header code {
+  background: var(--surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+/* Palette */
+.theme-palette {
+  display: flex;
+  gap: 3px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.t-swatch {
+  flex: 1;
+  padding: 1.25rem 0.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.t-100 { background: var(--brand-100); color: contrast-color(var(--brand-100)); }
+.t-300 { background: var(--brand-300); color: contrast-color(var(--brand-300)); }
+.t-500 { background: var(--brand-500); color: contrast-color(var(--brand-500)); }
+.t-700 { background: var(--brand-700); color: contrast-color(var(--brand-700)); }
+.t-900 { background: var(--brand-900); color: contrast-color(var(--brand-900)); }
+
+/* Badges */
+.theme-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.t-badge {
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.t-badge--brand  { background: var(--brand); color: contrast-color(var(--brand)); }
+.t-badge--accent { background: var(--accent); color: contrast-color(var(--accent)); }
+.t-badge--success { background: var(--success); color: contrast-color(var(--success)); }
+.t-badge--warning { background: var(--warning); color: contrast-color(var(--warning)); }
+.t-badge--danger  { background: var(--danger); color: contrast-color(var(--danger)); }
+
+/* Card */
+.theme-card {
+  background: var(--surface-1);
+  border: 1px solid var(--surface-2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.theme-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.theme-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+
+.theme-card-actions { display: flex; gap: 0.75rem; }
+
+.t-btn {
+  border: none;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.t-btn--primary {
+  background: var(--brand);
+  color: contrast-color(var(--brand));
+}
+
+.t-btn--primary:hover {
+  background: oklch(from var(--brand) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.t-btn--accent {
+  background: var(--accent);
+  color: contrast-color(var(--accent));
+}
+
+.t-btn--accent:hover {
+  background: oklch(from var(--accent) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+/* Alert */
+.theme-alert {
+  background: oklch(from var(--warning) 0.95 calc(c * 0.3) h);
+  border-left: 4px solid var(--warning);
+  color: oklch(from var(--warning) 0.25 calc(c * 0.6) h);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Try changing --hue in the HTML:
+   style="--hue: 0;"    = Red theme
+   style="--hue: 145;"  = Green theme
+   style="--hue: 265;"  = Purple theme
+   style="--hue: 330;"  = Pink theme
+*/
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../18-popover-commands/index.html">&larr; Previous</a>
+    <a href="../20-property-houdini/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>
