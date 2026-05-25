@@ -1,0 +1,940 @@
+/* ============================================
+   Module 20: @property & Houdini Animations
+   Typed custom properties, gradient animations,
+   counter tickers, choreographed sequences
+   ============================================ */
+
+/* ── Level 7 Badge (Expert Systems) ── */
+.level-badge.level-7 {
+  background: color-mix(in oklch, #e84393 20%, transparent);
+  color: #e84393;
+}
+
+/* ── @property Registrations ── */
+
+/* Section 1: Snap vs. Smooth demo */
+@property --bg-registered {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #6c5ce7;
+}
+
+/* Section 2: Color-shifting cards */
+@property --cs-accent {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #6c5ce7;
+}
+
+/* Section 3: Gradient border angle */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Section 3: Gradient hue offset */
+@property --hue-offset {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Section 3: Color cycling - color 1 */
+@property --cycle-c1 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #6c5ce7;
+}
+
+/* Section 3: Color cycling - color 2 */
+@property --cycle-c2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #00cec9;
+}
+
+/* Section 4: Number ticker */
+@property --tick-val {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+/* Section 4: Progress bar fill */
+@property --fill-val {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+/* Section 5: Choreography - position */
+@property --choreo-x {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: -40px;
+}
+
+/* Section 5: Choreography - opacity */
+@property --choreo-fade {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+/* Section 5: Choreography - blur */
+@property --choreo-blur {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 12px;
+}
+
+/* Section 5: Choreography - accent */
+@property --choreo-accent {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #2e3345;
+}
+
+/* ── Section Spacing ── */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ── Descriptor List ── */
+.descriptor-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.5rem 0;
+}
+
+.descriptor-list li {
+  padding: 0.75rem 0 0.75rem 2rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.descriptor-list li::before {
+  content: "\25B8";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-accent);
+  font-weight: 700;
+}
+
+.descriptor-list li strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ── Step List ── */
+.step-list {
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.step-list li {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+/* ── Info Boxes ── */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ── Demo Container ── */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+/* ── Demo Note ── */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ── Code Block (module overrides) ── */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================
+   Section 1: Syntax Types Grid
+   ============================================= */
+
+.syntax-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.syntax-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color var(--pe7-transition);
+}
+
+.syntax-card:hover {
+  border-color: var(--pe7-accent);
+}
+
+.syntax-card code {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pe7-accent-light);
+  background: none;
+  padding: 0;
+}
+
+.syntax-card span {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.4;
+}
+
+.syntax-example {
+  font-family: var(--pe7-font-mono);
+  font-size: 0.78rem !important;
+  color: var(--pe7-success) !important;
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .syntax-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .syntax-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 1 Demo: Snap vs. Smooth
+   ============================================= */
+
+.snap-vs-smooth {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.snap-box,
+.smooth-box {
+  height: 160px;
+  border-radius: var(--pe7-radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: 2px solid var(--pe7-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-label {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.demo-sublabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  position: relative;
+  z-index: 1;
+}
+
+/* Unregistered: snaps on hover */
+.snap-box {
+  --bg: #6c5ce7;
+  background: var(--bg);
+  transition: --bg 0.6s ease;
+}
+
+.snap-box:hover {
+  --bg: #00cec9;
+}
+
+/* Registered: smooth transition */
+.smooth-box {
+  --bg-registered: #6c5ce7;
+  background: var(--bg-registered);
+  transition: --bg-registered 0.6s ease;
+}
+
+.smooth-box:hover {
+  --bg-registered: #00cec9;
+}
+
+@media (max-width: 500px) {
+  .snap-vs-smooth {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 2 Demo: Color-Shifting Cards
+   ============================================= */
+
+.color-shift-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.color-shift-card {
+  --cs-accent: var(--accent-start);
+  background: var(--pe7-surface-2);
+  border: 2px solid var(--cs-accent);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  text-align: center;
+  transition: --cs-accent 0.6s ease;
+  box-shadow: 0 4px 20px color-mix(in oklch, var(--cs-accent) 25%, transparent);
+}
+
+.color-shift-card:hover {
+  --cs-accent: var(--accent-end);
+}
+
+.cs-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--cs-accent);
+  transition: color 0.6s ease;
+  filter: drop-shadow(0 0 8px color-mix(in oklch, var(--cs-accent) 50%, transparent));
+}
+
+.color-shift-card:hover .cs-icon {
+  color: var(--accent-end);
+}
+
+.color-shift-card h5 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: var(--pe7-text);
+}
+
+.color-shift-card p {
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .color-shift-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 3 Demo: Animated Gradient Border
+   ============================================= */
+
+@keyframes spin-border {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@keyframes shift-hue {
+  0%   { --hue-offset: 0deg; }
+  100% { --hue-offset: 360deg; }
+}
+
+.gradient-border-showcase {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.gradient-border-card {
+  --border-angle: 0deg;
+  --hue-offset: 0deg;
+  position: relative;
+  border-radius: 16px;
+  padding: 3px;
+  background: conic-gradient(
+    from var(--border-angle),
+    oklch(0.7 0.2 calc(0 + var(--hue-offset))),
+    oklch(0.7 0.2 calc(72 + var(--hue-offset))),
+    oklch(0.7 0.2 calc(144 + var(--hue-offset))),
+    oklch(0.7 0.2 calc(216 + var(--hue-offset))),
+    oklch(0.7 0.2 calc(288 + var(--hue-offset))),
+    oklch(0.7 0.2 calc(360 + var(--hue-offset)))
+  );
+  animation:
+    spin-border 3s linear infinite,
+    shift-hue 8s linear infinite;
+  max-width: 480px;
+  width: 100%;
+}
+
+.gradient-border-inner {
+  background: var(--pe7-surface-2);
+  border-radius: 14px;
+  padding: 2rem;
+}
+
+.gradient-border-inner h5 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-text);
+}
+
+.gradient-border-inner p {
+  font-size: 0.9rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.gradient-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  border: 1px solid var(--pe7-accent);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pe7-accent-light);
+  letter-spacing: 0.03em;
+}
+
+/* =============================================
+   Section 3 Demo: Color-Cycling Gradient Panel
+   ============================================= */
+
+@keyframes cycle-colors {
+  0%   { --cycle-c1: #6c5ce7; --cycle-c2: #00cec9; }
+  25%  { --cycle-c1: #fd79a8; --cycle-c2: #fdcb6e; }
+  50%  { --cycle-c1: #00b894; --cycle-c2: #0984e3; }
+  75%  { --cycle-c1: #e17055; --cycle-c2: #6c5ce7; }
+  100% { --cycle-c1: #6c5ce7; --cycle-c2: #00cec9; }
+}
+
+.gradient-cycle-panel {
+  --cycle-c1: #6c5ce7;
+  --cycle-c2: #00cec9;
+  background: linear-gradient(135deg, var(--cycle-c1), var(--cycle-c2));
+  border-radius: var(--pe7-radius-lg);
+  padding: 3rem 2rem;
+  animation: cycle-colors 8s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-cycle-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 20px,
+    rgba(255, 255, 255, 0.03) 20px,
+    rgba(255, 255, 255, 0.03) 40px
+  );
+  pointer-events: none;
+}
+
+.gradient-cycle-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.gradient-cycle-label {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.gradient-cycle-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* =============================================
+   Section 4 Demo: Number Ticker Dashboard
+   ============================================= */
+
+@keyframes count-ticker {
+  to {
+    --tick-val: var(--target);
+  }
+}
+
+.ticker-dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Replay on hover */
+.ticker-dashboard:hover .ticker-card {
+  animation: none;
+}
+
+.ticker-dashboard:not(:hover) .ticker-card {
+  animation: none;
+}
+
+.ticker-card {
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-top: 3px solid var(--ticker-color, var(--pe7-accent));
+  position: relative;
+  overflow: hidden;
+}
+
+.ticker-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--ticker-color, var(--pe7-accent)) 10%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.ticker-value {
+  --tick-val: 0;
+  font-family: var(--pe7-font-mono);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--ticker-color, var(--pe7-accent));
+  counter-set: tick var(--tick-val);
+  animation: count-ticker var(--duration, 2s) ease-out forwards;
+  position: relative;
+  z-index: 1;
+}
+
+.ticker-value::after {
+  content: counter(tick);
+}
+
+.ticker-pct::after {
+  content: counter(tick) "%";
+}
+
+.ticker-label {
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hover replay */
+.ticker-dashboard:hover .ticker-value {
+  animation: none;
+  --tick-val: 0;
+}
+
+.ticker-dashboard:not(:hover) .ticker-value {
+  animation: count-ticker var(--duration, 2s) ease-out forwards;
+}
+
+@media (max-width: 640px) {
+  .ticker-dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .ticker-dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 4 Demo: Animated Progress Bars
+   ============================================= */
+
+@keyframes fill-progress {
+  to {
+    --fill-val: var(--fill-target);
+  }
+}
+
+.progress-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.progress-item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pe7-text);
+  text-align: right;
+}
+
+.progress-track {
+  height: 32px;
+  background: var(--pe7-surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  --fill-val: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: calc(var(--fill-val) * 1%);
+  background: linear-gradient(
+    90deg,
+    var(--pe7-accent),
+    var(--pe7-success)
+  );
+  border-radius: 999px;
+  animation: fill-progress 1.8s ease-out forwards;
+  counter-set: fill var(--fill-val);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.75rem;
+  min-width: 3rem;
+}
+
+.progress-bar-fill::after {
+  content: counter(fill) "%";
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--pe7-bg);
+  font-family: var(--pe7-font-mono);
+}
+
+/* Hover replay */
+.progress-showcase:hover .progress-bar-fill {
+  animation: none;
+  --fill-val: 0;
+}
+
+.progress-showcase:not(:hover) .progress-bar-fill {
+  animation: fill-progress 1.8s ease-out forwards;
+}
+
+@media (max-width: 500px) {
+  .progress-item {
+    grid-template-columns: 80px 1fr;
+  }
+}
+
+/* =============================================
+   Section 5 Demo: Choreographed Card Reveal
+   ============================================= */
+
+.choreo-stage {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem 0;
+  min-height: 200px;
+}
+
+.choreo-card {
+  --choreo-x: -40px;
+  --choreo-fade: 0;
+  --choreo-blur: 12px;
+  --choreo-accent: #2e3345;
+
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--choreo-accent);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem 1rem;
+  transform: translateX(var(--choreo-x));
+  opacity: var(--choreo-fade);
+  filter: blur(var(--choreo-blur));
+
+  transition:
+    --choreo-fade 0.4s ease,
+    --choreo-blur 0.5s ease 0.05s,
+    --choreo-x 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    --choreo-accent 0.8s ease 0.2s;
+}
+
+.choreo-stage:hover .choreo-card {
+  --choreo-x: 0px;
+  --choreo-fade: 1;
+  --choreo-blur: 0px;
+  --choreo-accent: var(--pe7-accent);
+}
+
+/* Staggered delays per card */
+.choreo-stage:hover .choreo-2 {
+  transition-delay: 0.1s, 0.15s, 0.2s, 0.3s;
+}
+
+.choreo-stage:hover .choreo-3 {
+  transition-delay: 0.2s, 0.25s, 0.3s, 0.4s;
+}
+
+.choreo-stage:hover .choreo-4 {
+  transition-delay: 0.3s, 0.35s, 0.4s, 0.5s;
+}
+
+.choreo-number {
+  font-family: var(--pe7-font-mono);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--choreo-accent);
+  margin-bottom: 0.75rem;
+  line-height: 1;
+  transition: color 0.8s ease;
+}
+
+.choreo-stage:hover .choreo-number {
+  color: var(--pe7-accent-light);
+}
+
+.choreo-card h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-text);
+}
+
+.choreo-card p {
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .choreo-stage {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .choreo-stage {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 6: Houdini Features Grid
+   ============================================= */
+
+.houdini-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.houdini-feature {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color var(--pe7-transition);
+}
+
+.houdini-feature:hover {
+  border-color: var(--pe7-accent);
+}
+
+.houdini-feature h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.houdini-feature p {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+/* Support badges */
+.support-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  align-self: flex-start;
+}
+
+.support-full {
+  background: color-mix(in oklch, var(--pe7-success) 15%, transparent);
+  color: var(--pe7-success);
+  border: 1px solid color-mix(in oklch, var(--pe7-success) 30%, transparent);
+}
+
+.support-partial {
+  background: color-mix(in oklch, var(--pe7-warning) 15%, transparent);
+  color: var(--pe7-warning);
+  border: 1px solid color-mix(in oklch, var(--pe7-warning) 30%, transparent);
+}
+
+.support-none {
+  background: color-mix(in oklch, var(--pe7-danger) 15%, transparent);
+  color: var(--pe7-danger);
+  border: 1px solid color-mix(in oklch, var(--pe7-danger) 30%, transparent);
+}
+
+@media (max-width: 640px) {
+  .houdini-features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   General Responsive Adjustments
+   ============================================= */
+
+@media (max-width: 640px) {
+  .concept-section {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  .demo-container {
+    padding: 1.25rem 1rem;
+  }
+
+  .gradient-border-inner {
+    padding: 1.25rem;
+  }
+
+  .gradient-cycle-panel {
+    padding: 2rem 1.25rem;
+  }
+}

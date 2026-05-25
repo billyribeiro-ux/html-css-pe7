@@ -32,7 +32,7 @@
 				<span class="label">Modules</span>
 			</div>
 			<div class="hero-stat">
-				<span class="number">5</span>
+				<span class="number">9</span>
 				<span class="label">Levels</span>
 			</div>
 			<div class="hero-stat">

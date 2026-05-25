@@ -1,0 +1,1167 @@
+/* ============================================
+   Module 19: Relative Colors & contrast-color()
+   Deriving palettes, dark mode, hover states,
+   and accessible text from a single base color.
+   ============================================ */
+
+/* ---- Level 6 Badge (not in shared course.css) ---- */
+.level-badge.level-6 {
+  background: color-mix(in oklch, oklch(0.65 0.25 300) 20%, transparent);
+  color: oklch(0.75 0.2 300);
+}
+
+/* ---- Base color tokens for demos ---- */
+:root {
+  --rel-base: oklch(0.55 0.22 265);
+  --rel-base-hue: 265;
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+/* ---- Demo Note ---- */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================
+   Section 1: Channel Decomposition Demo
+   ============================================= */
+
+.channel-decompose-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.channel-row {
+  display: grid;
+  grid-template-columns: 200px 60px 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.channel-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pe7-text);
+  white-space: nowrap;
+}
+
+.channel-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--pe7-radius);
+  border: 2px solid var(--pe7-border);
+  transition: transform var(--pe7-transition), box-shadow var(--pe7-transition);
+}
+
+.channel-swatch:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* The base color */
+.channel-base {
+  background: oklch(0.65 0.2 265);
+}
+
+/* Hue shifted to 30 */
+.channel-hue-shift {
+  background: oklch(0.65 0.2 30);
+}
+
+/* Lightness shifted to 0.85 */
+.channel-light-shift {
+  background: oklch(0.85 0.2 265);
+}
+
+/* Chroma reduced to 0.05 */
+.channel-chroma-shift {
+  background: oklch(0.65 0.05 265);
+}
+
+/* Identity: all channels preserved */
+.channel-identity {
+  background: oklch(0.65 0.2 265);
+}
+
+.channel-value {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
+  padding: 0.25em 0.6em;
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .channel-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .channel-swatch {
+    width: 100%;
+    height: 32px;
+  }
+}
+
+/* =============================================
+   Section 2: Manipulation Toolkit Demo
+   ============================================= */
+
+.manipulation-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.manip-group h5 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+}
+
+.manip-row {
+  display: flex;
+  gap: 4px;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  height: 64px;
+}
+
+.manip-row-alpha {
+  background-image:
+    linear-gradient(45deg, #333 25%, transparent 25%),
+    linear-gradient(-45deg, #333 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #333 75%),
+    linear-gradient(-45deg, transparent 75%, #333 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  border-radius: var(--pe7-radius-lg);
+}
+
+.manip-swatch {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: flex var(--pe7-transition);
+  position: relative;
+}
+
+.manip-swatch:hover {
+  flex: 1.8;
+}
+
+.manip-swatch span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.manip-swatch:hover span {
+  opacity: 1;
+}
+
+/* Lightness scale: oklch(from base calc(l +/- offset) c h) */
+.manip-l-1    { background: oklch(0.35 0.22 265); }
+.manip-l-2    { background: oklch(0.45 0.22 265); }
+.manip-l-base { background: oklch(0.55 0.22 265); }
+.manip-l-3    { background: oklch(0.65 0.22 265); }
+.manip-l-4    { background: oklch(0.75 0.22 265); }
+.manip-l-5    { background: oklch(0.85 0.22 265); }
+
+/* Hue rotation: oklch(from base l c calc(h +/- offset)) */
+.manip-h-1    { background: oklch(0.55 0.22 205); }
+.manip-h-2    { background: oklch(0.55 0.22 235); }
+.manip-h-base { background: oklch(0.55 0.22 265); }
+.manip-h-3    { background: oklch(0.55 0.22 295); }
+.manip-h-4    { background: oklch(0.55 0.22 325); }
+.manip-h-5    { background: oklch(0.55 0.22 85); }
+
+/* Chroma scale: oklch(from base l calc(c * factor) h) */
+.manip-c-1    { background: oklch(0.55 0.00 265); }
+.manip-c-2    { background: oklch(0.55 0.055 265); }
+.manip-c-3    { background: oklch(0.55 0.11 265); }
+.manip-c-base { background: oklch(0.55 0.22 265); }
+.manip-c-4    { background: oklch(0.55 0.275 265); }
+.manip-c-5    { background: oklch(0.55 0.30 265); }
+
+/* Alpha: oklch(from base l c h / alpha) */
+.manip-a-1    { background: oklch(0.55 0.22 265 / 0.10); }
+.manip-a-2    { background: oklch(0.55 0.22 265 / 0.25); }
+.manip-a-3    { background: oklch(0.55 0.22 265 / 0.50); }
+.manip-a-4    { background: oklch(0.55 0.22 265 / 0.75); }
+.manip-a-base { background: oklch(0.55 0.22 265 / 1.0); }
+
+/* =============================================
+   Section 3: contrast-color() Demo
+   ============================================= */
+
+.contrast-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+}
+
+.contrast-badge {
+  --bg: var(--badge-bg, oklch(0.55 0.22 265));
+  background: var(--bg);
+  color: contrast-color(var(--bg));
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform var(--pe7-transition), box-shadow var(--pe7-transition);
+  cursor: default;
+}
+
+.contrast-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* =============================================
+   Section 4: Palette Generation Demo
+   ============================================= */
+
+.palette-gen-demo {
+  margin: 0.5rem 0 1.5rem;
+}
+
+.palette-scale {
+  display: flex;
+  gap: 3px;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  height: 72px;
+}
+
+.palette-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: flex 0.3s ease;
+}
+
+.palette-step:hover {
+  flex: 2;
+}
+
+/* Palette steps using relative color syntax */
+.palette-50  {
+  background: oklch(from var(--rel-base) 0.97 calc(c * 0.1) h);
+  color: oklch(from var(--rel-base) 0.20 calc(c * 0.4) h);
+}
+
+.palette-100 {
+  background: oklch(from var(--rel-base) 0.93 calc(c * 0.2) h);
+  color: oklch(from var(--rel-base) 0.20 calc(c * 0.4) h);
+}
+
+.palette-200 {
+  background: oklch(from var(--rel-base) 0.87 calc(c * 0.35) h);
+  color: oklch(from var(--rel-base) 0.20 calc(c * 0.5) h);
+}
+
+.palette-300 {
+  background: oklch(from var(--rel-base) 0.78 calc(c * 0.55) h);
+  color: oklch(from var(--rel-base) 0.15 calc(c * 0.5) h);
+}
+
+.palette-400 {
+  background: oklch(from var(--rel-base) 0.68 calc(c * 0.8) h);
+  color: white;
+}
+
+.palette-500 {
+  background: var(--rel-base);
+  color: white;
+}
+
+.palette-600 {
+  background: oklch(from var(--rel-base) calc(l - 0.06) calc(c * 0.95) h);
+  color: white;
+}
+
+.palette-700 {
+  background: oklch(from var(--rel-base) calc(l - 0.13) calc(c * 0.85) h);
+  color: white;
+}
+
+.palette-800 {
+  background: oklch(from var(--rel-base) calc(l - 0.20) calc(c * 0.70) h);
+  color: oklch(0.90 0.02 265);
+}
+
+.palette-900 {
+  background: oklch(from var(--rel-base) calc(l - 0.27) calc(c * 0.50) h);
+  color: oklch(0.90 0.02 265);
+}
+
+.palette-950 {
+  background: oklch(from var(--rel-base) calc(l - 0.33) calc(c * 0.30) h);
+  color: oklch(0.90 0.02 265);
+}
+
+.palette-formula {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--pe7-text-muted);
+  text-align: center;
+}
+
+.palette-formula code {
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  padding: 0.15em 0.45em;
+  border-radius: 3px;
+  font-size: 0.78em;
+}
+
+/* ---- Palette Variants: different base hues ---- */
+.palette-variant-heading {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--pe7-text-muted);
+  margin: 1.5rem 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.palette-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.palette-scale--alt {
+  height: 48px;
+  gap: 2px;
+}
+
+.palette-step-alt {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: oklch(var(--step-l) calc(0.22 * var(--step-c-mult)) var(--alt-hue));
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: flex 0.3s ease;
+}
+
+.palette-step-alt:hover {
+  flex: 2;
+}
+
+.palette-step-alt span {
+  opacity: 0;
+  transition: opacity 0.15s;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.palette-step-alt:hover span {
+  opacity: 1;
+}
+
+/* Auto text color based on lightness */
+.palette-step-alt:nth-child(-n+3) span {
+  color: oklch(0.15 0.02 var(--alt-hue));
+}
+
+.palette-step-alt:nth-child(n+4) span {
+  color: oklch(0.95 0.02 var(--alt-hue));
+}
+
+/* =============================================
+   Section 5: Light / Dark Mode Comparison
+   ============================================= */
+
+.mode-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.mode-card {
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: transform var(--pe7-transition), box-shadow var(--pe7-transition);
+}
+
+.mode-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- Light Mode Card ---- */
+.mode-card--light {
+  --mode-bg: oklch(from var(--rel-base) 0.98 calc(c * 0.02) h);
+  --mode-surface: oklch(from var(--rel-base) 0.95 calc(c * 0.04) h);
+  --mode-text: oklch(from var(--rel-base) 0.15 calc(c * 0.03) h);
+  --mode-muted: oklch(from var(--rel-base) 0.45 calc(c * 0.05) h);
+  --mode-accent: var(--rel-base);
+  --mode-accent-soft: oklch(from var(--rel-base) 0.92 calc(c * 0.15) h);
+  --mode-success: oklch(0.72 0.16 145);
+  background: var(--mode-bg);
+  border-color: oklch(from var(--rel-base) 0.88 calc(c * 0.05) h);
+}
+
+.mode-card--light .mode-card-header {
+  background: var(--mode-surface);
+  padding: 0.75rem 1.25rem;
+}
+
+.mode-card--light .mode-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mode-muted);
+}
+
+.mode-card--light .mode-card-body {
+  padding: 1.25rem;
+}
+
+.mode-card--light .mode-card-body h5 {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  color: var(--mode-text);
+}
+
+.mode-card--light .mode-card-body p {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--mode-muted);
+  margin-bottom: 1rem;
+}
+
+.mode-card--light .mode-card-tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.mode-card--light .mode-tag {
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.mode-card--light .mode-tag--primary {
+  background: var(--mode-accent-soft);
+  color: var(--mode-accent);
+}
+
+.mode-card--light .mode-tag--success {
+  background: oklch(from var(--mode-success) 0.94 calc(c * 0.3) h);
+  color: oklch(from var(--mode-success) 0.40 c h);
+}
+
+.mode-card--light .mode-tag--muted {
+  background: oklch(from var(--mode-muted) 0.90 calc(c * 0.1) h);
+  color: var(--mode-muted);
+}
+
+.mode-card--light .mode-card-btn {
+  background: var(--mode-accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--pe7-radius);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--pe7-transition);
+}
+
+.mode-card--light .mode-card-btn:hover {
+  background: oklch(from var(--rel-base) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+/* ---- Dark Mode Card ---- */
+.mode-card--dark {
+  --mode-bg: oklch(from var(--rel-base) 0.12 calc(c * 0.04) h);
+  --mode-surface: oklch(from var(--rel-base) 0.18 calc(c * 0.06) h);
+  --mode-text: oklch(from var(--rel-base) 0.92 calc(c * 0.03) h);
+  --mode-muted: oklch(from var(--rel-base) 0.65 calc(c * 0.05) h);
+  --mode-accent: oklch(from var(--rel-base) calc(l + 0.1) c h);
+  --mode-accent-soft: oklch(from var(--rel-base) 0.22 calc(c * 0.25) h);
+  --mode-success: oklch(0.72 0.14 145);
+  background: var(--mode-bg);
+  border-color: oklch(from var(--rel-base) 0.22 calc(c * 0.08) h);
+}
+
+.mode-card--dark .mode-card-header {
+  background: var(--mode-surface);
+  padding: 0.75rem 1.25rem;
+}
+
+.mode-card--dark .mode-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mode-muted);
+}
+
+.mode-card--dark .mode-card-body {
+  padding: 1.25rem;
+}
+
+.mode-card--dark .mode-card-body h5 {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  color: var(--mode-text);
+}
+
+.mode-card--dark .mode-card-body p {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--mode-muted);
+  margin-bottom: 1rem;
+}
+
+.mode-card--dark .mode-card-tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.mode-card--dark .mode-tag {
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.mode-card--dark .mode-tag--primary {
+  background: var(--mode-accent-soft);
+  color: var(--mode-accent);
+}
+
+.mode-card--dark .mode-tag--success {
+  background: oklch(from var(--mode-success) 0.22 calc(c * 0.3) h);
+  color: var(--mode-success);
+}
+
+.mode-card--dark .mode-tag--muted {
+  background: oklch(from var(--mode-muted) 0.22 calc(c * 0.1) h);
+  color: var(--mode-muted);
+}
+
+.mode-card--dark .mode-card-btn {
+  background: var(--mode-accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--pe7-radius);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--pe7-transition);
+}
+
+.mode-card--dark .mode-card-btn:hover {
+  background: oklch(from var(--rel-base) calc(l + 0.17) calc(c * 1.05) h);
+}
+
+@media (max-width: 640px) {
+  .mode-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 6: Gamut Mapping Demo
+   ============================================= */
+
+.gamut-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.gamut-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gamut-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pe7-text-muted);
+}
+
+.gamut-swatches {
+  display: flex;
+  gap: 4px;
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  height: 64px;
+}
+
+.gamut-swatch {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: flex 0.3s ease;
+  cursor: pointer;
+}
+
+.gamut-swatch:hover {
+  flex: 1.8;
+}
+
+.gamut-swatch span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.gamut-swatch:hover span {
+  opacity: 1;
+}
+
+/* Highlight the clipped/out-of-gamut swatch */
+.gamut-clipped {
+  position: relative;
+}
+
+.gamut-clipped::after {
+  content: "clipped";
+  position: absolute;
+  bottom: 4px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: oklch(0.95 0.02 25);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+.gamut-p3 {
+  position: relative;
+}
+
+.gamut-p3::after {
+  content: "P3";
+  position: absolute;
+  bottom: 4px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  background: oklch(0.55 0.2 145 / 0.7);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+}
+
+/* =============================================
+   Section 7: Button States Demo
+   ============================================= */
+
+.button-states-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 0.5rem 0;
+}
+
+.btn-state-group {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.state-btn {
+  border: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: var(--pe7-radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--pe7-transition),
+    box-shadow var(--pe7-transition),
+    transform 0.1s ease;
+  position: relative;
+}
+
+.state-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.state-btn:focus-visible {
+  outline-offset: 2px;
+}
+
+/* ---- Purple ---- */
+.state-btn--purple {
+  --btn-c: oklch(0.55 0.22 265);
+  background: var(--btn-c);
+  color: contrast-color(var(--btn-c));
+}
+
+.state-btn--purple:hover:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.state-btn--purple:active:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.12) c h);
+}
+
+.state-btn--purple:focus-visible {
+  outline: 3px solid oklch(from var(--btn-c) l c h / 0.45);
+}
+
+.state-btn--purple:disabled {
+  background: oklch(from var(--btn-c) calc(l + 0.15) calc(c * 0.3) h);
+  color: oklch(from var(--btn-c) calc(l + 0.05) calc(c * 0.2) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ---- Green ---- */
+.state-btn--green {
+  --btn-c: oklch(0.62 0.19 145);
+  background: var(--btn-c);
+  color: contrast-color(var(--btn-c));
+}
+
+.state-btn--green:hover:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.state-btn--green:active:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.12) c h);
+}
+
+.state-btn--green:focus-visible {
+  outline: 3px solid oklch(from var(--btn-c) l c h / 0.45);
+}
+
+.state-btn--green:disabled {
+  background: oklch(from var(--btn-c) calc(l + 0.15) calc(c * 0.3) h);
+  color: oklch(from var(--btn-c) calc(l + 0.05) calc(c * 0.2) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ---- Red ---- */
+.state-btn--red {
+  --btn-c: oklch(0.58 0.22 25);
+  background: var(--btn-c);
+  color: contrast-color(var(--btn-c));
+}
+
+.state-btn--red:hover:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.state-btn--red:active:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.12) c h);
+}
+
+.state-btn--red:focus-visible {
+  outline: 3px solid oklch(from var(--btn-c) l c h / 0.45);
+}
+
+.state-btn--red:disabled {
+  background: oklch(from var(--btn-c) calc(l + 0.15) calc(c * 0.3) h);
+  color: oklch(from var(--btn-c) calc(l + 0.05) calc(c * 0.2) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ---- Yellow ---- */
+.state-btn--yellow {
+  --btn-c: oklch(0.80 0.16 85);
+  background: var(--btn-c);
+  color: contrast-color(var(--btn-c));
+}
+
+.state-btn--yellow:hover:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.state-btn--yellow:active:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.12) c h);
+}
+
+.state-btn--yellow:focus-visible {
+  outline: 3px solid oklch(from var(--btn-c) l c h / 0.45);
+}
+
+.state-btn--yellow:disabled {
+  background: oklch(from var(--btn-c) calc(l + 0.08) calc(c * 0.3) h);
+  color: oklch(from var(--btn-c) calc(l - 0.10) calc(c * 0.3) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ---- Teal ---- */
+.state-btn--teal {
+  --btn-c: oklch(0.65 0.14 195);
+  background: var(--btn-c);
+  color: contrast-color(var(--btn-c));
+}
+
+.state-btn--teal:hover:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.07) calc(c * 1.05) h);
+}
+
+.state-btn--teal:active:not(:disabled) {
+  background: oklch(from var(--btn-c) calc(l - 0.12) c h);
+}
+
+.state-btn--teal:focus-visible {
+  outline: 3px solid oklch(from var(--btn-c) l c h / 0.45);
+}
+
+.state-btn--teal:disabled {
+  background: oklch(from var(--btn-c) calc(l + 0.15) calc(c * 0.3) h);
+  color: oklch(from var(--btn-c) calc(l + 0.05) calc(c * 0.2) h);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* =============================================
+   Section 7: Alert Components Demo
+   ============================================= */
+
+.alert-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.rel-alert {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  border-radius: 0 var(--pe7-radius) var(--pe7-radius) 0;
+  border-left-width: 4px;
+  border-left-style: solid;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.rel-alert strong {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.rel-alert p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+.rel-alert-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* Success alert: derive from brand via hue shift */
+.rel-alert--success {
+  --alert-hue: 145;
+  background: oklch(0.95 0.04 var(--alert-hue));
+  border-left-color: oklch(0.62 0.19 var(--alert-hue));
+  color: oklch(0.25 0.08 var(--alert-hue));
+}
+
+.rel-alert--success .rel-alert-icon {
+  color: oklch(0.55 0.19 var(--alert-hue));
+}
+
+/* Warning alert */
+.rel-alert--warning {
+  --alert-hue: 85;
+  background: oklch(0.96 0.04 var(--alert-hue));
+  border-left-color: oklch(0.75 0.15 var(--alert-hue));
+  color: oklch(0.30 0.07 var(--alert-hue));
+}
+
+.rel-alert--warning .rel-alert-icon {
+  color: oklch(0.65 0.14 var(--alert-hue));
+}
+
+/* Danger alert */
+.rel-alert--danger {
+  --alert-hue: 25;
+  background: oklch(0.95 0.04 var(--alert-hue));
+  border-left-color: oklch(0.58 0.22 var(--alert-hue));
+  color: oklch(0.28 0.08 var(--alert-hue));
+}
+
+.rel-alert--danger .rel-alert-icon {
+  color: oklch(0.55 0.20 var(--alert-hue));
+}
+
+/* Info alert */
+.rel-alert--info {
+  --alert-hue: 245;
+  background: oklch(0.95 0.03 var(--alert-hue));
+  border-left-color: oklch(0.58 0.18 var(--alert-hue));
+  color: oklch(0.28 0.06 var(--alert-hue));
+}
+
+.rel-alert--info .rel-alert-icon {
+  color: oklch(0.55 0.16 var(--alert-hue));
+}
+
+.rel-alert code {
+  background: oklch(from var(--pe7-accent) 0.92 calc(c * 0.15) h);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.82em;
+}
+
+/* =============================================
+   Exercise & Challenge Sections
+   ============================================= */
+
+.exercise,
+.challenge {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.exercise:last-of-type,
+.challenge:last-of-type {
+  border-bottom: none;
+}
+
+.exercise h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-success);
+  display: inline-block;
+  color: var(--pe7-success);
+}
+
+.challenge h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-warning);
+  display: inline-block;
+  color: var(--pe7-warning);
+}
+
+.exercise > p,
+.challenge > p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+.exercise-requirements,
+.challenge-requirements {
+  margin: 1.5rem 0;
+}
+
+.exercise-requirements h3,
+.challenge-requirements h3,
+.exercise-starter h3,
+.challenge-hints h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.exercise-requirements ul,
+.challenge-requirements ul,
+.challenge-hints ul {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.exercise-requirements li,
+.challenge-requirements li,
+.challenge-hints li {
+  margin-bottom: 0.5rem;
+  font-size: 0.925rem;
+  color: var(--pe7-text);
+}
+
+.exercise-starter {
+  margin-top: 2rem;
+}
+
+.challenge-hints {
+  margin: 1.5rem 0;
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 768px) {
+  .mode-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .button-states-demo {
+    flex-direction: column;
+  }
+
+  .contrast-demo {
+    justify-content: center;
+  }
+
+  .palette-scale {
+    height: 56px;
+  }
+
+  .palette-scale--alt {
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .manip-row {
+    height: 48px;
+  }
+
+  .gamut-swatches {
+    height: 48px;
+  }
+
+  .btn-state-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-state-group .state-btn {
+    text-align: center;
+  }
+}

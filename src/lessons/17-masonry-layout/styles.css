@@ -1,0 +1,982 @@
+/* ============================================
+   Module 17: Masonry Layout
+   display: masonry, masonry-template-tracks,
+   masonry-direction, masonry-auto-flow,
+   spanning items, progressive enhancement
+   ============================================ */
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+/* ---- Demo Note ---- */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block (module overrides) ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================
+   Section 1: The Masonry Problem Demo
+   ============================================= */
+
+.problem-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.problem-side {
+  display: flex;
+  flex-direction: column;
+}
+
+.problem-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Standard CSS Grid (shows the gap problem) */
+.problem-grid-standard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.problem-card {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.problem-card:hover {
+  transform: scale(1.05);
+}
+
+.problem-card--tall {
+  height: 140px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+}
+
+.problem-card--short {
+  height: 70px;
+  background: linear-gradient(135deg, #00b894, #55efc4);
+}
+
+.problem-card--medium {
+  height: 100px;
+  background: linear-gradient(135deg, #fd79a8, #e84393);
+}
+
+/* Masonry simulation using CSS Columns */
+.problem-grid-masonry {
+  column-count: 3;
+  column-gap: 0.5rem;
+}
+
+.problem-grid-masonry .problem-card {
+  break-inside: avoid;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .problem-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 2: Photo Gallery Demo
+   ============================================= */
+
+.gallery-demo {
+  column-count: 4;
+  column-gap: 0.75rem;
+}
+
+.gallery-item {
+  break-inside: avoid;
+  margin-bottom: 0.75rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+  cursor: pointer;
+}
+
+.gallery-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.gallery-item span {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+/* Different heights for masonry effect */
+.gallery-item--h1 { height: 180px; }
+.gallery-item--h2 { height: 130px; }
+.gallery-item--h3 { height: 220px; }
+
+/* Gradient backgrounds to simulate photos */
+.gallery-item:nth-child(1)  { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.gallery-item:nth-child(2)  { background: linear-gradient(135deg, #00b894, #55efc4); }
+.gallery-item:nth-child(3)  { background: linear-gradient(135deg, #fd79a8, #e84393); }
+.gallery-item:nth-child(4)  { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+.gallery-item:nth-child(5)  { background: linear-gradient(135deg, #e17055, #fab1a0); }
+.gallery-item:nth-child(6)  { background: linear-gradient(135deg, #fdcb6e, #ffeaa7); }
+.gallery-item:nth-child(7)  { background: linear-gradient(135deg, #636e72, #b2bec3); }
+.gallery-item:nth-child(8)  { background: linear-gradient(135deg, #00cec9, #81ecec); }
+.gallery-item:nth-child(9)  { background: linear-gradient(135deg, #d63031, #ff7675); }
+.gallery-item:nth-child(10) { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+.gallery-item:nth-child(11) { background: linear-gradient(135deg, #55efc4, #00b894); }
+.gallery-item:nth-child(12) { background: linear-gradient(135deg, #fab1a0, #e17055); }
+
+/* Enhancement when masonry is natively supported */
+@supports (display: masonry) {
+  .gallery-demo {
+    display: masonry;
+    masonry-template-tracks: repeat(4, 1fr);
+    gap: 0.75rem;
+    column-count: unset;
+  }
+
+  .gallery-item {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-demo {
+    column-count: 3;
+  }
+  @supports (display: masonry) {
+    .gallery-demo {
+      masonry-template-tracks: repeat(3, 1fr);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-demo {
+    column-count: 2;
+  }
+  @supports (display: masonry) {
+    .gallery-demo {
+      masonry-template-tracks: repeat(2, 1fr);
+    }
+  }
+}
+
+/* =============================================
+   Section 3: masonry-direction Demo
+   ============================================= */
+
+.direction-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.direction-side {
+  display: flex;
+  flex-direction: column;
+}
+
+.direction-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Column masonry simulation */
+.direction-column {
+  column-count: 3;
+  column-gap: 0.5rem;
+}
+
+.direction-card {
+  break-inside: avoid;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.direction-card:hover {
+  transform: scale(1.05);
+}
+
+.direction-card--a { height: 100px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.direction-card--b { height: 70px; background: linear-gradient(135deg, #00b894, #55efc4); }
+.direction-card--c { height: 130px; background: linear-gradient(135deg, #fd79a8, #e84393); }
+
+/* Row masonry simulation using flex */
+.direction-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 350px;
+  align-content: flex-start;
+}
+
+.direction-card-h {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: white;
+  height: 60px;
+  transition: transform 0.2s;
+}
+
+.direction-card-h:hover {
+  transform: scale(1.05);
+}
+
+.direction-card-h--a { width: 100px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.direction-card-h--b { width: 70px; background: linear-gradient(135deg, #00b894, #55efc4); }
+.direction-card-h--c { width: 130px; background: linear-gradient(135deg, #fd79a8, #e84393); }
+
+@supports (display: masonry) {
+  .direction-column {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    masonry-direction: column;
+    gap: 0.5rem;
+    column-count: unset;
+  }
+
+  .direction-card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+
+  .direction-row {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 80px);
+    masonry-direction: row;
+    gap: 0.5rem;
+  }
+
+  .direction-card-h {
+    height: auto;
+    width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .direction-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 4: masonry-auto-flow Demo
+   ============================================= */
+
+.flow-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.flow-side {
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Pack simulation: column layout with varying heights */
+.flow-pack {
+  column-count: 3;
+  column-gap: 0.5rem;
+}
+
+/* Next simulation: grid with round-robin */
+.flow-next {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  align-items: start;
+}
+
+.flow-card {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flow-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.flow-pack .flow-card {
+  break-inside: avoid;
+  margin-bottom: 0.5rem;
+}
+
+.flow-card--tall {
+  height: 120px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+}
+
+.flow-card--short {
+  height: 60px;
+  background: linear-gradient(135deg, #00b894, #55efc4);
+}
+
+.flow-card--medium {
+  height: 85px;
+  background: linear-gradient(135deg, #fd79a8, #e84393);
+}
+
+@supports (display: masonry) {
+  .flow-pack {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    masonry-auto-flow: pack;
+    gap: 0.5rem;
+    column-count: unset;
+  }
+
+  .flow-pack .flow-card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+
+  .flow-next {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    masonry-auto-flow: next;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .flow-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 5: Portfolio with Featured Items Demo
+   ============================================= */
+
+.portfolio-demo {
+  column-count: 3;
+  column-gap: 1rem;
+}
+
+.portfolio-card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--pe7-border);
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+  border-color: var(--pe7-accent);
+}
+
+.portfolio-card--featured {
+  border-left: 4px solid var(--pe7-accent);
+}
+
+.portfolio-img {
+  width: 100%;
+  border-radius: var(--pe7-radius-lg) var(--pe7-radius-lg) 0 0;
+}
+
+.portfolio-img--1 { height: 140px; background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.portfolio-img--2 { height: 100px; background: linear-gradient(135deg, #00b894, #55efc4); }
+.portfolio-img--3 { height: 120px; background: linear-gradient(135deg, #fd79a8, #e84393); }
+.portfolio-img--4 { height: 90px;  background: linear-gradient(135deg, #0984e3, #74b9ff); }
+.portfolio-img--5 { height: 130px; background: linear-gradient(135deg, #e17055, #fab1a0); }
+.portfolio-img--6 { height: 80px;  background: linear-gradient(135deg, #fdcb6e, #ffeaa7); }
+
+.portfolio-body {
+  padding: 1.25rem;
+}
+
+.portfolio-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  color: var(--pe7-accent-light);
+}
+
+.portfolio-card--featured .portfolio-tag {
+  background: var(--pe7-accent);
+  color: white;
+}
+
+.portfolio-body h5 {
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.portfolio-body p {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+  margin: 0;
+}
+
+@supports (display: masonry) {
+  .portfolio-demo {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    gap: 1rem;
+    column-count: unset;
+  }
+
+  .portfolio-card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+
+  .portfolio-card--featured {
+    masonry-track: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-demo {
+    column-count: 2;
+  }
+  @supports (display: masonry) {
+    .portfolio-demo {
+      masonry-template-tracks: repeat(2, 1fr);
+    }
+    .portfolio-card--featured {
+      masonry-track: span 1;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-demo {
+    column-count: 1;
+  }
+  @supports (display: masonry) {
+    .portfolio-demo {
+      masonry-template-tracks: 1fr;
+    }
+  }
+}
+
+/* =============================================
+   Section 6: Responsive Card Grid Demo
+   ============================================= */
+
+.responsive-demo {
+  column-count: 4;
+  column-gap: 1rem;
+}
+
+.responsive-card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.25rem;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.responsive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-color: var(--pe7-accent);
+}
+
+.responsive-card h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--pe7-text);
+}
+
+.responsive-card p {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.responsive-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.responsive-tags span {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  color: var(--pe7-accent-light);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Different card heights for the masonry effect */
+.responsive-card--h1 .responsive-card p,
+.responsive-card--h1 p {
+  /* natural height from content */
+}
+
+.responsive-card--h2 {
+  /* slightly shorter content by design */
+}
+
+.responsive-card--h3 {
+  /* slightly taller content by design */
+}
+
+@supports (display: masonry) {
+  .responsive-demo {
+    display: masonry;
+    masonry-template-tracks: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    column-count: unset;
+  }
+
+  .responsive-card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-demo {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-demo {
+    column-count: 1;
+  }
+}
+
+/* =============================================
+   Section 7: Progressive Enhancement Demo
+   ============================================= */
+
+.pe-demo {
+  column-count: 3;
+  column-gap: 1rem;
+}
+
+.pe-card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--pe7-border);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.pe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+.pe-card p {
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--pe7-text-muted);
+  margin: 0;
+}
+
+.pe-img {
+  width: 100%;
+}
+
+.pe-card--h1 .pe-img { height: 160px; }
+.pe-card--h2 .pe-img { height: 100px; }
+.pe-card--h3 .pe-img { height: 200px; }
+
+/* Photo gradients */
+.pe-img--1 { background: linear-gradient(135deg, #e17055, #fab1a0, #fdcb6e); }
+.pe-img--2 { background: linear-gradient(135deg, #636e72, #b2bec3); }
+.pe-img--3 { background: linear-gradient(135deg, #00b894, #55efc4, #81ecec); }
+.pe-img--4 { background: linear-gradient(135deg, #0984e3, #74b9ff, #a29bfe); }
+.pe-img--5 { background: linear-gradient(135deg, #2d3436, #636e72, #0984e3); }
+.pe-img--6 { background: linear-gradient(135deg, #fdcb6e, #e17055, #d63031); }
+.pe-img--7 { background: linear-gradient(135deg, #b2bec3, #636e72, #2d3436); }
+.pe-img--8 { background: linear-gradient(135deg, #6c5ce7, #fd79a8, #e84393); }
+
+@supports (display: masonry) {
+  .pe-demo {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    gap: 1rem;
+    column-count: unset;
+  }
+
+  .pe-card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-demo {
+    column-count: 2;
+  }
+  @supports (display: masonry) {
+    .pe-demo {
+      masonry-template-tracks: repeat(2, 1fr);
+    }
+  }
+}
+
+/* Support badge */
+.pe-support-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius);
+  border: 1px solid var(--pe7-border);
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+}
+
+.pe-support-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f59e0b;
+  flex-shrink: 0;
+}
+
+.pe-support-text {
+  font-weight: 600;
+}
+
+@supports (display: masonry) {
+  .pe-support-indicator {
+    background: var(--pe7-success);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+
+  .pe-support-text::after {
+    content: " (masonry supported!)";
+    color: var(--pe7-success);
+  }
+}
+
+/* =============================================
+   Exercise: Image Gallery Demo
+   ============================================= */
+
+.exercise-gallery-demo {
+  column-count: 3;
+  column-gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.ex-gallery-card {
+  break-inside: avoid;
+  margin-bottom: 0.75rem;
+  background: var(--pe7-surface-2);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--pe7-border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ex-gallery-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+.ex-gallery-card--featured {
+  border-left: 4px solid var(--pe7-accent);
+}
+
+.ex-gallery-card p {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  margin: 0;
+}
+
+.ex-gallery-img {
+  width: 100%;
+}
+
+.ex-gallery-card--h1 .ex-gallery-img { height: 140px; }
+.ex-gallery-card--h2 .ex-gallery-img { height: 100px; }
+.ex-gallery-card--h3 .ex-gallery-img { height: 180px; }
+
+.ex-gallery-img--1 { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.ex-gallery-img--2 { background: linear-gradient(135deg, #e17055, #fab1a0); }
+.ex-gallery-img--3 { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+.ex-gallery-img--4 { background: linear-gradient(135deg, #00b894, #55efc4); }
+.ex-gallery-img--5 { background: linear-gradient(135deg, #fd79a8, #e84393); }
+.ex-gallery-img--6 { background: linear-gradient(135deg, #2d3436, #636e72); }
+.ex-gallery-img--7 { background: linear-gradient(135deg, #fdcb6e, #ffeaa7); }
+.ex-gallery-img--8 { background: linear-gradient(135deg, #636e72, #b2bec3); }
+
+@supports (display: masonry) {
+  .exercise-gallery-demo {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    gap: 0.75rem;
+    column-count: unset;
+  }
+
+  .ex-gallery-card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+
+  .ex-gallery-card--featured {
+    masonry-track: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .exercise-gallery-demo {
+    column-count: 2;
+  }
+  @supports (display: masonry) {
+    .exercise-gallery-demo {
+      masonry-template-tracks: repeat(2, 1fr);
+    }
+    .ex-gallery-card--featured {
+      masonry-track: span 1;
+    }
+  }
+}
+
+/* =============================================
+   Exercise & Challenge Sections (shared)
+   ============================================= */
+
+.exercise-requirements,
+.challenge-requirements {
+  margin: 1.5rem 0;
+}
+
+.exercise-requirements h3,
+.challenge-requirements h3,
+.exercise-demo h3,
+.challenge-hints h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.exercise-requirements ul,
+.challenge-requirements ul,
+.challenge-hints ul {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.exercise-requirements li,
+.challenge-requirements li,
+.challenge-hints li {
+  margin-bottom: 0.5rem;
+  font-size: 0.925rem;
+  color: var(--pe7-text);
+}
+
+.exercise-demo {
+  margin-top: 2rem;
+}
+
+.challenge-hints {
+  margin: 1.5rem 0;
+}
+
+/* =============================================
+   Responsive Overrides
+   ============================================= */
+
+@media (max-width: 768px) {
+  .problem-demo {
+    grid-template-columns: 1fr;
+  }
+
+  .direction-demo {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .concept-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .gallery-demo {
+    column-count: 2;
+  }
+
+  .responsive-demo {
+    column-count: 1;
+  }
+}

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masonry Layout | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 17</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-6">Level 6 - 2026 Deep Dives</span>
+    <h1>Masonry Layout</h1>
+    <p class="subtitle">Build Pinterest-style layouts natively in CSS with <code>display: masonry</code>. Define column tracks, control item flow, span featured content across columns, and ship responsive masonry grids with progressive enhancement fallbacks.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: WHAT IS MASONRY     -->
+    <!-- ============================== -->
+    <section class="concept-section" id="what-is-masonry">
+      <h2>1. The Masonry Problem</h2>
+
+      <p>You have seen it everywhere: Pinterest, Unsplash, Dribbble. A grid of cards or images where items have <strong>different heights</strong> and pack tightly together without leaving gaps. The items flow into columns, and each new item slots into whichever column has the most room. That is masonry layout.</p>
+
+      <p>CSS Grid cannot do this. Grid is a two-dimensional layout engine: it defines explicit rows and columns, and every item in a row shares the same row height. If one card is tall and another is short, Grid leaves a gap below the short card. You can use <code>grid-auto-rows: masonry</code> as proposed in earlier specs, but that approach was never shipped. CSS Columns can approximate the look, but items flow top-to-bottom within each column rather than row-by-row, which breaks the expected reading order.</p>
+
+      <p>JavaScript libraries like Masonry.js, Isotope, and Packery solved this for years. They measure each item's height, calculate positions, and apply absolute positioning. The downsides: a flash of unstyled content before JS runs, expensive reflows on resize, layout shifts that hurt Core Web Vitals, and a runtime dependency for what should be a CSS concern.</p>
+
+      <p><code>display: masonry</code> is the native CSS answer. It gives the browser full control over the packing algorithm, runs on the compositor thread, and requires zero JavaScript. Items flow left-to-right (or right-to-left) across column tracks, and each item drops into the shortest column. The result is a tight, gap-free layout that responds to container size changes instantly.</p>
+
+      <div class="demo-container">
+        <h4>Demo: The Problem Grid Leaves Behind</h4>
+        <p class="demo-note">The left panel uses standard CSS Grid. Notice the vertical gaps below shorter items. The right panel shows the masonry result: items pack tightly with no wasted space.</p>
+
+        <div class="problem-demo">
+          <div class="problem-side">
+            <h5 class="problem-label">CSS Grid (gaps)</h5>
+            <div class="problem-grid-standard">
+              <div class="problem-card problem-card--tall">A</div>
+              <div class="problem-card problem-card--short">B</div>
+              <div class="problem-card problem-card--medium">C</div>
+              <div class="problem-card problem-card--short">D</div>
+              <div class="problem-card problem-card--tall">E</div>
+              <div class="problem-card problem-card--medium">F</div>
+            </div>
+          </div>
+          <div class="problem-side">
+            <h5 class="problem-label">Masonry (packed)</h5>
+            <div class="problem-grid-masonry">
+              <div class="problem-card problem-card--tall">A</div>
+              <div class="problem-card problem-card--short">B</div>
+              <div class="problem-card problem-card--medium">C</div>
+              <div class="problem-card problem-card--short">D</div>
+              <div class="problem-card problem-card--tall">E</div>
+              <div class="problem-card problem-card--medium">F</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Masonry is not a variation of Grid. It is a distinct layout mode with its own display value, its own track properties, and its own packing algorithm. The CSS Working Group chose <code>display: masonry</code> as a first-class citizen rather than bolting it onto Grid because the layout semantics are fundamentally different.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: DISPLAY MASONRY     -->
+    <!-- ============================== -->
+    <section class="concept-section" id="display-masonry">
+      <h2>2. display: masonry</h2>
+
+      <p>The foundation is simple. Set <code>display: masonry</code> on a container and define your column tracks with <code>masonry-template-tracks</code>. Items flow into columns left-to-right, and each item is placed in whichever column is currently shortest.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Basic masonry: three equal columns */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Four columns with explicit widths */
+.portfolio {
+  display: masonry;
+  masonry-template-tracks: 200px 300px 200px 300px;
+  gap: 1.5rem;
+}
+
+/* Auto-sized columns that fill available space */
+.feed {
+  display: masonry;
+  masonry-template-tracks: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}</code></pre>
+      </div>
+
+      <h3>masonry-template-tracks</h3>
+      <p>This property defines the column tracks, using the same track-sizing syntax you already know from Grid: fixed lengths, <code>fr</code> units, <code>minmax()</code>, <code>repeat()</code>, <code>auto-fill</code>, and <code>auto-fit</code>. The key difference: these tracks only define columns (the stacking axis). The cross axis (row heights) is determined by each item's intrinsic content height.</p>
+
+      <h3>masonry-auto-tracks</h3>
+      <p>When items exceed the explicitly defined tracks, <code>masonry-auto-tracks</code> controls the size of implicitly created columns. It works the same way <code>grid-auto-columns</code> does for Grid.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* If more items need columns beyond the template */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  masonry-auto-tracks: 200px;
+  gap: 1rem;
+}</code></pre>
+      </div>
+
+      <h3>gap</h3>
+      <p>The <code>gap</code> property works exactly as it does in Grid and Flexbox. Use a single value for uniform spacing or two values for row-gap and column-gap separately. The gap is applied between items both horizontally (between columns) and vertically (between stacked items within a column).</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Uniform gap */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Different row and column gaps */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  gap: 0.75rem 1.5rem; /* row-gap column-gap */
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Photo Gallery</h4>
+        <p class="demo-note">A classic masonry photo gallery using <code>display: masonry</code> with <code>repeat(4, 1fr)</code> columns. Each image has a different natural height, and they pack tightly together.</p>
+
+        <div class="gallery-demo">
+          <div class="gallery-item gallery-item--h1"><span>1</span></div>
+          <div class="gallery-item gallery-item--h2"><span>2</span></div>
+          <div class="gallery-item gallery-item--h3"><span>3</span></div>
+          <div class="gallery-item gallery-item--h1"><span>4</span></div>
+          <div class="gallery-item gallery-item--h3"><span>5</span></div>
+          <div class="gallery-item gallery-item--h2"><span>6</span></div>
+          <div class="gallery-item gallery-item--h1"><span>7</span></div>
+          <div class="gallery-item gallery-item--h2"><span>8</span></div>
+          <div class="gallery-item gallery-item--h3"><span>9</span></div>
+          <div class="gallery-item gallery-item--h1"><span>10</span></div>
+          <div class="gallery-item gallery-item--h2"><span>11</span></div>
+          <div class="gallery-item gallery-item--h3"><span>12</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: MASONRY DIRECTION   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="masonry-direction">
+      <h2>3. masonry-direction</h2>
+
+      <p>By default, masonry items flow across columns from left to right. The <code>masonry-direction</code> property lets you change that. You have four options:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Default: items fill columns left-to-right */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  masonry-direction: column;
+}
+
+/* Items fill columns right-to-left */
+.gallery-rtl {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  masonry-direction: column-reverse;
+}
+
+/* Row masonry: tracks define rows, items flow top-to-bottom */
+.horizontal-feed {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 200px);
+  masonry-direction: row;
+}
+
+/* Row masonry reversed */
+.horizontal-feed-reverse {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 200px);
+  masonry-direction: row-reverse;
+}</code></pre>
+      </div>
+
+      <h3>Column vs Row Masonry</h3>
+      <p><strong>Column masonry</strong> (the default) is the Pinterest model. Tracks define columns, items have variable heights, and each item drops into the shortest column. Use this for image galleries, card feeds, and any vertical-scrolling layout.</p>
+
+      <p><strong>Row masonry</strong> flips the axis. Tracks define rows, items have variable widths, and each item slots into the shortest row. This is useful for horizontal timelines, tag clouds, and horizontally-scrolling panels where items vary in width.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Column vs Row Masonry</h4>
+        <p class="demo-note">The left panel uses <code>masonry-direction: column</code> (items stack vertically in columns). The right panel uses <code>masonry-direction: row</code> (items pack horizontally into rows).</p>
+
+        <div class="direction-demo">
+          <div class="direction-side">
+            <h5 class="direction-label">column (default)</h5>
+            <div class="direction-column">
+              <div class="direction-card direction-card--a">1</div>
+              <div class="direction-card direction-card--b">2</div>
+              <div class="direction-card direction-card--c">3</div>
+              <div class="direction-card direction-card--a">4</div>
+              <div class="direction-card direction-card--b">5</div>
+              <div class="direction-card direction-card--c">6</div>
+              <div class="direction-card direction-card--a">7</div>
+              <div class="direction-card direction-card--b">8</div>
+              <div class="direction-card direction-card--c">9</div>
+            </div>
+          </div>
+          <div class="direction-side">
+            <h5 class="direction-label">row</h5>
+            <div class="direction-row">
+              <div class="direction-card-h direction-card-h--a">1</div>
+              <div class="direction-card-h direction-card-h--b">2</div>
+              <div class="direction-card-h direction-card-h--c">3</div>
+              <div class="direction-card-h direction-card-h--a">4</div>
+              <div class="direction-card-h direction-card-h--b">5</div>
+              <div class="direction-card-h direction-card-h--c">6</div>
+              <div class="direction-card-h direction-card-h--a">7</div>
+              <div class="direction-card-h direction-card-h--b">8</div>
+              <div class="direction-card-h direction-card-h--c">9</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> When using <code>masonry-direction: row</code>, the <code>masonry-template-tracks</code> property defines row heights instead of column widths. The browser then packs items horizontally into whichever row is currently shortest. Think of it as rotating the entire masonry algorithm 90 degrees.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: MASONRY AUTO FLOW   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="masonry-auto-flow">
+      <h2>4. masonry-auto-flow</h2>
+
+      <p>The <code>masonry-auto-flow</code> property controls how the browser decides where to place each item. There are two dimensions to this decision: the <strong>placement algorithm</strong> and the <strong>ordering</strong>.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Default: pack items into the shortest column, maintain DOM order */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  masonry-auto-flow: pack;
+}
+
+/* Place items sequentially (round-robin), no packing optimization */
+.feed {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  masonry-auto-flow: next;
+}
+
+/* Pack items into shortest column, allow reordering for tighter fit */
+.gallery-optimized {
+  display: masonry;
+  masonry-template-tracks: repeat(3, 1fr);
+  masonry-auto-flow: pack ordered;
+}</code></pre>
+      </div>
+
+      <h3>pack vs next</h3>
+      <p><strong><code>pack</code></strong> (default) always places the next item into whichever column is currently shortest. This produces the tightest layout with minimal gaps, but items may appear out of visual order when viewed left-to-right, row-by-row.</p>
+
+      <p><strong><code>next</code></strong> places items in columns sequentially: item 1 goes in column 1, item 2 in column 2, item 3 in column 3, then item 4 wraps back to column 1. This preserves a more predictable reading order but can leave larger gaps when item heights vary significantly.</p>
+
+      <h3>ordered vs unordered</h3>
+      <p>When combined with <code>pack</code>, the <code>ordered</code> keyword tells the browser it can reorder items from the DOM source order to achieve a tighter packing. Without <code>ordered</code>, items maintain their DOM order even with pack placement. Use <code>ordered</code> for decorative layouts like photo galleries. Avoid it for content where reading order matters, like article feeds or navigation lists.</p>
+
+      <div class="demo-container">
+        <h4>Demo: pack vs next Placement</h4>
+        <p class="demo-note">Both panels have the same items in the same order. The left uses <code>pack</code> (shortest-column-first), the right uses <code>next</code> (round-robin). Notice how pack produces a tighter layout while next keeps items more predictably ordered.</p>
+
+        <div class="flow-demo">
+          <div class="flow-side">
+            <h5 class="flow-label">pack (shortest column)</h5>
+            <div class="flow-pack">
+              <div class="flow-card flow-card--tall">1</div>
+              <div class="flow-card flow-card--short">2</div>
+              <div class="flow-card flow-card--medium">3</div>
+              <div class="flow-card flow-card--short">4</div>
+              <div class="flow-card flow-card--tall">5</div>
+              <div class="flow-card flow-card--medium">6</div>
+              <div class="flow-card flow-card--short">7</div>
+              <div class="flow-card flow-card--tall">8</div>
+              <div class="flow-card flow-card--medium">9</div>
+            </div>
+          </div>
+          <div class="flow-side">
+            <h5 class="flow-label">next (round-robin)</h5>
+            <div class="flow-next">
+              <div class="flow-card flow-card--tall">1</div>
+              <div class="flow-card flow-card--short">2</div>
+              <div class="flow-card flow-card--medium">3</div>
+              <div class="flow-card flow-card--short">4</div>
+              <div class="flow-card flow-card--tall">5</div>
+              <div class="flow-card flow-card--medium">6</div>
+              <div class="flow-card flow-card--short">7</div>
+              <div class="flow-card flow-card--tall">8</div>
+              <div class="flow-card flow-card--medium">9</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: SPANNING ITEMS      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="spanning-items">
+      <h2>5. Spanning Items</h2>
+
+      <p>Sometimes you want a featured item to span multiple columns. The <code>masonry-track</code> property (shorthand for <code>masonry-track-start</code> and <code>masonry-track-end</code>) controls how many columns an item occupies.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Featured item spans two columns */
+.card--featured {
+  masonry-track: span 2;
+}
+
+/* Hero item spans all three columns */
+.card--hero {
+  masonry-track: span 3;
+}
+
+/* Place an item in a specific column */
+.card--sidebar {
+  masonry-track: 3; /* Third column */
+}
+
+/* Place and span: start at column 2, span 2 columns */
+.card--wide {
+  masonry-track: 2 / span 2;
+}</code></pre>
+      </div>
+
+      <p>Spanning works the same way as <code>grid-column: span N</code> in CSS Grid. The browser calculates how to pack the remaining items around the spanning element. If a spanning item cannot fit at its natural position (because there are not enough remaining columns), it wraps to the next row of items.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Portfolio with Featured Items</h4>
+        <p class="demo-note">A portfolio layout where featured projects span 2 columns. The layout uses <code>masonry-template-tracks: repeat(3, 1fr)</code> with selected items using <code>masonry-track: span 2</code>.</p>
+
+        <div class="portfolio-demo">
+          <div class="portfolio-card portfolio-card--featured">
+            <div class="portfolio-img portfolio-img--1"></div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Featured</span>
+              <h5>Brand Redesign</h5>
+              <p>Complete visual identity overhaul for a fintech startup, including logo, color system, and component library.</p>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-img portfolio-img--2"></div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Web</span>
+              <h5>Dashboard UI</h5>
+              <p>Analytics dashboard with real-time data visualization.</p>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-img portfolio-img--3"></div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Mobile</span>
+              <h5>Fitness App</h5>
+              <p>Workout tracking with social features.</p>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-img portfolio-img--4"></div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Web</span>
+              <h5>E-commerce</h5>
+              <p>Product pages with immersive 3D previews.</p>
+            </div>
+          </div>
+          <div class="portfolio-card portfolio-card--featured">
+            <div class="portfolio-img portfolio-img--5"></div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Featured</span>
+              <h5>Design System</h5>
+              <p>Enterprise-scale component library with tokens, documentation, and Figma integration across 200+ components.</p>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-img portfolio-img--6"></div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Branding</span>
+              <h5>Podcast Cover</h5>
+              <p>Series artwork for a tech podcast.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> When an item spans multiple columns, it creates a horizontal "barrier" in the masonry flow. Items above and below it pack independently. This is intentional: the browser must ensure the spanning item aligns cleanly across its columns. Keep spanning items relatively infrequent (hero cards, featured posts) to avoid disrupting the flow too much.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: RESPONSIVE MASONRY  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="responsive-masonry">
+      <h2>6. Responsive Masonry</h2>
+
+      <p>Building responsive masonry layouts follows the same patterns you use with Grid. The most powerful technique is <code>auto-fill</code> with <code>minmax()</code>, which lets the browser decide how many columns fit at any viewport width.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Fluid columns: as many as fit, minimum 250px each */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* Same thing with auto-fit (collapses empty tracks) */
+.gallery-fit {
+  display: masonry;
+  masonry-template-tracks: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}</code></pre>
+      </div>
+
+      <h3>Media Query Breakpoints</h3>
+      <p>You can also use media queries to switch between fixed column counts at specific breakpoints. This gives you precise control over column counts at each size.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Mobile: single column */
+.gallery {
+  display: masonry;
+  masonry-template-tracks: 1fr;
+  gap: 1rem;
+}
+
+/* Tablet: two columns */
+@media (min-width: 640px) {
+  .gallery {
+    masonry-template-tracks: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: three columns */
+@media (min-width: 1024px) {
+  .gallery {
+    masonry-template-tracks: repeat(3, 1fr);
+  }
+}
+
+/* Wide: four columns */
+@media (min-width: 1440px) {
+  .gallery {
+    masonry-template-tracks: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}</code></pre>
+      </div>
+
+      <h3>Container Queries + Masonry</h3>
+      <p>Even more powerful: combine masonry with container queries. This lets a masonry grid adapt its column count based on the container's width rather than the viewport, making it truly reusable as a component.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.gallery-wrapper {
+  container-type: inline-size;
+}
+
+.gallery {
+  display: masonry;
+  masonry-template-tracks: 1fr;
+  gap: 1rem;
+}
+
+@container (min-width: 500px) {
+  .gallery {
+    masonry-template-tracks: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 800px) {
+  .gallery {
+    masonry-template-tracks: repeat(3, 1fr);
+  }
+}
+
+@container (min-width: 1100px) {
+  .gallery {
+    masonry-template-tracks: repeat(4, 1fr);
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Responsive Card Grid</h4>
+        <p class="demo-note">This demo simulates a responsive masonry layout using <code>auto-fill</code> with <code>minmax(180px, 1fr)</code>. Resize your browser to see the column count adjust automatically.</p>
+
+        <div class="responsive-demo">
+          <div class="responsive-card responsive-card--h1">
+            <h5>Project Alpha</h5>
+            <p>Full-stack web application built with SvelteKit and PostgreSQL.</p>
+            <div class="responsive-tags">
+              <span>Svelte</span><span>SQL</span>
+            </div>
+          </div>
+          <div class="responsive-card responsive-card--h2">
+            <h5>Brand Identity</h5>
+            <p>Logo and color system.</p>
+          </div>
+          <div class="responsive-card responsive-card--h3">
+            <h5>Mobile App</h5>
+            <p>Cross-platform fitness tracker with social features, workout logging, and progress charts.</p>
+            <div class="responsive-tags">
+              <span>React Native</span><span>Firebase</span>
+            </div>
+          </div>
+          <div class="responsive-card responsive-card--h1">
+            <h5>API Gateway</h5>
+            <p>Rate limiting, auth, and request routing for microservices.</p>
+          </div>
+          <div class="responsive-card responsive-card--h2">
+            <h5>Documentation Site</h5>
+            <p>Developer documentation with search, versioning, and interactive code examples powered by MDX.</p>
+            <div class="responsive-tags">
+              <span>MDX</span><span>Algolia</span><span>Vercel</span>
+            </div>
+          </div>
+          <div class="responsive-card responsive-card--h3">
+            <h5>CLI Tool</h5>
+            <p>Project scaffolding.</p>
+          </div>
+          <div class="responsive-card responsive-card--h1">
+            <h5>Design Tokens</h5>
+            <p>Shared design language across platforms with auto-generated Swift, Kotlin, and CSS output.</p>
+          </div>
+          <div class="responsive-card responsive-card--h2">
+            <h5>Analytics</h5>
+            <p>Real-time event tracking dashboard with custom funnels.</p>
+            <div class="responsive-tags">
+              <span>D3.js</span><span>WebSocket</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: PROGRESSIVE ENHANCE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="progressive-enhancement">
+      <h2>7. Progressive Enhancement</h2>
+
+      <p>As of mid-2026, <code>display: masonry</code> is landing in browsers but is not universally supported yet. You need a fallback strategy. The good news: CSS gives you everything you need with <code>@supports</code>.</p>
+
+      <h3>Strategy 1: CSS Columns Fallback</h3>
+      <p>CSS multi-column layout (<code>column-count</code>) is the simplest fallback. It produces a similar visual result, though items flow top-to-bottom within columns rather than left-to-right across them. For image galleries and decorative layouts, this is perfectly acceptable.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Baseline: CSS Columns fallback */
+.gallery {
+  column-count: 3;
+  column-gap: 1rem;
+}
+
+.gallery &gt; * {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+
+/* Enhancement: native masonry when supported */
+@supports (display: masonry) {
+  .gallery {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    gap: 1rem;
+
+    /* Reset column fallback */
+    column-count: unset;
+  }
+
+  .gallery &gt; * {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+}</code></pre>
+      </div>
+
+      <h3>Strategy 2: Grid Fallback</h3>
+      <p>If you need items to flow left-to-right (preserving reading order), use CSS Grid as the fallback. Items will have uniform row heights (leaving gaps), but the column structure and reading order will be correct. When masonry support arrives, the gaps disappear.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Baseline: CSS Grid (has gaps, but correct order) */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Enhancement: masonry eliminates the gaps */
+@supports (display: masonry) {
+  .gallery {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+  }
+}</code></pre>
+      </div>
+
+      <h3>Strategy 3: Flexbox Wrap Fallback</h3>
+      <p>For simple card layouts where exact column alignment is less important, <code>flex-wrap</code> works as a baseline. Items wrap naturally and fill the row.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Baseline: Flexbox wrap */
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.gallery &gt; * {
+  flex: 1 1 calc(33.333% - 1rem);
+  min-width: 250px;
+}
+
+/* Enhancement: masonry for tight packing */
+@supports (display: masonry) {
+  .gallery {
+    display: masonry;
+    masonry-template-tracks: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .gallery &gt; * {
+    flex: unset;
+    min-width: unset;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Progressive Enhancement in Action</h4>
+        <p class="demo-note">This gallery uses CSS Columns as a baseline and enhances to native masonry when supported. The visual result is similar either way, but masonry provides correct left-to-right reading order and tighter packing.</p>
+
+        <div class="pe-demo">
+          <div class="pe-card pe-card--h1">
+            <div class="pe-img pe-img--1"></div>
+            <p>Mountain landscape at sunrise with dramatic cloud formations</p>
+          </div>
+          <div class="pe-card pe-card--h2">
+            <div class="pe-img pe-img--2"></div>
+            <p>Urban street photography</p>
+          </div>
+          <div class="pe-card pe-card--h3">
+            <div class="pe-img pe-img--3"></div>
+            <p>Macro shot of morning dew on a spider web, revealing intricate patterns</p>
+          </div>
+          <div class="pe-card pe-card--h1">
+            <div class="pe-img pe-img--4"></div>
+            <p>Ocean waves crashing against rocky cliffs during golden hour</p>
+          </div>
+          <div class="pe-card pe-card--h2">
+            <div class="pe-img pe-img--5"></div>
+            <p>Night sky with Milky Way</p>
+          </div>
+          <div class="pe-card pe-card--h3">
+            <div class="pe-img pe-img--6"></div>
+            <p>Forest path in autumn</p>
+          </div>
+          <div class="pe-card pe-card--h1">
+            <div class="pe-img pe-img--7"></div>
+            <p>Architectural detail of a brutalist building</p>
+          </div>
+          <div class="pe-card pe-card--h2">
+            <div class="pe-img pe-img--8"></div>
+            <p>Abstract color study: overlapping translucent shapes in complementary hues creating unexpected depth</p>
+          </div>
+        </div>
+
+        <div class="pe-support-badge">
+          <span class="pe-support-indicator"></span>
+          <span class="pe-support-text">Your browser: using CSS Columns fallback</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Progressive enhancement is not a compromise. The CSS Columns fallback still looks great. Users on older browsers get a functional, attractive layout. Users on modern browsers get perfect masonry packing. Both experiences are good. Ship the fallback, enhance with masonry, and move on.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Image Gallery</h2>
+      <p>Build a responsive masonry image gallery that works in every browser. Start with a CSS Columns fallback, then enhance with <code>display: masonry</code> inside <code>@supports</code>.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create a gallery container with at least 8 image cards of varying heights (use colored placeholders with different heights).</li>
+          <li>Baseline: use <code>column-count: 3</code> with <code>column-gap: 1rem</code>. Each card needs <code>break-inside: avoid</code> and <code>margin-bottom: 1rem</code>.</li>
+          <li>Enhancement: wrap <code>display: masonry</code> with <code>masonry-template-tracks: repeat(3, 1fr)</code> inside <code>@supports (display: masonry)</code>. Reset the column properties.</li>
+          <li>Add a responsive breakpoint: at <code>max-width: 640px</code>, switch to 2 columns (both in the fallback and the masonry enhancement).</li>
+          <li>One card should be a "featured" card that spans 2 columns in masonry mode (use <code>masonry-track: span 2</code>).</li>
+          <li>Add hover effects: scale up slightly and increase box-shadow.</li>
+          <li>Cards should have rounded corners, a subtle border, and a dark background matching the theme.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-demo">
+        <h3>Expected Result</h3>
+        <div class="exercise-gallery-demo">
+          <div class="ex-gallery-card ex-gallery-card--h1">
+            <div class="ex-gallery-img ex-gallery-img--1"></div>
+            <p>Sunset over mountains</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h2">
+            <div class="ex-gallery-img ex-gallery-img--2"></div>
+            <p>City skyline</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h3 ex-gallery-card--featured">
+            <div class="ex-gallery-img ex-gallery-img--3"></div>
+            <p>Featured: Panoramic landscape</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h1">
+            <div class="ex-gallery-img ex-gallery-img--4"></div>
+            <p>Forest trail</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h2">
+            <div class="ex-gallery-img ex-gallery-img--5"></div>
+            <p>Ocean waves</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h1">
+            <div class="ex-gallery-img ex-gallery-img--6"></div>
+            <p>Night sky</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h3">
+            <div class="ex-gallery-img ex-gallery-img--7"></div>
+            <p>Street photography</p>
+          </div>
+          <div class="ex-gallery-card ex-gallery-card--h2">
+            <div class="ex-gallery-img ex-gallery-img--8"></div>
+            <p>Abstract architecture</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="gallery">
+  <div class="card card--tall">
+    <div class="card-img" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); height: 200px;"></div>
+    <p>Sunset over mountains</p>
+  </div>
+  <div class="card card--short">
+    <div class="card-img" style="background: linear-gradient(135deg, #f43f5e, #fb7185); height: 120px;"></div>
+    <p>City skyline</p>
+  </div>
+  <div class="card card--featured">
+    <div class="card-img" style="background: linear-gradient(135deg, #06b6d4, #22d3ee); height: 180px;"></div>
+    <p>Featured: Panoramic landscape</p>
+  </div>
+  <div class="card card--medium">
+    <div class="card-img" style="background: linear-gradient(135deg, #10b981, #34d399); height: 160px;"></div>
+    <p>Forest trail</p>
+  </div>
+  <div class="card card--short">
+    <div class="card-img" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); height: 100px;"></div>
+    <p>Ocean waves</p>
+  </div>
+  <div class="card card--tall">
+    <div class="card-img" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa); height: 220px;"></div>
+    <p>Night sky</p>
+  </div>
+  <div class="card card--medium">
+    <div class="card-img" style="background: linear-gradient(135deg, #ec4899, #f472b6); height: 150px;"></div>
+    <p>Street photography</p>
+  </div>
+  <div class="card card--short">
+    <div class="card-img" style="background: linear-gradient(135deg, #14b8a6, #2dd4bf); height: 130px;"></div>
+    <p>Abstract architecture</p>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* Baseline: CSS Columns fallback */
+.gallery {
+  column-count: 3;
+  column-gap: 1rem;
+}
+
+.card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: #1a1d27;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #2a2d3a;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.card-img {
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+}
+
+.card p {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #b0b3c0;
+}
+
+/* Enhancement: native masonry */
+@supports (display: masonry) {
+  .gallery {
+    display: masonry;
+    masonry-template-tracks: repeat(3, 1fr);
+    gap: 1rem;
+    column-count: unset;
+  }
+
+  .card {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+
+  .card--featured {
+    masonry-track: span 2;
+  }
+}
+
+/* Responsive: 2 columns on small screens */
+@media (max-width: 640px) {
+  .gallery {
+    column-count: 2;
+  }
+
+  @supports (display: masonry) {
+    .gallery {
+      masonry-template-tracks: repeat(2, 1fr);
+    }
+  }
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Portfolio Showcase</h2>
+      <p>Build a complete portfolio page using masonry layout with all the techniques from this module: responsive tracks, featured spanning items, <code>masonry-auto-flow</code>, and progressive enhancement.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Layout:</strong> Use <code>display: masonry</code> with <code>repeat(auto-fill, minmax(280px, 1fr))</code> for a fluid column count that adapts from 1 to 4+ columns.</li>
+          <li><strong>Featured Items:</strong> At least 2 cards should use <code>masonry-track: span 2</code> to span two columns. Give them a distinct visual treatment (border accent, larger image, "Featured" badge).</li>
+          <li><strong>Flow Control:</strong> Use <code>masonry-auto-flow: pack</code> for tight packing. Add a comment showing the <code>next</code> alternative.</li>
+          <li><strong>Categories:</strong> Include at least 10 portfolio cards with project images (gradient placeholders), titles, descriptions, and category tags (Design, Development, Branding, etc.).</li>
+          <li><strong>Hover Effects:</strong> Cards should lift on hover with <code>translateY(-6px)</code>, an increased shadow, and a border color shift to the accent color.</li>
+          <li><strong>Progressive Enhancement:</strong> Write CSS Columns as the baseline. Wrap all masonry properties in <code>@supports (display: masonry)</code>.</li>
+          <li><strong>Responsive:</strong> At <code>max-width: 640px</code>, the featured cards should revert to <code>masonry-track: span 1</code> (single column).</li>
+          <li><strong>Dark Theme:</strong> Use the dark color scheme (#0f1117 background, #e4e6ef text, #6c5ce7 accent).</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Start with the CSS Columns fallback first, get the layout looking good, then layer in <code>@supports (display: masonry)</code>.</li>
+          <li>Use gradient backgrounds for the image placeholders: <code>linear-gradient(135deg, color1, color2)</code>.</li>
+          <li>Give featured cards a left border accent: <code>border-left: 4px solid #6c5ce7</code>.</li>
+          <li>For category tags, use small inline elements with <code>display: inline-block</code>, a subtle background, and rounded corners.</li>
+          <li>Consider adding <code>masonry-direction: column</code> explicitly for clarity, even though it is the default.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="portfolio">
+  <div class="project project--featured">
+    <div class="project-img" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe); height: 200px;"></div>
+    <div class="project-body">
+      <span class="project-badge">Featured</span>
+      <h3>Design System v3</h3>
+      <p>Enterprise component library with 200+ components, design tokens, and Figma integration.</p>
+      <div class="project-tags">
+        <span>Design</span><span>Systems</span><span>Figma</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #00b894, #55efc4); height: 140px;"></div>
+    <div class="project-body">
+      <h3>Analytics Dashboard</h3>
+      <p>Real-time metrics with custom chart components.</p>
+      <div class="project-tags">
+        <span>Development</span><span>D3.js</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #fd79a8, #e84393); height: 180px;"></div>
+    <div class="project-body">
+      <h3>Brand Identity</h3>
+      <p>Complete brand overhaul including logo, typography, and color palette.</p>
+      <div class="project-tags">
+        <span>Branding</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #0984e3, #74b9ff); height: 120px;"></div>
+    <div class="project-body">
+      <h3>Mobile App</h3>
+      <p>Cross-platform fitness tracker.</p>
+      <div class="project-tags">
+        <span>Development</span><span>Mobile</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project project--featured">
+    <div class="project-img" style="background: linear-gradient(135deg, #e17055, #fab1a0); height: 160px;"></div>
+    <div class="project-body">
+      <span class="project-badge">Featured</span>
+      <h3>E-commerce Platform</h3>
+      <p>Full-stack marketplace with payment processing, inventory management, and admin dashboard.</p>
+      <div class="project-tags">
+        <span>Development</span><span>Full-Stack</span><span>Stripe</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #636e72, #b2bec3); height: 150px;"></div>
+    <div class="project-body">
+      <h3>Documentation Site</h3>
+      <p>Developer docs with search and versioning.</p>
+      <div class="project-tags">
+        <span>Development</span><span>Docs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #fdcb6e, #ffeaa7); height: 130px;"></div>
+    <div class="project-body">
+      <h3>Icon Set</h3>
+      <p>500+ custom SVG icons in a consistent style.</p>
+      <div class="project-tags">
+        <span>Design</span><span>Icons</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); height: 170px;"></div>
+    <div class="project-body">
+      <h3>CLI Tool</h3>
+      <p>Project scaffolding and build pipeline automation.</p>
+      <div class="project-tags">
+        <span>Development</span><span>CLI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #00cec9, #81ecec); height: 110px;"></div>
+    <div class="project-body">
+      <h3>Motion Design</h3>
+      <p>Animated illustrations for onboarding.</p>
+      <div class="project-tags">
+        <span>Design</span><span>Animation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-img" style="background: linear-gradient(135deg, #e84393, #fd79a8); height: 190px;"></div>
+    <div class="project-body">
+      <h3>Social Platform</h3>
+      <p>Community forum with real-time messaging and content moderation tools.</p>
+      <div class="project-tags">
+        <span>Development</span><span>Full-Stack</span>
+      </div>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* === Baseline: CSS Columns Fallback === */
+.portfolio {
+  column-count: 3;
+  column-gap: 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+.project {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: #1a1d27;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #2a2d3a;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.project:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  border-color: #6c5ce7;
+}
+
+.project--featured {
+  border-left: 4px solid #6c5ce7;
+}
+
+.project-img {
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+}
+
+.project-body {
+  padding: 1.25rem;
+}
+
+.project-badge {
+  display: inline-block;
+  background: rgba(108, 92, 231, 0.2);
+  color: #a29bfe;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.project-body h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  color: #e4e6ef;
+}
+
+.project-body p {
+  font-size: 0.85rem;
+  color: #8a8d9b;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.project-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.project-tags span {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(108, 92, 231, 0.12);
+  color: #a29bfe;
+  border-radius: 4px;
+}
+
+/* === Enhancement: Native Masonry === */
+@supports (display: masonry) {
+  .portfolio {
+    display: masonry;
+    masonry-template-tracks: repeat(auto-fill, minmax(280px, 1fr));
+    masonry-auto-flow: pack; /* Try: next */
+    gap: 1rem;
+    column-count: unset;
+  }
+
+  .project {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+
+  .project--featured {
+    masonry-track: span 2;
+  }
+}
+
+/* === Responsive === */
+@media (max-width: 640px) {
+  .portfolio {
+    column-count: 1;
+  }
+
+  @supports (display: masonry) {
+    .portfolio {
+      masonry-template-tracks: 1fr;
+    }
+    .project--featured {
+      masonry-track: span 1;
+    }
+  }
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../16-css-mixins/index.html">&larr; Previous</a>
+    <a href="../18-popover-commands/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

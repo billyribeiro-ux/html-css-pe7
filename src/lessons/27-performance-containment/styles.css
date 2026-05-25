@@ -1,0 +1,962 @@
+/* ============================================
+   Module 27: CSS Performance & Containment
+   contain, content-visibility, will-change,
+   rendering pipeline, paint containment
+   ============================================ */
+
+/* ---- Level 8 Badge ---- */
+.level-badge.level-8 {
+  background: color-mix(in oklch, #6c5ce7 25%, transparent);
+  color: #a29bfe;
+  box-shadow: 0 0 14px color-mix(in oklch, #6c5ce7 35%, transparent);
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ---- Feature List ---- */
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.5rem 0;
+}
+
+.feature-list li {
+  padding: 0.75rem 0 0.75rem 2rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.feature-list li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-accent);
+  font-weight: 700;
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block Overrides ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================
+   Section 1: Rendering Pipeline Diagram
+   ============================================= */
+
+.pipeline-diagram {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 2rem 0;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.pipeline-stage {
+  flex: 1;
+  min-width: 140px;
+  padding: 1.25rem 1rem;
+  border-radius: var(--pe7-radius-lg);
+  position: relative;
+  text-align: center;
+  border: 1px solid var(--pe7-border);
+  background: var(--pe7-surface-2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pipeline-stage:hover {
+  border-color: var(--pe7-accent);
+  box-shadow: 0 4px 20px color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+}
+
+.pipeline-num {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  background: var(--pe7-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.pipeline-stage h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0.4rem;
+  color: var(--pe7-text);
+}
+
+.pipeline-stage p {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--pe7-text-muted);
+  margin: 0;
+}
+
+.pipeline-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--pe7-accent);
+  padding: 0 0.4rem;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+/* Color-coded pipeline stages */
+.pipeline-parse {
+  border-top: 3px solid #82aaff;
+}
+.pipeline-style {
+  border-top: 3px solid #c792ea;
+}
+.pipeline-layout {
+  border-top: 3px solid #ff7675;
+}
+.pipeline-paint {
+  border-top: 3px solid #00cec9;
+}
+.pipeline-composite {
+  border-top: 3px solid #fdcb6e;
+}
+
+@media (max-width: 768px) {
+  .pipeline-diagram {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pipeline-arrow {
+    transform: rotate(90deg);
+    padding: 0.25rem 0;
+  }
+
+  .pipeline-stage {
+    min-width: unset;
+  }
+}
+
+/* =============================================
+   Section 1: Trigger Grid
+   ============================================= */
+
+.trigger-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.trigger-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  position: relative;
+}
+
+.trigger-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--pe7-text);
+}
+
+.trigger-label {
+  font-size: 0.75rem;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+  font-family: var(--pe7-font-mono);
+}
+
+.trigger-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.trigger-card li {
+  padding: 0.3rem 0;
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+}
+
+.trigger-card li code {
+  font-size: 0.82rem;
+}
+
+.trigger-cost {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+/* Layout trigger card */
+.trigger-layout {
+  border-top: 3px solid #ff7675;
+}
+.trigger-layout .trigger-cost {
+  background: color-mix(in oklch, #ff7675 15%, transparent);
+  color: #ff7675;
+}
+
+/* Paint trigger card */
+.trigger-paint {
+  border-top: 3px solid #fdcb6e;
+}
+.trigger-paint .trigger-cost {
+  background: color-mix(in oklch, #fdcb6e 15%, transparent);
+  color: #fdcb6e;
+}
+
+/* Composite trigger card */
+.trigger-comp {
+  border-top: 3px solid #00cec9;
+}
+.trigger-comp .trigger-cost {
+  background: color-mix(in oklch, #00cec9 15%, transparent);
+  color: #00cec9;
+}
+
+@media (max-width: 768px) {
+  .trigger-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 2: Containment Grid
+   ============================================= */
+
+.contain-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.contain-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+
+.contain-card:hover {
+  border-color: var(--pe7-accent);
+}
+
+.contain-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-accent-light);
+}
+
+.contain-card h4 code {
+  font-size: inherit;
+  background: none;
+  padding: 0;
+}
+
+.contain-card p {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.contain-when {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  padding: 0.75rem 1rem;
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+  border-radius: var(--pe7-radius);
+  color: var(--pe7-text);
+}
+
+.contain-when strong {
+  color: var(--pe7-accent-light);
+}
+
+@media (max-width: 640px) {
+  .contain-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 2: Containment Comparison Demo
+   ============================================= */
+
+.contain-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.contain-demo-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.25rem;
+  position: relative;
+  min-height: 160px;
+}
+
+.contain-demo-card h5 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-text);
+}
+
+.contain-demo-inner {
+  position: relative;
+  height: 80px;
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+  border: 1px dashed var(--pe7-accent);
+  border-radius: var(--pe7-radius);
+  padding: 0.5rem;
+}
+
+.contain-demo-overflow {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--pe7-text-muted);
+}
+
+.contain-none .contain-demo-inner {
+  overflow: visible;
+}
+
+.contain-content .contain-demo-inner {
+  contain: paint;
+  overflow: hidden;
+}
+
+.contain-demo-label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--pe7-accent-light);
+  text-align: center;
+  background: none;
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .contain-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 3: Content-Visibility Scroll List
+   ============================================= */
+
+.cv-scroll-container {
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  background: var(--pe7-bg);
+  contain: paint;
+}
+
+.cv-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cv-scroll-container::-webkit-scrollbar-track {
+  background: var(--pe7-surface);
+}
+
+.cv-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--pe7-border);
+  border-radius: 3px;
+}
+
+.cv-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--pe7-accent);
+}
+
+.cv-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--pe7-border);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 72px;
+  transition: background 0.2s ease;
+}
+
+.cv-item:last-child {
+  border-bottom: none;
+}
+
+.cv-item:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 5%, transparent);
+}
+
+.cv-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--pe7-radius);
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  color: var(--pe7-accent-light);
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  font-family: var(--pe7-font-mono);
+}
+
+.cv-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.cv-body strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--pe7-text);
+  margin-bottom: 0.2rem;
+}
+
+.cv-body p {
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* =============================================
+   Section 4: will-change Demo
+   ============================================= */
+
+.wc-demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.wc-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  transition: transform 0.3s ease;
+  cursor: default;
+}
+
+.wc-card h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-text);
+}
+
+.wc-card p {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.wc-card code {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--pe7-accent-light);
+  margin-bottom: 0.5rem;
+  background: none;
+  padding: 0;
+}
+
+.wc-badge {
+  position: absolute;
+  top: -0.6em;
+  right: 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+}
+
+.wc-badge--good {
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+}
+
+.wc-badge--bad {
+  background: var(--pe7-danger);
+  color: white;
+}
+
+.wc-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+}
+
+/* Correct pattern: will-change only on hover */
+.wc-card--good:hover {
+  will-change: transform;
+  transform: translateY(-8px);
+  border-color: var(--pe7-success);
+  box-shadow: 0 12px 32px color-mix(in oklch, var(--pe7-success) 15%, transparent);
+}
+
+/* Anti-pattern: permanent will-change */
+.wc-card--bad {
+  will-change: transform;
+}
+
+.wc-card--bad:hover {
+  transform: translateY(-8px);
+  border-color: var(--pe7-danger);
+  box-shadow: 0 12px 32px color-mix(in oklch, var(--pe7-danger) 15%, transparent);
+}
+
+@media (max-width: 640px) {
+  .wc-demo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 5: Paint Containment List
+   ============================================= */
+
+.paint-list-container {
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  background: var(--pe7-bg);
+}
+
+.paint-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--pe7-border);
+  contain: content;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.paint-list-item:last-child {
+  border-bottom: none;
+}
+
+.paint-list-item:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  transform: translateX(4px);
+}
+
+.paint-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pe7-accent);
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.paint-list-item:hover .paint-dot {
+  opacity: 1;
+}
+
+.paint-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.paint-item-content strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--pe7-text);
+  margin-bottom: 0.15rem;
+}
+
+.paint-item-content small {
+  font-size: 0.75rem;
+  color: var(--pe7-text-muted);
+}
+
+.paint-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.paint-status--ok {
+  background: color-mix(in oklch, var(--pe7-success) 15%, transparent);
+  color: var(--pe7-success);
+}
+
+/* =============================================
+   Section 6: Best Practices Grid
+   ============================================= */
+
+.best-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.best-card {
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--pe7-border);
+}
+
+.best-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.best-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.best-card li {
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  position: relative;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+}
+
+.best-do {
+  background: color-mix(in oklch, var(--pe7-success) 5%, var(--pe7-surface));
+  border-color: color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
+}
+
+.best-do h4 {
+  color: var(--pe7-success);
+}
+
+.best-do li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-success);
+  font-weight: 700;
+}
+
+.best-dont {
+  background: color-mix(in oklch, var(--pe7-danger) 5%, var(--pe7-surface));
+  border-color: color-mix(in oklch, var(--pe7-danger) 30%, var(--pe7-border));
+}
+
+.best-dont h4 {
+  color: var(--pe7-danger);
+}
+
+.best-dont li::before {
+  content: "\2717";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-danger);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .best-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 7: DevTools Checklist
+   ============================================= */
+
+.devtools-checklist {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.devtools-checklist h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--pe7-text);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-border) 50%, transparent);
+}
+
+.check-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.check-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--pe7-border);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.check-item:hover .check-box {
+  border-color: var(--pe7-accent);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
+}
+
+/* =============================================
+   Exercise & Challenge Sections
+   ============================================= */
+
+.exercise-requirements,
+.challenge-requirements {
+  margin: 1.5rem 0;
+}
+
+.exercise-requirements h3,
+.challenge-requirements h3,
+.exercise-starter h3,
+.challenge-hints h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.exercise-requirements ul,
+.challenge-requirements ul,
+.challenge-hints ul {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.exercise-requirements li,
+.challenge-requirements li,
+.challenge-hints li {
+  margin-bottom: 0.5rem;
+  font-size: 0.925rem;
+  color: var(--pe7-text);
+}
+
+.exercise-starter {
+  margin-top: 2rem;
+}
+
+.challenge-hints {
+  margin: 1.5rem 0;
+}
+
+/* =============================================
+   Reduced Motion
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-stage,
+  .contain-card,
+  .wc-card,
+  .wc-card--good,
+  .wc-card--bad,
+  .paint-list-item,
+  .cv-item {
+    transition: none;
+  }
+
+  .paint-dot {
+    transition: none;
+  }
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 480px) {
+  .pipeline-stage {
+    padding: 1rem 0.75rem;
+  }
+
+  .pipeline-stage h4 {
+    font-size: 0.85rem;
+  }
+
+  .pipeline-stage p {
+    font-size: 0.72rem;
+  }
+
+  .trigger-card {
+    padding: 1.25rem;
+  }
+
+  .contain-card {
+    padding: 1.25rem;
+  }
+
+  .cv-item {
+    padding: 0.85rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .cv-num {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+
+  .wc-card {
+    padding: 1.25rem;
+  }
+
+  .paint-list-item {
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .paint-status {
+    display: none;
+  }
+
+  .check-item {
+    font-size: 0.82rem;
+  }
+}

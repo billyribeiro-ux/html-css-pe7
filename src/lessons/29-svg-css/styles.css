@@ -1,0 +1,960 @@
+/* ================================================================
+   Module 29: SVG & CSS Integration
+   Dark theme styles for all SVG demos, animations, and patterns
+   ================================================================ */
+
+/* ── Module-scoped custom properties ── */
+:root {
+  --svg-bg: #0f1117;
+  --svg-surface: #1a1d27;
+  --svg-surface-2: #242836;
+  --svg-border: #2d3148;
+  --svg-text: #e4e6ef;
+  --svg-text-muted: #8b8fa3;
+  --svg-accent: #6c5ce7;
+  --svg-accent-light: #a29bfe;
+  --svg-danger: #e17055;
+  --svg-success: #00cec9;
+  --svg-warning: #fdcb6e;
+}
+
+/* ── Demo instruction text ── */
+.demo-instruction {
+  font-style: italic;
+  color: var(--svg-text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.demo-instruction code {
+  font-style: normal;
+  background: var(--svg-surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.82em;
+}
+
+/* ── Info box ── */
+.info-box {
+  background: var(--svg-surface-2);
+  border-left: 4px solid var(--svg-accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--svg-text-muted);
+}
+
+.info-box strong {
+  color: var(--svg-accent-light);
+}
+
+/* ----------------------------------------------------------------
+   SECTION 1: Inline SVG Styling — Property Demo Grid
+   ---------------------------------------------------------------- */
+.svg-props-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 1rem;
+}
+
+.svg-prop-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.75rem;
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.25s ease,
+              background-color 0.25s ease;
+}
+
+.svg-prop-card:hover {
+  border-color: var(--svg-accent);
+  background: var(--svg-surface-2);
+}
+
+.svg-prop-card span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--svg-text-muted);
+  font-family: var(--pe7-font-mono, monospace);
+  letter-spacing: 0.02em;
+}
+
+.svg-prop-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Shape: fill */
+.shape-fill {
+  fill: var(--svg-accent);
+  transition: fill 0.3s ease;
+}
+.svg-prop-card:hover .shape-fill {
+  fill: var(--svg-accent-light);
+}
+
+/* Shape: stroke */
+.shape-stroke {
+  fill: none;
+  stroke: var(--svg-accent);
+  stroke-width: 3;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+.svg-prop-card:hover .shape-stroke {
+  stroke: var(--svg-success);
+  stroke-width: 5;
+}
+
+/* Shape: dasharray */
+.shape-dashed {
+  fill: none;
+  stroke: var(--svg-accent);
+  stroke-width: 2.5;
+  stroke-dasharray: 0 200;
+  transition: stroke-dasharray 0.5s ease, stroke 0.3s ease;
+}
+.svg-prop-card:hover .shape-dashed {
+  stroke-dasharray: 8 4;
+  stroke: var(--svg-warning);
+}
+
+/* Shape: linejoin */
+.shape-linejoin {
+  fill: none;
+  stroke: var(--svg-accent);
+  stroke-width: 3;
+  stroke-linejoin: miter;
+  transition: stroke 0.3s ease, fill 0.3s ease;
+}
+.svg-prop-card:hover .shape-linejoin {
+  stroke: var(--svg-danger);
+  stroke-linejoin: round;
+  fill: rgba(225, 112, 85, 0.15);
+}
+
+/* Shape: linecap */
+.shape-linecap {
+  stroke: var(--svg-accent);
+  stroke-width: 6;
+  stroke-linecap: butt;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+.svg-prop-card:hover .shape-linecap {
+  stroke: var(--svg-success);
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+/* Shape: opacity */
+.shape-opacity {
+  fill: var(--svg-accent);
+  opacity: 1;
+  transition: opacity 0.4s ease, fill 0.3s ease;
+}
+.svg-prop-card:hover .shape-opacity {
+  opacity: 0.35;
+  fill: var(--svg-accent-light);
+}
+
+/* ----------------------------------------------------------------
+   SECTION 2: currentColor — Icon Grid
+   ---------------------------------------------------------------- */
+.cc-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
+}
+
+.cc-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 0.5rem;
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 10px;
+  color: var(--svg-text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.25s ease,
+              border-color 0.25s ease,
+              background-color 0.25s ease;
+}
+
+.cc-icon-item:hover {
+  color: var(--svg-accent);
+  border-color: var(--svg-accent);
+  background: var(--svg-surface-2);
+}
+
+.cc-icon-item span {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.cc-icon {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ----------------------------------------------------------------
+   SECTION 3: Custom Properties — Themed Icons
+   ---------------------------------------------------------------- */
+.theme-switcher {
+  /* Default theme (purple) */
+  --ti-primary: #6c5ce7;
+  --ti-secondary: rgba(108, 92, 231, 0.2);
+  --ti-fg: #e4e6ef;
+}
+
+/* Theme switching via radio buttons */
+#theme-warm:checked ~ .themed-icons-row {
+  --ti-primary: #e17055;
+  --ti-secondary: rgba(225, 112, 85, 0.2);
+  --ti-fg: #fab1a0;
+}
+
+#theme-ocean:checked ~ .themed-icons-row {
+  --ti-primary: #0984e3;
+  --ti-secondary: rgba(9, 132, 227, 0.2);
+  --ti-fg: #74b9ff;
+}
+
+#theme-forest:checked ~ .themed-icons-row {
+  --ti-primary: #00b894;
+  --ti-secondary: rgba(0, 184, 148, 0.2);
+  --ti-fg: #55efc4;
+}
+
+.theme-btns {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.theme-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--svg-border);
+  background: var(--svg-surface);
+  color: var(--svg-text-muted);
+  transition: border-color 0.2s ease,
+              background-color 0.2s ease,
+              color 0.2s ease;
+}
+
+.theme-btn:hover {
+  border-color: var(--svg-text-muted);
+}
+
+/* Active state for theme buttons */
+#theme-default:checked ~ .theme-btns .theme-btn-default,
+#theme-warm:checked ~ .theme-btns .theme-btn-warm,
+#theme-ocean:checked ~ .theme-btns .theme-btn-ocean,
+#theme-forest:checked ~ .theme-btns .theme-btn-forest {
+  border-color: var(--svg-accent);
+  background: var(--svg-accent);
+  color: #fff;
+}
+
+.theme-btn-warm:hover { border-color: #e17055; }
+.theme-btn-ocean:hover { border-color: #0984e3; }
+.theme-btn-forest:hover { border-color: #00b894; }
+
+.themed-icons-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 1rem;
+  transition: --ti-primary 0.4s ease;
+}
+
+.themed-icon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.5rem;
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+}
+
+.themed-icon-card:hover {
+  border-color: var(--ti-primary, var(--svg-accent));
+}
+
+.themed-icon-card span {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--svg-text-muted);
+}
+
+.themed-icon {
+  width: 56px;
+  height: 56px;
+}
+
+/* Two-tone icon fill layers */
+.ti-bg {
+  fill: var(--ti-secondary, rgba(108, 92, 231, 0.2));
+  stroke: var(--ti-primary, #6c5ce7);
+  stroke-width: 1.5;
+  transition: fill 0.4s ease, stroke 0.4s ease;
+}
+
+.ti-fg {
+  stroke: var(--ti-primary, #6c5ce7);
+  transition: stroke 0.4s ease;
+}
+
+.ti-fg-fill {
+  fill: var(--ti-primary, #6c5ce7);
+  transition: fill 0.4s ease;
+}
+
+/* ----------------------------------------------------------------
+   SECTION 4: SVG Animations — Line Drawing
+   ---------------------------------------------------------------- */
+.line-draw-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 12px;
+}
+
+.line-draw-svg {
+  width: 100%;
+  max-width: 450px;
+}
+
+.line-draw-label {
+  font-size: 0.8rem;
+  color: var(--svg-text-muted);
+  margin-top: 1rem;
+  font-style: italic;
+  transition: opacity 0.3s ease;
+}
+
+.line-draw-stage:hover .line-draw-label {
+  opacity: 0;
+}
+
+/* All line-draw paths */
+.ld-path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ld-mountain {
+  stroke: var(--svg-accent);
+  stroke-width: 2.5;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  transition: stroke-dashoffset 1.8s ease;
+}
+
+.ld-sun {
+  stroke: var(--svg-warning);
+  stroke-width: 2;
+  stroke-dasharray: 130;
+  stroke-dashoffset: 130;
+  transition: stroke-dashoffset 1s ease 0.6s;
+}
+
+.ld-ray {
+  stroke: var(--svg-warning);
+  stroke-width: 2;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.ld-ray:nth-of-type(1) { transition-delay: 1.2s; }
+.ld-ray:nth-of-type(2) { transition-delay: 1.3s; }
+.ld-ray:nth-of-type(3) { transition-delay: 1.4s; }
+.ld-ray:nth-of-type(4) { transition-delay: 1.5s; }
+.ld-ray:nth-of-type(5) { transition-delay: 1.6s; }
+.ld-ray:nth-of-type(6) { transition-delay: 1.7s; }
+.ld-ray:nth-of-type(7) { transition-delay: 1.8s; }
+.ld-ray:nth-of-type(8) { transition-delay: 1.9s; }
+
+.ld-ground {
+  stroke: var(--svg-text-muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  transition: stroke-dashoffset 0.8s ease 0.3s;
+}
+
+.ld-tree {
+  stroke: var(--svg-success);
+  stroke-width: 2;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.ld-tree:nth-of-type(1) { transition-delay: 2.0s; }
+.ld-tree:nth-of-type(2) { transition-delay: 2.2s; }
+
+/* Trigger on hover */
+.line-draw-stage:hover .ld-path {
+  stroke-dashoffset: 0;
+}
+
+/* ── Animated SVG Spinners ── */
+.spinner-stage {
+  display: flex;
+  justify-content: center;
+  gap: 3.5rem;
+  padding: 2rem 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.svg-spinner {
+  width: 48px;
+  height: 48px;
+}
+
+.spinner-track {
+  fill: none;
+  stroke: var(--svg-border);
+  stroke-width: 4;
+}
+
+/* Spinner 1: rotating dash */
+@keyframes spinner-rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinner-dash {
+  0% {
+    stroke-dasharray: 1 126;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 80 126;
+    stroke-dashoffset: -30;
+  }
+  100% {
+    stroke-dasharray: 80 126;
+    stroke-dashoffset: -126;
+  }
+}
+
+.spinner-fill {
+  fill: none;
+  stroke: var(--svg-accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transform-origin: center;
+  animation: spinner-rotate 2s linear infinite,
+             spinner-dash 1.5s ease-in-out infinite;
+}
+
+/* Spinner 2: pulsing ring */
+@keyframes spinner-pulse {
+  0% {
+    stroke-dasharray: 0 126;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  50% {
+    stroke-dasharray: 126 126;
+    opacity: 0.6;
+  }
+  100% {
+    stroke-dasharray: 126 126;
+    stroke-dashoffset: -126;
+    opacity: 1;
+  }
+}
+
+.spinner-fill-alt {
+  fill: none;
+  stroke: var(--svg-success);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transform-origin: center;
+  animation: spinner-rotate 3s linear infinite,
+             spinner-pulse 2s ease-in-out infinite;
+}
+
+/* Spinner 3: dot spinner */
+@keyframes dot-fade {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 1; }
+}
+
+.spinner-dot {
+  fill: var(--svg-accent-light);
+  animation: dot-fade 1.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.15s);
+}
+
+.spinner-dots-svg {
+  animation: spinner-rotate 4s linear infinite;
+}
+
+/* ----------------------------------------------------------------
+   SECTION 5: SVG Backgrounds — Decorative Dividers
+   ---------------------------------------------------------------- */
+.divider-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.divider-section {
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.divider-section > span {
+  display: block;
+  padding: 1.25rem 1.25rem 3.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--svg-text-muted);
+}
+
+/* Wave divider */
+.divider-wave {
+  height: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120 Z' fill='%236c5ce7'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+/* Zigzag divider */
+.divider-zigzag {
+  height: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpolygon points='0,0 100,60 200,0 300,60 400,0 500,60 600,0 700,60 800,0 900,60 1000,0 1100,60 1200,0 1200,60 0,60' fill='%2300cec9'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+/* Curve divider */
+.divider-curve {
+  height: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,120 Q600,-40 1200,120 Z' fill='%23e17055'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+/* ----------------------------------------------------------------
+   SECTION 6: SVG Filters & Blend Modes
+   ---------------------------------------------------------------- */
+.filter-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 1rem;
+}
+
+.filter-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.25rem 0.75rem;
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 10px;
+  transition: border-color 0.25s ease;
+}
+
+.filter-card:hover {
+  border-color: var(--svg-accent);
+}
+
+.filter-card span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--svg-text-muted);
+  text-align: center;
+}
+
+.filter-shape {
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+}
+
+/* ----------------------------------------------------------------
+   SECTION 7: Practical Patterns — Icon Button System
+   ---------------------------------------------------------------- */
+.icon-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid var(--svg-border);
+  background: var(--svg-surface);
+  border-radius: 8px;
+  color: var(--svg-accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.25s ease,
+              background-color 0.25s ease,
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+}
+
+.icon-btn:hover {
+  background: var(--svg-accent);
+  border-color: var(--svg-accent);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+}
+
+.icon-btn-danger {
+  color: var(--svg-danger);
+}
+.icon-btn-danger:hover {
+  background: var(--svg-danger);
+  border-color: var(--svg-danger);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(225, 112, 85, 0.35);
+}
+
+.icon-btn-success {
+  color: var(--svg-success);
+}
+.icon-btn-success:hover {
+  background: var(--svg-success);
+  border-color: var(--svg-success);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 206, 201, 0.35);
+}
+
+.icon-btn-warning {
+  color: var(--svg-warning);
+}
+.icon-btn-warning:hover {
+  background: #e17055;
+  border-color: #e17055;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(253, 203, 110, 0.35);
+}
+
+.icon-btn-svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ib-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Animated Logo ── */
+.logo-stage {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 12px;
+}
+
+.animated-logo {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Letter paths */
+@keyframes logo-draw {
+  from {
+    stroke-dashoffset: 250;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.logo-letter {
+  fill: none;
+  stroke: var(--svg-accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 250;
+  stroke-dashoffset: 250;
+  animation: logo-draw 1.2s ease forwards;
+  animation-delay: calc(var(--i) * 0.4s);
+}
+
+/* Dot pulse */
+@keyframes logo-dot-appear {
+  0% {
+    fill: transparent;
+    r: 0;
+  }
+  60% {
+    fill: var(--svg-accent-light);
+    r: 8;
+  }
+  100% {
+    fill: var(--svg-accent-light);
+    r: 6;
+  }
+}
+
+.logo-dot {
+  fill: transparent;
+  animation: logo-dot-appear 0.5s ease forwards 1.4s;
+}
+
+/* Decorative lines */
+@keyframes logo-line-draw {
+  from { stroke-dashoffset: 60; }
+  to { stroke-dashoffset: 0; }
+}
+
+.logo-line {
+  fill: none;
+  stroke: var(--svg-text-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: logo-line-draw 0.5s ease forwards;
+  animation-delay: calc(var(--i) * 0.3s);
+}
+
+/* ── Interactive SVG Bar Chart ── */
+.chart-stage {
+  background: var(--svg-surface);
+  border: 1px solid var(--svg-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.bar-chart {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: block;
+}
+
+.chart-axis {
+  stroke: var(--svg-border);
+  stroke-width: 1.5;
+}
+
+.chart-gridline {
+  stroke: var(--svg-border);
+  stroke-width: 0.5;
+  stroke-dasharray: 4 3;
+  opacity: 0.5;
+}
+
+.chart-label {
+  fill: var(--svg-text-muted);
+  font-size: 10px;
+  font-family: system-ui, sans-serif;
+  text-anchor: middle;
+}
+
+.chart-label-y {
+  text-anchor: end;
+  font-size: 9px;
+}
+
+/* Bar animation */
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.chart-bar {
+  fill: var(--svg-accent);
+  transform-origin: bottom center;
+  transform-box: fill-box;
+  animation: bar-grow 0.6s ease forwards;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+  transition: fill 0.25s ease;
+  cursor: pointer;
+}
+
+.chart-bar-group:hover .chart-bar {
+  fill: var(--svg-accent-light);
+}
+
+/* Value labels */
+.chart-val {
+  fill: var(--svg-accent-light);
+  font-size: 10px;
+  font-weight: 700;
+  font-family: system-ui, sans-serif;
+  text-anchor: middle;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.chart-bar-group:hover .chart-val {
+  opacity: 1;
+}
+
+/* ----------------------------------------------------------------
+   EXERCISE & CHALLENGE: Live editor wrappers
+   ---------------------------------------------------------------- */
+
+/* Exercise and challenge sections use live-editors
+   that are self-contained — these rules provide
+   the context for surrounding content */
+
+.exercise ol,
+.challenge ol {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.exercise ol li,
+.challenge ol li {
+  margin-bottom: 0.5rem;
+}
+
+.exercise ol li strong,
+.challenge ol li strong {
+  color: var(--svg-accent-light);
+}
+
+/* ----------------------------------------------------------------
+   Accessibility: Reduced Motion
+   ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations */
+  .ld-path {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+
+  .logo-letter,
+  .logo-dot,
+  .logo-line {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+    fill: var(--svg-accent-light) !important;
+  }
+
+  .spinner-fill,
+  .spinner-fill-alt,
+  .spinner-dots-svg,
+  .spinner-dot {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .chart-bar {
+    animation: none !important;
+    transform: scaleY(1) !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Responsive Adjustments
+   ---------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .svg-props-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cc-icon-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .themed-icons-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .icon-btn-row {
+    flex-direction: column;
+  }
+
+  .icon-btn {
+    justify-content: center;
+  }
+
+  .spinner-stage {
+    gap: 2rem;
+  }
+
+  .line-draw-svg {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .svg-props-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cc-icon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .theme-btns {
+    flex-direction: column;
+  }
+
+  .theme-btn {
+    text-align: center;
+  }
+}

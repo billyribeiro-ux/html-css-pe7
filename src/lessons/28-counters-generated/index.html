@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generated Content &amp; CSS Counters | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 28</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-9">Level 9 - PE7 Grand Mastery</span>
+    <h1>Generated Content &amp; CSS Counters</h1>
+    <p class="subtitle">CSS can create content that does not exist in your HTML. Counters that increment themselves. Markers that style themselves. Numbering systems you invent from scratch. This module puts the browser to work generating text, numbering, and decorative elements so your markup stays clean and your styling stays powerful.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: THE CONTENT PROPERTY -->
+    <!-- ============================== -->
+    <section class="concept-section" id="content-property">
+      <h2>1. The <code>content</code> Property</h2>
+      <p>The <code>content</code> property is the engine behind all generated content in CSS. It works exclusively on <code>::before</code> and <code>::after</code> pseudo-elements (plus <code>::marker</code>), injecting text, images, attribute values, and counter values into the rendering tree without touching the DOM.</p>
+
+      <p>This is not decoration for decoration's sake. Generated content powers breadcrumb separators, required-field asterisks, external-link indicators, quote marks, numbering systems, and dozens of other patterns that would otherwise require meaningless <code>&lt;span&gt;</code> elements polluting your markup.</p>
+
+      <h3>String Values</h3>
+      <p>The simplest use: inject a literal string before or after an element.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Required field indicator */
+.required-label::after {
+  content: " *";
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* External link indicator */
+a[href^="http"]::after {
+  content: " \2197";  /* Unicode arrow */
+  font-size: 0.8em;
+}
+
+/* Quoted text */
+blockquote::before {
+  content: "\201C";  /* Left double quotation mark */
+  font-size: 3rem;
+  color: #6c5ce7;
+}
+
+blockquote::after {
+  content: "\201D";  /* Right double quotation mark */
+}</code></pre>
+      </div>
+
+      <h3>The <code>attr()</code> Function</h3>
+      <p>Pull attribute values from the element and render them as generated content. This is enormously useful for tooltips, data labels, and responsive tables:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Show href on print */
+@media print {
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #666;
+  }
+}
+
+/* Data attribute as label */
+.data-cell::before {
+  content: attr(data-label) ": ";
+  font-weight: 700;
+  display: none;
+}
+
+/* Show labels on small screens (responsive table) */
+@media (max-width: 600px) {
+  .data-cell::before {
+    display: inline;
+  }
+}</code></pre>
+      </div>
+
+      <h3>Concatenating Values &amp; <code>url()</code></h3>
+      <p>The <code>content</code> property accepts multiple values separated by spaces, concatenated in order. It also takes <code>url()</code> for inserting images:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Image before a link */
+.download-link::before {
+  content: url("icon-download.svg");
+  vertical-align: middle;
+  margin-inline-end: 0.5rem;
+}
+
+/* Combine string + attr + string */
+.tooltip::after {
+  content: "Value: " attr(data-value) " units";
+}
+
+/* Combine counter + string + counter */
+.sub-heading::before {
+  content: counter(chapter) "." counter(section) " ";
+}</code></pre>
+      </div>
+
+      <h3>Empty Content for Decorative Elements</h3>
+      <p>Setting <code>content: ""</code> creates a pseudo-element with no text &mdash; a blank canvas you can style into lines, shapes, overlays, and decorative effects:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Underline accent */
+.section-title::after {
+  content: "";
+  display: block;
+  inline-size: 60px;
+  block-size: 3px;
+  background: #6c5ce7;
+  margin-block-start: 0.5rem;
+  border-radius: 2px;
+}
+
+/* Full overlay */
+.card-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 40%, rgba(0,0,0,0.8));
+  border-radius: inherit;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Generated Content in Action</h4>
+        <p class="demo-note">Each element below uses <code>::before</code> or <code>::after</code> with the <code>content</code> property. No extra HTML elements were added for these visual features.</p>
+
+        <div class="content-demo">
+          <div class="content-demo-item">
+            <label class="demo-required-label">Email Address</label>
+            <div class="demo-input-placeholder"></div>
+          </div>
+          <div class="content-demo-item">
+            <a href="https://example.com" class="demo-external-link">Visit the documentation</a>
+          </div>
+          <div class="content-demo-item">
+            <blockquote class="demo-blockquote">CSS is the language that turns structure into experience.</blockquote>
+          </div>
+          <div class="content-demo-item">
+            <p class="demo-tooltip-text" data-info="Generated with attr()">Hover this element</p>
+          </div>
+          <div class="content-demo-item">
+            <h4 class="demo-underlined-heading">Section Title with Accent</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>content</code> property only generates <em>presentational</em> content. It is not part of the DOM, not selectable, not reliably read by all screen readers, and not indexable by search engines. Use it for decorative and supplementary content only. Never put critical information &mdash; error messages, navigation labels, prices &mdash; in <code>content</code>. If a user needs the information, it belongs in HTML.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: CSS COUNTERS        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="css-counters">
+      <h2>2. CSS Counters</h2>
+      <p>CSS counters are variables maintained by CSS whose values can be incremented, decremented, reset, and displayed &mdash; all without JavaScript. They power auto-numbered headings, step indicators, figure captions, table of contents, and any pattern where you need sequential numbers that update automatically when content is reordered.</p>
+
+      <h3><code>counter-reset</code>, <code>counter-increment</code>, <code>counter-set</code></h3>
+      <p>Three properties form the counter lifecycle: <code>counter-reset</code> creates a new counter (or resets to a value), <code>counter-increment</code> changes it each time the element is encountered, and <code>counter-set</code> jumps to a specific value without creating a new scope.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Create and reset counters */
+article {
+  counter-reset: section 0 figure 0 footnote 0;
+}
+
+/* Increment by 1 (default) */
+h2 {
+  counter-increment: section;
+  counter-reset: subsection;  /* Reset nested counter */
+}
+
+/* Increment by custom amount, or decrement */
+.even-only { counter-increment: section 2; }
+.countdown { counter-increment: countdown -1; }
+
+/* Set to a specific value without new scope */
+.special-section {
+  counter-set: section 99;
+}</code></pre>
+      </div>
+
+      <h3>The <code>counter()</code> Function</h3>
+      <p>Displays the current value of a counter inside the <code>content</code> property. Accepts an optional counter style:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Default decimal */
+h2::before {
+  content: counter(section) ". ";
+}
+
+/* Upper Roman */
+h2::before {
+  content: counter(section, upper-roman) ". ";
+}
+
+/* Lower Alpha */
+.sub-item::before {
+  content: counter(sub, lower-alpha) ") ";
+}
+
+/* Leading zeros with decimal-leading-zero */
+.track::before {
+  content: counter(track, decimal-leading-zero) " ";
+}</code></pre>
+      </div>
+
+      <h3>Nested Counters with <code>counters()</code></h3>
+      <p>The <code>counters()</code> function (plural) handles nested numbering like "1.2.3". It traverses the counter's scope chain, joining each level's value with a separator string:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Nested list numbering: 1, 1.1, 1.1.1, etc. */
+ol {
+  counter-reset: item;
+  list-style: none;
+  padding-inline-start: 1.5rem;
+}
+
+li {
+  counter-increment: item;
+}
+
+li::before {
+  content: counters(item, ".") " ";
+  font-weight: 700;
+  color: #6c5ce7;
+  margin-inline-end: 0.5rem;
+}</code></pre>
+      </div>
+
+      <h3>Reversed Counters</h3>
+      <p>The <code>reversed()</code> function creates a counter that counts down instead of up. The browser automatically determines the starting value based on how many elements match:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Countdown list */
+ol {
+  counter-reset: reversed(countdown);
+  list-style: none;
+}
+
+li {
+  counter-increment: countdown -1;
+}
+
+li::before {
+  content: counter(countdown) ". ";
+  font-weight: 700;
+  color: #ef4444;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: CSS Counters at Work</h4>
+        <p class="demo-note">Every number on this page is generated purely by CSS counters. No number exists in the HTML. Reorder the elements and the numbers update automatically.</p>
+
+        <div class="counter-demo">
+          <div class="counter-demo-panel">
+            <h5 class="counter-demo-label">Auto-Numbered Steps</h5>
+            <ol class="demo-steps">
+              <li>Set up your project structure</li>
+              <li>Install dependencies</li>
+              <li>Configure the build pipeline</li>
+              <li>Write your first component</li>
+              <li>Deploy to production</li>
+            </ol>
+          </div>
+
+          <div class="counter-demo-panel">
+            <h5 class="counter-demo-label">Nested Counters (1.1, 1.2...)</h5>
+            <ol class="demo-nested">
+              <li>Introduction
+                <ol>
+                  <li>Background</li>
+                  <li>Goals</li>
+                </ol>
+              </li>
+              <li>Implementation
+                <ol>
+                  <li>Architecture</li>
+                  <li>Data model</li>
+                  <li>API design</li>
+                </ol>
+              </li>
+              <li>Testing</li>
+            </ol>
+          </div>
+
+          <div class="counter-demo-panel">
+            <h5 class="counter-demo-label">Roman Numeral Counter</h5>
+            <ol class="demo-roman">
+              <li>Foundations of layout</li>
+              <li>Color theory in practice</li>
+              <li>Typography and rhythm</li>
+              <li>Motion and interaction</li>
+            </ol>
+          </div>
+
+          <div class="counter-demo-panel">
+            <h5 class="counter-demo-label">Reversed Countdown</h5>
+            <ol class="demo-countdown">
+              <li>Final checks complete</li>
+              <li>Systems verified</li>
+              <li>Engines armed</li>
+              <li>Ignition sequence</li>
+              <li>Liftoff</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Counter scoping is automatic. When a <code>counter-reset</code> appears on a parent element and <code>counter-increment</code> appears on its children, CSS creates nested counter instances for you. Each nested <code>&lt;ol&gt;</code> gets its own scope of the counter, which is why <code>counters(item, ".")</code> can produce "1.2.3" style numbering without any JavaScript tracking state.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: @counter-style      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="counter-style">
+      <h2>3. <code>@counter-style</code></h2>
+      <p>Built-in counter styles (<code>decimal</code>, <code>upper-roman</code>, <code>lower-alpha</code>) cover most needs. But when you need emoji bullets, custom symbols, locale-specific numbering, or brand-specific markers, the <code>@counter-style</code> at-rule lets you define entirely new counter styles from scratch.</p>
+
+      <h3>System Types</h3>
+      <p>The <code>system</code> descriptor determines how symbols are selected for each counter value:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* CYCLIC: repeats symbols in a cycle */
+@counter-style arrows {
+  system: cyclic;
+  symbols: "\2192" "\2193" "\2190" "\2191";  /* right, down, left, up */
+  suffix: " ";
+}
+
+/* NUMERIC: positional number system (like decimal) */
+@counter-style binary {
+  system: numeric;
+  symbols: "0" "1";
+}
+
+/* ALPHABETIC: like lower-alpha, but custom symbols */
+@counter-style greek-lower {
+  system: alphabetic;
+  symbols: "\03B1" "\03B2" "\03B3" "\03B4" "\03B5";
+  /* alpha, beta, gamma, delta, epsilon */
+}
+
+/* SYMBOLIC: cycles through symbols, repeating each n times */
+@counter-style stars {
+  system: symbolic;
+  symbols: "\2605";  /* filled star */
+  suffix: " ";
+  /* 1=*, 2=**, 3=***, ... */
+}
+
+/* ADDITIVE: like Roman numerals */
+@counter-style custom-roman {
+  system: additive;
+  additive-symbols: 1000 M, 900 CM, 500 D, 400 CD,
+                    100 C, 90 XC, 50 L, 40 XL,
+                    10 X, 9 IX, 5 V, 4 IV, 1 I;
+}
+
+/* FIXED: assigns symbols to specific values, then falls back */
+@counter-style podium {
+  system: fixed;
+  symbols: "\1F947" "\1F948" "\1F949";
+  /* Gold, silver, bronze for 1-3, then fallback */
+  fallback: decimal;
+}</code></pre>
+      </div>
+
+      <h3>Descriptors: <code>prefix</code>, <code>suffix</code>, <code>range</code>, <code>pad</code>, <code>fallback</code></h3>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@counter-style fancy-decimal {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+  prefix: "[";
+  suffix: "] ";
+  /* Produces: [1] , [2] , [3] , ... */
+}
+
+@counter-style padded {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+  pad: 3 "0";
+  suffix: ". ";
+  /* Produces: 001. , 002. , 003. , ... , 010. , ... */
+}
+
+@counter-style limited-emoji {
+  system: cyclic;
+  symbols: "\1F525" "\2728" "\1F680";
+  range: 1 10;
+  fallback: decimal;
+  suffix: " ";
+  /* Uses emojis for 1-10, decimal after that */
+}</code></pre>
+      </div>
+
+      <h3>Using Custom Counter Styles</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* As list-style-type */
+ol.emoji-list {
+  list-style-type: limited-emoji;
+}
+
+/* Inside counter() function */
+h2::before {
+  content: counter(section, fancy-decimal);
+}
+
+/* Inside counters() for nested numbering */
+li::before {
+  content: counters(item, ".", padded);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Custom Counter Styles</h4>
+        <p class="demo-note">Each list below uses a different <code>@counter-style</code> rule. The symbols, prefixes, suffixes, and systems are all defined purely in CSS.</p>
+
+        <div class="counter-style-demo">
+          <div class="cs-demo-panel">
+            <h5 class="cs-demo-label">Emoji Cyclic</h5>
+            <ol class="demo-emoji-list">
+              <li>Design the interface</li>
+              <li>Build the components</li>
+              <li>Test everything</li>
+              <li>Ship with confidence</li>
+              <li>Iterate and improve</li>
+              <li>Celebrate the launch</li>
+            </ol>
+          </div>
+
+          <div class="cs-demo-panel">
+            <h5 class="cs-demo-label">Padded Decimal [001]</h5>
+            <ol class="demo-padded-list">
+              <li>Initialize the repository</li>
+              <li>Configure linting rules</li>
+              <li>Set up CI pipeline</li>
+              <li>Write unit tests</li>
+              <li>Add documentation</li>
+            </ol>
+          </div>
+
+          <div class="cs-demo-panel">
+            <h5 class="cs-demo-label">Symbolic Stars</h5>
+            <ol class="demo-stars-list">
+              <li>Beginner level</li>
+              <li>Intermediate level</li>
+              <li>Advanced level</li>
+              <li>Expert level</li>
+              <li>Grand master</li>
+            </ol>
+          </div>
+
+          <div class="cs-demo-panel">
+            <h5 class="cs-demo-label">Custom Additive (Roman)</h5>
+            <ol class="demo-custom-roman">
+              <li>The Republic</li>
+              <li>The Empire</li>
+              <li>The Renaissance</li>
+              <li>The Enlightenment</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>@counter-style</code> rule is one of the most underused features in CSS. It lets you create numbering systems that match your brand, your locale, or your content's personality. Instead of reaching for JavaScript to generate custom list markers or hacking <code>::before</code> with hardcoded strings, define the system once and let the browser handle all the counting. The <code>fallback</code> descriptor ensures graceful degradation when values exceed your symbol range.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: ::marker             -->
+    <!-- ============================== -->
+    <section class="concept-section" id="marker-pseudo">
+      <h2>4. The <code>::marker</code> Pseudo-Element</h2>
+      <p>For years, styling list bullets and numbers required either <code>list-style: none</code> followed by a <code>::before</code> hack, or accepting the browser defaults. The <code>::marker</code> pseudo-element changes this entirely. It targets the marker box directly &mdash; the bullet, number, or symbol that the browser generates for list items and <code>&lt;summary&gt;</code> elements.</p>
+
+      <h3>Properties You Can Set on <code>::marker</code></h3>
+      <p>The <code>::marker</code> pseudo-element accepts a limited but focused set of properties:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>li::marker {
+  /* Typography */
+  color: #6c5ce7;
+  font-size: 1.4em;
+  font-weight: 700;
+  font-family: "Georgia", serif;
+
+  /* Content override */
+  content: "\2713 ";   /* Replace bullet with checkmark */
+
+  /* Animation (where supported) */
+  transition: color 0.2s ease;
+}
+
+/* Change marker on hover */
+li:hover::marker {
+  color: #a29bfe;
+}
+
+/* Different markers for different states */
+li.completed::marker {
+  content: "\2705 ";  /* Green checkmark emoji */
+  font-size: 1.2em;
+}
+
+li.pending::marker {
+  content: "\23F3 ";  /* Hourglass */
+}
+
+li.failed::marker {
+  content: "\274C ";  /* Red cross */
+}</code></pre>
+      </div>
+
+      <h3>Styling <code>&lt;summary&gt;</code> Markers</h3>
+      <p>The <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> disclosure triangle is also a <code>::marker</code>:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>summary::marker {
+  content: "\25B6 ";  /* Right-pointing triangle */
+  color: #6c5ce7;
+  font-size: 0.8em;
+}
+
+details[open] &gt; summary::marker {
+  content: "\25BC ";  /* Down-pointing triangle */
+}</code></pre>
+      </div>
+
+      <h3>Combining <code>::marker</code> with Counters</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Custom counter in ::marker */
+ol {
+  counter-reset: fancy-item;
+  list-style: none;
+}
+
+li {
+  counter-increment: fancy-item;
+}
+
+li::marker {
+  content: counter(fancy-item, upper-roman) " \2014 ";
+  color: #a29bfe;
+  font-weight: 700;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: <code>::marker</code> Styling</h4>
+        <p class="demo-note">Each list below uses <code>::marker</code> to style the bullet or number directly. No <code>::before</code> hacks, no <code>list-style: none</code> workarounds.</p>
+
+        <div class="marker-demo">
+          <div class="marker-demo-panel">
+            <h5 class="marker-demo-label">Colored Markers</h5>
+            <ul class="demo-colored-markers">
+              <li>Default bullet, custom color</li>
+              <li>Font size increased</li>
+              <li>Bold weight applied</li>
+            </ul>
+          </div>
+
+          <div class="marker-demo-panel">
+            <h5 class="marker-demo-label">Status Markers</h5>
+            <ul class="demo-status-markers">
+              <li class="status-done">Deploy to staging</li>
+              <li class="status-done">Run integration tests</li>
+              <li class="status-progress">Code review in progress</li>
+              <li class="status-pending">Deploy to production</li>
+            </ul>
+          </div>
+
+          <div class="marker-demo-panel">
+            <h5 class="marker-demo-label">Summary Marker</h5>
+            <details class="demo-details">
+              <summary>What are CSS counters?</summary>
+              <p>CSS counters are variables maintained by CSS whose values can be incremented and displayed using generated content. They are declared with <code>counter-reset</code>, modified with <code>counter-increment</code>, and rendered with the <code>counter()</code> function.</p>
+            </details>
+            <details class="demo-details">
+              <summary>Are counters accessible?</summary>
+              <p>Counter-generated numbers are presentational. Screen readers may or may not announce them depending on the browser. For critical numbering (legal documents, step-by-step instructions), keep numbers in the HTML.</p>
+            </details>
+          </div>
+
+          <div class="marker-demo-panel">
+            <h5 class="marker-demo-label">Counter + Marker</h5>
+            <ol class="demo-counter-marker">
+              <li>Foundations</li>
+              <li>Layout Systems</li>
+              <li>Color Theory</li>
+              <li>Advanced Patterns</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>::marker</code> pseudo-element is intentionally limited in which properties it accepts. You cannot set <code>background</code>, <code>padding</code>, <code>border</code>, or <code>position</code> on it. This is by design &mdash; the marker box is part of the list formatting context, not a general-purpose element. If you need full styling control (backgrounds, borders, complex layouts), the <code>::before</code> approach with <code>list-style: none</code> remains the right tool. Use <code>::marker</code> when you need to style what is already there; use <code>::before</code> when you need to replace it entirely.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: ADVANCED PATTERNS   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="advanced-patterns">
+      <h2>5. Advanced Patterns</h2>
+      <p>Generated content and counters unlock patterns that would otherwise require JavaScript or extra markup. These are the real-world applications where these features earn their keep.</p>
+
+      <h3>Auto-Numbered Headings</h3>
+      <p>Number your document headings automatically. When you add, remove, or reorder sections, the numbers update without manual changes:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Reset at the document level */
+article {
+  counter-reset: h2counter;
+}
+
+/* Number h2 headings */
+article h2 {
+  counter-increment: h2counter;
+  counter-reset: h3counter;
+}
+
+article h2::before {
+  content: counter(h2counter) ". ";
+  color: #6c5ce7;
+  font-weight: 800;
+}
+
+/* Number h3 headings with nested counter */
+article h3 {
+  counter-increment: h3counter;
+}
+
+article h3::before {
+  content: counter(h2counter) "." counter(h3counter) " ";
+  color: #a29bfe;
+  font-weight: 600;
+}</code></pre>
+      </div>
+
+      <h3>Breadcrumb Separators</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.breadcrumb {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 0;
+}
+
+.breadcrumb li + li::before {
+  content: "\002F";  /* Forward slash */
+  padding-inline: 0.75rem;
+  color: #8b8fa7;
+  font-weight: 300;
+}
+
+/* Or use a chevron */
+.breadcrumb-chevron li + li::before {
+  content: "\203A";  /* Single right-pointing angle */
+  padding-inline: 0.75rem;
+  color: #6c5ce7;
+}</code></pre>
+      </div>
+
+      <h3>Step Indicators</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.steps {
+  counter-reset: step;
+  display: flex;
+  gap: 0;
+}
+
+.step {
+  counter-increment: step;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding-block-start: 3rem;
+}
+
+/* The numbered circle */
+.step::before {
+  content: counter(step);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 50%;
+  background: #6c5ce7;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Connector line between steps */
+.step + .step::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 50%;
+  inline-size: 100%;
+  block-size: 2px;
+  background: #2e3345;
+  z-index: -1;
+}</code></pre>
+      </div>
+
+      <h3>Footnote Numbering</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Auto-number footnote references in text */
+article {
+  counter-reset: footnote;
+}
+
+.footnote-ref {
+  counter-increment: footnote;
+}
+
+.footnote-ref::after {
+  content: "[" counter(footnote) "]";
+  font-size: 0.75em;
+  vertical-align: super;
+  color: #6c5ce7;
+  text-decoration: none;
+  cursor: pointer;
+  margin-inline-start: 1px;
+}
+
+/* Number the footnotes at the bottom */
+.footnotes {
+  counter-reset: fn;
+  border-block-start: 1px solid #2e3345;
+  padding-block-start: 1rem;
+  margin-block-start: 2rem;
+}
+
+.footnote-item {
+  counter-increment: fn;
+}
+
+.footnote-item::before {
+  content: counter(fn) ". ";
+  font-weight: 700;
+  color: #6c5ce7;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Real-World Patterns</h4>
+        <p class="demo-note">Breadcrumbs, step indicators, and auto-numbered headings &mdash; all generated by CSS counters and <code>::before</code>/<code>::after</code> pseudo-elements.</p>
+
+        <div class="patterns-demo">
+          <div class="patterns-section">
+            <h5 class="patterns-label">Breadcrumbs</h5>
+            <nav class="demo-breadcrumb" aria-label="Breadcrumb">
+              <ol>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">CSS Advanced</a></li>
+                <li><span aria-current="page">Module 28</span></li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="patterns-section">
+            <h5 class="patterns-label">Step Indicator</h5>
+            <div class="demo-step-indicator">
+              <div class="demo-step is-complete">Select Plan</div>
+              <div class="demo-step is-complete">Account Info</div>
+              <div class="demo-step is-active">Payment</div>
+              <div class="demo-step">Confirmation</div>
+            </div>
+          </div>
+
+          <div class="patterns-section">
+            <h5 class="patterns-label">Auto-Numbered Headings</h5>
+            <div class="demo-auto-headings">
+              <h5 class="demo-h2">Getting Started</h5>
+              <h6 class="demo-h3">Prerequisites</h6>
+              <h6 class="demo-h3">Installation</h6>
+              <h5 class="demo-h2">Configuration</h5>
+              <h6 class="demo-h3">Basic Setup</h6>
+              <h6 class="demo-h3">Advanced Options</h6>
+              <h6 class="demo-h3">Environment Variables</h6>
+              <h5 class="demo-h2">Deployment</h5>
+            </div>
+          </div>
+
+          <div class="patterns-section">
+            <h5 class="patterns-label">Footnotes</h5>
+            <div class="demo-footnotes-container">
+              <p class="demo-body-text">CSS counters are surprisingly powerful<span class="demo-fn-ref"></span> and have been available in browsers since 2004<span class="demo-fn-ref"></span>. Despite their age, they remain underused in modern development<span class="demo-fn-ref"></span>.</p>
+              <div class="demo-footnotes">
+                <p class="demo-fn-item">They can fully replace JavaScript-based numbering in most cases.</p>
+                <p class="demo-fn-item">The CSS2.1 specification introduced counters. Browser support is universal.</p>
+                <p class="demo-fn-item">Many developers default to JS for numbering when CSS alone would suffice.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: ACCESSIBILITY       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="accessibility">
+      <h2>6. Accessibility Considerations</h2>
+      <p>Generated content exists in a gray zone for assistive technology. Some screen readers announce it, some ignore it, and behavior varies across browser and screen reader combinations. Understanding the rules keeps you from accidentally hiding critical information or announcing irrelevant decoration.</p>
+
+      <h3>What Screen Readers Do with <code>content</code></h3>
+      <p>Modern screen readers (NVDA, JAWS, VoiceOver) generally <em>do</em> announce text generated by <code>::before</code> and <code>::after</code>. This means decorative content like separator arrows, bullet replacements, and quotation marks <em>will</em> be read aloud unless you take steps to prevent it.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* PROBLEM: Screen reader announces "arrow right Home" */
+.breadcrumb li + li::before {
+  content: "\2192";  /* Arrow will be read aloud */
+}
+
+/* SOLUTION: Use alt text (CSS Generated Content Module Level 3) */
+.breadcrumb li + li::before {
+  content: "\2192" / "";  /* Slash syntax: visual / alt text */
+}
+
+/* Image with alt text */
+.external::after {
+  content: url(external.svg) / "Opens in new window";
+}
+
+/* Decorative content: empty alt */
+.fancy-divider::after {
+  content: "\2022 \2022 \2022" / "";
+}</code></pre>
+      </div>
+
+      <h3>The <code>/ "alt"</code> Syntax</h3>
+      <p>The CSS Generated Content Module Level 3 specification introduced alternate text for the <code>content</code> property. After the visual content, add a forward slash followed by the alt text string:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Syntax: content: &lt;visual&gt; / &lt;alt-text&gt; */
+
+/* Decorative only: empty alt hides from screen readers */
+.section::before {
+  content: "\2605" / "";
+}
+
+/* Meaningful: provide descriptive alt */
+.warning::before {
+  content: "\26A0" / "Warning: ";
+}
+
+/* Counter with alt text */
+.step::before {
+  content: counter(step) / "Step " counter(step) ": ";
+}</code></pre>
+      </div>
+
+      <h3>When NOT to Use Generated Content</h3>
+
+      <div class="a11y-guidelines">
+        <div class="a11y-rule a11y-do">
+          <h4>Safe to Generate</h4>
+          <ul>
+            <li>Decorative separators and dividers</li>
+            <li>Quotation marks around <code>&lt;blockquote&gt;</code></li>
+            <li>Visual-only indicators (icons with alt text in HTML)</li>
+            <li>Numbering that supplements existing HTML structure</li>
+            <li>Cosmetic bullets and markers</li>
+            <li>Hover tooltips that repeat existing information</li>
+          </ul>
+        </div>
+        <div class="a11y-rule a11y-dont">
+          <h4>Never Generate</h4>
+          <ul>
+            <li>Error messages or validation text</li>
+            <li>Navigation labels or link text</li>
+            <li>Prices, quantities, or critical data</li>
+            <li>Form field labels or instructions</li>
+            <li>Content that the user needs to copy/select</li>
+            <li>Information not available elsewhere on the page</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The golden rule of generated content accessibility: if removing all <code>::before</code> and <code>::after</code> content from your page makes information disappear that a user needs, you have put critical content in the wrong place. Generated content is a <em>presentation</em> layer. The information layer lives in HTML. Always.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Auto-Numbered Recipe Card</h2>
+      <p>Build a recipe card that uses CSS counters to auto-number the ingredients and steps. Use <code>::marker</code> to style the ingredient list bullets, and <code>@counter-style</code> to create a custom step numbering style with a prefix and padding.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create a <code>counter-reset</code> on the recipe card for both an <strong>ingredient</strong> and <strong>step</strong> counter.</li>
+          <li>Use <code>@counter-style</code> to define a custom numbering style called <code>recipe-step</code> with the system <code>numeric</code>, a <code>prefix</code> of "Step ", a <code>suffix</code> of ": ", and <code>pad</code> set to <code>2 "0"</code>.</li>
+          <li>Use <code>::marker</code> to style the ingredient list with custom colored bullets (use <code>content</code> on <code>::marker</code> to set a custom symbol).</li>
+          <li>The step numbers should use your custom <code>recipe-step</code> counter style via <code>counter()</code> in a <code>::before</code> pseudo-element.</li>
+          <li>Add a total count at the bottom using a counter that displays "Total: X steps" via <code>::after</code> on the step list.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter HTML</h3>
+        <div class="code-block">
+          <pre><code>&lt;div class="recipe-card"&gt;
+  &lt;h3&gt;Classic Pasta Aglio e Olio&lt;/h3&gt;
+  &lt;h4&gt;Ingredients&lt;/h4&gt;
+  &lt;ul class="ingredients"&gt;
+    &lt;li&gt;400g spaghetti&lt;/li&gt;
+    &lt;li&gt;6 cloves garlic, sliced&lt;/li&gt;
+    &lt;li&gt;1/2 cup olive oil&lt;/li&gt;
+    &lt;li&gt;1 tsp red pepper flakes&lt;/li&gt;
+    &lt;li&gt;Fresh parsley, chopped&lt;/li&gt;
+    &lt;li&gt;Salt to taste&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;h4&gt;Instructions&lt;/h4&gt;
+  &lt;ol class="steps"&gt;
+    &lt;li&gt;Boil pasta in salted water until al dente&lt;/li&gt;
+    &lt;li&gt;Slice garlic thinly and evenly&lt;/li&gt;
+    &lt;li&gt;Heat olive oil over medium-low heat&lt;/li&gt;
+    &lt;li&gt;Add garlic, cook until golden (not brown)&lt;/li&gt;
+    &lt;li&gt;Add red pepper flakes, stir briefly&lt;/li&gt;
+    &lt;li&gt;Toss drained pasta in the garlic oil&lt;/li&gt;
+    &lt;li&gt;Garnish with parsley, serve immediately&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="recipe-card">
+  <h3>Classic Pasta Aglio e Olio</h3>
+  <h4>Ingredients</h4>
+  <ul class="ingredients">
+    <li>400g spaghetti</li>
+    <li>6 cloves garlic, sliced</li>
+    <li>1/2 cup olive oil</li>
+    <li>1 tsp red pepper flakes</li>
+    <li>Fresh parsley, chopped</li>
+    <li>Salt to taste</li>
+  </ul>
+  <h4>Instructions</h4>
+  <ol class="steps">
+    <li>Boil pasta in salted water until al dente</li>
+    <li>Slice garlic thinly and evenly</li>
+    <li>Heat olive oil over medium-low heat</li>
+    <li>Add garlic, cook until golden (not brown)</li>
+    <li>Add red pepper flakes, stir briefly</li>
+    <li>Toss drained pasta in the garlic oil</li>
+    <li>Garnish with parsley, serve immediately</li>
+  </ol>
+</div>
+        </template>
+        <template class="starter-css">
+/* Define a custom counter style for recipe steps */
+@counter-style recipe-step {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+  pad: 2 "0";
+  suffix: ": ";
+}
+
+/* Recipe card base */
+.recipe-card {
+  max-width: 520px;
+  margin: 0 auto;
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+  color: #e4e6ef;
+  counter-reset: step;
+}
+
+.recipe-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+  color: #fff;
+}
+
+.recipe-card h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a29bfe;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #2e3345;
+}
+
+/* Ingredients: style the ::marker */
+.ingredients {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.ingredients li {
+  padding: 0.3rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.ingredients li::marker {
+  color: #6c5ce7;
+  font-size: 1.2em;
+  content: "\2726 ";
+}
+
+/* Steps: use counters */
+.steps {
+  list-style: none;
+  padding-left: 0;
+  position: relative;
+}
+
+.steps li {
+  counter-increment: step;
+  padding: 0.5rem 0 0.5rem 4rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.steps li:last-child {
+  border-bottom: none;
+}
+
+.steps li::before {
+  content: "Step " counter(step, recipe-step);
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  color: #6c5ce7;
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+/* Total counter at the bottom */
+.steps::after {
+  content: "Total: " counter(step) " steps";
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #8b8fa7;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #2e3345;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Interactive Table of Contents with Nested Counters</h2>
+      <p>Build a fully auto-numbered table of contents that uses nested CSS counters to produce hierarchical numbering (1, 1.1, 1.1.1), custom <code>@counter-style</code> rules for different levels, styled <code>::marker</code> elements, and breadcrumb separators &mdash; all without a single number in the HTML.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Nested counters:</strong> Use <code>counters()</code> to generate "1.1", "1.2.1" style numbering for a multi-level list (at least 3 nesting levels).</li>
+          <li><strong>Custom counter styles:</strong> Define at least one <code>@counter-style</code> rule. Use it for the third nesting level (e.g., lowercase Greek letters via an alphabetic system).</li>
+          <li><strong>::marker styling:</strong> Style the markers of the top-level items with a custom <code>color</code>, <code>font-weight</code>, and <code>font-size</code>.</li>
+          <li><strong>Active state:</strong> One item should have an <code>.active</code> class with a distinct background, border, and marker color change.</li>
+          <li><strong>Progress counter:</strong> At the bottom, display "X of Y sections reviewed" using two counters &mdash; one that counts <code>.active</code> items and one that counts all items.</li>
+          <li><strong>Breadcrumb:</strong> Above the TOC, include a breadcrumb trail using generated <code>::before</code> separators between items.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Use <code>counter-reset</code> on each <code>&lt;ol&gt;</code> to create nested counter scopes. The <code>counters(item, ".")</code> function will walk the scope chain automatically.</li>
+          <li>For the progress counter, define two separate counters: one that increments on every <code>&lt;li&gt;</code>, and one that increments only on <code>li.active</code>. Display both in the <code>::after</code> of the TOC wrapper.</li>
+          <li>The <code>@counter-style</code> for the third level can use <code>system: alphabetic</code> with Greek letter symbols: <code>\03B1</code> (alpha), <code>\03B2</code> (beta), <code>\03B3</code> (gamma), etc.</li>
+          <li>Remember: <code>counter-reset</code> creates a new counter instance at that scope level. Nested <code>&lt;ol&gt;</code> elements each get their own instance.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="toc-wrapper">
+  <nav class="toc-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="#">Docs</a></li>
+      <li><a href="#">CSS Reference</a></li>
+      <li><span aria-current="page">Counters</span></li>
+    </ol>
+  </nav>
+
+  <h3 class="toc-title">Table of Contents</h3>
+
+  <ol class="toc">
+    <li class="active">
+      <a href="#">Introduction to Counters</a>
+      <ol>
+        <li class="active"><a href="#">What are CSS counters?</a></li>
+        <li class="active"><a href="#">Browser support</a></li>
+      </ol>
+    </li>
+    <li class="active">
+      <a href="#">Counter Properties</a>
+      <ol>
+        <li class="active"><a href="#">counter-reset</a></li>
+        <li><a href="#">counter-increment</a>
+          <ol>
+            <li><a href="#">Increment values</a></li>
+            <li><a href="#">Multiple counters</a></li>
+            <li><a href="#">Negative increments</a></li>
+          </ol>
+        </li>
+        <li><a href="#">counter-set</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#">Counter Functions</a>
+      <ol>
+        <li><a href="#">counter()</a></li>
+        <li><a href="#">counters()</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#">Custom Styles</a>
+    </li>
+  </ol>
+
+  <div class="toc-progress"></div>
+</div>
+        </template>
+        <template class="starter-css">
+@counter-style greek-lower {
+  system: alphabetic;
+  symbols: "\03B1" "\03B2" "\03B3" "\03B4" "\03B5"
+           "\03B6" "\03B7" "\03B8" "\03B9" "\03BA";
+  suffix: ") ";
+}
+
+.toc-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-family: system-ui, sans-serif;
+  color: #e4e6ef;
+  counter-reset: total 0 reviewed 0;
+}
+
+/* Breadcrumb with generated separators */
+.toc-breadcrumb ol {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  font-size: 0.82rem;
+}
+
+.toc-breadcrumb li + li::before {
+  content: "\203A";
+  padding-inline: 0.5rem;
+  color: #555;
+}
+
+.toc-breadcrumb a {
+  color: #a29bfe;
+  text-decoration: none;
+}
+
+.toc-breadcrumb span {
+  color: #8b8fa7;
+}
+
+.toc-title {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #6c5ce7;
+}
+
+/* Main TOC list */
+.toc {
+  counter-reset: toc-item;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc ol {
+  counter-reset: toc-item;
+  list-style: none;
+  padding-inline-start: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.toc li {
+  counter-increment: toc-item total;
+  padding: 0.3rem 0;
+}
+
+.toc li.active {
+  counter-increment: toc-item total reviewed;
+}
+
+/* Level 1: "1." style */
+.toc > li::marker {
+  content: counter(toc-item) ". ";
+  color: #6c5ce7;
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+/* Need list-style to use ::marker */
+.toc, .toc ol {
+  list-style: none;
+}
+
+/* Use ::before for numbering since we need nested counters */
+.toc > li {
+  padding-inline-start: 1.5rem;
+  position: relative;
+}
+
+.toc > li::before {
+  content: counter(toc-item) ".";
+  position: absolute;
+  inset-inline-start: 0;
+  color: #6c5ce7;
+  font-weight: 700;
+}
+
+/* Level 2: "1.1" style */
+.toc > li > ol > li {
+  padding-inline-start: 2rem;
+  position: relative;
+}
+
+.toc > li > ol > li::before {
+  content: counters(toc-item, ".");
+  position: absolute;
+  inset-inline-start: 0;
+  color: #a29bfe;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* Level 3: Greek letters */
+.toc > li > ol > li > ol {
+  counter-reset: greek;
+}
+
+.toc > li > ol > li > ol > li {
+  counter-increment: greek total;
+  padding-inline-start: 2rem;
+  position: relative;
+}
+
+.toc > li > ol > li > ol > li.active {
+  counter-increment: greek total reviewed;
+}
+
+.toc > li > ol > li > ol > li::before {
+  content: counter(greek, greek-lower);
+  position: absolute;
+  inset-inline-start: 0;
+  color: #8b8fa7;
+  font-size: 0.85em;
+}
+
+/* Links */
+.toc a {
+  color: #c0c4d0;
+  text-decoration: none;
+  font-size: 0.92rem;
+  transition: color 0.15s ease;
+}
+
+.toc a:hover {
+  color: #fff;
+}
+
+/* Active state */
+.toc li.active > a {
+  color: #6c5ce7;
+  font-weight: 600;
+}
+
+.toc li.active {
+  background: rgba(108, 92, 231, 0.08);
+  border-radius: 6px;
+  margin-inline: -0.5rem;
+  padding-inline-start: 2rem;
+}
+
+/* Progress display */
+.toc-progress::after {
+  content: counter(reviewed) " of " counter(total) " sections reviewed";
+  display: block;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #8b8fa7;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #2e3345;
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../27-performance-containment/index.html">&larr; Previous</a>
+    <a href="../29-svg-css/index.html">Next &rarr;</a>
+  </footer>
+
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

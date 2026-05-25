@@ -1,0 +1,947 @@
+/* ============================================
+   Module 30: PE7 Grand Capstone
+   Project brief, checklist, rubric, and
+   starter code for the final capstone project
+   ============================================ */
+
+/* ---- Lesson-level Custom Properties ---- */
+:root {
+  --m30-bg: #0f1117;
+  --m30-surface: #1a1d27;
+  --m30-surface-2: #242836;
+  --m30-text: #e4e6ef;
+  --m30-text-muted: #8b8fa3;
+  --m30-accent: #6c5ce7;
+  --m30-accent-light: #a29bfe;
+  --m30-accent-soft: color-mix(in oklch, #6c5ce7 12%, transparent);
+  --m30-border: rgba(255, 255, 255, 0.08);
+  --m30-radius: 8px;
+  --m30-radius-lg: 12px;
+  --m30-transition: 0.25s ease;
+  --m30-success: #22c55e;
+  --m30-warning: #f59e0b;
+  --m30-danger: #ef233c;
+  --m30-coral: #ff6b6b;
+  --m30-mint: #00cec9;
+  --m30-gold: #ffd93d;
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-block-end: 4rem;
+  padding-block-end: 3rem;
+  border-block-end: 1px solid var(--m30-border);
+}
+
+.concept-section:last-of-type {
+  border-block-end: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-block-end: 1rem;
+  padding-block-end: 0.5rem;
+  border-block-end: 2px solid var(--m30-danger);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-block-start: 2rem;
+  margin-block-end: 0.75rem;
+  color: var(--m30-accent-light);
+}
+
+.concept-section p {
+  margin-block-end: 1rem;
+  line-height: 1.8;
+  color: var(--m30-text);
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding-block: 1.25rem;
+  padding-inline: 1.5rem;
+  border-radius: var(--m30-radius-lg);
+  margin-block: 2rem;
+  background: color-mix(in oklch, var(--m30-accent) 8%, transparent);
+  border-inline-start: 4px solid var(--m30-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--m30-text);
+}
+
+.info-box strong {
+  color: var(--m30-accent-light);
+}
+
+/* ---- Code Blocks ---- */
+.code-block {
+  background: #12141c;
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius);
+  padding: 1.25rem;
+  margin-block: 1rem 1.5rem;
+  overflow-x: auto;
+  position: relative;
+}
+
+.code-block h4 {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  background: var(--m30-accent);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 0 var(--m30-radius) 0 var(--m30-radius);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.code-block pre {
+  font-family: "Fira Code", "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--m30-text);
+}
+
+/* =============================================
+   CAPSTONE BRIEF CARD
+   ============================================= */
+.capstone-brief {
+  background: linear-gradient(135deg, var(--m30-surface), var(--m30-surface-2));
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+  padding: 2rem;
+  margin-block: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.capstone-brief::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  block-size: 3px;
+  background: linear-gradient(90deg, var(--m30-accent), var(--m30-coral), var(--m30-mint));
+}
+
+.brief-badge {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  background: color-mix(in oklch, var(--m30-danger) 20%, transparent);
+  color: var(--m30-danger);
+  border-radius: var(--m30-radius);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-block-end: 1rem;
+}
+
+.brief-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-block-end: 1rem;
+  color: var(--m30-text);
+}
+
+.brief-desc {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--m30-text-muted);
+}
+
+/* =============================================
+   DELIVERABLES LIST
+   ============================================= */
+.deliverables-list {
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+  margin-block: 1rem;
+  padding-inline-start: 0;
+}
+
+.deliverables-list li {
+  padding-inline-start: 1.75rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--m30-text);
+}
+
+.deliverables-list li::before {
+  content: "\2713";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m30-success);
+  font-weight: 700;
+}
+
+.deliverables-list li strong {
+  color: var(--m30-accent-light);
+}
+
+/* =============================================
+   SECTION REQUIREMENT CARDS
+   ============================================= */
+.section-cards {
+  display: grid;
+  gap: 1.5rem;
+  margin-block-start: 2rem;
+}
+
+.section-card {
+  background: var(--m30-surface);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+  overflow: hidden;
+  transition: border-color var(--m30-transition), box-shadow var(--m30-transition);
+}
+
+.section-card:hover {
+  border-color: color-mix(in oklch, var(--m30-accent) 40%, var(--m30-border));
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.card-header-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 0.85rem;
+  padding-inline: 1.25rem;
+}
+
+.card-header-bar h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.card-num {
+  font-size: 0.8rem;
+  font-weight: 800;
+  font-family: ui-monospace, monospace;
+  opacity: 0.6;
+  color: white;
+}
+
+/* Gradient bars for each section card */
+.gradient-hero         { background: linear-gradient(135deg, #6c5ce7, #a29bfe); }
+.gradient-about        { background: linear-gradient(135deg, #00cec9, #55efc4); }
+.gradient-services     { background: linear-gradient(135deg, #fd79a8, #e84393); }
+.gradient-portfolio    { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.gradient-testimonials { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+.gradient-contact      { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+.gradient-footer       { background: linear-gradient(135deg, #636e72, #b2bec3); }
+
+.card-content {
+  padding: 1.25rem;
+}
+
+.card-content p {
+  font-size: 0.95rem;
+  color: var(--m30-text-muted);
+  margin-block-end: 1rem;
+}
+
+.card-content h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m30-text-muted);
+  margin-block-end: 0.75rem;
+}
+
+/* Required techniques list */
+.req-list {
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+  padding-inline-start: 0;
+}
+
+.req-list li {
+  padding-inline-start: 1.5rem;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--m30-text);
+}
+
+.req-list li::before {
+  content: "\25B9";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m30-accent);
+  font-size: 0.85rem;
+}
+
+.req-list code {
+  font-family: "Fira Code", ui-monospace, monospace;
+  background: var(--m30-surface-2);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: var(--m30-coral);
+}
+
+/* =============================================
+   TECHNIQUE CHECKLIST
+   ============================================= */
+.checklist-container {
+  display: grid;
+  gap: 2rem;
+  margin-block-start: 2rem;
+}
+
+.checklist-group {
+  background: var(--m30-surface);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+  padding: 1.5rem;
+}
+
+.checklist-group-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m30-accent-light);
+  margin-block-end: 1rem;
+  padding-block-end: 0.75rem;
+  border-block-end: 1px solid var(--m30-border);
+}
+
+.checklist {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  padding-inline-start: 0;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--m30-text);
+}
+
+.check-box {
+  flex-shrink: 0;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  margin-block-start: 0.2rem;
+  border: 2px solid var(--m30-border);
+  border-radius: 4px;
+  background: var(--m30-surface-2);
+  position: relative;
+  transition: all var(--m30-transition);
+}
+
+.check-box::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background var(--m30-transition);
+}
+
+/* Visual indication — students mentally check these off */
+.checklist li:hover .check-box {
+  border-color: var(--m30-accent);
+}
+
+.checklist li:hover .check-box::after {
+  background: color-mix(in oklch, var(--m30-accent) 30%, transparent);
+}
+
+.check-label {
+  flex: 1;
+}
+
+.check-label code {
+  font-family: "Fira Code", ui-monospace, monospace;
+  background: var(--m30-surface-2);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--m30-coral);
+}
+
+/* =============================================
+   ARCHITECTURE DIAGRAM
+   ============================================= */
+.arch-diagram {
+  display: grid;
+  gap: 0.5rem;
+  margin-block: 2rem;
+  padding: 1.5rem;
+  background: var(--m30-surface);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+}
+
+.arch-tier {
+  background: var(--m30-surface-2);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius);
+  padding: 1.25rem;
+}
+
+.arch-tier h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--m30-accent-light);
+  margin-block-end: 0.75rem;
+}
+
+.arch-tier p {
+  font-size: 0.85rem;
+  color: var(--m30-text-muted);
+  margin-block-start: 0.75rem;
+  margin-block-end: 0;
+}
+
+.arch-code {
+  font-family: "Fira Code", ui-monospace, monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--m30-mint);
+  padding: 0.75rem;
+  background: var(--m30-bg);
+  border-radius: var(--m30-radius);
+}
+
+.arch-arrow {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--m30-accent);
+  line-height: 1;
+}
+
+/* =============================================
+   GRADING RUBRIC TABLE
+   ============================================= */
+.rubric-table-wrap {
+  overflow-x: auto;
+  margin-block: 2rem;
+  border-radius: var(--m30-radius-lg);
+  border: 1px solid var(--m30-border);
+}
+
+.rubric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.rubric-table th {
+  background: var(--m30-surface-2);
+  padding: 0.85rem 1rem;
+  text-align: start;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m30-text-muted);
+  border-block-end: 1px solid var(--m30-border);
+}
+
+.rubric-table td {
+  padding: 1rem;
+  border-block-end: 1px solid var(--m30-border);
+  vertical-align: top;
+  color: var(--m30-text);
+}
+
+.rubric-table tbody tr {
+  background: var(--m30-surface);
+  transition: background var(--m30-transition);
+}
+
+.rubric-table tbody tr:hover {
+  background: color-mix(in oklch, var(--m30-accent) 5%, var(--m30-surface));
+}
+
+.col-category { min-inline-size: 10rem; }
+.col-points   { min-inline-size: 5rem; text-align: center; }
+.col-criteria { min-inline-size: 20rem; }
+
+.category-cell {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rubric-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: var(--m30-radius);
+  flex-shrink: 0;
+}
+
+.icon-techniques { background: color-mix(in oklch, var(--m30-accent) 20%, transparent); }
+.icon-techniques::before { content: "\2605"; color: var(--m30-accent-light); font-size: 0.9rem; }
+
+.icon-code { background: color-mix(in oklch, var(--m30-mint) 20%, transparent); }
+.icon-code::before { content: "\2039\203A"; color: var(--m30-mint); font-size: 1rem; font-weight: 800; }
+
+.icon-design { background: color-mix(in oklch, var(--m30-coral) 20%, transparent); }
+.icon-design::before { content: "\25CF"; color: var(--m30-coral); font-size: 1rem; }
+
+.icon-a11y { background: color-mix(in oklch, var(--m30-success) 20%, transparent); }
+.icon-a11y::before { content: "\2714"; color: var(--m30-success); font-size: 0.85rem; }
+
+.icon-perf { background: color-mix(in oklch, var(--m30-warning) 20%, transparent); }
+.icon-perf::before { content: "\26A1"; color: var(--m30-warning); font-size: 0.9rem; }
+
+.points-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.points-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 2.5rem;
+  padding: 0.3rem 0.6rem;
+  background: var(--m30-surface-2);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius);
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  font-size: 1rem;
+  color: var(--m30-accent-light);
+}
+
+.points-badge.total {
+  background: var(--m30-accent);
+  color: white;
+  border-color: var(--m30-accent);
+  font-size: 1.15rem;
+}
+
+.rubric-table td ul {
+  list-style: none;
+  padding-inline-start: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.rubric-table td ul li {
+  padding-inline-start: 1.25rem;
+  position: relative;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--m30-text-muted);
+}
+
+.rubric-table td ul li::before {
+  content: "\2022";
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--m30-accent);
+}
+
+.rubric-table td ul li code {
+  font-family: "Fira Code", ui-monospace, monospace;
+  background: var(--m30-surface-2);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--m30-coral);
+}
+
+.total-label {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--m30-text);
+}
+
+.total-points {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.total-desc {
+  font-size: 0.85rem;
+  color: var(--m30-text-muted);
+  font-style: italic;
+}
+
+.rubric-table tfoot tr {
+  background: color-mix(in oklch, var(--m30-accent) 5%, var(--m30-surface));
+}
+
+/* =============================================
+   GRADE SCALE
+   ============================================= */
+.grade-scale {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1rem;
+  margin-block-start: 2rem;
+}
+
+.grade-tier {
+  padding: 1.25rem;
+  border-radius: var(--m30-radius-lg);
+  border-inline-start: 4px solid;
+  background: var(--m30-surface);
+}
+
+.grade-tier p {
+  font-size: 0.85rem;
+  color: var(--m30-text-muted);
+  margin-block-end: 0;
+}
+
+.grade-range {
+  font-family: ui-monospace, monospace;
+  font-size: 1.25rem;
+  font-weight: 800;
+  display: block;
+  margin-block-end: 0.25rem;
+}
+
+.grade-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-block-end: 0.5rem;
+}
+
+.tier-master {
+  border-color: var(--m30-gold);
+}
+
+.tier-master .grade-range { color: var(--m30-gold); }
+.tier-master .grade-label { color: var(--m30-gold); }
+
+.tier-distinction {
+  border-color: var(--m30-accent-light);
+}
+
+.tier-distinction .grade-range { color: var(--m30-accent-light); }
+.tier-distinction .grade-label { color: var(--m30-accent-light); }
+
+.tier-pass {
+  border-color: var(--m30-success);
+}
+
+.tier-pass .grade-range { color: var(--m30-success); }
+.tier-pass .grade-label { color: var(--m30-success); }
+
+.tier-retry {
+  border-color: var(--m30-text-muted);
+}
+
+.tier-retry .grade-range { color: var(--m30-text-muted); }
+.tier-retry .grade-label { color: var(--m30-text-muted); }
+
+/* =============================================
+   TIPS GRID
+   ============================================= */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1.25rem;
+  margin-block: 2rem;
+}
+
+.tip-card {
+  background: var(--m30-surface);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+  padding: 1.25rem;
+  position: relative;
+  transition: border-color var(--m30-transition), transform var(--m30-transition);
+}
+
+.tip-card:hover {
+  border-color: color-mix(in oklch, var(--m30-accent) 40%, var(--m30-border));
+  transform: translateY(-2px);
+}
+
+.tip-number {
+  font-family: ui-monospace, monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--m30-surface-2);
+  line-height: 1;
+  margin-block-end: 0.5rem;
+  background: linear-gradient(135deg, var(--m30-accent), var(--m30-coral));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.tip-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--m30-text);
+  margin-block-end: 0.5rem;
+}
+
+.tip-card p {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--m30-text-muted);
+  margin-block-end: 0;
+}
+
+.tip-card p code {
+  font-family: "Fira Code", ui-monospace, monospace;
+  background: var(--m30-surface-2);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--m30-coral);
+}
+
+/* =============================================
+   MODULE MAP / QUICK REFERENCE
+   ============================================= */
+.module-map {
+  display: grid;
+  gap: 1.5rem;
+  margin-block-start: 2rem;
+}
+
+.map-group {
+  background: var(--m30-surface);
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+  padding: 1.5rem;
+}
+
+.map-group h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--m30-accent-light);
+  margin-block-end: 1rem;
+  padding-block-end: 0.75rem;
+  border-block-end: 1px solid var(--m30-border);
+}
+
+.map-list {
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+  padding-inline-start: 0;
+}
+
+.map-list li {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--m30-text-muted);
+  padding-inline-start: 0.75rem;
+  border-inline-start: 2px solid var(--m30-border);
+  transition: border-color var(--m30-transition);
+}
+
+.map-list li:hover {
+  border-color: var(--m30-accent);
+}
+
+.map-list li strong {
+  color: var(--m30-text);
+}
+
+.map-list li code {
+  font-family: "Fira Code", ui-monospace, monospace;
+  background: var(--m30-surface-2);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--m30-coral);
+}
+
+/* =============================================
+   FINAL MESSAGE
+   ============================================= */
+.final-message {
+  margin-block-start: 3rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--m30-surface), var(--m30-surface-2));
+  border: 1px solid var(--m30-border);
+  border-radius: var(--m30-radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.final-message::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  block-size: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--m30-accent),
+    var(--m30-coral),
+    var(--m30-gold),
+    var(--m30-mint),
+    var(--m30-accent)
+  );
+}
+
+.final-message h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-block-end: 1rem;
+  background: linear-gradient(135deg, var(--m30-accent-light), var(--m30-coral), var(--m30-gold));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.final-message p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--m30-text-muted);
+  max-inline-size: 40rem;
+  margin-inline: auto;
+}
+
+.sign-off {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--m30-accent-light);
+  margin-block-start: 1rem;
+}
+
+/* =============================================
+   STARTER CODE SECTION OVERRIDES
+   ============================================= */
+#starter-code .info-box {
+  border-color: var(--m30-success);
+  background: color-mix(in oklch, var(--m30-success) 8%, transparent);
+}
+
+#starter-code .info-box strong {
+  color: var(--m30-success);
+}
+
+/* Make the live editor larger for the capstone */
+#starter-code .live-editor {
+  min-height: 600px;
+}
+
+/* =============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================= */
+@media (max-width: 768px) {
+  .section-cards {
+    gap: 1rem;
+  }
+
+  .grade-scale {
+    grid-template-columns: 1fr;
+  }
+
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rubric-table {
+    font-size: 0.8rem;
+  }
+
+  .rubric-table th,
+  .rubric-table td {
+    padding: 0.65rem;
+  }
+
+  .category-cell {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .col-category { min-inline-size: 7rem; }
+  .col-criteria { min-inline-size: 12rem; }
+
+  .arch-diagram {
+    padding: 1rem;
+  }
+
+  .capstone-brief {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .checklist li {
+    font-size: 0.8rem;
+  }
+
+  .check-box {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  .rubric-icon {
+    display: none;
+  }
+}
+
+/* =============================================
+   SCROLL-DRIVEN SECTION REVEAL
+   ============================================= */
+.concept-section {
+  animation: section-reveal 0.6s ease both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 20%;
+}
+
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =============================================
+   REDUCED MOTION
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  .concept-section {
+    animation: none;
+  }
+
+  .tip-card:hover {
+    transform: none;
+  }
+
+  .section-card:hover {
+    box-shadow: none;
+  }
+}

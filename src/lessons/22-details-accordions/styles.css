@@ -1,0 +1,1488 @@
+/* ============================================
+   Module 22: Exclusive Accordions & Details Styling
+   <details>, <summary>, name="", ::details-content,
+   interpolate-size, @starting-style, :has()
+   ============================================ */
+
+/* ---- Level 7 Badge (not in course.css) ---- */
+.level-badge.level-6 {
+  background: color-mix(in oklch, #e84393 20%, transparent);
+  color: #e84393;
+}
+
+.level-badge.level-7 {
+  background: color-mix(in oklch, #6c5ce7 25%, transparent);
+  color: #a29bfe;
+  box-shadow: 0 0 12px color-mix(in oklch, #6c5ce7 30%, transparent);
+}
+
+/* ---- Global: Enable keyword interpolation for height transitions ---- */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ---- Feature List ---- */
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.5rem 0;
+}
+
+.feature-list li {
+  padding: 0.75rem 0 0.75rem 2rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.feature-list li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-accent);
+  font-weight: 700;
+}
+
+/* ---- Steps List ---- */
+.steps-list {
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.steps-list li {
+  margin-bottom: 0.75rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+.steps-list li strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block (module overrides) ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================
+   Section 1: Basic Details Demo
+   ============================================= */
+
+.basics-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.basic-details {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  overflow: hidden;
+}
+
+.basic-details summary {
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--pe7-text);
+  transition: background var(--pe7-transition);
+}
+
+.basic-details summary:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+}
+
+.basic-details summary:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.basic-details > p,
+.basic-details > ul {
+  padding: 0.75rem 1.25rem;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+  border-top: 1px solid var(--pe7-border);
+}
+
+.basic-details ul {
+  padding-left: 2.5rem;
+  padding-bottom: 1rem;
+}
+
+.basic-details li {
+  margin-bottom: 0.3rem;
+  color: var(--pe7-text-muted);
+}
+
+/* =============================================
+   Section 2: Exclusive Accordion Demos
+   ============================================= */
+
+/* ---- Generic Accordion Item ---- */
+.exclusive-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.accordion-item {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-bottom: none;
+  overflow: hidden;
+  transition: border-color var(--pe7-transition);
+}
+
+.accordion-item:first-child {
+  border-radius: var(--pe7-radius-lg) var(--pe7-radius-lg) 0 0;
+}
+
+.accordion-item:last-child {
+  border-bottom: 1px solid var(--pe7-border);
+  border-radius: 0 0 var(--pe7-radius-lg) var(--pe7-radius-lg);
+}
+
+.accordion-item[open] {
+  border-color: var(--pe7-accent);
+}
+
+.accordion-item[open] + .accordion-item {
+  border-top-color: var(--pe7-accent);
+}
+
+.accordion-trigger {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--pe7-text);
+  list-style: none;
+  transition: background var(--pe7-transition), color var(--pe7-transition);
+}
+
+.accordion-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+}
+
+.accordion-trigger:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.accordion-item[open] > .accordion-trigger {
+  color: var(--pe7-accent-light);
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+}
+
+.accordion-content {
+  padding: 0.75rem 1.25rem 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+  border-top: 1px solid var(--pe7-border);
+}
+
+.accordion-content p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ---- Animated details-content for all accordion items ---- */
+.accordion-item::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.accordion-item[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .accordion-item[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* ---- Dual Group Demo ---- */
+.dual-group-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.group-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.group-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.group-label code {
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.group-label--purple {
+  color: var(--pe7-accent-light);
+}
+
+.group-label--teal {
+  color: var(--pe7-success);
+}
+
+/* Purple variant */
+.accordion-item--purple {
+  border-color: color-mix(in oklch, var(--pe7-accent) 30%, var(--pe7-border));
+}
+
+.accordion-item--purple[open] {
+  border-color: var(--pe7-accent);
+}
+
+.accordion-item--purple[open] > .accordion-trigger {
+  color: var(--pe7-accent-light);
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+}
+
+/* Teal variant */
+.accordion-item--teal {
+  border-color: color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
+}
+
+.accordion-item--teal[open] {
+  border-color: var(--pe7-success);
+}
+
+.accordion-item--teal[open] > .accordion-trigger {
+  color: var(--pe7-success);
+  background: color-mix(in oklch, var(--pe7-success) 8%, transparent);
+}
+
+.accordion-item--teal .accordion-content {
+  border-top-color: color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
+}
+
+/* Animation for colored variants */
+.accordion-item--purple::details-content,
+.accordion-item--teal::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.accordion-item--purple[open]::details-content,
+.accordion-item--teal[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .accordion-item--purple[open]::details-content,
+  .accordion-item--teal[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .dual-group-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Section 3: ::details-content Pseudo Demo
+   ============================================= */
+
+.pseudo-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.styled-details {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+}
+
+.styled-details summary {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--pe7-text);
+  list-style: none;
+  transition: background var(--pe7-transition);
+}
+
+.styled-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.styled-details summary:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+}
+
+.styled-details summary:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.styled-details-body {
+  padding: 1rem 1.25rem;
+  background: color-mix(in oklch, var(--pe7-accent) 4%, var(--pe7-bg));
+  border-top: 2px solid var(--pe7-accent);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+}
+
+.styled-details-body p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Animation for styled details */
+.styled-details::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.4s ease,
+    opacity 0.4s ease,
+    content-visibility 0.4s ease allow-discrete;
+}
+
+.styled-details[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .styled-details[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   Section 4: Ingredients Grid & Animated Accordion
+   ============================================= */
+
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.ingredient-card {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  transition: border-color var(--pe7-transition);
+}
+
+.ingredient-card:hover {
+  border-color: var(--pe7-accent);
+}
+
+.ingredient-num {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background: var(--pe7-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.ingredient-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-accent-light);
+}
+
+.ingredient-card h4 code {
+  font-size: inherit;
+  background: none;
+  padding: 0;
+}
+
+.ingredient-card p {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+  margin: 0;
+}
+
+/* ---- Animated Accordion Demo ---- */
+.animated-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.anim-item {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.anim-item[open] {
+  border-color: var(--pe7-accent);
+  box-shadow: 0 4px 20px color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+}
+
+.anim-trigger {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--pe7-text);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background var(--pe7-transition), color var(--pe7-transition);
+}
+
+.anim-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.anim-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+}
+
+.anim-trigger:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.anim-item[open] > .anim-trigger {
+  color: var(--pe7-accent-light);
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+/* Animated icon (chevron rotation) */
+.anim-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.anim-icon::before {
+  content: "\276F";
+  font-size: 0.75rem;
+  color: var(--pe7-accent-light);
+  transition: rotate 0.3s ease;
+  display: inline-block;
+}
+
+.anim-item[open] > .anim-trigger .anim-icon {
+  background: var(--pe7-accent);
+}
+
+.anim-item[open] > .anim-trigger .anim-icon::before {
+  rotate: 90deg;
+  color: white;
+}
+
+.anim-content {
+  padding: 1rem 1.25rem 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+}
+
+.anim-content p {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.anim-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Animated ::details-content */
+.anim-item::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.4s ease,
+    opacity 0.4s ease,
+    content-visibility 0.4s ease allow-discrete;
+}
+
+.anim-item[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .anim-item[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   Section 5: FAQ Layout
+   ============================================= */
+
+.faq-panel {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+}
+
+.faq-title {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1.25rem 1.5rem;
+  color: var(--pe7-text);
+  border-bottom: 1px solid var(--pe7-border);
+  margin: 0;
+  background: color-mix(in oklch, var(--pe7-accent) 4%, transparent);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--pe7-border);
+  transition: background var(--pe7-transition);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item[open] {
+  background: color-mix(in oklch, var(--pe7-accent) 3%, transparent);
+}
+
+.faq-question {
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--pe7-text);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: color var(--pe7-transition), background var(--pe7-transition);
+}
+
+.faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.faq-question:hover {
+  color: var(--pe7-accent-light);
+  background: color-mix(in oklch, var(--pe7-accent) 5%, transparent);
+}
+
+.faq-question:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.faq-item[open] > .faq-question {
+  color: var(--pe7-accent-light);
+}
+
+/* Chevron icon */
+.faq-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
+  transition: background 0.3s ease;
+}
+
+.faq-chevron::before {
+  content: "\276F";
+  font-size: 0.7rem;
+  color: var(--pe7-accent-light);
+  transition: rotate 0.3s ease;
+  display: inline-block;
+}
+
+.faq-item[open] > .faq-question .faq-chevron {
+  background: var(--pe7-accent);
+}
+
+.faq-item[open] > .faq-question .faq-chevron::before {
+  rotate: 90deg;
+  color: white;
+}
+
+.faq-answer {
+  padding: 0 1.5rem 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--pe7-text-muted);
+}
+
+.faq-answer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Animated open/close for FAQ */
+.faq-item::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.faq-item[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .faq-item[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   Section 5: Settings Panel
+   ============================================= */
+
+.settings-panel {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  max-width: 520px;
+}
+
+.settings-title {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1.25rem 1.5rem;
+  color: var(--pe7-text);
+  border-bottom: 1px solid var(--pe7-border);
+  margin: 0;
+  background: color-mix(in oklch, var(--pe7-accent) 4%, transparent);
+}
+
+.settings-item {
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-trigger {
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  transition: background var(--pe7-transition);
+}
+
+.settings-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.settings-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 5%, transparent);
+}
+
+.settings-trigger:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.settings-item[open] > .settings-trigger {
+  background: color-mix(in oklch, var(--pe7-accent) 4%, transparent);
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.settings-icon {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--pe7-radius);
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  flex-shrink: 0;
+}
+
+.settings-label {
+  flex: 1;
+}
+
+.settings-label strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--pe7-text);
+  margin-bottom: 0.1rem;
+}
+
+.settings-label small {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+}
+
+/* Chevron for settings */
+.settings-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-chevron::before {
+  content: "\276F";
+  font-size: 0.75rem;
+  color: var(--pe7-text-muted);
+  transition: rotate 0.3s ease, color 0.3s ease;
+  display: inline-block;
+}
+
+.settings-item[open] > .settings-trigger .settings-chevron::before {
+  rotate: 90deg;
+  color: var(--pe7-accent-light);
+}
+
+.settings-content {
+  padding: 0.5rem 0;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.88rem;
+  color: var(--pe7-text-muted);
+  transition: background var(--pe7-transition);
+}
+
+.settings-row:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 4%, transparent);
+}
+
+.settings-value {
+  font-weight: 500;
+  color: var(--pe7-text);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.settings-value--on {
+  color: var(--pe7-success);
+}
+
+.settings-value--off {
+  color: var(--pe7-text-muted);
+  opacity: 0.6;
+}
+
+.settings-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--pe7-accent);
+  border: 2px solid var(--pe7-accent-light);
+}
+
+/* Animated open/close for settings */
+.settings-item::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.3s ease,
+    opacity 0.3s ease,
+    content-visibility 0.3s ease allow-discrete;
+}
+
+.settings-item[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .settings-item[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   Section 5: Nested Accordion
+   ============================================= */
+
+.nested-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nested-outer {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.nested-outer[open] {
+  border-color: var(--pe7-accent);
+}
+
+.nested-outer-trigger {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--pe7-text);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background var(--pe7-transition);
+}
+
+.nested-outer-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.nested-outer-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+}
+
+.nested-outer-trigger:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.nested-icon {
+  font-size: 1.1rem;
+}
+
+.nested-outer[open] > .nested-outer-trigger {
+  color: var(--pe7-accent-light);
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.nested-outer-content {
+  padding: 0.75rem 1rem;
+}
+
+/* Inner nested items */
+.nested-inner {
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  margin-bottom: 0.4rem;
+  overflow: hidden;
+  background: var(--pe7-bg);
+  transition: border-color 0.3s ease;
+}
+
+.nested-inner:last-child {
+  margin-bottom: 0;
+}
+
+.nested-inner[open] {
+  border-color: color-mix(in oklch, var(--pe7-accent) 50%, var(--pe7-border));
+}
+
+.nested-inner-trigger {
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--pe7-text);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background var(--pe7-transition);
+}
+
+.nested-inner-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.nested-inner-trigger::after {
+  content: "\276F";
+  font-size: 0.65rem;
+  color: var(--pe7-text-muted);
+  transition: rotate 0.3s ease, color 0.3s ease;
+}
+
+.nested-inner[open] > .nested-inner-trigger::after {
+  rotate: 90deg;
+  color: var(--pe7-accent-light);
+}
+
+.nested-inner-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 5%, transparent);
+}
+
+.nested-inner-trigger:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.nested-inner[open] > .nested-inner-trigger {
+  color: var(--pe7-accent-light);
+}
+
+.nested-inner-content {
+  padding: 0.6rem 1rem 0.85rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+  border-top: 1px solid var(--pe7-border);
+}
+
+.nested-inner-content p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* Animated open/close for nested items */
+.nested-outer::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.nested-outer[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .nested-outer[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.nested-inner::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.3s ease,
+    opacity 0.3s ease,
+    content-visibility 0.3s ease allow-discrete;
+}
+
+.nested-inner[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .nested-inner[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   Section 6: Specification Table
+   ============================================= */
+
+.spec-table {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* :has() parent-aware styling */
+.spec-table:has(details[open]) {
+  border-color: var(--pe7-accent);
+  box-shadow: 0 0 24px color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+}
+
+.spec-title {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1.25rem 1.5rem;
+  color: var(--pe7-text);
+  border-bottom: 1px solid var(--pe7-border);
+  margin: 0;
+  background: color-mix(in oklch, var(--pe7-accent) 4%, transparent);
+}
+
+.spec-row {
+  border-bottom: 1px solid var(--pe7-border);
+  transition: background 0.2s ease;
+}
+
+.spec-row:last-child {
+  border-bottom: none;
+}
+
+.spec-row[open] {
+  background: color-mix(in oklch, var(--pe7-accent) 3%, transparent);
+}
+
+.spec-trigger {
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background var(--pe7-transition);
+}
+
+.spec-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.spec-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 6%, transparent);
+}
+
+.spec-trigger:focus-visible {
+  outline: 2px solid var(--pe7-accent);
+  outline-offset: -2px;
+}
+
+.spec-category {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--pe7-text);
+}
+
+.spec-row[open] .spec-category {
+  color: var(--pe7-accent-light);
+}
+
+.spec-preview {
+  font-size: 0.8rem;
+  color: var(--pe7-text-muted);
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.spec-row[open] .spec-preview {
+  background: var(--pe7-accent);
+  color: white;
+}
+
+.spec-details {
+  padding: 0.25rem 1.5rem 1rem;
+}
+
+.spec-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-border) 60%, transparent);
+  font-size: 0.85rem;
+}
+
+.spec-detail-row:last-child {
+  border-bottom: none;
+}
+
+.spec-detail-row span:first-child {
+  color: var(--pe7-text-muted);
+}
+
+.spec-detail-row span:last-child {
+  color: var(--pe7-text);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Animated open/close for spec rows */
+.spec-row::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.35s ease,
+    opacity 0.35s ease,
+    content-visibility 0.35s ease allow-discrete;
+}
+
+.spec-row[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+@starting-style {
+  .spec-row[open]::details-content {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   Section 7: Accessibility
+   ============================================= */
+
+.a11y-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.a11y-card {
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--pe7-border);
+}
+
+.a11y-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.a11y-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.a11y-card li {
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  position: relative;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+}
+
+.a11y-do {
+  background: color-mix(in oklch, var(--pe7-success) 5%, var(--pe7-surface));
+  border-color: color-mix(in oklch, var(--pe7-success) 30%, var(--pe7-border));
+}
+
+.a11y-do h4 {
+  color: var(--pe7-success);
+}
+
+.a11y-do li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-success);
+  font-weight: 700;
+}
+
+.a11y-dont {
+  background: color-mix(in oklch, var(--pe7-danger) 5%, var(--pe7-surface));
+  border-color: color-mix(in oklch, var(--pe7-danger) 30%, var(--pe7-border));
+}
+
+.a11y-dont h4 {
+  color: var(--pe7-danger);
+}
+
+.a11y-dont li::before {
+  content: "\2717";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-danger);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .a11y-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================
+   Exercise & Challenge Sections
+   ============================================= */
+
+.exercise-requirements,
+.challenge-requirements {
+  margin: 1.5rem 0;
+}
+
+.exercise-requirements h3,
+.challenge-requirements h3,
+.exercise-starter h3,
+.challenge-hints h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.exercise-requirements ul,
+.challenge-requirements ul,
+.challenge-hints ul {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.exercise-requirements li,
+.challenge-requirements li,
+.challenge-hints li {
+  margin-bottom: 0.5rem;
+  font-size: 0.925rem;
+  color: var(--pe7-text);
+}
+
+.exercise-starter {
+  margin-top: 2rem;
+}
+
+.challenge-hints {
+  margin: 1.5rem 0;
+}
+
+/* =============================================
+   Reduced Motion
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion-item::details-content,
+  .accordion-item--purple::details-content,
+  .accordion-item--teal::details-content,
+  .styled-details::details-content,
+  .anim-item::details-content,
+  .faq-item::details-content,
+  .settings-item::details-content,
+  .nested-outer::details-content,
+  .nested-inner::details-content,
+  .spec-row::details-content {
+    transition: none;
+  }
+
+  .faq-chevron::before,
+  .anim-icon::before,
+  .settings-chevron::before,
+  .nested-inner-trigger::after {
+    transition: none;
+  }
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 768px) {
+  .ingredients-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ingredients-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-question {
+    font-size: 0.88rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .faq-answer {
+    padding: 0 1rem 1rem;
+  }
+
+  .settings-trigger {
+    padding: 0.75rem 1rem;
+  }
+
+  .settings-row {
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+  }
+
+  .spec-trigger {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .spec-details {
+    padding: 0.25rem 1rem 0.75rem;
+  }
+
+  .spec-detail-row {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .spec-detail-row span:last-child {
+    text-align: left;
+  }
+}

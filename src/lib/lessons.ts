@@ -1,4 +1,4 @@
-export type Level = 1 | 2 | 3 | 4 | 5;
+export type Level = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export interface LessonMeta {
 	slug: string;
@@ -142,9 +142,144 @@ export const lessons: LessonMeta[] = [
 		num: '15',
 		title: 'Module 15: PE7 Portfolio',
 		short: 'PE7 Portfolio',
-		desc: 'Build a complete production portfolio combining every technique from all 14 modules.',
+		desc: 'Build a complete production portfolio combining every technique from the entire PE7 course.',
 		level: 5,
 		tags: ['capstone', 'portfolio', 'all features']
+	},
+	{
+		slug: '16-css-mixins',
+		num: '16',
+		title: 'Module 16: CSS Mixins & @apply',
+		short: 'CSS Mixins & @apply',
+		desc: 'Reusable style blocks with @mixin and @apply — design system primitives, responsive mixins, and composable patterns.',
+		level: 6,
+		tags: ['@mixin', '@apply', 'design systems']
+	},
+	{
+		slug: '17-masonry-layout',
+		num: '17',
+		title: 'Module 17: Masonry Layout',
+		short: 'Masonry Layout',
+		desc: 'Pinterest-style layouts with display: masonry, masonry-template-tracks, spanning, and responsive auto-flow.',
+		level: 6,
+		tags: ['masonry', 'layout', 'gallery']
+	},
+	{
+		slug: '18-popover-commands',
+		num: '18',
+		title: 'Module 18: Popover & Invoker Commands',
+		short: 'Popover & Invokers',
+		desc: 'Native popovers, commandfor/command attributes, interest invokers, anchor-positioned dropdowns — zero JS.',
+		level: 6,
+		tags: ['popover', 'commandfor', 'invoker']
+	},
+	{
+		slug: '19-relative-colors',
+		num: '19',
+		title: 'Module 19: Relative Colors & contrast-color()',
+		short: 'Relative Colors',
+		desc: 'Generate palettes, tints, shades, and accessible text from a single base color with relative color syntax.',
+		level: 6,
+		tags: ['oklch(from)', 'contrast-color()', 'palette']
+	},
+	{
+		slug: '20-property-houdini',
+		num: '20',
+		title: 'Module 20: @property & Houdini Animations',
+		short: '@property & Houdini',
+		desc: 'Typed custom properties that unlock gradient animations, number tickers, and complex choreography.',
+		level: 7,
+		tags: ['@property', 'Houdini', 'animation']
+	},
+	{
+		slug: '21-css-math',
+		num: '21',
+		title: 'Module 21: CSS Math Functions',
+		short: 'CSS Math Functions',
+		desc: 'The full math suite: round(), mod(), sin(), cos(), pow(), sqrt() — circular layouts, wave patterns, and more.',
+		level: 7,
+		tags: ['sin()', 'round()', 'pow()']
+	},
+	{
+		slug: '22-details-accordions',
+		num: '22',
+		title: 'Module 22: Exclusive Accordions & Details',
+		short: 'Accordions & Details',
+		desc: 'Exclusive accordion groups with <details name>, ::details-content animations, and styled disclosure widgets.',
+		level: 7,
+		tags: ['details', 'accordion', '::details-content']
+	},
+	{
+		slug: '23-logical-a11y',
+		num: '23',
+		title: 'Module 23: Logical Properties & Accessibility CSS',
+		short: 'Logical Props & A11y',
+		desc: 'Internationalization-ready logical properties, prefers-* media queries, focus-visible, and accessibility-first CSS.',
+		level: 7,
+		tags: ['logical', 'a11y', 'prefers-*']
+	},
+	{
+		slug: '24-shapes-clipping',
+		num: '24',
+		title: 'Module 24: Shapes, Clipping & Masking',
+		short: 'Shapes & Clipping',
+		desc: 'Clip elements into geometric forms with clip-path, wrap text around shapes, and create fade effects with mask-image.',
+		level: 8,
+		tags: ['clip-path', 'shape-outside', 'mask-image']
+	},
+	{
+		slug: '25-advanced-typography',
+		num: '25',
+		title: 'Module 25: Advanced Typography & Variable Fonts',
+		short: 'Typography & Fonts',
+		desc: 'Variable fonts, text-wrap: balance/pretty, initial-letter drop caps, font-palette, and fluid type scales.',
+		level: 8,
+		tags: ['variable fonts', 'text-wrap', 'initial-letter']
+	},
+	{
+		slug: '26-filters-blend',
+		num: '26',
+		title: 'Module 26: Filters, Blend Modes & Glassmorphism',
+		short: 'Filters & Glass',
+		desc: 'CSS filters, backdrop-filter, glassmorphism recipes, mix-blend-mode, and creative image effects.',
+		level: 8,
+		tags: ['filter', 'backdrop-filter', 'blend-mode']
+	},
+	{
+		slug: '27-performance-containment',
+		num: '27',
+		title: 'Module 27: CSS Performance & Containment',
+		short: 'Performance & Contain',
+		desc: 'The rendering pipeline, contain, content-visibility, will-change, and production CSS optimization.',
+		level: 8,
+		tags: ['contain', 'content-visibility', 'will-change']
+	},
+	{
+		slug: '28-counters-generated',
+		num: '28',
+		title: 'Module 28: Generated Content & CSS Counters',
+		short: 'Counters & Content',
+		desc: 'The content property, CSS counters, @counter-style, ::marker styling, and auto-numbered patterns.',
+		level: 9,
+		tags: ['counter()', '@counter-style', '::marker']
+	},
+	{
+		slug: '29-svg-css',
+		num: '29',
+		title: 'Module 29: SVG & CSS Integration',
+		short: 'SVG & CSS',
+		desc: 'Inline SVG styling, currentColor icon systems, CSS-animated SVG, line-drawing effects, and SVG theming.',
+		level: 9,
+		tags: ['SVG', 'currentColor', 'stroke-dasharray']
+	},
+	{
+		slug: '30-grand-capstone',
+		num: '30',
+		title: 'Module 30: PE7 Grand Capstone',
+		short: 'Grand Capstone',
+		desc: 'Build a production agency landing page using every CSS technique from all 29 modules. The final PE7 challenge.',
+		level: 9,
+		tags: ['capstone', 'all features', 'production']
 	}
 ];
 
@@ -153,7 +288,11 @@ export const levelTitles: Record<Level, string> = {
 	2: 'Layout Mastery',
 	3: 'Modern CSS',
 	4: 'Advanced Techniques',
-	5: 'PE7 Mastery'
+	5: 'PE7 Mastery',
+	6: '2026 Deep Dives',
+	7: 'Expert Systems',
+	8: 'Production Polish',
+	9: 'PE7 Grand Mastery'
 };
 
 export const levelSubtitles: Record<Level, string> = {
@@ -161,7 +300,11 @@ export const levelSubtitles: Record<Level, string> = {
 	2: 'Level 2 — Layout Mastery',
 	3: 'Level 3 — Modern CSS',
 	4: 'Level 4 — Advanced',
-	5: 'Level 5 — PE7 Mastery'
+	5: 'Level 5 — PE7 Mastery',
+	6: 'Level 6 — 2026 Deep Dives',
+	7: 'Level 7 — Expert Systems',
+	8: 'Level 8 — Production Polish',
+	9: 'Level 9 — PE7 Grand Mastery'
 };
 
 export function lessonIndex(slug: string): number {

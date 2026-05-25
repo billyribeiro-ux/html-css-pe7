@@ -1,0 +1,1327 @@
+/* ============================================
+   Module 18: Popover API & Invoker Commands
+   Tooltips, dropdowns, notifications, dialogs
+   — all without JavaScript
+   ============================================ */
+
+/* ---- Level 6 Badge (2026 Deep Dives) ---- */
+.level-badge.level-6 {
+  background: color-mix(in oklch, #e84393 20%, transparent);
+  color: #e84393;
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid color-mix(in oklch, var(--pe7-text) 12%, transparent);
+}
+
+.concept-section:last-of-type {
+  border-bottom: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--pe7-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-accent-light);
+}
+
+.concept-section p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--pe7-text);
+}
+
+/* ---- Feature List ---- */
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.5rem 0;
+}
+
+.feature-list li {
+  padding: 0.75rem 0 0.75rem 2rem;
+  position: relative;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.feature-list li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--pe7-accent);
+  font-weight: 700;
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+  background: color-mix(in oklch, var(--pe7-accent) 8%, transparent);
+  border-left: 4px solid var(--pe7-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--pe7-text);
+}
+
+.info-box strong {
+  color: var(--pe7-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--pe7-surface);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--pe7-text);
+}
+
+/* ---- Demo Note ---- */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block (module overrides) ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+
+/* =============================================
+   Section 1: Popover Basics Demo
+   ============================================= */
+
+.popover-basics-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+
+.popover-btn-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---- Shared Trigger Button ---- */
+.pop-trigger {
+  padding: 0.65rem 1.5rem;
+  background: var(--pe7-accent);
+  color: white;
+  border: none;
+  border-radius: var(--pe7-radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.pop-trigger:hover {
+  background: var(--pe7-accent-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--pe7-accent) 35%, transparent);
+}
+
+.pop-trigger:active {
+  transform: translateY(0);
+}
+
+.pop-trigger--manual {
+  background: #e17055;
+}
+
+.pop-trigger--manual:hover {
+  background: #fab1a0;
+}
+
+.pop-trigger--animated {
+  background: linear-gradient(135deg, var(--pe7-accent), #e84393);
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+.pop-trigger--animated:hover {
+  box-shadow: 0 6px 24px color-mix(in oklch, #e84393 40%, transparent);
+}
+
+.pop-trigger--dialog {
+  background: var(--pe7-success);
+  color: var(--pe7-bg);
+}
+
+.pop-trigger--dialog:hover {
+  background: color-mix(in oklch, var(--pe7-success) 85%, white);
+}
+
+/* ---- Popover Panel (shared base) ---- */
+.pop-panel {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  max-width: 340px;
+  color: var(--pe7-text);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+
+  /* Entry/exit transitions */
+  opacity: 0;
+  transform: scale(0.96) translateY(-10px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    display 0.25s allow-discrete,
+    overlay 0.25s allow-discrete;
+}
+
+.pop-panel:popover-open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+@starting-style {
+  .pop-panel:popover-open {
+    opacity: 0;
+    transform: scale(0.96) translateY(-10px);
+  }
+}
+
+.pop-panel h5 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-text);
+}
+
+.pop-panel p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--pe7-text-muted);
+  margin-bottom: 0;
+}
+
+/* Indicator strip */
+.pop-panel--auto {
+  border-top: 3px solid var(--pe7-accent);
+}
+
+.pop-panel--manual {
+  border-top: 3px solid #e17055;
+}
+
+.pop-panel--invoker {
+  border-top: 3px solid var(--pe7-success);
+}
+
+/* ---- Close Button ---- */
+.pop-close-btn {
+  padding: 0.5rem 1.25rem;
+  background: var(--pe7-surface);
+  color: var(--pe7-text);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pop-close-btn:hover {
+  background: var(--pe7-surface-2);
+  border-color: var(--pe7-accent);
+}
+
+.pop-close-btn--confirm {
+  background: var(--pe7-accent);
+  color: white;
+  border-color: var(--pe7-accent);
+}
+
+.pop-close-btn--confirm:hover {
+  background: var(--pe7-accent-light);
+}
+
+.pop-close-btn--danger {
+  background: var(--pe7-danger);
+  color: white;
+  border-color: var(--pe7-danger);
+}
+
+.pop-close-btn--danger:hover {
+  background: color-mix(in oklch, var(--pe7-danger) 80%, white);
+}
+
+
+/* =============================================
+   Section 2: Animated Popover with Backdrop
+   ============================================= */
+
+.animated-popover-demo {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.pop-animated {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 380px;
+  color: var(--pe7-text);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border-top: 3px solid #e84393;
+
+  /* Exit state */
+  opacity: 0;
+  transform: translateY(-16px) scale(0.95);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    display 0.3s allow-discrete,
+    overlay 0.3s allow-discrete;
+}
+
+.pop-animated:popover-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@starting-style {
+  .pop-animated:popover-open {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.95);
+  }
+}
+
+/* Backdrop blur */
+.pop-animated::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    display 0.3s allow-discrete,
+    overlay 0.3s allow-discrete;
+}
+
+.pop-animated:popover-open::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .pop-animated:popover-open::backdrop {
+    opacity: 0;
+  }
+}
+
+.pop-animated h5 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--pe7-text);
+}
+
+.pop-animated p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--pe7-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.pop-animated-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+/* =============================================
+   Section 3: Invoker Commands Demo
+   ============================================= */
+
+.invoker-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+
+.invoker-btn-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Invoker Dialog */
+.invoker-dialog {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 400px;
+  color: var(--pe7-text);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.invoker-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.invoker-dialog h5 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.invoker-dialog p {
+  font-size: 0.9rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+/* ---- Command Table ---- */
+.command-table {
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+.command-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.command-table th,
+.command-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--pe7-border);
+  color: var(--pe7-text);
+}
+
+.command-table th {
+  background: color-mix(in oklch, var(--pe7-accent) 10%, transparent);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.command-table td code {
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+
+
+/* =============================================
+   Section 4: Interest Invokers / Tooltips
+   ============================================= */
+
+.tooltip-demo {
+  padding: 2rem 0;
+}
+
+.tooltip-demo-row {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tooltip-trigger-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-btn {
+  padding: 0.6rem 1.5rem;
+  background: var(--pe7-accent);
+  color: white;
+  border: none;
+  border-radius: var(--pe7-radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: background 0.2s, transform 0.15s;
+}
+
+.tooltip-btn:hover {
+  background: var(--pe7-accent-light);
+  transform: translateY(-1px);
+}
+
+.tooltip-btn--warn {
+  background: var(--pe7-danger);
+}
+
+.tooltip-btn--warn:hover {
+  background: color-mix(in oklch, var(--pe7-danger) 80%, white);
+}
+
+.tooltip-btn--info {
+  background: #0984e3;
+}
+
+.tooltip-btn--info:hover {
+  background: #74b9ff;
+}
+
+/* Tooltip popover styling */
+.pop-tooltip {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--pe7-text);
+  max-width: 260px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+
+  /* Transition */
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    display 0.2s allow-discrete,
+    overlay 0.2s allow-discrete;
+}
+
+.pop-tooltip:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .pop-tooltip:popover-open {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.pop-tooltip--warn {
+  border-color: color-mix(in oklch, var(--pe7-danger) 40%, var(--pe7-border));
+  border-top: 2px solid var(--pe7-danger);
+}
+
+.pop-tooltip--info {
+  border-color: color-mix(in oklch, #0984e3 40%, var(--pe7-border));
+  border-top: 2px solid #0984e3;
+}
+
+
+/* =============================================
+   Section 5: Anchor Positioning Demo
+   ============================================= */
+
+/* Anchor position grid visual */
+.anchor-grid-visual {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin: 2rem auto;
+  max-width: 480px;
+}
+
+.anchor-cell {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: 6px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  font-size: 0.7rem;
+  font-family: var(--pe7-font-mono);
+  color: var(--pe7-text-muted);
+  line-height: 1.4;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.anchor-cell:hover {
+  border-color: var(--pe7-accent);
+  background: color-mix(in oklch, var(--pe7-accent) 8%, var(--pe7-surface-2));
+}
+
+.anchor-cell--center {
+  background: color-mix(in oklch, var(--pe7-accent) 20%, var(--pe7-surface-2));
+  border-color: var(--pe7-accent);
+  color: var(--pe7-accent-light);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Anchor demo */
+.anchor-demo {
+  padding: 2rem 0;
+}
+
+.anchor-demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.anchor-demo-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+}
+
+.anchor-btn {
+  padding: 0.6rem 1.5rem;
+  background: var(--pe7-surface-2);
+  color: var(--pe7-text);
+  border: 2px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.anchor-btn:hover {
+  border-color: var(--pe7-accent);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, var(--pe7-surface-2));
+  transform: translateY(-1px);
+}
+
+.anchor-btn--above { border-color: #6c5ce7; }
+.anchor-btn--below { border-color: #00cec9; }
+.anchor-btn--left  { border-color: #fdcb6e; }
+.anchor-btn--right { border-color: #e84393; }
+
+/* Anchored popover panels */
+.pop-anchored {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--pe7-text-muted);
+  max-width: 240px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  margin: 8px;
+
+  /* Transitions */
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    display 0.2s allow-discrete,
+    overlay 0.2s allow-discrete;
+}
+
+.pop-anchored:popover-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@starting-style {
+  .pop-anchored:popover-open {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.pop-anchored code {
+  font-size: 0.78em;
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* Anchor-specific positioning */
+.pop-anchored--above {
+  position-anchor: --anchor-above;
+  position-area: block-start;
+  border-bottom: 3px solid #6c5ce7;
+}
+
+.pop-anchored--below {
+  position-anchor: --anchor-below;
+  position-area: block-end;
+  border-top: 3px solid #00cec9;
+}
+
+.pop-anchored--left {
+  position-anchor: --anchor-left;
+  position-area: inline-start;
+  border-right: 3px solid #fdcb6e;
+}
+
+.pop-anchored--right {
+  position-anchor: --anchor-right;
+  position-area: inline-end;
+  border-left: 3px solid #e84393;
+}
+
+
+/* =============================================
+   Section 6: Patterns - Dropdown Menu
+   ============================================= */
+
+.dropdown-demo {
+  padding: 1.5rem 0;
+}
+
+.demo-menubar {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--pe7-surface-2);
+  padding: 0.5rem;
+  border-radius: var(--pe7-radius-lg);
+  border: 1px solid var(--pe7-border);
+  width: fit-content;
+}
+
+.demo-menu-trigger {
+  padding: 0.5rem 1.25rem;
+  background: none;
+  border: none;
+  color: var(--pe7-text);
+  border-radius: var(--pe7-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: background 0.15s, color 0.15s;
+}
+
+.demo-menu-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  color: var(--pe7-accent-light);
+}
+
+.demo-dropdown {
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 0.4rem;
+  min-width: 200px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+  margin-top: 4px;
+
+  /* Transitions */
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    display 0.2s allow-discrete,
+    overlay 0.2s allow-discrete;
+}
+
+.demo-dropdown:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .demo-dropdown:popover-open {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* Anchor-position each dropdown under its trigger */
+[style*="position-anchor: --menu-file"] {
+  position-anchor: --menu-file;
+  position-area: block-end span-inline-end;
+}
+
+[style*="position-anchor: --menu-edit"] {
+  position-anchor: --menu-edit;
+  position-area: block-end span-inline-end;
+}
+
+[style*="position-anchor: --menu-view"] {
+  position-anchor: --menu-view;
+  position-area: block-end span-inline-end;
+}
+
+.demo-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  background: none;
+  border: none;
+  color: var(--pe7-text);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: var(--pe7-font);
+  transition: background 0.12s, color 0.12s;
+}
+
+.demo-menu-item:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 15%, transparent);
+  color: var(--pe7-accent-light);
+}
+
+.demo-menu-item--danger {
+  color: var(--pe7-danger);
+}
+
+.demo-menu-item--danger:hover {
+  background: color-mix(in oklch, var(--pe7-danger) 12%, transparent);
+  color: var(--pe7-danger);
+}
+
+.demo-menu-divider {
+  border: none;
+  border-top: 1px solid var(--pe7-border);
+  margin: 0.3rem 0.5rem;
+}
+
+
+/* =============================================
+   Section 6: Patterns - Notification Panel
+   ============================================= */
+
+.notif-demo {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.notif-trigger {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: var(--pe7-surface-2);
+  border: 2px solid var(--pe7-border);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--pe7-font);
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.notif-trigger:hover {
+  border-color: var(--pe7-accent);
+  background: color-mix(in oklch, var(--pe7-accent) 10%, var(--pe7-surface-2));
+  transform: scale(1.05);
+}
+
+.notif-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background: var(--pe7-danger);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--pe7-surface);
+  animation: notif-pulse 2s ease-in-out infinite;
+}
+
+@keyframes notif-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Notification panel popover */
+.notif-panel {
+  position-anchor: --notif-bell;
+  position-area: block-end;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 0;
+  width: 340px;
+  max-height: 420px;
+  overflow-y: auto;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
+  margin-top: 8px;
+
+  /* Transitions */
+  opacity: 0;
+  transform: translateY(-10px) scale(0.97);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    display 0.25s allow-discrete,
+    overlay 0.25s allow-discrete;
+}
+
+.notif-panel:popover-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@starting-style {
+  .notif-panel:popover-open {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+}
+
+.notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--pe7-border);
+}
+
+.notif-header h5 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+  margin: 0;
+}
+
+.notif-mark-read {
+  background: none;
+  border: none;
+  color: var(--pe7-accent-light);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: color 0.15s;
+}
+
+.notif-mark-read:hover {
+  color: var(--pe7-accent);
+}
+
+.notif-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notif-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--pe7-border);
+  transition: background 0.15s;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background: color-mix(in oklch, var(--pe7-accent) 5%, transparent);
+}
+
+.notif-item--unread {
+  background: color-mix(in oklch, var(--pe7-accent) 4%, transparent);
+}
+
+.notif-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pe7-accent);
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+}
+
+.notif-dot--read {
+  background: var(--pe7-border);
+}
+
+.notif-item strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pe7-text);
+  margin-bottom: 0.15rem;
+}
+
+.notif-item p {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.4;
+  margin: 0 0 0.25rem;
+}
+
+.notif-item time {
+  font-size: 0.7rem;
+  color: color-mix(in oklch, var(--pe7-text-muted) 70%, transparent);
+}
+
+
+/* =============================================
+   Section 6: Patterns - Confirmation Dialog
+   ============================================= */
+
+.confirm-demo {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.confirm-trigger {
+  padding: 0.65rem 1.5rem;
+  background: var(--pe7-danger);
+  color: white;
+  border: none;
+  border-radius: var(--pe7-radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: var(--pe7-font);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.confirm-trigger:hover {
+  background: color-mix(in oklch, var(--pe7-danger) 80%, white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px color-mix(in oklch, var(--pe7-danger) 40%, transparent);
+}
+
+.confirm-popover {
+  position-anchor: --confirm-btn;
+  position-area: block-end;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius-lg);
+  padding: 1.5rem;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
+  margin-top: 10px;
+
+  /* Transitions */
+  opacity: 0;
+  transform: translateY(-8px) scale(0.95);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    display 0.25s allow-discrete,
+    overlay 0.25s allow-discrete;
+}
+
+.confirm-popover:popover-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@starting-style {
+  .confirm-popover:popover-open {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+}
+
+.confirm-popover::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    display 0.25s allow-discrete,
+    overlay 0.25s allow-discrete;
+}
+
+.confirm-popover:popover-open::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .confirm-popover:popover-open::backdrop {
+    opacity: 0;
+  }
+}
+
+.confirm-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.confirm-popover h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--pe7-text);
+}
+
+.confirm-popover p {
+  font-size: 0.85rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+
+/* =============================================
+   Section 7: Feature Detection Dashboard
+   ============================================= */
+
+.feature-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.feature-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--pe7-surface-2);
+  border: 1px solid var(--pe7-border);
+  border-radius: var(--pe7-radius);
+  transition: border-color var(--pe7-transition), box-shadow var(--pe7-transition);
+}
+
+.feature-check:hover {
+  border-color: var(--pe7-accent);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.feature-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+  background: var(--pe7-text-muted);
+  opacity: 0.4;
+  transition: all var(--pe7-transition);
+}
+
+.feature-check strong {
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--pe7-text);
+}
+
+.feature-check p {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Feature detection via @supports */
+@supports selector(:popover-open) {
+  .feature-indicator--popover {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+@supports (transition-behavior: allow-discrete) {
+  .feature-indicator--discrete {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+  .feature-indicator--starting {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+@supports (anchor-name: --x) {
+  .feature-indicator--anchor {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+}
+
+/* Invoker and Interest are harder to detect via CSS alone;
+   they depend on HTML attribute support. We approximate. */
+@supports selector(:popover-open) {
+  .feature-indicator--invoker {
+    background: var(--pe7-success);
+    opacity: 1;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-success) 50%, transparent);
+  }
+  .feature-indicator--interest {
+    background: var(--pe7-warning);
+    opacity: 0.8;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--pe7-warning) 40%, transparent);
+  }
+}
+
+
+/* =============================================
+   Exercise & Challenge Sections
+   ============================================= */
+
+.exercise-requirements,
+.challenge-requirements {
+  margin: 1.5rem 0;
+}
+
+.exercise-requirements h3,
+.challenge-requirements h3,
+.challenge-hints h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  color: var(--pe7-text);
+}
+
+.exercise-requirements ul,
+.challenge-requirements ul,
+.challenge-hints ul {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.exercise-requirements li,
+.challenge-requirements li,
+.challenge-hints li {
+  margin-bottom: 0.5rem;
+  font-size: 0.925rem;
+  color: var(--pe7-text);
+}
+
+.challenge-hints {
+  margin: 1.5rem 0;
+}
+
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 768px) {
+  .feature-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .anchor-grid-visual {
+    max-width: 100%;
+  }
+
+  .notif-panel {
+    width: 300px;
+  }
+
+  .demo-menubar {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .popover-btn-row,
+  .invoker-btn-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tooltip-demo-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .anchor-demo-grid {
+    grid-template-columns: 1fr;
+    max-width: 200px;
+  }
+
+  .confirm-popover,
+  .pop-panel {
+    max-width: 280px;
+  }
+
+  .notif-panel {
+    width: 260px;
+  }
+}

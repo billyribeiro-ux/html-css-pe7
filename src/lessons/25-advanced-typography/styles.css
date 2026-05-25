@@ -1,0 +1,820 @@
+/* ============================================
+   Module 25: Advanced Typography & Variable Fonts
+   Variable fonts, text-wrap, initial-letter,
+   color fonts, text decoration, OpenType features,
+   fluid typography & modular scales
+   ============================================ */
+
+/* ---- Lesson-level Custom Properties ---- */
+:root {
+  --m25-bg: #0f1117;
+  --m25-surface: #1a1d27;
+  --m25-surface-2: #242836;
+  --m25-text: #e4e6ef;
+  --m25-text-muted: #8b8fa3;
+  --m25-accent: #6c5ce7;
+  --m25-accent-light: #a29bfe;
+  --m25-border: rgba(255, 255, 255, 0.08);
+  --m25-radius: 8px;
+  --m25-radius-lg: 12px;
+  --m25-transition: 0.25s ease;
+  --m25-success: #22c55e;
+  --m25-warning: #f59e0b;
+  --m25-danger: #ef4444;
+
+  /* Modular type scale (1.25 ratio) for demos */
+  --m25-scale-ratio: 1.25;
+  --m25-text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+}
+
+/* ---- Section Spacing ---- */
+.concept-section {
+  margin-block-end: 4rem;
+  padding-block-end: 3rem;
+  border-block-end: 1px solid var(--m25-border);
+}
+
+.concept-section:last-of-type {
+  border-block-end: none;
+}
+
+.concept-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-block-end: 1rem;
+  padding-block-end: 0.5rem;
+  border-block-end: 2px solid var(--m25-accent);
+  display: inline-block;
+}
+
+.concept-section h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-block-start: 2rem;
+  margin-block-end: 0.75rem;
+  color: var(--m25-accent-light);
+}
+
+.concept-section p {
+  margin-block-end: 1rem;
+  line-height: 1.8;
+  color: var(--m25-text);
+}
+
+/* ---- Info Boxes ---- */
+.info-box {
+  padding-block: 1.25rem;
+  padding-inline: 1.5rem;
+  border-radius: var(--m25-radius-lg);
+  margin-block: 2rem;
+  background: color-mix(in oklch, var(--m25-accent) 8%, transparent);
+  border-inline-start: 4px solid var(--m25-accent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--m25-text);
+}
+
+.info-box strong {
+  color: var(--m25-accent-light);
+}
+
+/* ---- Demo Container ---- */
+.demo-container {
+  background: var(--m25-surface);
+  border: 1px solid var(--m25-border);
+  border-radius: var(--m25-radius-lg);
+  padding-block: 1.5rem;
+  padding-inline: 1.5rem;
+  margin-block: 2rem;
+  position: relative;
+}
+
+.demo-container::before {
+  content: "Live Demo";
+  position: absolute;
+  inset-block-start: -0.7em;
+  inset-inline-start: 1rem;
+  background: var(--m25-success);
+  color: var(--m25-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding-block: 0.15rem;
+  padding-inline: 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-container h4 {
+  margin-block-end: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--m25-text);
+}
+
+/* ---- Demo Note ---- */
+.demo-note {
+  font-size: 0.85rem;
+  color: var(--m25-text-muted);
+  font-style: italic;
+  margin-block-end: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ---- Code Block Overrides ---- */
+.code-block h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m25-text-muted);
+  margin-block-end: 0.5rem;
+}
+
+
+/* =============================================
+   Section 1: Variable Font Weight Demo
+   ============================================= */
+
+.vf-weight-demo {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.vf-card {
+  background: var(--m25-surface-2);
+  border: 1px solid var(--m25-border);
+  border-radius: var(--m25-radius);
+  padding: 1.25rem 0.75rem;
+  text-align: center;
+  transition: border-color var(--m25-transition),
+              box-shadow var(--m25-transition);
+  cursor: default;
+}
+
+.vf-card:hover {
+  border-color: var(--m25-accent);
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.15);
+}
+
+.vf-weight-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--m25-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-block-end: 0.75rem;
+}
+
+.vf-sample {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem);
+  font-weight: var(--target-weight, 400);
+  color: var(--m25-text);
+  margin: 0;
+  transition: font-weight 0.4s ease;
+  line-height: 1.3;
+}
+
+.vf-card:hover .vf-sample {
+  font-weight: calc(1000 - var(--target-weight, 400));
+  color: var(--m25-accent-light);
+}
+
+@media (max-width: 700px) {
+  .vf-weight-demo {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 450px) {
+  .vf-weight-demo {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+
+/* =============================================
+   Section 2: text-wrap Demo
+   ============================================= */
+
+.tw-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.tw-panel {
+  background: var(--m25-surface-2);
+  border: 1px solid var(--m25-border);
+  border-radius: var(--m25-radius);
+  padding: 1.25rem;
+}
+
+.tw-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m25-accent-light);
+  margin-block-end: 0.75rem;
+  font-weight: 700;
+}
+
+.tw-heading {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--m25-text);
+  margin-block-end: 1rem;
+  max-inline-size: 280px;
+}
+
+.tw-auto {
+  text-wrap: auto;
+}
+
+.tw-balanced {
+  text-wrap: balance;
+}
+
+.tw-body {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--m25-text-muted);
+  max-inline-size: 280px;
+}
+
+.tw-auto-p {
+  text-wrap: auto;
+}
+
+.tw-pretty-p {
+  text-wrap: pretty;
+}
+
+@media (max-width: 600px) {
+  .tw-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =============================================
+   Section 3: Drop Cap Demo
+   ============================================= */
+
+.drop-cap-demo {
+  display: grid;
+  gap: 2rem;
+}
+
+.dc-example {
+  background: var(--m25-surface-2);
+  border: 1px solid var(--m25-border);
+  border-radius: var(--m25-radius);
+  padding: 1.5rem;
+}
+
+.dc-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m25-accent-light);
+  margin-block-end: 1rem;
+  font-weight: 700;
+}
+
+.dc-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--m25-text);
+  margin: 0;
+  max-inline-size: 60ch;
+}
+
+/* Drop cap: 3 lines */
+.dc-three::first-letter {
+  initial-letter: 3;
+  color: var(--m25-accent);
+  font-weight: 700;
+  font-family: Georgia, "Times New Roman", serif;
+  margin-inline-end: 0.4rem;
+}
+
+/* Drop cap: 4 lines, styled */
+.dc-four::first-letter {
+  initial-letter: 4;
+  color: var(--m25-accent-light);
+  font-weight: 800;
+  font-family: system-ui, sans-serif;
+  margin-inline-end: 0.5rem;
+  padding-inline: 0.2rem;
+  background: rgba(108, 92, 231, 0.12);
+  border-radius: 4px;
+}
+
+
+/* =============================================
+   Section 4: Font Palette Demo
+   ============================================= */
+
+.palette-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.palette-card {
+  background: var(--m25-surface-2);
+  border: 1px solid var(--m25-border);
+  border-radius: var(--m25-radius);
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.palette-card::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 4px;
+}
+
+.palette-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--m25-text-muted);
+  margin-block-end: 1rem;
+  font-weight: 700;
+}
+
+.palette-text {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* Simulate different color palettes with gradients */
+.palette-default .palette-text {
+  background: linear-gradient(135deg, #e74c3c, #e67e22, #f1c40f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.palette-default::after {
+  background: linear-gradient(90deg, #e74c3c, #e67e22, #f1c40f);
+}
+
+.palette-brand .palette-text {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe, #74b9ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.palette-brand::after {
+  background: linear-gradient(90deg, #6c5ce7, #a29bfe, #74b9ff);
+}
+
+.palette-dark .palette-text {
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7, #2d3436);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.palette-dark::after {
+  background: linear-gradient(90deg, #a29bfe, #6c5ce7, #2d3436);
+}
+
+@media (max-width: 600px) {
+  .palette-demo {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =============================================
+   Section 5: Text Decoration Showcase
+   ============================================= */
+
+.td-demo {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.td-example {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.15rem;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  border-radius: var(--m25-radius);
+  background: var(--m25-surface-2);
+  color: var(--m25-text);
+  transition: background var(--m25-transition);
+}
+
+.td-example:hover {
+  background: color-mix(in oklch, var(--m25-surface-2) 80%, var(--m25-accent));
+}
+
+/* Thick underline with offset */
+.td-thick-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--m25-accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+  text-decoration-skip-ink: auto;
+}
+
+/* Wavy colored underline */
+.td-wavy {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--m25-danger);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Dotted */
+.td-dotted {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--m25-warning);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* Double underline + overline */
+.td-double-line {
+  text-decoration-line: underline overline;
+  text-decoration-style: double;
+  text-decoration-color: var(--m25-accent-light);
+  text-decoration-thickness: 1px;
+}
+
+/* Highlight-style underline */
+.td-highlight-style {
+  text-decoration: underline;
+  text-decoration-color: rgba(108, 92, 231, 0.35);
+  text-decoration-thickness: 0.45em;
+  text-underline-offset: -0.15em;
+  text-decoration-skip-ink: none;
+}
+
+/* Emphasis dots */
+.td-emphasis-dots {
+  text-emphasis: dot;
+  text-emphasis-color: var(--m25-accent);
+}
+
+/* Descender skip demo */
+.td-skip-demo {
+  text-decoration: underline;
+  text-decoration-color: var(--m25-success);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  text-decoration-skip-ink: auto;
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+}
+
+
+/* =============================================
+   Section 6: OpenType Features Demo
+   ============================================= */
+
+.ot-demo {
+  display: grid;
+  gap: 1rem;
+}
+
+.ot-example {
+  background: var(--m25-surface-2);
+  border: 1px solid var(--m25-border);
+  border-radius: var(--m25-radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.ot-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--m25-accent-light);
+  min-inline-size: 130px;
+  flex-shrink: 0;
+}
+
+.ot-text {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.3rem;
+  color: var(--m25-text);
+  margin: 0;
+}
+
+/* Ligatures */
+.ot-ligatures {
+  font-variant-ligatures: common-ligatures;
+  font-size: 1.6rem;
+  letter-spacing: 0.15em;
+}
+
+/* Small caps */
+.ot-smallcaps {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.06em;
+}
+
+/* Oldstyle numerals */
+.ot-oldstyle {
+  font-variant-numeric: oldstyle-nums;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+}
+
+/* Tabular numerals */
+.ot-tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: end;
+}
+
+@media (max-width: 550px) {
+  .ot-example {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .ot-label {
+    min-inline-size: auto;
+  }
+}
+
+
+/* =============================================
+   Section 7: Modular Type Scale Demo
+   ============================================= */
+
+.scale-demo {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.scale-step {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 0.6rem 1rem;
+  border-radius: var(--m25-radius);
+  background: var(--m25-surface-2);
+  transition: background var(--m25-transition);
+  overflow: hidden;
+}
+
+.scale-step:hover {
+  background: color-mix(in oklch, var(--m25-surface-2) 85%, var(--m25-accent));
+}
+
+.scale-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--m25-accent-light);
+  min-inline-size: 3.5rem;
+  flex-shrink: 0;
+  text-align: end;
+}
+
+.scale-text {
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--m25-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Scale steps using the 1.25 ratio */
+.scale-sm .scale-text {
+  font-size: calc(var(--m25-text-base) / 1.25);
+  color: var(--m25-text-muted);
+}
+
+.scale-base .scale-text {
+  font-size: var(--m25-text-base);
+}
+
+.scale-lg .scale-text {
+  font-size: calc(var(--m25-text-base) * 1.25);
+}
+
+.scale-xl .scale-text {
+  font-size: calc(var(--m25-text-base) * 1.25 * 1.25);
+  font-weight: 600;
+}
+
+.scale-2xl .scale-text {
+  font-size: calc(var(--m25-text-base) * 1.25 * 1.25 * 1.25);
+  font-weight: 600;
+}
+
+.scale-3xl .scale-text {
+  font-size: calc(var(--m25-text-base) * 1.25 * 1.25 * 1.25 * 1.25);
+  font-weight: 700;
+}
+
+.scale-4xl .scale-text {
+  font-size: calc(var(--m25-text-base) * 1.25 * 1.25 * 1.25 * 1.25 * 1.25);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+@media (max-width: 500px) {
+  .scale-step {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .scale-label {
+    text-align: start;
+    min-inline-size: auto;
+  }
+}
+
+
+/* =============================================
+   Section 8: Exercise & Challenge Styling
+   ============================================= */
+
+/* Subtle highlight for exercise heading */
+.concept-section#exercises h3 {
+  position: relative;
+  padding-inline-start: 1rem;
+}
+
+.concept-section#exercises h3::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0.15em;
+  inline-size: 3px;
+  background: var(--m25-accent);
+  border-radius: 2px;
+}
+
+
+/* =============================================
+   Animated Variable Font Breathe (for demo)
+   ============================================= */
+
+@keyframes vf-breathe {
+  0%, 100% {
+    font-weight: 300;
+    opacity: 0.7;
+  }
+  50% {
+    font-weight: 800;
+    opacity: 1;
+  }
+}
+
+/* Optional animated sample if referenced */
+.vf-animated {
+  animation: vf-breathe 3s ease-in-out infinite;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 2rem;
+  text-align: center;
+  color: var(--m25-accent-light);
+}
+
+
+/* =============================================
+   Responsive Adjustments
+   ============================================= */
+
+@media (max-width: 768px) {
+  .concept-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .concept-section h3 {
+    font-size: 1.05rem;
+  }
+
+  .concept-section p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .info-box {
+    padding-block: 1rem;
+    padding-inline: 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .demo-container {
+    padding-block: 1.25rem;
+    padding-inline: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .concept-section h2 {
+    font-size: 1.15rem;
+  }
+
+  .vf-weight-demo {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tw-heading {
+    font-size: 1.15rem;
+  }
+
+  .palette-demo {
+    grid-template-columns: 1fr;
+  }
+
+  .td-example {
+    font-size: 1rem;
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+
+/* =============================================
+   Utility: Reduced Motion
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-sample,
+  .vf-card,
+  .td-example,
+  .scale-step,
+  .vf-animated {
+    transition: none;
+    animation: none;
+  }
+
+  .vf-card:hover .vf-sample {
+    font-weight: var(--target-weight, 400);
+  }
+}
+
+
+/* =============================================
+   Print Styles
+   ============================================= */
+
+@media print {
+  .demo-container::before {
+    background: #333;
+  }
+
+  .vf-card,
+  .tw-panel,
+  .dc-example,
+  .palette-card,
+  .td-example,
+  .ot-example,
+  .scale-step {
+    border-color: #ccc;
+    background: #fff;
+    color: #111;
+  }
+
+  .vf-weight-label,
+  .tw-label,
+  .dc-label,
+  .palette-label,
+  .ot-label,
+  .scale-label {
+    color: #555;
+  }
+
+  .info-box {
+    background: #f5f5f5;
+    border-color: #333;
+    color: #111;
+  }
+}

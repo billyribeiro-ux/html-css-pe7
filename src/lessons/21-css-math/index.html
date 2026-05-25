@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Math Functions | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 21</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-7">Level 7 - Expert Systems</span>
+    <h1>CSS Math Functions</h1>
+    <p class="subtitle">Go beyond <code>calc()</code> and <code>clamp()</code>. Master rounding, sign detection, trigonometry, exponentials, and stepped values to build circular layouts, wave patterns, grid-snapped spacing, and physics-informed animations &mdash; entirely in CSS.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 1: ROUNDING FUNCTIONS                                -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="rounding">
+      <h2>1. Rounding Functions</h2>
+      <p>CSS rounding functions give you precise control over numeric snapping. Before these existed, fractional pixel values and sub-pixel rendering bugs were a constant source of layout headaches. With <code>round()</code>, <code>mod()</code>, and <code>rem()</code>, you can snap values to a grid, enforce pixel-perfect alignment, and build design token systems that stay perfectly consistent.</p>
+
+      <h3>round()</h3>
+      <p>The <code>round()</code> function rounds a value to the nearest multiple of an interval. It accepts an optional rounding strategy as the first argument.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Syntax: round(strategy, value, interval) */
+
+/* Round to nearest 0.25rem (quarter-rem grid) */
+.element {
+  padding: round(nearest, 1.37rem, 0.25rem);  /* = 1.25rem */
+}
+
+/* Always round up */
+.min-height {
+  min-height: round(up, 4.2rem, 1rem);  /* = 5rem */
+}
+
+/* Always round down */
+.container {
+  width: round(down, 95.7%, 5%);  /* = 95% */
+}
+
+/* Round to zero (truncate toward zero) */
+.truncated {
+  margin: round(to-zero, -1.8rem, 1rem);  /* = -1rem */
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The four rounding strategies are <code>nearest</code> (default, rounds to closest), <code>up</code> (always toward positive infinity), <code>down</code> (always toward negative infinity), and <code>to-zero</code> (truncates the fractional part toward zero). When no strategy is specified, <code>nearest</code> is used.
+      </div>
+
+      <h3>mod() and rem()</h3>
+      <p>Both <code>mod()</code> and <code>rem()</code> compute the remainder of a division, but they differ in how they handle negative numbers. <code>mod()</code> uses floored division (result takes the sign of the divisor), while <code>rem()</code> uses truncated division (result takes the sign of the dividend).</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* mod(a, b) - floored remainder, takes sign of b */
+.element {
+  /* Cycle through 0, 1, 2, 3, 0, 1, 2, 3... */
+  --cycle: mod(var(--index), 4);
+}
+
+/* rem(a, b) - truncated remainder, takes sign of a */
+.offset {
+  /* Stays within bounds */
+  left: rem(var(--scroll-pos), 100px);
+}
+
+/* Practical: zebra stripe via mod */
+.row {
+  --stripe: mod(var(--row-index), 2);
+  background: color-mix(
+    in oklch,
+    var(--bg-alt) calc(var(--stripe) * 100%),
+    var(--bg-base)
+  );
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Grid Snapping with round()</h4>
+        <p class="demo-note">Drag the slider mentally: the left bar uses a raw fractional value, the right bar snaps to a quarter-rem grid using <code>round(nearest, value, 0.25rem)</code>. The snapped bar always aligns to clean grid lines.</p>
+
+        <div class="snap-demo">
+          <div class="snap-demo-row">
+            <span class="snap-label">Raw value</span>
+            <div class="snap-track">
+              <div class="snap-bar snap-bar--raw" style="--raw: 37%;"></div>
+            </div>
+            <span class="snap-value">37%</span>
+          </div>
+          <div class="snap-demo-row">
+            <span class="snap-label">Snapped to 5%</span>
+            <div class="snap-track">
+              <div class="snap-bar snap-bar--snapped" style="--raw: 35%;"></div>
+              <div class="snap-grid-lines"></div>
+            </div>
+            <span class="snap-value">35%</span>
+          </div>
+          <div class="snap-demo-row">
+            <span class="snap-label">Raw value</span>
+            <div class="snap-track">
+              <div class="snap-bar snap-bar--raw" style="--raw: 63%;"></div>
+            </div>
+            <span class="snap-value">63%</span>
+          </div>
+          <div class="snap-demo-row">
+            <span class="snap-label">Snapped to 5%</span>
+            <div class="snap-track">
+              <div class="snap-bar snap-bar--snapped" style="--raw: 65%;"></div>
+              <div class="snap-grid-lines"></div>
+            </div>
+            <span class="snap-value">65%</span>
+          </div>
+          <div class="snap-demo-row">
+            <span class="snap-label">Raw value</span>
+            <div class="snap-track">
+              <div class="snap-bar snap-bar--raw" style="--raw: 88%;"></div>
+            </div>
+            <span class="snap-value">88%</span>
+          </div>
+          <div class="snap-demo-row">
+            <span class="snap-label">Snapped to 5%</span>
+            <div class="snap-track">
+              <div class="snap-bar snap-bar--snapped" style="--raw: 90%;"></div>
+              <div class="snap-grid-lines"></div>
+            </div>
+            <span class="snap-value">90%</span>
+          </div>
+        </div>
+
+        <div class="code-block" style="margin-top: 1rem;">
+          <h4>CSS</h4>
+          <pre><code>.bar {
+  /* Snap any width to the nearest 5% step */
+  width: round(nearest, var(--raw), 5%);
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 2: SIGN AND ABSOLUTE VALUE                           -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="sign-absolute">
+      <h2>2. Sign &amp; Absolute Value</h2>
+      <p>Two deceptively simple functions that unlock powerful patterns: <code>abs()</code> returns the magnitude of a value (always positive), and <code>sign()</code> returns its direction (-1, 0, or 1). Together, they let you build directional offsets, always-positive spacing, and conditional layout logic that reacts to custom property values.</p>
+
+      <h3>abs()</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Always-positive distance from center */
+.item {
+  --offset: calc(var(--index) - var(--center));
+  /* abs() guarantees a positive result */
+  opacity: calc(1 - abs(var(--offset)) * 0.15);
+  scale: calc(1 - abs(var(--offset)) * 0.05);
+}
+
+/* Ensuring positive margins regardless of input */
+.spaced {
+  margin-block: abs(var(--spacing));
+}</code></pre>
+      </div>
+
+      <h3>sign()</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Returns -1, 0, or 1 */
+.directional {
+  --dir: sign(var(--velocity));
+
+  /* Flip an arrow icon based on direction */
+  transform: scaleX(sign(var(--velocity)));
+
+  /* Apply offset only in the direction of movement */
+  translate: calc(sign(var(--dx)) * 10px) 0;
+}
+
+/* Conditional shadow direction */
+.card {
+  --tilt: -15;
+  box-shadow:
+    calc(sign(var(--tilt)) * 8px) 4px 20px rgba(0, 0, 0, 0.3);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Distance-Based Fade with abs()</h4>
+        <p class="demo-note">Each card calculates its distance from the center item using <code>abs()</code>. Cards farther from center become more transparent and slightly smaller, creating a carousel-like depth effect.</p>
+
+        <div class="abs-demo">
+          <div class="abs-card" style="--i: 0;">
+            <span class="abs-card-num">1</span>
+            <div class="abs-card-label">far left</div>
+          </div>
+          <div class="abs-card" style="--i: 1;">
+            <span class="abs-card-num">2</span>
+            <div class="abs-card-label">left</div>
+          </div>
+          <div class="abs-card" style="--i: 2;">
+            <span class="abs-card-num">3</span>
+            <div class="abs-card-label">center</div>
+          </div>
+          <div class="abs-card" style="--i: 3;">
+            <span class="abs-card-num">4</span>
+            <div class="abs-card-label">right</div>
+          </div>
+          <div class="abs-card" style="--i: 4;">
+            <span class="abs-card-num">5</span>
+            <div class="abs-card-label">far right</div>
+          </div>
+        </div>
+
+        <div class="code-block" style="margin-top: 1rem;">
+          <h4>CSS</h4>
+          <pre><code>.card {
+  --center: 2;
+  --dist: abs(calc(var(--i) - var(--center)));
+  opacity: calc(1 - var(--dist) * 0.25);
+  scale: calc(1 - var(--dist) * 0.08);
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 3: STEPPED VALUES                                    -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="stepped-values">
+      <h2>3. Stepped Values &amp; Design Tokens</h2>
+      <p>One of the most practical applications of <code>round()</code> is building stepped value systems. By rounding arbitrary input values to a fixed interval, you can enforce consistent spacing, sizing, and alignment across an entire design system &mdash; even when values are computed dynamically.</p>
+
+      <h3>Quarter-Rem Spacing Grid</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  --space-unit: 0.25rem;  /* 4px base unit */
+}
+
+/* Any computed spacing snaps to the 4px grid */
+.component {
+  /* 1.37rem snaps to 1.25rem (5 * 0.25rem) */
+  padding: round(nearest, 1.37rem, var(--space-unit));
+
+  /* 0.83rem snaps to 0.75rem (3 * 0.25rem) */
+  gap: round(nearest, 0.83rem, var(--space-unit));
+
+  /* Dynamic spacing that always stays on grid */
+  margin-block: round(nearest, calc(2vw + 0.5rem), var(--space-unit));
+}</code></pre>
+      </div>
+
+      <h3>Font Size Stepping</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Fluid type that snaps to readable sizes */
+.heading {
+  font-size: round(
+    nearest,
+    clamp(1.25rem, 2vw + 1rem, 2.5rem),
+    0.125rem  /* snap to 2px increments */
+  );
+}
+
+/* Modular scale with rounding */
+:root {
+  --ratio: 1.25;
+  --step-0: 1rem;
+  --step-1: round(nearest, calc(var(--step-0) * var(--ratio)), 0.125rem);
+  --step-2: round(nearest, calc(var(--step-1) * var(--ratio)), 0.125rem);
+  --step-3: round(nearest, calc(var(--step-2) * var(--ratio)), 0.125rem);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Spacing Token System</h4>
+        <p class="demo-note">Each bar shows a spacing value snapped to a 0.25rem (4px) grid. The raw computed value is shown alongside the rounded result. Notice how every value lands on a clean 4px boundary.</p>
+
+        <div class="token-demo">
+          <div class="token-row">
+            <code class="token-name">--space-xs</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 0.25rem;"></div>
+            </div>
+            <span class="token-val">0.25rem (4px)</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--space-sm</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 0.5rem;"></div>
+            </div>
+            <span class="token-val">0.5rem (8px)</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--space-md</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 1rem;"></div>
+            </div>
+            <span class="token-val">1rem (16px)</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--space-lg</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 1.5rem;"></div>
+            </div>
+            <span class="token-val">1.5rem (24px)</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--space-xl</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 2rem;"></div>
+            </div>
+            <span class="token-val">2rem (32px)</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--space-2xl</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 3rem;"></div>
+            </div>
+            <span class="token-val">3rem (48px)</span>
+          </div>
+          <div class="token-row">
+            <code class="token-name">--space-3xl</code>
+            <div class="token-bar-track">
+              <div class="token-bar" style="--w: 4rem;"></div>
+            </div>
+            <span class="token-val">4rem (64px)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The magic of stepped values is that they eliminate "almost right" spacing. When you combine <code>round()</code> with a base unit like <code>0.25rem</code>, every computed value &mdash; whether it came from <code>calc()</code>, <code>clamp()</code>, viewport units, or container queries &mdash; lands on a clean grid line. This is how professional design systems maintain visual consistency at every breakpoint.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 4: TRIGONOMETRIC FUNCTIONS                           -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="trigonometry">
+      <h2>4. Trigonometric Functions</h2>
+      <p>This is where CSS math gets genuinely exciting. The trigonometric functions <code>sin()</code>, <code>cos()</code>, <code>tan()</code>, and their inverses <code>asin()</code>, <code>acos()</code>, <code>atan()</code>, <code>atan2()</code> are fully supported in all major browsers since 2024. They unlock circular layouts, wave patterns, orbital animations, clock faces, and spiral arrangements &mdash; all in pure CSS.</p>
+
+      <h3>The Core Functions</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* sin() and cos() accept angles directly */
+.item {
+  /* Position on a circle of radius 150px */
+  --angle: calc(var(--i) * (360deg / var(--total)));
+  --x: calc(cos(var(--angle)) * 150px);
+  --y: calc(sin(var(--angle)) * 150px);
+  transform: translate(var(--x), var(--y));
+}
+
+/* tan() for skew calculations */
+.skewed {
+  /* Calculate skew offset from an angle */
+  --offset: calc(tan(15deg) * 100px);
+}
+
+/* Inverse functions return angles */
+.arrow {
+  /* atan2(y, x) gives the angle toward a point */
+  rotate: atan2(var(--dy), var(--dx));
+}
+
+/* Using radians explicitly */
+.wave {
+  --phase: calc(var(--i) * 0.5);  /* unitless = radians */
+  translate: 0 calc(sin(var(--phase)) * 20px);
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> CSS trig functions accept both degrees (<code>sin(45deg)</code>) and radians (<code>sin(0.785)</code>). A unitless number is treated as radians. For most layout work, degrees are more intuitive: divide 360deg by the number of items to space them evenly around a circle.
+      </div>
+
+      <h3>Circular Layout Pattern</h3>
+      <p>The canonical use case for CSS trig: placing items in a circle. Each item's position is computed from its index and the total count. No JavaScript, no hardcoded positions.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.circular-container {
+  --radius: 140px;
+  --total: 8;
+  position: relative;
+  width: calc(var(--radius) * 2 + 60px);
+  height: calc(var(--radius) * 2 + 60px);
+}
+
+.circular-item {
+  --angle: calc(var(--i) * (360deg / var(--total)));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+    translate(
+      calc(cos(var(--angle)) * var(--radius)),
+      calc(sin(var(--angle)) * var(--radius))
+    );
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Circular Navigation Menu</h4>
+        <p class="demo-note">Eight items arranged in a perfect circle using <code>sin()</code> and <code>cos()</code>. Each item's position is computed from its index. The entire layout adapts if you change <code>--total</code> or <code>--radius</code>.</p>
+
+        <div class="circular-demo">
+          <div class="circular-ring">
+            <div class="circular-center">
+              <span>Menu</span>
+            </div>
+            <div class="circular-item" style="--i: 0;">
+              <span class="circular-icon">&#9733;</span>
+              <span class="circular-label">Home</span>
+            </div>
+            <div class="circular-item" style="--i: 1;">
+              <span class="circular-icon">&#9998;</span>
+              <span class="circular-label">Edit</span>
+            </div>
+            <div class="circular-item" style="--i: 2;">
+              <span class="circular-icon">&#9881;</span>
+              <span class="circular-label">Settings</span>
+            </div>
+            <div class="circular-item" style="--i: 3;">
+              <span class="circular-icon">&#9993;</span>
+              <span class="circular-label">Mail</span>
+            </div>
+            <div class="circular-item" style="--i: 4;">
+              <span class="circular-icon">&#9829;</span>
+              <span class="circular-label">Likes</span>
+            </div>
+            <div class="circular-item" style="--i: 5;">
+              <span class="circular-icon">&#9742;</span>
+              <span class="circular-label">Call</span>
+            </div>
+            <div class="circular-item" style="--i: 6;">
+              <span class="circular-icon">&#128269;</span>
+              <span class="circular-label">Search</span>
+            </div>
+            <div class="circular-item" style="--i: 7;">
+              <span class="circular-icon">&#9730;</span>
+              <span class="circular-label">Cloud</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Wave Divider Pattern</h4>
+        <p class="demo-note">A section divider built from dots whose vertical positions are calculated using <code>sin()</code>. Each dot's offset creates a smooth sine wave. The animation shifts the wave phase over time.</p>
+
+        <div class="wave-demo">
+          <div class="wave-row">
+            <div class="wave-dot" style="--i: 0;"></div>
+            <div class="wave-dot" style="--i: 1;"></div>
+            <div class="wave-dot" style="--i: 2;"></div>
+            <div class="wave-dot" style="--i: 3;"></div>
+            <div class="wave-dot" style="--i: 4;"></div>
+            <div class="wave-dot" style="--i: 5;"></div>
+            <div class="wave-dot" style="--i: 6;"></div>
+            <div class="wave-dot" style="--i: 7;"></div>
+            <div class="wave-dot" style="--i: 8;"></div>
+            <div class="wave-dot" style="--i: 9;"></div>
+            <div class="wave-dot" style="--i: 10;"></div>
+            <div class="wave-dot" style="--i: 11;"></div>
+            <div class="wave-dot" style="--i: 12;"></div>
+            <div class="wave-dot" style="--i: 13;"></div>
+            <div class="wave-dot" style="--i: 14;"></div>
+            <div class="wave-dot" style="--i: 15;"></div>
+            <div class="wave-dot" style="--i: 16;"></div>
+            <div class="wave-dot" style="--i: 17;"></div>
+            <div class="wave-dot" style="--i: 18;"></div>
+            <div class="wave-dot" style="--i: 19;"></div>
+          </div>
+          <div class="wave-row wave-row--offset">
+            <div class="wave-dot" style="--i: 0;"></div>
+            <div class="wave-dot" style="--i: 1;"></div>
+            <div class="wave-dot" style="--i: 2;"></div>
+            <div class="wave-dot" style="--i: 3;"></div>
+            <div class="wave-dot" style="--i: 4;"></div>
+            <div class="wave-dot" style="--i: 5;"></div>
+            <div class="wave-dot" style="--i: 6;"></div>
+            <div class="wave-dot" style="--i: 7;"></div>
+            <div class="wave-dot" style="--i: 8;"></div>
+            <div class="wave-dot" style="--i: 9;"></div>
+            <div class="wave-dot" style="--i: 10;"></div>
+            <div class="wave-dot" style="--i: 11;"></div>
+            <div class="wave-dot" style="--i: 12;"></div>
+            <div class="wave-dot" style="--i: 13;"></div>
+            <div class="wave-dot" style="--i: 14;"></div>
+            <div class="wave-dot" style="--i: 15;"></div>
+            <div class="wave-dot" style="--i: 16;"></div>
+            <div class="wave-dot" style="--i: 17;"></div>
+            <div class="wave-dot" style="--i: 18;"></div>
+            <div class="wave-dot" style="--i: 19;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Clock Face</h4>
+        <p class="demo-note">Twelve hour markers placed using <code>sin()</code> and <code>cos()</code> with angles at 30-degree intervals. The numbers are positioned exactly where they belong on an analog clock.</p>
+
+        <div class="clock-demo">
+          <div class="clock-face">
+            <div class="clock-marker" style="--i: 0;"><span>12</span></div>
+            <div class="clock-marker" style="--i: 1;"><span>1</span></div>
+            <div class="clock-marker" style="--i: 2;"><span>2</span></div>
+            <div class="clock-marker" style="--i: 3;"><span>3</span></div>
+            <div class="clock-marker" style="--i: 4;"><span>4</span></div>
+            <div class="clock-marker" style="--i: 5;"><span>5</span></div>
+            <div class="clock-marker" style="--i: 6;"><span>6</span></div>
+            <div class="clock-marker" style="--i: 7;"><span>7</span></div>
+            <div class="clock-marker" style="--i: 8;"><span>8</span></div>
+            <div class="clock-marker" style="--i: 9;"><span>9</span></div>
+            <div class="clock-marker" style="--i: 10;"><span>10</span></div>
+            <div class="clock-marker" style="--i: 11;"><span>11</span></div>
+            <div class="clock-center-dot"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 5: EXPONENTIAL FUNCTIONS                             -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="exponential">
+      <h2>5. Exponential Functions</h2>
+      <p>The exponential family &mdash; <code>pow()</code>, <code>sqrt()</code>, <code>hypot()</code>, <code>log()</code>, and <code>exp()</code> &mdash; opens the door to non-linear progressions, distance calculations, easing curves, and logarithmic scales. These are the tools you reach for when linear interpolation is not enough.</p>
+
+      <h3>pow() and sqrt()</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* pow(base, exponent) - raise to a power */
+.scale {
+  /* Quadratic easing: fast start, slow end */
+  --progress: 0.5;
+  --eased: pow(var(--progress), 2);  /* 0.25 */
+  translate: calc(var(--eased) * 200px) 0;
+}
+
+/* sqrt(value) - square root */
+.responsive {
+  /* Square root scaling: grows fast then slows */
+  font-size: calc(sqrt(var(--container-w)) * 0.1rem);
+}
+
+/* Modular type scale using pow() */
+:root {
+  --ratio: 1.25;
+  --size-0: 1rem;
+  --size-1: calc(var(--size-0) * pow(var(--ratio), 1));  /* 1.25rem */
+  --size-2: calc(var(--size-0) * pow(var(--ratio), 2));  /* 1.5625rem */
+  --size-3: calc(var(--size-0) * pow(var(--ratio), 3));  /* 1.953rem */
+}</code></pre>
+      </div>
+
+      <h3>hypot() &mdash; Distance Calculation</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* hypot(a, b) = sqrt(a*a + b*b) - Pythagorean distance */
+.diagonal {
+  /* Calculate the diagonal of a box */
+  --w: 300px;
+  --h: 200px;
+  --diagonal: hypot(var(--w), var(--h));  /* ~360.56px */
+
+  /* Useful for sizing an overlay that covers corners */
+  background-size: var(--diagonal) var(--diagonal);
+}
+
+/* Distance between two points */
+.connector {
+  --dx: calc(var(--x2) - var(--x1));
+  --dy: calc(var(--y2) - var(--y1));
+  width: hypot(var(--dx), var(--dy));
+  rotate: atan2(var(--dy), var(--dx));
+}</code></pre>
+      </div>
+
+      <h3>log() and exp()</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* log(value) - natural logarithm */
+/* exp(value) - e raised to the power */
+
+/* Logarithmic scale for audio-style sliders */
+.volume-slider {
+  --linear: 0.5;
+  --log-scale: calc(log(var(--linear) * 9 + 1) / log(10));
+  width: calc(var(--log-scale) * 100%);
+}
+
+/* Exponential growth for animation timing */
+.cascade {
+  --delay: calc(exp(var(--i) * 0.3) * 50ms);
+  animation-delay: var(--delay);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Exponential Scaling</h4>
+        <p class="demo-note">The top row uses linear scaling (each bar grows by a fixed amount). The bottom row uses exponential scaling via <code>pow()</code> &mdash; slow at first, then accelerating rapidly. This is how real-world growth curves behave.</p>
+
+        <div class="exp-demo">
+          <div class="exp-section">
+            <h5 class="exp-heading">Linear: size = i * 20px</h5>
+            <div class="exp-bars">
+              <div class="exp-bar exp-bar--linear" style="--i: 1;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 2;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 3;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 4;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 5;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 6;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 7;"></div>
+              <div class="exp-bar exp-bar--linear" style="--i: 8;"></div>
+            </div>
+          </div>
+          <div class="exp-section">
+            <h5 class="exp-heading">Exponential: size = pow(i, 2) * 2px</h5>
+            <div class="exp-bars">
+              <div class="exp-bar exp-bar--exponential" style="--i: 1;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 2;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 3;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 4;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 5;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 6;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 7;"></div>
+              <div class="exp-bar exp-bar--exponential" style="--i: 8;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 6: PRACTICAL PATTERNS                                -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="practical-patterns">
+      <h2>6. Practical Patterns</h2>
+      <p>Now that you have the full toolkit, let us see how these functions combine in real-world patterns. These are not academic exercises &mdash; these are patterns you will use in production to solve problems that previously required JavaScript.</p>
+
+      <h3>Pattern 1: Orbital Animation</h3>
+      <p>Items orbit a central point using <code>sin()</code> and <code>cos()</code> combined with CSS animations. The animation simply increments an angle custom property, and the trig functions handle the positioning.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --orbit-angle {
+  syntax: "&lt;angle&gt;";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.orbiter {
+  --orbit-angle: 0deg;
+  --radius: 100px;
+  translate:
+    calc(cos(var(--orbit-angle)) * var(--radius))
+    calc(sin(var(--orbit-angle)) * var(--radius));
+  animation: orbit 4s linear infinite;
+}
+
+@keyframes orbit {
+  to { --orbit-angle: 360deg; }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Orbital System</h4>
+        <p class="demo-note">Three particles orbit a center point at different radii and speeds. Each orbit is driven purely by CSS <code>sin()</code> and <code>cos()</code> with an animated angle property.</p>
+
+        <div class="orbit-demo">
+          <div class="orbit-system">
+            <div class="orbit-center"></div>
+            <div class="orbit-track orbit-track--1"></div>
+            <div class="orbit-track orbit-track--2"></div>
+            <div class="orbit-track orbit-track--3"></div>
+            <div class="orbit-particle orbit-particle--1"></div>
+            <div class="orbit-particle orbit-particle--2"></div>
+            <div class="orbit-particle orbit-particle--3"></div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 2: Star Rating with round()</h3>
+      <p>Snap arbitrary decimal ratings to the nearest half-star using <code>round()</code>. The fill width is precisely controlled without JavaScript rounding logic.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.star-rating {
+  --raw-rating: 3.7;
+  /* Snap to nearest 0.5 */
+  --rating: round(nearest, var(--raw-rating), 0.5);
+  /* = 3.5 */
+
+  /* Fill width based on 5-star scale */
+  --fill: calc(var(--rating) / 5 * 100%);
+}
+
+.star-rating::after {
+  content: "";
+  width: var(--fill);
+  background: gold;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Star Ratings with round()</h4>
+        <p class="demo-note">Each row shows a raw rating snapped to the nearest half-star. The fill bar width is calculated as <code>round(nearest, rating, 0.5) / 5 * 100%</code>.</p>
+
+        <div class="star-demo">
+          <div class="star-row">
+            <span class="star-label">Raw: 4.7</span>
+            <div class="star-track">
+              <div class="star-bg">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <div class="star-fill" style="--rating: 4.5;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <span class="star-result">Snapped: 4.5</span>
+          </div>
+          <div class="star-row">
+            <span class="star-label">Raw: 3.3</span>
+            <div class="star-track">
+              <div class="star-bg">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <div class="star-fill" style="--rating: 3.5;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <span class="star-result">Snapped: 3.5</span>
+          </div>
+          <div class="star-row">
+            <span class="star-label">Raw: 2.1</span>
+            <div class="star-track">
+              <div class="star-bg">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <div class="star-fill" style="--rating: 2.0;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <span class="star-result">Snapped: 2.0</span>
+          </div>
+          <div class="star-row">
+            <span class="star-label">Raw: 4.9</span>
+            <div class="star-track">
+              <div class="star-bg">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <div class="star-fill" style="--rating: 5.0;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <span class="star-result">Snapped: 5.0</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 3: Responsive Aspect Ratios with sqrt()</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Dynamic aspect ratio that smoothly transitions
+   between portrait and landscape */
+.adaptive-card {
+  --w: 300;
+  --h: 200;
+  /* Use hypot to get the diagonal for scaling */
+  --diagonal: hypot(var(--w), var(--h));
+  /* Use atan2 for the angle of the diagonal */
+  --angle: atan2(var(--h), var(--w));
+
+  aspect-ratio: var(--w) / var(--h);
+  max-width: calc(var(--diagonal) * 1px);
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The combination of <code>atan2()</code> and <code>hypot()</code> gives you the full polar coordinate conversion: distance and angle from the origin. This is the foundation for drawing connectors between elements, rotating arrows to point at targets, and computing dynamic layout angles &mdash; all without JavaScript.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 7: BROWSER SUPPORT & STRATEGY                       -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="browser-support">
+      <h2>7. Browser Support &amp; Feature Detection</h2>
+      <p>CSS math functions have landed across all major browsers, but the rollout has been staggered. Here is where things stand and how to safely adopt these functions.</p>
+
+      <h3>Support Timeline</h3>
+      <div class="support-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Function Group</th>
+              <th>Chrome</th>
+              <th>Firefox</th>
+              <th>Safari</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>sin()</code>, <code>cos()</code>, <code>tan()</code></td>
+              <td>111+</td>
+              <td>108+</td>
+              <td>15.4+</td>
+              <td class="support-good">Stable</td>
+            </tr>
+            <tr>
+              <td><code>asin()</code>, <code>acos()</code>, <code>atan()</code>, <code>atan2()</code></td>
+              <td>111+</td>
+              <td>108+</td>
+              <td>15.4+</td>
+              <td class="support-good">Stable</td>
+            </tr>
+            <tr>
+              <td><code>pow()</code>, <code>sqrt()</code>, <code>hypot()</code></td>
+              <td>120+</td>
+              <td>118+</td>
+              <td>15.4+</td>
+              <td class="support-good">Stable</td>
+            </tr>
+            <tr>
+              <td><code>log()</code>, <code>exp()</code></td>
+              <td>120+</td>
+              <td>118+</td>
+              <td>15.4+</td>
+              <td class="support-good">Stable</td>
+            </tr>
+            <tr>
+              <td><code>round()</code>, <code>mod()</code>, <code>rem()</code></td>
+              <td>125+</td>
+              <td>118+</td>
+              <td>15.4+</td>
+              <td class="support-good">Stable</td>
+            </tr>
+            <tr>
+              <td><code>abs()</code>, <code>sign()</code></td>
+              <td>125+</td>
+              <td>118+</td>
+              <td>15.4+</td>
+              <td class="support-good">Stable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Feature Detection</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Detect trig function support */
+@supports (translate: calc(sin(0deg) * 1px)) {
+  .circular-nav {
+    /* Use sin()/cos() layout */
+  }
+}
+
+/* Detect round() support */
+@supports (width: round(nearest, 1px, 1px)) {
+  .snapped {
+    padding: round(nearest, 1.37rem, 0.25rem);
+  }
+}
+
+/* Detect abs()/sign() */
+@supports (margin: abs(-1px)) {
+  .adaptive {
+    margin: abs(var(--offset));
+  }
+}
+
+/* Fallback strategy: precalculate in a custom property */
+.item {
+  /* Fallback: hardcoded position */
+  --x: 100px;
+  --y: 0px;
+}
+
+@supports (translate: calc(cos(0deg) * 1px)) {
+  .item {
+    --x: calc(cos(var(--angle)) * var(--radius));
+    --y: calc(sin(var(--angle)) * var(--radius));
+  }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- EXERCISE                                                     -->
+    <!-- ============================================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Build a Circular Icon Menu</h2>
+      <p>Create a circular navigation menu using CSS trigonometric functions. Items should be evenly distributed around a circle, with smooth hover effects and responsive sizing.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Place at least 6 icons evenly around a circle using <code>sin()</code> and <code>cos()</code>.</li>
+          <li>Define <code>--total</code> and <code>--radius</code> as custom properties on the container so the layout can be reconfigured.</li>
+          <li>Each icon should use <code>--i</code> (its index) to calculate <code>--angle: calc(var(--i) * (360deg / var(--total)))</code>.</li>
+          <li>Add a hover effect that scales the hovered icon and highlights it with a glow.</li>
+          <li>Place a centered label (like "Menu" or a logo) in the exact center of the circle.</li>
+          <li>Wrap the trig-based positioning in <code>@supports</code> and provide a flexbox fallback for older browsers.</li>
+          <li>Use <code>round()</code> to snap the radius to a <code>10px</code> grid: <code>round(nearest, 150px, 10px)</code>.</li>
+        </ul>
+      </div>
+
+      <div class="exercise-starter">
+        <h3>Starter Code</h3>
+        <div class="code-block">
+          <pre><code>&lt;div class="icon-ring" style="--total: 6; --radius: 120px;"&gt;
+  &lt;div class="ring-center"&gt;Menu&lt;/div&gt;
+  &lt;div class="ring-item" style="--i: 0;"&gt;&#9733;&lt;/div&gt;
+  &lt;div class="ring-item" style="--i: 1;"&gt;&#9998;&lt;/div&gt;
+  &lt;div class="ring-item" style="--i: 2;"&gt;&#9881;&lt;/div&gt;
+  &lt;div class="ring-item" style="--i: 3;"&gt;&#9993;&lt;/div&gt;
+  &lt;div class="ring-item" style="--i: 4;"&gt;&#9829;&lt;/div&gt;
+  &lt;div class="ring-item" style="--i: 5;"&gt;&#9742;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="icon-ring" style="--total: 6; --radius: 120px;">
+  <div class="ring-center">Menu</div>
+  <div class="ring-item" style="--i: 0;">&#9733;</div>
+  <div class="ring-item" style="--i: 1;">&#9998;</div>
+  <div class="ring-item" style="--i: 2;">&#9881;</div>
+  <div class="ring-item" style="--i: 3;">&#9993;</div>
+  <div class="ring-item" style="--i: 4;">&#9829;</div>
+  <div class="ring-item" style="--i: 5;">&#9742;</div>
+</div>
+        </template>
+        <template class="starter-css">
+.icon-ring {
+  position: relative;
+  width: calc(var(--radius) * 2 + 80px);
+  height: calc(var(--radius) * 2 + 80px);
+  margin: 2rem auto;
+}
+
+.ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: #6c5ce7;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-family: system-ui, sans-serif;
+}
+
+.ring-item {
+  --angle: calc(var(--i) * (360deg / var(--total)));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  background: #242836;
+  border: 2px solid #6c5ce7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #e4e6ef;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  /* Position using cos/sin */
+  translate:
+    calc(cos(var(--angle)) * var(--radius))
+    calc(sin(var(--angle)) * var(--radius));
+}
+
+.ring-item:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+  background: #6c5ce7;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- CHALLENGE                                                    -->
+    <!-- ============================================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Animated Wave Background</h2>
+      <p>Build an animated wave section divider using CSS trigonometric functions. The wave should undulate smoothly, use multiple layers for depth, and adapt to the container width.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Wave dots:</strong> Create at least 20 dots per wave row. Each dot's vertical position should be <code>calc(sin(var(--i) * 18deg + var(--phase)) * var(--amplitude))</code> where <code>--phase</code> is animated.</li>
+          <li><strong>Multiple layers:</strong> Stack 2-3 wave rows with different <code>--amplitude</code> values and phase offsets to create depth.</li>
+          <li><strong>Animation:</strong> Use <code>@property</code> to register <code>--phase</code> as an <code>&lt;angle&gt;</code> and animate it from <code>0deg</code> to <code>360deg</code>.</li>
+          <li><strong>Color coding:</strong> Use the dot's index with <code>mod()</code> to cycle through a color palette, or shift the hue using <code>calc(var(--i) * 18)</code> in OKLCH.</li>
+          <li><strong>Responsive:</strong> Dots should spread evenly using flexbox or grid. The amplitude should scale with viewport width using <code>clamp()</code>.</li>
+          <li><strong>Snapped sizes:</strong> Use <code>round()</code> to snap dot sizes to a <code>2px</code> grid for crisp rendering.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Register <code>@property --phase</code> with <code>syntax: "&lt;angle&gt;"</code> so CSS can interpolate it in keyframes.</li>
+          <li>Use <code>translate: 0 calc(sin(var(--i) * 18deg + var(--phase)) * var(--amp))</code> on each dot.</li>
+          <li>Layer multiple rows using absolute positioning and different <code>--amp</code> / <code>animation-duration</code> values.</li>
+          <li>Add <code>opacity: calc(0.3 + abs(sin(var(--i) * 18deg + var(--phase))) * 0.7)</code> for pulsing transparency.</li>
+          <li>Use <code>scale: round(nearest, calc(0.5 + abs(sin(var(--i) * 18deg)) * 0.8), 0.1)</code> for stepped sizing.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="wave-scene">
+  <div class="wave-layer wave-layer--back">
+    <div class="w-dot" style="--i:0;"></div>
+    <div class="w-dot" style="--i:1;"></div>
+    <div class="w-dot" style="--i:2;"></div>
+    <div class="w-dot" style="--i:3;"></div>
+    <div class="w-dot" style="--i:4;"></div>
+    <div class="w-dot" style="--i:5;"></div>
+    <div class="w-dot" style="--i:6;"></div>
+    <div class="w-dot" style="--i:7;"></div>
+    <div class="w-dot" style="--i:8;"></div>
+    <div class="w-dot" style="--i:9;"></div>
+    <div class="w-dot" style="--i:10;"></div>
+    <div class="w-dot" style="--i:11;"></div>
+    <div class="w-dot" style="--i:12;"></div>
+    <div class="w-dot" style="--i:13;"></div>
+    <div class="w-dot" style="--i:14;"></div>
+    <div class="w-dot" style="--i:15;"></div>
+    <div class="w-dot" style="--i:16;"></div>
+    <div class="w-dot" style="--i:17;"></div>
+    <div class="w-dot" style="--i:18;"></div>
+    <div class="w-dot" style="--i:19;"></div>
+  </div>
+  <div class="wave-layer wave-layer--front">
+    <div class="w-dot" style="--i:0;"></div>
+    <div class="w-dot" style="--i:1;"></div>
+    <div class="w-dot" style="--i:2;"></div>
+    <div class="w-dot" style="--i:3;"></div>
+    <div class="w-dot" style="--i:4;"></div>
+    <div class="w-dot" style="--i:5;"></div>
+    <div class="w-dot" style="--i:6;"></div>
+    <div class="w-dot" style="--i:7;"></div>
+    <div class="w-dot" style="--i:8;"></div>
+    <div class="w-dot" style="--i:9;"></div>
+    <div class="w-dot" style="--i:10;"></div>
+    <div class="w-dot" style="--i:11;"></div>
+    <div class="w-dot" style="--i:12;"></div>
+    <div class="w-dot" style="--i:13;"></div>
+    <div class="w-dot" style="--i:14;"></div>
+    <div class="w-dot" style="--i:15;"></div>
+    <div class="w-dot" style="--i:16;"></div>
+    <div class="w-dot" style="--i:17;"></div>
+    <div class="w-dot" style="--i:18;"></div>
+    <div class="w-dot" style="--i:19;"></div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+@property --phase {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+.wave-scene {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #0f1117;
+  border-radius: 12px;
+}
+
+.wave-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  animation: wave-shift 4s linear infinite;
+}
+
+.wave-layer--back {
+  --amp: 30px;
+  opacity: 0.4;
+  animation-duration: 6s;
+}
+
+.wave-layer--front {
+  --amp: 20px;
+  animation-duration: 4s;
+}
+
+@keyframes wave-shift {
+  to { --phase: 360deg; }
+}
+
+.w-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: oklch(0.7 0.2 calc(265 + var(--i) * 5));
+  translate: 0 calc(sin(var(--i) * 18deg + var(--phase)) * var(--amp));
+  transition: scale 0.3s;
+}
+
+.w-dot:hover {
+  scale: 2;
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../20-property-houdini/index.html">&larr; Previous</a>
+    <a href="../22-details-accordions/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popover &amp; Invoker Commands | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 18</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-6">Level 6 - 2026 Deep Dives</span>
+    <h1>Popover &amp; Invoker Commands</h1>
+    <p class="subtitle">Build tooltips, dropdowns, notification panels, and confirmation dialogs using nothing but HTML attributes and CSS. The Popover API and Invoker Commands replace hundreds of lines of JavaScript with declarative markup that is accessible, composable, and light-dismiss-aware out of the box.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================== -->
+    <!-- SECTION 1: POPOVER BASICS      -->
+    <!-- ============================== -->
+    <section class="concept-section" id="popover-basics">
+      <h2>1. Popover Basics</h2>
+      <p>The Popover API introduces a native way to display overlay content &mdash; tooltips, menus, dialogs, pickers, teaching UI &mdash; without writing a single line of JavaScript. At its core, you add the <code>popover</code> attribute to any element, then wire a button to it with <code>popovertarget</code>. The browser handles visibility, stacking context, focus management, and light-dismiss behavior automatically.</p>
+
+      <h3>The popover Attribute</h3>
+      <p>Any HTML element can become a popover by adding the <code>popover</code> attribute. The element starts hidden and is promoted to the <strong>top layer</strong> when opened &mdash; above all other content, including elements with <code>z-index: 999999</code>. No stacking-context wars, ever.</p>
+
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- Auto popover: light-dismiss + only one open at a time --&gt;
+&lt;div id="my-popup" popover&gt;
+  &lt;p&gt;I live in the top layer!&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- Manual popover: no light-dismiss, multiple can coexist --&gt;
+&lt;div id="sticky-popup" popover="manual"&gt;
+  &lt;p&gt;I stay open until explicitly closed.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <h3>Auto vs Manual</h3>
+      <p>The <code>popover</code> attribute accepts two values:</p>
+      <ul class="feature-list">
+        <li><code>popover</code> or <code>popover="auto"</code> &mdash; Light-dismiss enabled: clicking outside, pressing <kbd>Esc</kbd>, or opening another auto-popover closes it. Only one auto-popover is visible at a time (unless nested).</li>
+        <li><code>popover="manual"</code> &mdash; No light-dismiss. You must explicitly close it via a button or JavaScript. Multiple manual popovers can be open simultaneously.</li>
+      </ul>
+
+      <h3>Wiring Buttons with popovertarget</h3>
+      <p>To control a popover, add <code>popovertarget</code> to a <code>&lt;button&gt;</code> pointing at the popover's ID. Optionally set <code>popovertargetaction</code> to <code>show</code>, <code>hide</code>, or <code>toggle</code> (toggle is the default).</p>
+
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;button popovertarget="info-popup"&gt;Toggle Info&lt;/button&gt;
+&lt;button popovertarget="info-popup" popovertargetaction="show"&gt;Show&lt;/button&gt;
+&lt;button popovertarget="info-popup" popovertargetaction="hide"&gt;Hide&lt;/button&gt;
+
+&lt;div id="info-popup" popover&gt;
+  &lt;h3&gt;Information&lt;/h3&gt;
+  &lt;p&gt;This popover is controlled entirely by HTML attributes.&lt;/p&gt;
+  &lt;button popovertarget="info-popup" popovertargetaction="hide"&gt;Close&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Auto vs Manual Popovers</h4>
+        <p class="demo-note">Click each button to see the difference. The auto popover closes when you click elsewhere; the manual popover stays until you explicitly close it.</p>
+
+        <div class="popover-basics-demo">
+          <div class="popover-btn-row">
+            <button class="pop-trigger" popovertarget="demo-auto">Toggle Auto Popover</button>
+            <button class="pop-trigger pop-trigger--manual" popovertarget="demo-manual">Toggle Manual Popover</button>
+          </div>
+
+          <div id="demo-auto" popover class="pop-panel pop-panel--auto">
+            <h5>Auto Popover</h5>
+            <p>Click outside me or press <kbd>Esc</kbd> to close. I vanish automatically &mdash; that is light-dismiss in action.</p>
+          </div>
+
+          <div id="demo-manual" popover="manual" class="pop-panel pop-panel--manual">
+            <h5>Manual Popover</h5>
+            <p>I will not close on outside clicks. You must use the button below.</p>
+            <button class="pop-close-btn" popovertarget="demo-manual" popovertargetaction="hide">Close Me</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Popovers live in the browser's <em>top layer</em> &mdash; a special stacking context above everything else in the document. This means you never need to fight with <code>z-index</code> to keep a popover on top. The <code>::backdrop</code> pseudo-element is also available, just like with <code>&lt;dialog&gt;</code>.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 2: CSS FOR POPOVERS    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="popover-css">
+      <h2>2. CSS for Popovers</h2>
+      <p>Once you have the HTML wired up, CSS is where popovers become beautiful. The <code>:popover-open</code> pseudo-class, the <code>::backdrop</code> pseudo-element, <code>@starting-style</code>, and <code>transition-behavior: allow-discrete</code> give you full control over entry and exit animations &mdash; without JavaScript or animation libraries.</p>
+
+      <h3>:popover-open</h3>
+      <p>The <code>:popover-open</code> pseudo-class matches a popover element when it is in the open (showing) state. This is the primary selector you use to style the visible state of your popover.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Hidden state (default) */
+[popover] {
+  opacity: 0;
+  transform: scale(0.95) translateY(-8px);
+  transition: opacity 0.25s, transform 0.25s,
+              display 0.25s allow-discrete;
+}
+
+/* Open state */
+[popover]:popover-open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}</code></pre>
+      </div>
+
+      <h3>::backdrop Styling</h3>
+      <p>Just like <code>&lt;dialog&gt;</code>, popovers get a <code>::backdrop</code> pseudo-element when promoted to the top layer. You can blur and dim the background behind your popover for a modal-like effect.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>[popover]::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s, display 0.3s allow-discrete;
+  opacity: 0;
+}
+
+[popover]:popover-open::backdrop {
+  opacity: 1;
+}</code></pre>
+      </div>
+
+      <h3>Entry &amp; Exit Animations with @starting-style</h3>
+      <p>The <code>@starting-style</code> rule defines the initial values for a transition when an element first appears (enters the page or becomes visible). Without it, the browser has no "from" state to transition from, so the element would just pop into view.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* The trick: @starting-style sets the "before" state
+   for elements entering the page */
+[popover]:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+/* For exit transitions, you also need: */
+[popover] {
+  transition: opacity 0.2s, transform 0.2s,
+              display 0.2s allow-discrete;
+  opacity: 0;
+  transform: translateY(-12px);
+}</code></pre>
+      </div>
+
+      <h3>transition-behavior: allow-discrete</h3>
+      <p>Normally, <code>display</code> cannot be animated &mdash; it jumps between values. The <code>allow-discrete</code> value on <code>transition-behavior</code> (or as a shorthand inside <code>transition</code>) tells the browser to keep the element visible during its exit transition before flipping <code>display</code> to <code>none</code>. This is essential for smooth exit animations on popovers.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Shorthand form: add allow-discrete after the duration */
+[popover] {
+  transition: opacity 0.3s ease,
+              transform 0.3s ease,
+              display 0.3s allow-discrete,
+              overlay 0.3s allow-discrete;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Animated Popover with Backdrop</h4>
+        <p class="demo-note">This popover fades and slides in using <code>@starting-style</code> and transitions out smoothly with <code>allow-discrete</code>. Notice the blurred backdrop behind it.</p>
+
+        <div class="animated-popover-demo">
+          <button class="pop-trigger pop-trigger--animated" popovertarget="animated-pop">Open Animated Popover</button>
+
+          <div id="animated-pop" popover class="pop-animated">
+            <h5>Smooth Transitions</h5>
+            <p>I fade in from above and blur the background. When dismissed, I transition out before <code>display: none</code> kicks in.</p>
+            <div class="pop-animated-footer">
+              <button class="pop-close-btn" popovertarget="animated-pop" popovertargetaction="hide">Got It</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>overlay</code> property should also be included in your transition list. It controls how long the element stays in the top layer during its exit animation. Without transitioning <code>overlay</code>, the popover might drop out of the top layer mid-animation and appear behind other content.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 3: INVOKER COMMANDS    -->
+    <!-- ============================== -->
+    <section class="concept-section" id="invoker-commands">
+      <h2>3. Invoker Commands</h2>
+      <p>Invoker Commands are the next evolution of declarative HTML interactions. While <code>popovertarget</code> only works with popovers, the <code>commandfor</code> and <code>command</code> attributes create a general-purpose mechanism to trigger actions on <em>any</em> element &mdash; popovers, dialogs, details, custom elements, and more.</p>
+
+      <h3>Syntax</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- commandfor + command replaces popovertarget + popovertargetaction --&gt;
+&lt;button commandfor="my-popover" command="toggle-popover"&gt;
+  Toggle Popover
+&lt;/button&gt;
+
+&lt;button commandfor="my-dialog" command="show-modal"&gt;
+  Open Dialog
+&lt;/button&gt;
+
+&lt;button commandfor="my-dialog" command="close"&gt;
+  Close Dialog
+&lt;/button&gt;</code></pre>
+      </div>
+
+      <h3>Built-in Command Values</h3>
+      <p>The <code>command</code> attribute supports several built-in actions depending on the target element type:</p>
+
+      <div class="command-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Target</th>
+              <th>Behavior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>toggle-popover</code></td>
+              <td>Popover element</td>
+              <td>Toggles the popover open/closed</td>
+            </tr>
+            <tr>
+              <td><code>show-popover</code></td>
+              <td>Popover element</td>
+              <td>Opens the popover (no-op if already open)</td>
+            </tr>
+            <tr>
+              <td><code>hide-popover</code></td>
+              <td>Popover element</td>
+              <td>Closes the popover</td>
+            </tr>
+            <tr>
+              <td><code>show-modal</code></td>
+              <td><code>&lt;dialog&gt;</code></td>
+              <td>Opens the dialog as modal</td>
+            </tr>
+            <tr>
+              <td><code>close</code></td>
+              <td><code>&lt;dialog&gt;</code></td>
+              <td>Closes the dialog, optionally with a return value</td>
+            </tr>
+            <tr>
+              <td><code>--custom-name</code></td>
+              <td>Any element</td>
+              <td>Fires a <code>command</code> event on the target for JS handling</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- A complete dialog flow with no JavaScript --&gt;
+&lt;button commandfor="confirm-dialog" command="show-modal"&gt;
+  Delete Account
+&lt;/button&gt;
+
+&lt;dialog id="confirm-dialog"&gt;
+  &lt;h3&gt;Are you sure?&lt;/h3&gt;
+  &lt;p&gt;This action cannot be undone.&lt;/p&gt;
+  &lt;div class="dialog-actions"&gt;
+    &lt;button commandfor="confirm-dialog" command="close"&gt;Cancel&lt;/button&gt;
+    &lt;button commandfor="confirm-dialog" command="close" value="confirm"&gt;
+      Confirm Delete
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/dialog&gt;</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Invoker Commands in Action</h4>
+        <p class="demo-note">These buttons use <code>commandfor</code> and <code>command</code> to control a popover and a dialog &mdash; zero JavaScript required.</p>
+
+        <div class="invoker-demo">
+          <div class="invoker-btn-row">
+            <button class="pop-trigger" commandfor="invoker-pop" command="toggle-popover">Toggle Popover</button>
+            <button class="pop-trigger pop-trigger--dialog" commandfor="invoker-dialog" command="show-modal">Open Dialog</button>
+          </div>
+
+          <div id="invoker-pop" popover class="pop-panel pop-panel--invoker">
+            <h5>Invoked Popover</h5>
+            <p>Opened with <code>command="toggle-popover"</code>. Same behavior as <code>popovertarget</code>, but with a unified API.</p>
+          </div>
+
+          <dialog id="invoker-dialog" class="invoker-dialog">
+            <h5>Confirm Action</h5>
+            <p>This dialog was opened with <code>command="show-modal"</code>. No <code>.showModal()</code> call needed.</p>
+            <div class="dialog-actions">
+              <button class="pop-close-btn" commandfor="invoker-dialog" command="close">Cancel</button>
+              <button class="pop-close-btn pop-close-btn--confirm" commandfor="invoker-dialog" command="close" value="confirm">Confirm</button>
+            </div>
+          </dialog>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Custom commands (prefixed with <code>--</code>) let you fire events declaratively. For example, <code>command="--add-to-cart"</code> dispatches a <code>command</code> event on the target element with the <code>command</code> property set to <code>"--add-to-cart"</code>. You handle it once in JavaScript, and the HTML stays clean and semantic.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 4: INTEREST INVOKERS   -->
+    <!-- ============================== -->
+    <section class="concept-section" id="interest-invokers">
+      <h2>4. Interest Invokers</h2>
+      <p>Interest Invokers bring hover and focus-triggered popovers to HTML &mdash; the <code>interesttarget</code> attribute. Point it at a popover, and the browser shows the popover on hover or focus and hides it when interest is lost. This is how you build <strong>tooltips without JavaScript</strong>.</p>
+
+      <h3>Syntax</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- Tooltip appears on hover/focus, disappears on leave/blur --&gt;
+&lt;button interesttarget="tooltip-1"&gt;Hover me&lt;/button&gt;
+
+&lt;div id="tooltip-1" popover="hint" class="tooltip"&gt;
+  I appear on hover and focus!
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <p>The <code>popover="hint"</code> value is a third popover mode designed specifically for non-interactive overlays like tooltips. It does not steal focus, does not affect other popovers, and dismisses automatically when interest is lost.</p>
+
+      <h3>How Interest Works</h3>
+      <ul class="feature-list">
+        <li><strong>Mouse:</strong> Hovering over the trigger element shows the popover. Moving the mouse away hides it (after a brief grace period).</li>
+        <li><strong>Keyboard:</strong> Focusing the trigger with <kbd>Tab</kbd> shows the popover. Blurring hides it.</li>
+        <li><strong>Touch:</strong> Long-press shows the popover on touch devices.</li>
+        <li><strong>Accessibility:</strong> Screen readers announce the popover content as a description of the trigger element.</li>
+      </ul>
+
+      <div class="demo-container">
+        <h4>Demo: CSS-Only Tooltips</h4>
+        <p class="demo-note">Hover over or focus each button to see the tooltip. No JavaScript, no <code>:hover</code> hacks &mdash; just <code>interesttarget</code> and the Popover API.</p>
+
+        <div class="tooltip-demo">
+          <div class="tooltip-demo-row">
+            <span class="tooltip-trigger-wrap">
+              <button class="tooltip-btn" interesttarget="tip-save">Save</button>
+              <div id="tip-save" popover class="pop-tooltip">Save your current progress to the cloud</div>
+            </span>
+
+            <span class="tooltip-trigger-wrap">
+              <button class="tooltip-btn tooltip-btn--warn" interesttarget="tip-delete">Delete</button>
+              <div id="tip-delete" popover class="pop-tooltip pop-tooltip--warn">Permanently remove this item. This cannot be undone.</div>
+            </span>
+
+            <span class="tooltip-trigger-wrap">
+              <button class="tooltip-btn tooltip-btn--info" interesttarget="tip-info">Info</button>
+              <div id="tip-info" popover class="pop-tooltip pop-tooltip--info">View detailed analytics and usage statistics for this project</div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>interesttarget</code> attribute replaces a staggering amount of code: custom tooltip libraries (Tippy.js, Floating UI), ARIA attribute management, event listeners for <code>mouseenter</code>/<code>mouseleave</code>/<code>focus</code>/<code>blur</code>, and timer-based show/hide debouncing. One attribute does it all.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 5: ANCHOR POSITIONING  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="anchor-positioning">
+      <h2>5. Anchor Positioning with Popovers</h2>
+      <p>The CSS Anchor Positioning API lets you position a popover relative to the element that triggered it &mdash; no JavaScript required. By combining <code>anchor-name</code>, <code>position-anchor</code>, and <code>position-area</code>, you create floating elements that stay perfectly attached to their anchors as the page scrolls or resizes.</p>
+
+      <h3>Setting Up Anchors</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Step 1: Name the anchor element */
+.trigger-btn {
+  anchor-name: --my-trigger;
+}
+
+/* Step 2: Attach the popover to the anchor */
+.my-popover {
+  position-anchor: --my-trigger;
+
+  /* Step 3: Position relative to the anchor */
+  position-area: block-end;   /* Below the trigger */
+  margin-top: 8px;
+}</code></pre>
+      </div>
+
+      <h3>position-area Values</h3>
+      <p>The <code>position-area</code> property uses a grid-based model to place elements relative to their anchor. Think of the anchor as the center of a 3x3 grid:</p>
+
+      <div class="anchor-grid-visual">
+        <div class="anchor-cell">block-start<br>inline-start</div>
+        <div class="anchor-cell">block-start<br>span-inline</div>
+        <div class="anchor-cell">block-start<br>inline-end</div>
+        <div class="anchor-cell">span-block<br>inline-start</div>
+        <div class="anchor-cell anchor-cell--center">anchor</div>
+        <div class="anchor-cell">span-block<br>inline-end</div>
+        <div class="anchor-cell">block-end<br>inline-start</div>
+        <div class="anchor-cell">block-end<br>span-inline</div>
+        <div class="anchor-cell">block-end<br>inline-end</div>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Common positioning patterns */
+.tooltip-above {
+  position-anchor: --trigger;
+  position-area: block-start;       /* Centered above */
+}
+
+.dropdown-below {
+  position-anchor: --trigger;
+  position-area: block-end;         /* Centered below */
+}
+
+.sidebar-right {
+  position-anchor: --trigger;
+  position-area: inline-end;        /* To the right */
+}
+
+/* Fallback positioning when space is limited */
+.smart-tooltip {
+  position-anchor: --trigger;
+  position-area: block-start;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Anchored Popover Positions</h4>
+        <p class="demo-note">Each button anchors a popover in a different position. The popovers use <code>position-area</code> to stay attached to their triggers. Try scrolling &mdash; they follow.</p>
+
+        <div class="anchor-demo">
+          <div class="anchor-demo-grid">
+            <div class="anchor-demo-cell">
+              <button class="anchor-btn anchor-btn--above" popovertarget="anchor-above" style="anchor-name: --anchor-above;">Above</button>
+              <div id="anchor-above" popover class="pop-anchored pop-anchored--above">I sit above the button using <code>position-area: block-start</code></div>
+            </div>
+            <div class="anchor-demo-cell">
+              <button class="anchor-btn anchor-btn--below" popovertarget="anchor-below" style="anchor-name: --anchor-below;">Below</button>
+              <div id="anchor-below" popover class="pop-anchored pop-anchored--below">I sit below the button using <code>position-area: block-end</code></div>
+            </div>
+            <div class="anchor-demo-cell">
+              <button class="anchor-btn anchor-btn--left" popovertarget="anchor-left" style="anchor-name: --anchor-left;">Left</button>
+              <div id="anchor-left" popover class="pop-anchored pop-anchored--left">I sit to the left using <code>position-area: inline-start</code></div>
+            </div>
+            <div class="anchor-demo-cell">
+              <button class="anchor-btn anchor-btn--right" popovertarget="anchor-right" style="anchor-name: --anchor-right;">Right</button>
+              <div id="anchor-right" popover class="pop-anchored pop-anchored--right">I sit to the right using <code>position-area: inline-end</code></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 6: PATTERNS            -->
+    <!-- ============================== -->
+    <section class="concept-section" id="patterns">
+      <h2>6. Patterns: No-JS UI Components</h2>
+      <p>The Popover API, Invoker Commands, and Anchor Positioning combine to create production-ready UI patterns that previously required JavaScript frameworks. Here are the most common patterns, all built with pure HTML and CSS.</p>
+
+      <h3>Pattern 1: Dropdown Menu</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;nav class="dropdown"&gt;
+  &lt;button popovertarget="file-menu"
+          style="anchor-name: --file-btn;"&gt;
+    File
+  &lt;/button&gt;
+  &lt;div id="file-menu" popover
+       class="dropdown-panel"
+       style="position-anchor: --file-btn;"&gt;
+    &lt;button&gt;New File&lt;/button&gt;
+    &lt;button&gt;Open&lt;/button&gt;
+    &lt;button&gt;Save&lt;/button&gt;
+    &lt;hr&gt;
+    &lt;button&gt;Exit&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Dropdown Menu</h4>
+        <p class="demo-note">A fully functional dropdown menu using popover and anchor positioning. Click to open, click outside to dismiss.</p>
+
+        <div class="dropdown-demo">
+          <nav class="demo-menubar">
+            <button class="demo-menu-trigger" popovertarget="menu-file" style="anchor-name: --menu-file;">File</button>
+            <div id="menu-file" popover class="demo-dropdown" style="position-anchor: --menu-file;">
+              <button class="demo-menu-item">New File</button>
+              <button class="demo-menu-item">Open Project</button>
+              <button class="demo-menu-item">Save</button>
+              <button class="demo-menu-item">Save As...</button>
+              <hr class="demo-menu-divider">
+              <button class="demo-menu-item demo-menu-item--danger">Close Project</button>
+            </div>
+
+            <button class="demo-menu-trigger" popovertarget="menu-edit" style="anchor-name: --menu-edit;">Edit</button>
+            <div id="menu-edit" popover class="demo-dropdown" style="position-anchor: --menu-edit;">
+              <button class="demo-menu-item">Undo</button>
+              <button class="demo-menu-item">Redo</button>
+              <hr class="demo-menu-divider">
+              <button class="demo-menu-item">Cut</button>
+              <button class="demo-menu-item">Copy</button>
+              <button class="demo-menu-item">Paste</button>
+            </div>
+
+            <button class="demo-menu-trigger" popovertarget="menu-view" style="anchor-name: --menu-view;">View</button>
+            <div id="menu-view" popover class="demo-dropdown" style="position-anchor: --menu-view;">
+              <button class="demo-menu-item">Zoom In</button>
+              <button class="demo-menu-item">Zoom Out</button>
+              <button class="demo-menu-item">Reset Zoom</button>
+              <hr class="demo-menu-divider">
+              <button class="demo-menu-item">Toggle Sidebar</button>
+              <button class="demo-menu-item">Toggle Terminal</button>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <h3>Pattern 2: Notification Panel</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;button popovertarget="notifications"
+        style="anchor-name: --notif-btn;"&gt;
+  Notifications &lt;span class="badge"&gt;3&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;div id="notifications" popover
+     style="position-anchor: --notif-btn;"&gt;
+  &lt;h4&gt;Notifications&lt;/h4&gt;
+  &lt;ul class="notif-list"&gt;
+    &lt;li&gt;New comment on your post&lt;/li&gt;
+    &lt;li&gt;Build succeeded&lt;/li&gt;
+    &lt;li&gt;Team invite received&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Notification Panel</h4>
+        <p class="demo-note">A notification bell that opens an anchored panel. Click outside to dismiss. The badge count and panel content are pure HTML.</p>
+
+        <div class="notif-demo">
+          <button class="notif-trigger" popovertarget="notif-panel" style="anchor-name: --notif-bell;">
+            <span class="notif-icon">&#128276;</span>
+            <span class="notif-badge">4</span>
+          </button>
+
+          <div id="notif-panel" popover class="notif-panel" style="position-anchor: --notif-bell;">
+            <div class="notif-header">
+              <h5>Notifications</h5>
+              <button class="notif-mark-read" popovertarget="notif-panel" popovertargetaction="hide">Mark all read</button>
+            </div>
+            <ul class="notif-list">
+              <li class="notif-item notif-item--unread">
+                <span class="notif-dot"></span>
+                <div>
+                  <strong>PR #142 merged</strong>
+                  <p>Your pull request was merged into main.</p>
+                  <time>2 minutes ago</time>
+                </div>
+              </li>
+              <li class="notif-item notif-item--unread">
+                <span class="notif-dot"></span>
+                <div>
+                  <strong>New comment</strong>
+                  <p>Alex commented on your review.</p>
+                  <time>15 minutes ago</time>
+                </div>
+              </li>
+              <li class="notif-item notif-item--unread">
+                <span class="notif-dot"></span>
+                <div>
+                  <strong>Build succeeded</strong>
+                  <p>Pipeline #489 completed in 2m 13s.</p>
+                  <time>1 hour ago</time>
+                </div>
+              </li>
+              <li class="notif-item">
+                <span class="notif-dot notif-dot--read"></span>
+                <div>
+                  <strong>Team invite</strong>
+                  <p>You were invited to the Design System team.</p>
+                  <time>Yesterday</time>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3>Pattern 3: Confirmation Dialog</h3>
+
+      <div class="demo-container">
+        <h4>Demo: Confirmation Dialog</h4>
+        <p class="demo-note">A dangerous action guarded by a popover confirmation. No JavaScript event listeners needed &mdash; just HTML attributes controlling flow.</p>
+
+        <div class="confirm-demo">
+          <button class="confirm-trigger" popovertarget="confirm-pop" style="anchor-name: --confirm-btn;">Delete Repository</button>
+
+          <div id="confirm-pop" popover class="confirm-popover" style="position-anchor: --confirm-btn;">
+            <div class="confirm-icon">&#9888;</div>
+            <h5>Are you sure?</h5>
+            <p>This will permanently delete the repository and all its data. This action cannot be undone.</p>
+            <div class="confirm-actions">
+              <button class="pop-close-btn" popovertarget="confirm-pop" popovertargetaction="hide">Cancel</button>
+              <button class="pop-close-btn pop-close-btn--danger" popovertarget="confirm-pop" popovertargetaction="hide">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 7: PROGRESSIVE ENHANCE -->
+    <!-- ============================== -->
+    <section class="concept-section" id="progressive-enhancement">
+      <h2>7. Progressive Enhancement</h2>
+      <p>Although the Popover API has been shipping in all major browsers since 2024, Invoker Commands and Interest Invokers are newer. Good progressive enhancement ensures your UI works everywhere and gets better in capable browsers.</p>
+
+      <h3>Feature Detection</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Detect popover support */
+@supports selector(:popover-open) {
+  /* Safe to use popover-specific styles */
+  [popover] {
+    transition: opacity 0.3s, transform 0.3s,
+                display 0.3s allow-discrete;
+  }
+}
+
+/* Detect anchor positioning */
+@supports (anchor-name: --x) {
+  .tooltip {
+    position-anchor: --trigger;
+    position-area: block-start;
+  }
+}
+
+/* Detect @starting-style */
+@supports (transition-behavior: allow-discrete) {
+  [popover]:popover-open {
+    @starting-style {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+}</code></pre>
+      </div>
+
+      <h3>Fallback Patterns</h3>
+      <div class="code-block">
+        <h4>HTML</h4>
+        <pre><code>&lt;!-- Tooltip fallback: use title attribute --&gt;
+&lt;button
+  interesttarget="tt-info"
+  title="Detailed tooltip content for older browsers"
+&gt;
+  Info
+&lt;/button&gt;
+&lt;div id="tt-info" popover class="tooltip"&gt;
+  Rich tooltip with formatting and links.
+&lt;/div&gt;
+
+&lt;!-- Dropdown fallback: use details/summary --&gt;
+&lt;details class="dropdown-fallback"&gt;
+  &lt;summary&gt;Menu&lt;/summary&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Option 1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Option 2&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/details&gt;</code></pre>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Hide fallback when popover is supported */
+@supports selector(:popover-open) {
+  .dropdown-fallback {
+    display: none;
+  }
+}
+
+/* Show fallback only when popover is NOT supported */
+@supports not selector(:popover-open) {
+  [popover] {
+    /* Make popover behave like a regular positioned element */
+    display: none;
+    position: absolute;
+  }
+
+  [popover].is-open {
+    display: block;
+  }
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Feature Detection Dashboard</h4>
+        <p class="demo-note">This panel detects which popover-related features your browser supports. Green means supported; gray means not yet available.</p>
+
+        <div class="feature-dashboard">
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--popover"></div>
+            <div>
+              <strong>Popover API</strong>
+              <p>Native popover with <code>:popover-open</code></p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--starting"></div>
+            <div>
+              <strong>@starting-style</strong>
+              <p>Entry animations for display transitions</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--discrete"></div>
+            <div>
+              <strong>transition-behavior: allow-discrete</strong>
+              <p>Animate display and overlay properties</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--anchor"></div>
+            <div>
+              <strong>CSS Anchor Positioning</strong>
+              <p>Declarative floating element positioning</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--invoker"></div>
+            <div>
+              <strong>Invoker Commands</strong>
+              <p><code>commandfor</code> / <code>command</code> attributes</p>
+            </div>
+          </div>
+          <div class="feature-check">
+            <div class="feature-indicator feature-indicator--interest"></div>
+            <div>
+              <strong>Interest Invokers</strong>
+              <p><code>interesttarget</code> for hover/focus triggers</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The Popover API is fully supported in Chrome, Edge, Firefox, and Safari since late 2024. Anchor Positioning and Invoker Commands shipped across browsers through 2025. For production code targeting older browsers, layer your enhancements: start with <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> as the base, then enhance with popover, then add anchor positioning and invoker commands where available.
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- EXERCISE                        -->
+    <!-- ============================== -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Build a User Profile Card with Popover</h2>
+      <p>Create a user avatar button that opens a profile popover below it. The popover should include the user's name, email, role, and action buttons. Use anchor positioning to keep it attached to the avatar.</p>
+
+      <div class="exercise-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li>Create an avatar button with <code>popovertarget</code> pointing to a profile popover.</li>
+          <li>Add <code>anchor-name</code> to the avatar and <code>position-anchor</code> + <code>position-area: block-end</code> to the popover.</li>
+          <li>Style the popover with a smooth entry animation using <code>@starting-style</code> and <code>transition-behavior: allow-discrete</code>.</li>
+          <li>Include a <code>::backdrop</code> with a subtle blur effect.</li>
+          <li>Add a "Sign Out" button inside the popover that closes it using <code>popovertargetaction="hide"</code>.</li>
+          <li>Make the popover <code>auto</code> so it light-dismisses on outside click.</li>
+          <li>Wrap your animations in <code>@supports selector(:popover-open)</code> for progressive enhancement.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<!-- Avatar trigger -->
+<button class="avatar-btn" popovertarget="profile-pop"
+        style="anchor-name: --avatar;">
+  <img src="https://api.dicebear.com/7.x/initials/svg?seed=PE" alt="User avatar"
+       width="48" height="48" style="border-radius: 50%;">
+</button>
+
+<!-- Profile popover -->
+<div id="profile-pop" popover class="profile-popover"
+     style="position-anchor: --avatar;">
+  <div class="profile-header">
+    <img src="https://api.dicebear.com/7.x/initials/svg?seed=PE" alt=""
+         width="64" height="64" style="border-radius: 50%;">
+    <div>
+      <h4>PE7 Student</h4>
+      <p>student@pe7.dev</p>
+    </div>
+  </div>
+  <ul class="profile-menu">
+    <li><a href="#">Your Profile</a></li>
+    <li><a href="#">Settings</a></li>
+    <li><a href="#">Your Repositories</a></li>
+  </ul>
+  <hr>
+  <button class="signout-btn"
+          popovertarget="profile-pop"
+          popovertargetaction="hide">
+    Sign Out
+  </button>
+</div>
+        </template>
+        <template class="starter-css">
+/* Start with the avatar button */
+.avatar-btn {
+  background: none;
+  border: 2px solid #6c5ce7;
+  border-radius: 50%;
+  padding: 3px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.avatar-btn:hover {
+  border-color: #a29bfe;
+}
+
+/* Style the profile popover */
+.profile-popover {
+  /* TODO: Add position-area to sit below the avatar */
+  /* position-area: block-end; */
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 0;
+  width: 280px;
+  color: #e4e6ef;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+
+  /* TODO: Add transitions for smooth open/close */
+  /* opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.25s, transform 0.25s,
+              display 0.25s allow-discrete; */
+}
+
+/* TODO: Add :popover-open styles */
+/* .profile-popover:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+} */
+
+/* TODO: Add @starting-style for entry animation */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid #2e3345;
+}
+
+.profile-header h4 {
+  font-size: 1rem;
+  margin: 0 0 0.15rem;
+}
+
+.profile-header p {
+  font-size: 0.8rem;
+  color: #8b8fa7;
+  margin: 0;
+}
+
+.profile-menu {
+  list-style: none;
+  padding: 0.5rem;
+  margin: 0;
+}
+
+.profile-menu li a {
+  display: block;
+  padding: 0.6rem 1rem;
+  color: #e4e6ef;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.profile-menu li a:hover {
+  background: rgba(108, 92, 231, 0.15);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #2e3345;
+  margin: 0;
+}
+
+.signout-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  background: none;
+  color: #ff7675;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 0 0 12px 12px;
+  transition: background 0.15s;
+}
+
+.signout-btn:hover {
+  background: rgba(255, 118, 117, 0.1);
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- CHALLENGE                       -->
+    <!-- ============================== -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Mega-Menu Navigation</h2>
+      <p>Build a full mega-menu navigation bar with multiple dropdown panels, all using the Popover API, anchor positioning, and animated transitions. No JavaScript allowed.</p>
+
+      <div class="challenge-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          <li><strong>Navigation bar:</strong> At least 4 top-level menu items. Each one is a <code>&lt;button&gt;</code> with <code>popovertarget</code> pointing to its panel.</li>
+          <li><strong>Mega-menu panels:</strong> Each panel should have a multi-column layout (use CSS Grid). Include icons, headings, descriptions, and links.</li>
+          <li><strong>Anchor positioning:</strong> Each panel should be anchored below its trigger button using <code>anchor-name</code> and <code>position-area: block-end</code>.</li>
+          <li><strong>Animations:</strong> Panels should fade and slide in from above with <code>@starting-style</code>. Use <code>transition-behavior: allow-discrete</code> for smooth exit animations.</li>
+          <li><strong>Auto-dismiss:</strong> Use <code>popover="auto"</code> so only one panel is open at a time and clicking outside closes it.</li>
+          <li><strong>Backdrop:</strong> Add a subtle <code>::backdrop</code> that dims the page behind the mega-menu.</li>
+          <li><strong>Responsive:</strong> On narrow screens, collapse into a single hamburger button that opens a full-width popover panel.</li>
+        </ul>
+      </div>
+
+      <div class="challenge-hints">
+        <h3>Architecture Hints</h3>
+        <ul>
+          <li>Give each trigger a unique <code>anchor-name</code> (e.g., <code>--nav-products</code>, <code>--nav-solutions</code>).</li>
+          <li>Use <code>position-area: block-end span-inline-end</code> for left-aligned panels that extend rightward from their trigger.</li>
+          <li>For the mega-menu grid, <code>grid-template-columns: repeat(3, 1fr)</code> works well with category sections inside.</li>
+          <li>Add <code>position-try-fallbacks: flip-block</code> so panels flip above the nav if there is not enough room below.</li>
+          <li>Use <code>&lt;nav&gt;</code> with <code>aria-label</code> for the menu bar, and group links with <code>role="group"</code> in each panel.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<nav class="mega-nav" aria-label="Main navigation">
+  <!-- Products -->
+  <button class="mega-trigger"
+          popovertarget="mega-products"
+          style="anchor-name: --nav-products;">
+    Products &#9662;
+  </button>
+  <div id="mega-products" popover
+       class="mega-panel"
+       style="position-anchor: --nav-products;">
+    <div class="mega-grid">
+      <div class="mega-section">
+        <h4>Developer Tools</h4>
+        <a href="#">Code Editor</a>
+        <a href="#">Terminal</a>
+        <a href="#">Debugger</a>
+      </div>
+      <div class="mega-section">
+        <h4>Cloud Services</h4>
+        <a href="#">Hosting</a>
+        <a href="#">Databases</a>
+        <a href="#">CDN</a>
+      </div>
+      <div class="mega-section">
+        <h4>Analytics</h4>
+        <a href="#">Dashboards</a>
+        <a href="#">Reports</a>
+        <a href="#">Alerts</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Solutions -->
+  <button class="mega-trigger"
+          popovertarget="mega-solutions"
+          style="anchor-name: --nav-solutions;">
+    Solutions &#9662;
+  </button>
+  <div id="mega-solutions" popover
+       class="mega-panel"
+       style="position-anchor: --nav-solutions;">
+    <div class="mega-grid">
+      <div class="mega-section">
+        <h4>By Team</h4>
+        <a href="#">Engineering</a>
+        <a href="#">Design</a>
+        <a href="#">Product</a>
+      </div>
+      <div class="mega-section">
+        <h4>By Industry</h4>
+        <a href="#">SaaS</a>
+        <a href="#">E-commerce</a>
+        <a href="#">Healthcare</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <button class="mega-trigger"
+          popovertarget="mega-resources"
+          style="anchor-name: --nav-resources;">
+    Resources &#9662;
+  </button>
+  <div id="mega-resources" popover
+       class="mega-panel"
+       style="position-anchor: --nav-resources;">
+    <div class="mega-grid">
+      <div class="mega-section">
+        <h4>Learn</h4>
+        <a href="#">Documentation</a>
+        <a href="#">Tutorials</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="mega-section">
+        <h4>Community</h4>
+        <a href="#">Forum</a>
+        <a href="#">Discord</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing (no dropdown) -->
+  <a href="#" class="mega-link">Pricing</a>
+</nav>
+        </template>
+        <template class="starter-css">
+.mega-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #1a1d27;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #2e3345;
+}
+
+.mega-trigger {
+  background: none;
+  border: none;
+  color: #e4e6ef;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+
+.mega-trigger:hover {
+  background: rgba(108, 92, 231, 0.15);
+  color: #a29bfe;
+}
+
+.mega-link {
+  color: #e4e6ef;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.mega-link:hover {
+  background: rgba(108, 92, 231, 0.15);
+  color: #a29bfe;
+}
+
+/* Style the mega-menu panel */
+.mega-panel {
+  /* TODO: position-area: block-end; */
+  background: #1a1d27;
+  border: 1px solid #2e3345;
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-width: 400px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  color: #e4e6ef;
+
+  /* TODO: Add entry/exit transitions */
+}
+
+.mega-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.5rem;
+}
+
+.mega-section h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8b8fa7;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2e3345;
+}
+
+.mega-section a {
+  display: block;
+  padding: 0.4rem 0;
+  color: #e4e6ef;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.15s;
+}
+
+.mega-section a:hover {
+  color: #a29bfe;
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../17-masonry-layout/index.html">&larr; Previous</a>
+    <a href="../19-relative-colors/index.html">Next &rarr;</a>
+  </footer>
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>

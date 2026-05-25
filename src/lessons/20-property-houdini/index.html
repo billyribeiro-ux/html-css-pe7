@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@property &amp; Houdini Animations | HTML/CSS PE7</title>
+  <link rel="stylesheet" href="../styles/reset.css">
+  <link rel="stylesheet" href="../styles/course.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="course-nav">
+    <a href="../index.html" class="nav-home">PE7</a>
+    <span class="nav-sep">/</span>
+    <a href="#">Module 20</a>
+  </nav>
+
+  <header class="lesson-header">
+    <span class="level-badge level-7">Level 7 - Expert Systems</span>
+    <h1>@property &amp; Houdini Animations</h1>
+    <p class="subtitle">Give the browser a type system for your custom properties. When CSS knows that <code>--hue</code> is an angle and <code>--progress</code> is a number, it can interpolate between values instead of snapping. The result: gradient animations, number tickers, and choreographed sequences that were previously impossible without JavaScript.</p>
+  </header>
+
+  <main>
+
+    <!-- ============================================ -->
+    <!-- SECTION 1: THE @property RULE                -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="property-rule">
+      <h2>1. The @property Rule</h2>
+      <p>Custom properties registered with <code>var(--name)</code> are incredibly useful, but the browser treats them as opaque strings. It has no idea whether <code>--gap: 2rem</code> is a length, a color, or just text. That means it cannot transition between two values of a custom property&mdash;it can only swap them instantly.</p>
+
+      <p>The <code>@property</code> rule changes everything. It tells the browser the <em>type</em> of your custom property, whether it inherits, and what its default value should be. Once the browser understands the type, it can interpolate smoothly between values during transitions and animations.</p>
+
+      <h3>Anatomy of @property</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --hue {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --card-color {
+  syntax: "&lt;color&gt;";
+  inherits: true;
+  initial-value: #6c5ce7;
+}
+
+@property --progress {
+  syntax: "&lt;number&gt;";
+  inherits: false;
+  initial-value: 0;
+}</code></pre>
+      </div>
+
+      <p>Three descriptors, all required:</p>
+      <ul class="descriptor-list">
+        <li><strong><code>syntax</code></strong> &mdash; declares the type. Must be a quoted string containing a CSS value definition syntax. Common types: <code>"&lt;color&gt;"</code>, <code>"&lt;length&gt;"</code>, <code>"&lt;number&gt;"</code>, <code>"&lt;percentage&gt;"</code>, <code>"&lt;angle&gt;"</code>, <code>"&lt;integer&gt;"</code>, <code>"&lt;length-percentage&gt;"</code>, or <code>"*"</code> for any value (universal, but loses interpolation).</li>
+        <li><strong><code>inherits</code></strong> &mdash; <code>true</code> or <code>false</code>. Controls whether child elements inherit the property value from their parent. Most animation properties should be <code>false</code>.</li>
+        <li><strong><code>initial-value</code></strong> &mdash; the default value when the property is not explicitly set. Must be valid for the declared syntax. Required for all syntax types except <code>"*"</code>.</li>
+      </ul>
+
+      <h3>Available Syntax Types</h3>
+      <div class="syntax-grid">
+        <div class="syntax-card">
+          <code>&lt;color&gt;</code>
+          <span>Any CSS color value</span>
+          <span class="syntax-example">#ff0, oklch(0.7 0.15 200)</span>
+        </div>
+        <div class="syntax-card">
+          <code>&lt;length&gt;</code>
+          <span>Dimension with length units</span>
+          <span class="syntax-example">0px, 2rem, 50vw</span>
+        </div>
+        <div class="syntax-card">
+          <code>&lt;number&gt;</code>
+          <span>Floating-point number</span>
+          <span class="syntax-example">0, 1.5, 3.14</span>
+        </div>
+        <div class="syntax-card">
+          <code>&lt;percentage&gt;</code>
+          <span>Percentage value</span>
+          <span class="syntax-example">0%, 50%, 100%</span>
+        </div>
+        <div class="syntax-card">
+          <code>&lt;angle&gt;</code>
+          <span>Angle value</span>
+          <span class="syntax-example">0deg, 180deg, 1turn</span>
+        </div>
+        <div class="syntax-card">
+          <code>&lt;integer&gt;</code>
+          <span>Whole number (no decimals)</span>
+          <span class="syntax-example">0, 42, 100</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Without <code>@property</code>, custom properties are always treated as strings. Setting <code>--color: red</code> and then transitioning to <code>--color: blue</code> will cause an instant snap. With <code>@property</code> and <code>syntax: "&lt;color&gt;"</code>, the browser knows it can interpolate through the color space. This single rule unlocks an entire category of previously impossible CSS animations.
+      </div>
+
+      <h3>Unregistered vs. Registered: The Difference</h3>
+      <div class="demo-container">
+        <h4>Demo: Snap vs. Smooth Transition</h4>
+        <p class="demo-note">Hover over each box. The left box uses an unregistered custom property&mdash;it snaps. The right box uses <code>@property</code>&mdash;it transitions smoothly.</p>
+
+        <div class="snap-vs-smooth">
+          <div class="snap-box">
+            <span class="demo-label">Unregistered</span>
+            <span class="demo-sublabel">--bg snaps on hover</span>
+          </div>
+          <div class="smooth-box">
+            <span class="demo-label">@property Registered</span>
+            <span class="demo-sublabel">--bg-registered transitions</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2: ANIMATING CUSTOM PROPERTIES       -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="animating-properties">
+      <h2>2. Animating Custom Properties</h2>
+      <p>The moment you register a custom property with <code>@property</code>, it becomes animatable. This is the single most impactful thing <code>@property</code> enables. Colors blend, numbers count, angles rotate, lengths grow&mdash;all driven purely by CSS transitions and keyframes.</p>
+
+      <h3>Transitioning Colors</h3>
+      <p>Consider a card that shifts its accent color on hover. Without <code>@property</code>, this requires animating a real CSS property like <code>background</code> or <code>box-shadow</code> directly. With <code>@property</code>, you animate the <em>variable</em> and let it cascade naturally into every place it is used.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --accent {
+  syntax: "&lt;color&gt;";
+  inherits: false;
+  initial-value: #6c5ce7;
+}
+
+.card {
+  --accent: #6c5ce7;
+  border: 2px solid var(--accent);
+  box-shadow: 0 4px 20px color-mix(in oklch, var(--accent) 30%, transparent);
+  transition: --accent 0.6s ease;
+}
+
+.card:hover {
+  --accent: #00cec9;
+  /* Both border AND shadow transition together
+     because they both reference --accent */
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Color-Shifting Cards</h4>
+        <p class="demo-note">Hover over each card to see the accent color smoothly transition. The border, shadow, and icon color all animate together because they all reference the same <code>--accent</code> custom property.</p>
+
+        <div class="color-shift-grid">
+          <div class="color-shift-card" style="--accent-start: #6c5ce7; --accent-end: #00cec9;">
+            <div class="cs-icon">&#9830;</div>
+            <h5>Diamond</h5>
+            <p>Purple to teal transition</p>
+          </div>
+          <div class="color-shift-card" style="--accent-start: #fd79a8; --accent-end: #fdcb6e;">
+            <div class="cs-icon">&#9733;</div>
+            <h5>Star</h5>
+            <p>Pink to gold transition</p>
+          </div>
+          <div class="color-shift-card" style="--accent-start: #00b894; --accent-end: #e17055;">
+            <div class="cs-icon">&#9829;</div>
+            <h5>Heart</h5>
+            <p>Mint to coral transition</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Keyframe Animations</h3>
+      <p>Transitions respond to state changes (hover, focus, class toggles). But for continuous or multi-step animations, you need <code>@keyframes</code>. Registered custom properties work perfectly with keyframes too.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --hue {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes hue-cycle {
+  from { --hue: 0deg; }
+  to   { --hue: 360deg; }
+}
+
+.element {
+  background: oklch(0.7 0.15 var(--hue));
+  animation: hue-cycle 4s linear infinite;
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The real power here is indirection. You are not animating <code>background</code> directly&mdash;you are animating a variable that feeds into background, border, shadow, text color, or anything else. One animated variable can drive dozens of visual changes simultaneously.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3: GRADIENT ANIMATIONS               -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="gradient-animations">
+      <h2>3. Gradient Animations</h2>
+      <p>Before <code>@property</code>, gradients were completely static. You could not transition between two gradients because CSS had no way to interpolate color stops or angles within a gradient function. The only workaround was opacity-fading between two elements with different background gradients.</p>
+
+      <p>With registered custom properties, you can animate individual parameters within a gradient: the angle, color stops, or position values. This opens up spectacular effects that previously required canvas or WebGL.</p>
+
+      <h3>Rotating Conic Gradients</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --angle {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin-gradient {
+  to { --angle: 360deg; }
+}
+
+.spinner {
+  background: conic-gradient(
+    from var(--angle),
+    #6c5ce7,
+    #00cec9,
+    #fdcb6e,
+    #6c5ce7
+  );
+  animation: spin-gradient 3s linear infinite;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Animated Gradient Border</h4>
+        <p class="demo-note">A rotating conic gradient creates a vivid animated border effect. The <code>--angle</code> property drives the rotation while <code>--hue-offset</code> slowly shifts the palette.</p>
+
+        <div class="gradient-border-showcase">
+          <div class="gradient-border-card">
+            <div class="gradient-border-inner">
+              <h5>Animated Border</h5>
+              <p>This card's border is a conic gradient rotating via <code>@property --angle</code>. The inner content sits on top with a solid background, creating the illusion of an animated border.</p>
+              <span class="gradient-tag">@property powered</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Color-Cycling Backgrounds</h3>
+      <p>By registering multiple color custom properties, you can cycle an entire gradient palette through a smooth animation loop.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --color-1 {
+  syntax: "&lt;color&gt;";
+  inherits: false;
+  initial-value: #6c5ce7;
+}
+
+@property --color-2 {
+  syntax: "&lt;color&gt;";
+  inherits: false;
+  initial-value: #00cec9;
+}
+
+@keyframes gradient-cycle {
+  0%   { --color-1: #6c5ce7; --color-2: #00cec9; }
+  33%  { --color-1: #fd79a8; --color-2: #fdcb6e; }
+  66%  { --color-1: #00b894; --color-2: #0984e3; }
+  100% { --color-1: #6c5ce7; --color-2: #00cec9; }
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--color-1), var(--color-2));
+  animation: gradient-cycle 8s ease infinite;
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Color-Cycling Gradient Panel</h4>
+        <p class="demo-note">Watch the gradient smoothly cycle through multiple color pairs. Each color is registered as a separate <code>@property</code>, allowing the browser to interpolate each stop independently.</p>
+
+        <div class="gradient-cycle-panel">
+          <div class="gradient-cycle-content">
+            <span class="gradient-cycle-label">Live Gradient Animation</span>
+            <p>Two registered color properties cycle through six colors over 8 seconds. No JavaScript. No sprite sheets. Just <code>@property</code> and <code>@keyframes</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The gradient-border technique works by placing a larger gradient element behind a slightly smaller solid element. The visible "border" is the gradient peeking out around the edges. This is achieved with pseudo-elements or nested divs. The <code>@property</code> rule makes the gradient animatable, completing the illusion.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4: COUNTER ANIMATIONS                -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="counter-animations">
+      <h2>4. Counter Animations</h2>
+      <p>One of the most visually striking uses of <code>@property</code> is animating numbers. By registering a property with <code>syntax: "&lt;integer&gt;"</code>, you can animate from 0 to any target value. Combined with <code>counter-set</code> and CSS <code>counter()</code>, you get a pure CSS number ticker&mdash;no JavaScript needed.</p>
+
+      <h3>The Technique</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --count {
+  syntax: "&lt;integer&gt;";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes count-up {
+  to { --count: 100; }
+}
+
+.ticker {
+  animation: count-up 2s ease-out forwards;
+  counter-set: num var(--count);
+}
+
+.ticker::after {
+  content: counter(num);
+}</code></pre>
+      </div>
+
+      <p>How it works step by step:</p>
+      <ol class="step-list">
+        <li><code>@property</code> registers <code>--count</code> as an integer, enabling interpolation.</li>
+        <li><code>@keyframes count-up</code> animates <code>--count</code> from 0 to 100.</li>
+        <li><code>counter-set</code> feeds the animated value into a CSS counter named <code>num</code>.</li>
+        <li>The <code>::after</code> pseudo-element displays the counter with <code>content: counter(num)</code>.</li>
+        <li>Because the browser interpolates integers, you see every whole number from 0 to 100 during the animation.</li>
+      </ol>
+
+      <div class="demo-container">
+        <h4>Demo: Number Ticker Dashboard</h4>
+        <p class="demo-note">These counters animate from 0 to their target values when the page loads. Each uses <code>@property</code> with <code>&lt;integer&gt;</code> syntax. Hover over the dashboard to replay the animation.</p>
+
+        <div class="ticker-dashboard">
+          <div class="ticker-card" style="--target: 2847; --duration: 2.5s; --ticker-color: #6c5ce7;">
+            <div class="ticker-value"></div>
+            <div class="ticker-label">Total Users</div>
+          </div>
+          <div class="ticker-card" style="--target: 156; --duration: 2s; --ticker-color: #00cec9;">
+            <div class="ticker-value"></div>
+            <div class="ticker-label">Active Projects</div>
+          </div>
+          <div class="ticker-card" style="--target: 99; --duration: 1.8s; --ticker-color: #fd79a8;">
+            <div class="ticker-value ticker-pct"></div>
+            <div class="ticker-label">Uptime %</div>
+          </div>
+          <div class="ticker-card" style="--target: 42; --duration: 1.5s; --ticker-color: #fdcb6e;">
+            <div class="ticker-value"></div>
+            <div class="ticker-label">Deployments</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Percentage Bars with Animated Values</h3>
+      <p>The same technique can combine a growing progress bar with a live-updating label showing the percentage:</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --bar-pct {
+  syntax: "&lt;integer&gt;";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes fill-bar {
+  to { --bar-pct: var(--target-pct); }
+}
+
+.progress-bar {
+  /* Animate both the bar width and the counter */
+  animation: fill-bar 1.5s ease-out forwards;
+  counter-set: pct var(--bar-pct);
+}
+
+.progress-bar::after {
+  content: counter(pct) "%";
+}
+
+.progress-bar::before {
+  /* Use the same variable for the bar fill */
+  width: calc(var(--bar-pct) * 1%);
+}</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: Animated Progress Bars</h4>
+        <p class="demo-note">Each bar fills to its target while the percentage label counts up in sync. Hover over the container to replay.</p>
+
+        <div class="progress-showcase">
+          <div class="progress-item">
+            <span class="progress-name">HTML</span>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="--fill-target: 95;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <span class="progress-name">CSS</span>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="--fill-target: 88;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <span class="progress-name">JavaScript</span>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="--fill-target: 72;"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <span class="progress-name">Accessibility</span>
+            <div class="progress-track">
+              <div class="progress-bar-fill" style="--fill-target: 81;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The <code>&lt;integer&gt;</code> syntax type is crucial for number tickers. If you used <code>&lt;number&gt;</code> instead, the browser would interpolate through decimal values (0, 0.5, 1.0, 1.5...) which would produce fractional counter values. With <code>&lt;integer&gt;</code>, each interpolated value is rounded to a whole number, giving you clean counting.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 5: COMPLEX CHOREOGRAPHY              -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="complex-choreography">
+      <h2>5. Complex Choreography</h2>
+      <p>When you register multiple custom properties, you can animate each one independently with its own timing, delay, and easing function. This is CSS choreography: sequenced, layered animations that create sophisticated motion design.</p>
+
+      <h3>Staggered Multi-Property Transitions</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --x-offset {
+  syntax: "&lt;length&gt;";
+  inherits: false;
+  initial-value: -30px;
+}
+
+@property --blur {
+  syntax: "&lt;length&gt;";
+  inherits: false;
+  initial-value: 10px;
+}
+
+@property --fade {
+  syntax: "&lt;number&gt;";
+  inherits: false;
+  initial-value: 0;
+}
+
+.card {
+  transform: translateX(var(--x-offset));
+  filter: blur(var(--blur));
+  opacity: var(--fade);
+
+  /* Each property transitions at a different time */
+  transition:
+    --fade 0.4s ease 0s,
+    --blur 0.5s ease 0.1s,
+    --x-offset 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+
+.card.visible {
+  --x-offset: 0px;
+  --blur: 0px;
+  --fade: 1;
+}</code></pre>
+      </div>
+
+      <p>Notice the staggered <code>transition-delay</code> values: opacity starts immediately, blur begins 100ms later, and position follows at 150ms. This creates a natural "unfurling" effect where the element fades in, sharpens, then slides into place.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Choreographed Card Reveal</h4>
+        <p class="demo-note">Hover over the area below to trigger a sequenced reveal. Each card enters with staggered timing across multiple properties: opacity, blur, position, and accent color.</p>
+
+        <div class="choreo-stage">
+          <div class="choreo-card choreo-1">
+            <div class="choreo-number">01</div>
+            <h5>Research</h5>
+            <p>User interviews, competitive analysis, market research</p>
+          </div>
+          <div class="choreo-card choreo-2">
+            <div class="choreo-number">02</div>
+            <h5>Design</h5>
+            <p>Wireframes, prototypes, visual design systems</p>
+          </div>
+          <div class="choreo-card choreo-3">
+            <div class="choreo-number">03</div>
+            <h5>Build</h5>
+            <p>Implementation, testing, performance optimization</p>
+          </div>
+          <div class="choreo-card choreo-4">
+            <div class="choreo-number">04</div>
+            <h5>Launch</h5>
+            <p>Deployment, monitoring, iterative refinement</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Combining with Scroll-Driven Animations</h3>
+      <p>Registered custom properties pair beautifully with scroll-driven animations. You can bind <code>@property</code> variables to scroll progress using <code>animation-timeline: scroll()</code> or <code>view()</code>, creating scroll-linked effects with smooth interpolation.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@property --scroll-hue {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --scroll-scale {
+  syntax: "&lt;number&gt;";
+  inherits: false;
+  initial-value: 0.8;
+}
+
+@keyframes scroll-reveal {
+  from {
+    --scroll-hue: 0deg;
+    --scroll-scale: 0.8;
+  }
+  to {
+    --scroll-hue: 120deg;
+    --scroll-scale: 1;
+  }
+}
+
+.scroll-card {
+  background: oklch(0.6 0.15 var(--scroll-hue));
+  transform: scale(var(--scroll-scale));
+  animation: scroll-reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 20% cover 50%;
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The choreography approach lets you compose complex motion from simple building blocks. Each <code>@property</code> variable is one "track" in your animation timeline. You control each track's duration, easing, and delay independently, then the browser composites the result. This is the same mental model used in professional motion design tools.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 6: HOUDINI PAINT API                 -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="houdini-paint">
+      <h2>6. Houdini Paint API (Overview)</h2>
+      <p>The <code>@property</code> rule is actually part of a larger initiative called <strong>CSS Houdini</strong>&mdash;a set of APIs that expose CSS engine internals to developers. While <code>@property</code> has achieved universal browser support, the Paint API is the other Houdini feature worth understanding.</p>
+
+      <h3>What is the Paint API?</h3>
+      <p>The Paint API lets you write JavaScript that generates custom images for CSS properties like <code>background-image</code>, <code>border-image</code>, and <code>mask-image</code>. You register a "paint worklet" and then reference it in CSS with the <code>paint()</code> function.</p>
+
+      <div class="code-block">
+        <h4>JavaScript (paint-worklet.js)</h4>
+        <pre><code>// Register a paint worklet
+class CirclesPainter {
+  // Declare which CSS properties the worklet reads
+  static get inputProperties() {
+    return ['--circle-count', '--circle-color'];
+  }
+
+  paint(ctx, size, properties) {
+    const count = properties.get('--circle-count').toString() | 0;
+    const color = properties.get('--circle-color').toString();
+
+    ctx.fillStyle = color;
+
+    for (let i = 0; i &lt; count; i++) {
+      const x = Math.random() * size.width;
+      const y = Math.random() * size.height;
+      const r = Math.random() * 20 + 5;
+
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+registerPaint('circles', CirclesPainter);</code></pre>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS + HTML</h4>
+        <pre><code>/* Register the properties for animation */
+@property --circle-count {
+  syntax: "&lt;integer&gt;";
+  inherits: false;
+  initial-value: 20;
+}
+
+/* Load the worklet */
+/* &lt;script&gt;CSS.paintWorklet.addModule('paint-worklet.js')&lt;/script&gt; */
+
+.generative-bg {
+  background-image: paint(circles);
+  --circle-count: 40;
+  --circle-color: rgba(108, 92, 231, 0.3);
+
+  /* Animate the count! */
+  transition: --circle-count 1s ease;
+}
+
+.generative-bg:hover {
+  --circle-count: 100;
+}</code></pre>
+      </div>
+
+      <h3>Paint API + @property = Animated Generative Art</h3>
+      <p>The magic happens when you combine the Paint API with <code>@property</code>. Register a custom property that the paint worklet reads, then animate that property. The worklet re-renders on every frame with the interpolated value. This gives you animated, procedural, GPU-accelerated backgrounds with CSS control.</p>
+
+      <div class="houdini-features-grid">
+        <div class="houdini-feature">
+          <h5>Paint Worklets</h5>
+          <p>Custom <code>background-image</code> via JavaScript. Generate patterns, noise, shapes, or any 2D graphics with the Canvas API.</p>
+          <span class="support-badge support-partial">Chromium only</span>
+        </div>
+        <div class="houdini-feature">
+          <h5>@property</h5>
+          <p>Typed custom properties with interpolation. The most widely supported Houdini feature.</p>
+          <span class="support-badge support-full">All modern browsers</span>
+        </div>
+        <div class="houdini-feature">
+          <h5>Layout Worklets</h5>
+          <p>Custom layout algorithms (like Masonry or Waterfall). Still experimental, not production-ready.</p>
+          <span class="support-badge support-none">Experimental</span>
+        </div>
+        <div class="houdini-feature">
+          <h5>Animation Worklets</h5>
+          <p>Custom animation timing and scroll-linked effects. Largely superseded by scroll-driven animations.</p>
+          <span class="support-badge support-partial">Limited</span>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> While the Paint API is limited to Chromium browsers (Chrome, Edge, Opera), <code>@property</code> itself is fully supported across all modern browsers including Firefox and Safari. Focus your production work on <code>@property</code> and treat the Paint API as a progressive enhancement for Chromium users.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 7: PROGRESSIVE ENHANCEMENT           -->
+    <!-- ============================================ -->
+    <section class="concept-section" id="progressive-enhancement">
+      <h2>7. Progressive Enhancement</h2>
+      <p>Although <code>@property</code> has excellent browser support in 2026, you should still write defensive CSS. The <code>@supports</code> at-rule can detect <code>@property</code> support, and you can layer your animations so that non-supporting browsers get a functional (if less flashy) experience.</p>
+
+      <h3>Feature Detection</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Base styles: always work */
+.card {
+  background: linear-gradient(135deg, #6c5ce7, #00cec9);
+  transition: opacity 0.3s ease;
+}
+
+/* Enhanced: only if @property is supported */
+@supports (--custom: 0) and (animation-timeline: scroll()) {
+  @property --gradient-angle {
+    syntax: "&lt;angle&gt;";
+    inherits: false;
+    initial-value: 135deg;
+  }
+
+  .card {
+    background: linear-gradient(
+      var(--gradient-angle), #6c5ce7, #00cec9
+    );
+    animation: rotate-gradient 4s linear infinite;
+  }
+
+  @keyframes rotate-gradient {
+    to { --gradient-angle: 495deg; }
+  }
+}</code></pre>
+      </div>
+
+      <h3>Testing @property Support Specifically</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* The most reliable test for @property support */
+@supports (background: paint(something)) {
+  /* Paint API supported (Chromium) */
+}
+
+/* For @property specifically, test with initial-value */
+@supports at-rule(@property) {
+  /* @property is supported */
+  /* Apply enhanced animated gradients, counters, etc. */
+}</code></pre>
+      </div>
+
+      <h3>The Fallback Pattern</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* 1. Start with a static fallback */
+.hero {
+  background: linear-gradient(135deg, #6c5ce7, #00cec9);
+}
+
+/* 2. If @property works, override with animated version */
+@property --hero-c1 {
+  syntax: "&lt;color&gt;";
+  inherits: false;
+  initial-value: #6c5ce7;
+}
+
+@property --hero-c2 {
+  syntax: "&lt;color&gt;";
+  inherits: false;
+  initial-value: #00cec9;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--hero-c1), var(--hero-c2));
+  animation: hero-colors 6s ease infinite alternate;
+}
+
+@keyframes hero-colors {
+  to {
+    --hero-c1: #fd79a8;
+    --hero-c2: #fdcb6e;
+  }
+}
+
+/* Browsers that don't support @property will ignore
+   the @property rules, use the fallback gradient,
+   and silently skip the animation. */</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> The beauty of <code>@property</code> progressive enhancement is that it degrades gracefully by design. If a browser ignores <code>@property</code>, the custom properties still work as untyped variables&mdash;they just will not animate. Your layout and colors remain correct; you only lose the animation. This makes <code>@property</code> one of the safest modern CSS features to adopt.
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- EXERCISE                                     -->
+    <!-- ============================================ -->
+    <section class="exercise" id="exercise">
+      <h2>Exercise: Animated Gradient Button</h2>
+      <p>Build a button with a continuously rotating gradient border using <code>@property</code>. The button should have a solid dark background with a colorful animated border visible around it.</p>
+
+      <ol>
+        <li>Register a custom property <code>--btn-angle</code> with <code>syntax: "&lt;angle&gt;"</code> and <code>initial-value: 0deg</code>.</li>
+        <li>Create a <code>@keyframes rotate</code> animation that goes from <code>0deg</code> to <code>360deg</code>.</li>
+        <li>Use a <code>conic-gradient(from var(--btn-angle), ...)</code> on the button's <code>background</code>.</li>
+        <li>Add an inner element (or use a technique with <code>background-clip</code>) to create the border effect.</li>
+        <li>Bonus: add a hover state that changes the animation speed.</li>
+      </ol>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="gradient-btn-wrap">
+  <button class="gradient-btn">
+    <span>Hover Me</span>
+  </button>
+</div>
+        </template>
+        <template class="starter-css">
+/* Step 1: Register --btn-angle */
+@property --btn-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Step 2: Keyframes */
+@keyframes rotate {
+  to { --btn-angle: 360deg; }
+}
+
+/* Step 3: Style the button wrapper */
+.gradient-btn-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+  background: #0f1117;
+}
+
+.gradient-btn {
+  position: relative;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e4e6ef;
+  background: conic-gradient(
+    from var(--btn-angle),
+    #6c5ce7, #00cec9, #fd79a8,
+    #fdcb6e, #6c5ce7
+  );
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  animation: rotate 3s linear infinite;
+}
+
+/* Step 4: Inner solid cover for border effect */
+.gradient-btn span {
+  display: block;
+  background: #1a1d27;
+  padding: 1rem 2.5rem;
+  border-radius: 9px;
+  position: relative;
+}
+
+/* Step 5: Add hover effect */
+.gradient-btn:hover {
+  animation-duration: 0.8s;
+}
+        </template>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CHALLENGE                                    -->
+    <!-- ============================================ -->
+    <section class="challenge" id="challenge">
+      <h2>Challenge: Stats Dashboard with Animated Counters</h2>
+      <p>Create a stats dashboard that combines multiple <code>@property</code> techniques. Each stat card should feature:</p>
+
+      <ul>
+        <li>A number that counts up from 0 using <code>@property</code> with <code>&lt;integer&gt;</code> syntax</li>
+        <li>A progress ring (using <code>conic-gradient</code> + animated <code>--progress</code> percentage)</li>
+        <li>A color that shifts as the number increases (register <code>--stat-hue</code> as <code>&lt;angle&gt;</code>)</li>
+        <li>Staggered animation delays so the cards animate in sequence, not all at once</li>
+      </ul>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="stats-dash">
+  <div class="stat-card" style="--target-val: 87; --delay: 0s;">
+    <div class="stat-ring"></div>
+    <div class="stat-info">
+      <span class="stat-number"></span>
+      <span class="stat-label">Performance</span>
+    </div>
+  </div>
+
+  <div class="stat-card" style="--target-val: 64; --delay: 0.3s;">
+    <div class="stat-ring"></div>
+    <div class="stat-info">
+      <span class="stat-number"></span>
+      <span class="stat-label">Accessibility</span>
+    </div>
+  </div>
+
+  <div class="stat-card" style="--target-val: 95; --delay: 0.6s;">
+    <div class="stat-ring"></div>
+    <div class="stat-info">
+      <span class="stat-number"></span>
+      <span class="stat-label">Best Practices</span>
+    </div>
+  </div>
+</div>
+        </template>
+        <template class="starter-css">
+/* Register your @property rules here */
+@property --stat-val {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --ring-pct {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --stat-hue {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* TODO: Create @keyframes for counting, ring fill,
+   and hue shifting.
+
+   Hint: Use counter-set + counter() for the number.
+   Hint: Use conic-gradient for the ring.
+   Hint: Map --stat-hue to the card's accent color.
+   Hint: Use --delay for staggered animation-delay. */
+
+.stats-dash {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #0f1117;
+  justify-content: center;
+}
+
+.stat-card {
+  background: #1a1d27;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  width: 160px;
+  color: #e4e6ef;
+}
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <a href="../19-relative-colors/index.html">&larr; Previous</a>
+    <a href="../21-css-math/index.html">Next &rarr;</a>
+  </footer>
+
+  <script type="module" src="../scripts/live-editor.js"></script>
+</body>
+</html>
