@@ -710,6 +710,93 @@
     </section>
 
     <!-- ============================== -->
+    <!-- SECTION 8: DISPLAY GRID-LANES  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="grid-lanes">
+      <h2>8. display: grid-lanes (Safari 26.4)</h2>
+
+      <p>In March 2026, Safari 26.4 shipped an alternative approach to masonry layout: <code>display: grid-lanes</code>. While Chrome and Firefox have been implementing <code>display: masonry</code> as a standalone layout mode, Safari chose to integrate masonry-like behavior directly into the CSS Grid specification under a new display value.</p>
+
+      <p>The <code>grid-lanes</code> approach reuses familiar Grid syntax &mdash; <code>grid-template-columns</code>, <code>gap</code>, and other Grid properties &mdash; but adds masonry packing behavior for the cross axis. Items flow into whichever column (lane) is shortest, just like <code>display: masonry</code>, but the implementation is built on top of Grid internals rather than a separate layout algorithm.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Safari's grid-lanes approach */
+.gallery {
+  display: grid-lanes;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  flow-tolerance: 50px;
+  gap: 1rem;
+}
+
+/* flow-tolerance controls how much height difference the browser
+   tolerates before moving an item to a shorter column.
+   A higher value produces a more "relaxed" pack with better
+   reading order; a lower value produces tighter packing. */
+
+/* Items can still span multiple lanes */
+.featured {
+  grid-column: span 2;
+}</code></pre>
+      </div>
+
+      <p>The unique addition in <code>grid-lanes</code> is the <code>flow-tolerance</code> property. This controls how aggressively items are packed into the shortest column versus maintaining natural document order. A <code>flow-tolerance: 0</code> always places items in the shortest column (maximum packing), while a higher value keeps items closer to their natural order, only moving them to a shorter column when the height difference exceeds the tolerance threshold.</p>
+
+      <div class="why">
+        <h3>The Spec Debate: masonry vs. grid-lanes</h3>
+        <p>The CSS Working Group has been debating the best approach to native masonry since 2020. Two camps emerged: one favoring <code>display: masonry</code> as a completely separate layout mode (championed by Chrome/Google engineers), and another favoring integration into Grid (championed by Apple/WebKit engineers who shipped <code>grid-lanes</code>). Safari shipped <code>grid-lanes</code> first in March 2026. The arguments for each approach:</p>
+        <ul>
+          <li><strong><code>display: masonry</code></strong> &mdash; Cleaner separation of concerns; masonry has fundamentally different packing semantics than Grid; avoids overloading Grid with behaviors that violate its two-dimensional contract.</li>
+          <li><strong><code>display: grid-lanes</code></strong> &mdash; Reuses existing Grid knowledge and tooling; easier migration path for developers already using Grid; leverages existing Grid features like named lines and <code>grid-column: span N</code>.</li>
+        </ul>
+        <p>Both approaches may coexist in the final specification. For now, use <code>@supports</code> to provide the appropriate implementation for each browser, and use <code>display: masonry</code> or <code>display: grid-lanes</code> depending on which browser supports which.</p>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS (Progressive Enhancement for Both)</h4>
+        <pre><code>/* Baseline fallback */
+.gallery {
+  column-count: 3;
+  column-gap: 1rem;
+}
+
+.gallery > * {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+
+/* Safari's grid-lanes */
+@supports (display: grid-lanes) {
+  .gallery {
+    display: grid-lanes;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    flow-tolerance: 50px;
+    gap: 1rem;
+    column-count: unset;
+  }
+  .gallery > * {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+}
+
+/* Chrome/Firefox masonry */
+@supports (display: masonry) {
+  .gallery {
+    display: masonry;
+    masonry-template-tracks: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    column-count: unset;
+  }
+  .gallery > * {
+    break-inside: unset;
+    margin-bottom: unset;
+  }
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
     <!-- EXERCISE                        -->
     <!-- ============================== -->
     <section class="exercise" id="exercise">

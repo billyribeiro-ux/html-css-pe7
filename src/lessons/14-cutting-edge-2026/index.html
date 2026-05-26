@@ -18,7 +18,7 @@
   <header class="lesson-header">
     <span class="level-badge level-5">Level 5 - PE7 Mastery</span>
     <h1>The Bleeding Edge</h1>
-    <p class="subtitle">Explore the most cutting-edge CSS features arriving in 2026 and beyond: conditional logic with if(), sibling-aware styling, enhanced attr(), customizable selects, auto-sizing fields, custom CSS functions, and progressive enhancement strategies. <em>Content current as of April 2026.</em></p>
+    <p class="subtitle">Explore the most cutting-edge CSS features arriving in 2026 and beyond: conditional logic with if(), sibling-aware styling, enhanced attr(), customizable selects, auto-sizing fields, custom CSS functions, and progressive enhancement strategies. <em>Content current as of May 2026.</em></p>
   </header>
 
   <main>
@@ -861,6 +861,21 @@ p  { font-size: --fluid-size(1rem, 1.125rem); }
   .modern-form {
     /* Use both features together */
   }
+}
+
+/* Detect border-shape */
+@supports (border-shape: circle()) {
+  /* non-rectangular elements */
+}
+
+/* Detect gap decorations */
+@supports (column-rule: 1px solid black) {
+  /* gap decoration styles */
+}
+
+/* Detect @supports at-rule() — new in Chrome 148 */
+@supports at-rule(@layer) {
+  /* at-rule feature detection */
 }</code></pre>
       </div>
 
@@ -959,6 +974,225 @@ p  { font-size: --fluid-size(1rem, 1.125rem); }
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 8: CSS border-shape     -->
+    <!-- ============================== -->
+    <section class="concept-section" id="border-shape">
+      <h2>8. CSS border-shape (Chrome 147, April 2026)</h2>
+      <p>The <code>border-shape</code> property defines non-rectangular element geometry. Unlike <code>clip-path</code>, it redefines the element's actual geometry so borders, backgrounds, and hit-testing all follow the shape.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.badge {
+  border-shape: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+  padding: 2rem;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: white;
+}
+
+.blob {
+  border-shape: shape(from 0% 50%, curve to 50% 0% with 0% 0%, curve to 100% 50% with 100% 0%, curve to 50% 100% with 100% 100%, curve to 0% 50% with 0% 100%);
+}
+
+/* Unlike clip-path, border-shape affects layout */
+.diamond { border-shape: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }</code></pre>
+      </div>
+
+      <div class="why">
+        <strong>How does this differ from clip-path?</strong>
+        <p><code>clip-path</code> only clips the element visually — the underlying box model remains rectangular. Borders still render as a rectangle, hit-testing uses the rectangular bounds, and text does not wrap to the clipped shape.</p>
+        <p><code>border-shape</code> changes the element's actual geometry. Borders render along the defined shape, pointer events only fire within the shape boundary, and text content wraps inside the non-rectangular area. This is a fundamental change to how the element participates in layout.</p>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 9: CSS Gap Decorations  -->
+    <!-- ============================== -->
+    <section class="concept-section" id="gap-decorations">
+      <h2>9. CSS Gap Decorations (Chrome 149, May 2026)</h2>
+      <p>Style gaps in grid and flex layouts with visible separators using <code>column-rule-*</code> and <code>row-rule-*</code> properties. These work similarly to <code>column-rule</code> in multi-column layouts but now apply to grid and flexbox gaps.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.grid-decorated {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  column-rule: 1px solid #e2e8f0;
+  row-rule: 1px dashed #cbd5e1;
+}
+
+/* Full control */
+.dashboard {
+  display: grid;
+  gap: 2rem;
+  column-rule-width: 2px;
+  column-rule-style: solid;
+  column-rule-color: oklch(0.7 0.1 250);
+  row-rule-width: 1px;
+  row-rule-style: dashed;
+  row-rule-color: oklch(0.8 0 0);
+  column-rule-inset: 0.5rem;
+  row-rule-inset: 0.25rem;
+}</code></pre>
+      </div>
+
+      <div class="why">
+        <strong>Why this matters:</strong>
+        <p>This replaces the common hack of using borders on children to simulate gap lines. Previously, developers had to add <code>border-right</code> to grid items and use <code>:last-child</code> or <code>:nth-child</code> selectors to remove borders from edge items. Gap decorations handle this automatically, rendering lines only between items — never on the outer edges — and respecting the actual gap geometry regardless of item sizes.</p>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 10: CSS random()        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="css-random">
+      <h2>10. CSS random() Function (Safari 26.2+, evolving syntax)</h2>
+      <p>Generate random values in CSS without JavaScript. The <code>random()</code> function produces values within a specified range. Named random values produce consistent results across evaluations, and element-scoped randoms produce different values per element.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>.confetti-dot {
+  --hue: random(0, 360);
+  --size: random(4px, 20px);
+  --x: random(0%, 100%);
+  background: oklch(0.7 0.15 var(--hue));
+  width: var(--size);
+  height: var(--size);
+  left: var(--x);
+}
+
+/* Named random for consistent values across elements */
+.card {
+  --angle: random(--card-tilt, -5deg, 5deg);
+  rotate: var(--angle);
+}
+
+/* Element-scoped: different value per element */
+.particle {
+  --drift: random(element-scoped, -50px, 50px);
+  translate: var(--drift) 0;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 11: shape() & offset-path -->
+    <!-- ============================== -->
+    <section class="concept-section" id="shape-offset-path">
+      <h2>11. shape() Function &amp; offset-path (Chrome 137+)</h2>
+      <p>The <code>shape()</code> function now works in <code>offset-path</code> for responsive animation paths, and in <code>shape-outside</code> for text wrapping. Unlike <code>path()</code> which uses fixed pixel coordinates, <code>shape()</code> accepts percentages and other relative units, making it responsive.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Responsive animation path */
+.orbiter {
+  offset-path: shape(from 0% 50%, curve to 50% 0% with 25% 0%, curve to 100% 50% with 75% 0%, curve to 50% 100% with 75% 100%, curve to 0% 50% with 25% 100%);
+  offset-distance: 0%;
+  animation: orbit 4s linear infinite;
+}
+
+@keyframes orbit {
+  to { offset-distance: 100%; }
+}
+
+/* Float text around complex shapes */
+.pull-quote {
+  float: left;
+  shape-outside: shape(from 0% 0%, line to 80% 0%, curve to 100% 50% with 100% 0%, curve to 80% 100% with 100% 100%, line to 0% 100%);
+  width: 300px;
+  height: 400px;
+}</code></pre>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 12: @custom-media       -->
+    <!-- ============================== -->
+    <section class="concept-section" id="custom-media">
+      <h2>12. @custom-media (Firefox 148+)</h2>
+      <p>Define reusable media query aliases for DRY, semantic breakpoints. Instead of repeating breakpoint values throughout your stylesheet, define them once and reference them by name.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>@custom-media --mobile (max-width: 640px);
+@custom-media --tablet (min-width: 641px) and (max-width: 1024px);
+@custom-media --desktop (min-width: 1025px);
+@custom-media --dark (prefers-color-scheme: dark);
+@custom-media --motion-ok (prefers-reduced-motion: no-preference);
+
+.hero {
+  padding: 2rem;
+
+  @media (--desktop) {
+    padding: 6rem 4rem;
+  }
+
+  @media (--mobile) {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+}</code></pre>
+      </div>
+
+      <div class="why">
+        <strong>Why this matters:</strong>
+        <p>This is the CSS equivalent of Sass variables for media queries. Instead of repeating breakpoint values everywhere, you define them once and reference them by name. When your breakpoints change, you update a single line rather than finding and replacing values scattered across your entire codebase.</p>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 13: revert-rule         -->
+    <!-- ============================== -->
+    <section class="concept-section" id="revert-rule">
+      <h2>13. revert-rule &amp; Cascade Updates (Chrome 148, Firefox 150)</h2>
+      <p>The <code>revert-rule</code> keyword rolls back a property value to the previous rule in the cascade, giving you fine-grained control over style resolution.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* revert-rule rolls back to the previous rule in the cascade */
+.special-btn {
+  background: red;
+  padding: 1rem 2rem;
+}
+
+@layer overrides {
+  .special-btn {
+    background: revert-rule; /* goes back to red from the previous rule */
+    padding: revert-rule;    /* goes back to 1rem 2rem */
+  }
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>How revert-rule differs from revert-layer:</strong>
+        <p><code>revert-layer</code> rolls back to the previous <em>layer</em> in the cascade — it undoes the entire layer's contribution. <code>revert-rule</code> is more granular: it rolls back to the previous <em>rule</em> within the same cascade context. This means you can selectively undo individual rules while keeping other rules from the same layer intact.</p>
+      </div>
+    </section>
+
+    <!-- ============================== -->
+    <!-- SECTION 14: Media Pseudo-Classes -->
+    <!-- ============================== -->
+    <section class="concept-section" id="media-pseudo-classes">
+      <h2>14. Media Pseudo-Classes (Firefox 150, April 2026)</h2>
+      <p>New pseudo-classes for media elements let you style <code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code> based on their playback state — no JavaScript event listeners needed.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>video:playing { outline: 3px solid green; }
+video:paused { opacity: 0.7; filter: grayscale(0.5); }
+video:buffering { opacity: 0.5; }
+audio:muted { opacity: 0.4; }
+video:seeking::after {
+  content: "Seeking...";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}</code></pre>
       </div>
     </section>
 

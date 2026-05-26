@@ -718,6 +718,77 @@ document.startViewTransition(() => {
     </section>
 
     <!-- ============================== -->
+    <!-- SECTION 8: NEW VIEW TRANSITION FEATURES -->
+    <!-- ============================== -->
+    <section class="concept-section" id="new-view-transition-features">
+      <h2>8. Element-Scoped View Transitions &amp; match-element</h2>
+
+      <p>Two recent additions make view transitions significantly more practical for complex applications: <strong><code>view-transition-name: match-element</code></strong> (Chrome 137, March 2026) and <strong>element-scoped view transitions</strong> (Chrome 147, April 2026).</p>
+
+      <h3>view-transition-name: match-element</h3>
+      <p>One of the biggest pain points with view transitions has been the requirement to assign a unique <code>view-transition-name</code> to every element you want to animate. In a list of 50 cards, you would need 50 unique names. The <code>match-element</code> keyword solves this by letting the browser auto-generate unique persistent IDs based on the element's identity in the DOM.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* match-element auto-generates unique persistent IDs */
+.card {
+  view-transition-name: match-element;
+}
+
+/* Every .card now participates in view transitions automatically.
+   The browser tracks each element's identity across DOM updates,
+   so when you reorder, add, or remove cards, each one morphs
+   to its new position without you manually assigning names. */
+
+/* You can still style the transition pseudo-elements */
+::view-transition-group(.card) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}</code></pre>
+      </div>
+
+      <p>This is a game-changer for dynamic lists, dashboards, and any UI where elements are frequently reordered, filtered, or added/removed. Previously, frameworks had to generate unique names with inline styles or CSS-in-JS. Now, a single CSS rule handles it.</p>
+
+      <h3>Element-Scoped View Transitions</h3>
+      <p>Standard view transitions operate on the entire document &mdash; when you call <code>document.startViewTransition()</code>, the browser snapshots the whole page. This is expensive and can cause visual glitches if you only want to animate a small part of the page (like a single widget or a card expanding into a modal).</p>
+
+      <p>Element-scoped view transitions solve this by letting you transition only a specific DOM subtree. Instead of <code>document.startViewTransition()</code>, you call <code>element.startViewTransition()</code> on a specific container element. Only that subtree is captured and animated, leaving the rest of the page untouched and interactive.</p>
+
+      <div class="code-block">
+        <h4>JavaScript</h4>
+        <pre><code>/* Element-scoped: transitions on a specific subtree */
+const widget = document.querySelector('.dashboard-widget');
+
+// Only the widget and its descendants are transitioned.
+// The rest of the page remains interactive and is not blocked.
+widget.startViewTransition(() => {
+  // Update only this widget's content
+  widget.innerHTML = newContent;
+});
+
+// Compare with document-level (blocks the whole page):
+// document.startViewTransition(() => { ... });</code></pre>
+      </div>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Scoped transitions still use view-transition-name */
+.dashboard-widget {
+  view-transition-name: widget-root;
+  contain: paint; /* Required for element-scoped transitions */
+}
+
+.dashboard-widget .metric {
+  view-transition-name: match-element;
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> Element-scoped transitions are particularly important for single-page apps with multiple independent UI regions. A chat widget can transition its messages without freezing the main content area. A dashboard panel can animate a data refresh without blocking adjacent panels. This makes view transitions viable for granular UI updates, not just full-page navigations.
+      </div>
+    </section>
+
+    <!-- ============================== -->
     <!-- EXERCISE                        -->
     <!-- ============================== -->
     <section class="exercise" id="exercise">

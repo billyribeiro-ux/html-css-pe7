@@ -639,6 +639,36 @@
       </div>
     </section>
 
+    <!-- ==================== Section 10: Scroll-Triggered Animations & trigger-scope ==================== -->
+    <section class="concept" id="scroll-triggered-animations">
+      <h2>10. Scroll-Triggered Animations &amp; trigger-scope</h2>
+
+      <p>Chrome 146+ introduces <strong>scroll-triggered animations</strong> with a new concept: <code>trigger-scope</code>. While scroll-driven animations bind animation progress to scroll position (the animation tracks where you are in the scroll), scroll-triggered animations <em>fire</em> an animation when a scroll condition is met &mdash; similar to how Intersection Observer triggers a callback, but declaratively in CSS.</p>
+
+      <p>The <code>trigger-scope</code> property limits the visibility of trigger names to a specific subtree of the DOM. This prevents trigger names from leaking out and accidentally activating animations in unrelated parts of the page. Think of it as scoping custom identifiers (like <code>@keyframes</code> names) to a specific container.</p>
+
+      <pre><code>/* trigger-scope limits the visibility of trigger names */
+.carousel {
+  trigger-scope: --slide-trigger;
+}
+
+.carousel .slide {
+  animation: fadeIn 0.5s;
+  animation-trigger: --slide-trigger;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}</code></pre>
+
+      <p>This pattern is especially powerful for component-based architectures. Each carousel, accordion, or tabbed interface can define its own trigger scope, ensuring that scroll-triggered animations within one component do not interfere with another. The trigger fires when the element enters the viewport (or a specified threshold), and the animation plays once rather than being continuously tied to scroll position.</p>
+
+      <div class="why">
+        <strong>Safari 26.4 Compositor Optimization:</strong> Safari 26.4 now runs scroll-driven animations on the compositor thread, achieving smooth 60fps performance even on complex pages. Previously, some scroll-driven animations in Safari could cause jank due to main-thread involvement. This optimization brings Safari's performance in line with Chrome's compositor-based approach, meaning you can confidently ship scroll-driven animations knowing they will be smooth across all major browsers.
+      </div>
+    </section>
+
     <!-- ==================== Exercise ==================== -->
     <section class="exercise" id="exercise">
       <h2>Exercise: Scroll Progress Bar &amp; Fade-In Sections</h2>

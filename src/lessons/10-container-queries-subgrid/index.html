@@ -547,6 +547,63 @@
       </div>
     </section>
 
+    <!-- ==================== Section 8: Name-Only Container Queries ==================== -->
+    <section class="concept" id="name-only-container-queries">
+      <h2>8. Name-Only Container Queries</h2>
+
+      <p>Traditionally, <code>@container</code> rules require a size or style condition &mdash; you ask "is this container wider than 400px?" or "does it have <code>--theme: dark</code>?" But a new pattern has landed across all browsers (Chrome, Firefox 149, Safari 26.4): <strong>name-only container queries</strong>. With this feature, you can match a container by name alone, without specifying any size or style condition.</p>
+
+      <p>This simplifies targeting dramatically. Instead of writing a condition that must evaluate to true, you simply reference the container name. Any element inside a container with that name will match, allowing you to apply styles purely based on containment context.</p>
+
+      <pre><code>/* Name-only: match by container-name alone, no size/style condition needed */
+.widget {
+  container-name: --widget;
+  container-type: inline-size;
+}
+
+@container --widget {
+  .inner {
+    /* matches any element inside a --widget container */
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+  }
+}
+
+/* Practical example: scope styles to a named region */
+.sidebar {
+  container-name: --sidebar;
+  container-type: inline-size;
+}
+
+.main-content {
+  container-name: --main;
+  container-type: inline-size;
+}
+
+/* Style components differently based on which named container they live in */
+@container --sidebar {
+  .nav-link {
+    font-size: 0.875rem;
+    padding: 0.5rem;
+  }
+}
+
+@container --main {
+  .nav-link {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+  }
+}</code></pre>
+
+      <p>The key insight: name-only queries let you apply styles <em>just by being inside a named container</em>, without needing a size or style condition. This is particularly useful for component libraries where you want to scope styles to specific regions of your layout (sidebar, header, modal) without relying on class-based overrides or complex selectors.</p>
+
+      <div class="why">
+        <h3>Why Name-Only Queries Matter</h3>
+        <p>Before this feature, if you wanted to style a component differently when it appeared inside a sidebar versus main content, you either needed modifier classes (<code>.card--sidebar</code>) or had to combine the container name with an arbitrary size condition. Name-only queries remove that friction &mdash; the container's name itself becomes the condition. This makes your CSS more declarative: "if I am inside a <code>--sidebar</code> container, use these styles" with no additional logic required.</p>
+      </div>
+    </section>
+
     <!-- ==================== Exercise ==================== -->
     <section class="exercise" id="exercise">
       <h2>Exercise: Adaptive Product Card</h2>

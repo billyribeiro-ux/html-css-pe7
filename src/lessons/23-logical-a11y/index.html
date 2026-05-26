@@ -795,6 +795,86 @@ button, a, input, select, textarea {
     </section>
 
     <!-- ============================== -->
+    <!-- SECTION 8: READING-FLOW        -->
+    <!-- ============================== -->
+    <section class="concept-section" id="reading-flow">
+      <h2>8. reading-flow &amp; reading-order</h2>
+
+      <p>Chrome 137 (March 2026) shipped two new CSS properties that address a long-standing accessibility gap: <code>reading-flow</code> and <code>reading-order</code>. These properties let you control the order in which keyboard navigation and screen readers traverse content, independently of the visual layout order.</p>
+
+      <p>The problem they solve is fundamental: CSS Grid and Flexbox can reorder items visually using <code>order</code>, <code>grid-row</code>, <code>grid-column</code>, or <code>flex-direction: row-reverse</code>. But keyboard tab order and screen reader reading order always follow the DOM source order. This creates a disconnect where what a sighted user sees does not match what a keyboard or screen reader user experiences.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Control keyboard/screen reader order independently of visual layout */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  reading-flow: grid-rows; /* read row by row, not DOM order */
+}
+
+.flex-layout {
+  display: flex;
+  flex-wrap: wrap;
+  reading-flow: flex-visual; /* follow visual flex order */
+}
+
+/* Override individual item order */
+.urgent-notice {
+  reading-order: -1; /* read first regardless of visual position */
+}</code></pre>
+      </div>
+
+      <h3>reading-flow Values</h3>
+      <ul class="feature-list">
+        <li><code>normal</code> &mdash; Default. Reading order follows DOM source order (current behavior).</li>
+        <li><code>grid-rows</code> &mdash; Read items row by row according to their visual grid placement, left-to-right within each row (respects writing direction).</li>
+        <li><code>grid-columns</code> &mdash; Read items column by column according to their visual grid placement.</li>
+        <li><code>flex-visual</code> &mdash; Read items in the visual order produced by Flexbox layout (accounting for <code>order</code>, <code>flex-direction</code>, and wrapping).</li>
+        <li><code>flex-flow</code> &mdash; Read items in the order determined by the flex flow direction.</li>
+      </ul>
+
+      <h3>reading-order</h3>
+      <p>The <code>reading-order</code> property works like <code>order</code> but for the accessibility tree. It accepts an integer value and items are read in ascending order. This lets you override individual items within a <code>reading-flow</code> container without changing their visual position.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* A dashboard where visual layout differs from reading priority */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-areas:
+    "sidebar main alerts"
+    "sidebar main alerts";
+  reading-flow: grid-rows;
+}
+
+/* Critical alert should be read first, even though it's visually on the right */
+.alerts {
+  grid-area: alerts;
+  reading-order: -1;
+}
+
+/* Main content reads second */
+.main {
+  grid-area: main;
+  reading-order: 0;
+}
+
+/* Sidebar navigation reads last */
+.sidebar {
+  grid-area: sidebar;
+  reading-order: 1;
+}</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why reading-flow Matters</h3>
+        <p>This solves a long-standing accessibility problem: CSS Grid and Flexbox can reorder items visually, but keyboard tab order and screen reader order still follow DOM order. The <code>reading-flow</code> property lets you align the accessibility tree with the visual layout. Before this feature, the only way to fix the mismatch was to change the DOM order (which might break the visual layout) or use <code>tabindex</code> on every element (which is fragile and does not affect screen reader order). Now, a single CSS property tells the browser: "read this container's children in the same order they visually appear."</p>
+      </div>
+    </section>
+
+    <!-- ============================== -->
     <!-- EXERCISE                        -->
     <!-- ============================== -->
     <section class="exercise" id="exercise">

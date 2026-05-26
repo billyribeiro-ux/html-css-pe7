@@ -97,9 +97,9 @@ export const lessons: LessonMeta[] = [
 		num: '10',
 		title: 'Module 10: Component-Aware Design',
 		short: 'Component-Aware Design',
-		desc: 'Container queries, container units (cqw, cqi), style queries, and CSS Subgrid.',
+		desc: 'Container queries, name-only containers, container units (cqw, cqi), style queries, and CSS Subgrid.',
 		level: 4,
-		tags: ['@container', 'subgrid', 'cqw']
+		tags: ['@container', 'subgrid', 'name-only']
 	},
 	{
 		slug: '11-modern-colors',
@@ -115,27 +115,27 @@ export const lessons: LessonMeta[] = [
 		num: '12',
 		title: 'Module 12: Scroll-Powered',
 		short: 'Scroll-Powered',
-		desc: 'Scroll-driven animations, view timelines, scroll-snap, ::scroll-button, ::scroll-marker.',
+		desc: 'Scroll-driven animations, trigger-scope, view timelines, scroll-snap, ::scroll-button, ::scroll-marker.',
 		level: 4,
-		tags: ['scroll()', 'view()', '::scroll-marker']
+		tags: ['scroll()', 'trigger-scope', '::scroll-marker']
 	},
 	{
 		slug: '13-view-transitions-anchor',
 		num: '13',
 		title: 'Module 13: Transitions & Anchoring',
 		short: 'Transitions & Anchoring',
-		desc: 'View Transitions API, CSS Anchor Positioning, Popover API styling, floating UI.',
+		desc: 'View Transitions API, element-scoped transitions, match-element, CSS Anchor Positioning, Popover styling.',
 		level: 5,
-		tags: ['view-transition', 'anchor()', 'popover']
+		tags: ['view-transition', 'match-element', 'anchor()']
 	},
 	{
 		slug: '14-cutting-edge-2026',
 		num: '14',
 		title: 'Module 14: The Bleeding Edge',
 		short: 'The Bleeding Edge',
-		desc: 'CSS if(), sibling-count(), sibling-index(), enhanced attr(), custom select, field-sizing.',
+		desc: 'CSS if(), border-shape, gap decorations, random(), @custom-media, shape(), revert-rule, media pseudo-classes.',
 		level: 5,
-		tags: ['if()', 'sibling-index()', 'base-select']
+		tags: ['if()', 'border-shape', 'random()', 'gap decorations']
 	},
 	{
 		slug: '15-capstone-project',
@@ -160,9 +160,9 @@ export const lessons: LessonMeta[] = [
 		num: '17',
 		title: 'Module 17: Masonry Layout',
 		short: 'Masonry Layout',
-		desc: 'Pinterest-style layouts with display: masonry, masonry-template-tracks, spanning, and responsive auto-flow.',
+		desc: 'Pinterest-style layouts with display: masonry, grid-lanes (Safari 26.4), masonry-template-tracks, and responsive auto-flow.',
 		level: 6,
-		tags: ['masonry', 'layout', 'gallery']
+		tags: ['masonry', 'grid-lanes', 'gallery']
 	},
 	{
 		slug: '18-popover-commands',
@@ -214,9 +214,9 @@ export const lessons: LessonMeta[] = [
 		num: '23',
 		title: 'Module 23: Logical Properties & Accessibility CSS',
 		short: 'Logical Props & A11y',
-		desc: 'Internationalization-ready logical properties, prefers-* media queries, focus-visible, and accessibility-first CSS.',
+		desc: 'Logical properties, reading-flow/reading-order, prefers-* queries, focus-visible, and accessibility-first CSS.',
 		level: 7,
-		tags: ['logical', 'a11y', 'prefers-*']
+		tags: ['logical', 'reading-flow', 'a11y']
 	},
 	{
 		slug: '24-shapes-clipping',
