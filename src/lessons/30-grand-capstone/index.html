@@ -780,6 +780,11 @@
         </div>
       </div>
 
+      <div class="why">
+        <h3>PE7 Principle: Maintainability Over Cleverness</h3>
+        <p>You have spent 29 modules learning what CSS can do. Now here is the hardest skill of all: knowing when not to use it. A PE7&rsquo;s CSS should be <strong>boring</strong>. That clever one-liner using <code>:has(> :nth-child(3):not(:last-child) ~ *)</code> that saves two lines of CSS but takes five minutes for your teammate to understand? That is tech debt with a bow on it. The goal is not to write the fewest lines &mdash; it is to write CSS that a new team member can read, understand, modify, and <em>safely delete</em> without breaking something three sections away. Deletability is an underrated virtue: if you can remove a component&rsquo;s styles and nothing else on the page shifts, your architecture is working. If removing one class triggers a cascade of layout breaks, you have implicit dependencies that will haunt every future change. Prefer explicit, predictable patterns over clever abstractions. Use <code>@layer</code> so that adding a new component never accidentally overrides an existing one. Use semantic custom property names so the next developer knows what <code>--clr-surface-2</code> means without reading the token definition. Write the CSS your future self will thank you for, not the CSS that impresses you today.</p>
+      </div>
+
       <div class="info-box">
         <strong>Remember:</strong> You have already built every technique in isolation across modules 1 through 29. This capstone is not about learning something new &mdash; it is about combining everything you already know into a single, cohesive project. Trust your training. Ship it.
       </div>
