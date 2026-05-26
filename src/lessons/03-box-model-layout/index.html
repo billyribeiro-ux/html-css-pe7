@@ -647,6 +647,48 @@
       </div>
     </section>
 
+    <!-- ===== 6. THE CONTAIN PROPERTY BASICS ===== -->
+    <section class="concept-section" id="contain-property">
+      <h2>6. The <code>contain</code> Property Basics</h2>
+
+      <p>The CSS <code>contain</code> property tells the browser that an element's internals are independent from the rest of the page. This allows the browser to optimize rendering by skipping work: if something changes inside a contained element, the browser knows it does not need to recalculate layout or repaint outside of it. For large, complex pages, this can meaningfully improve performance.</p>
+
+      <p>There are several containment types you can apply individually or combine:</p>
+
+      <ul>
+        <li><strong><code>contain: layout</code></strong> &mdash; the element's internal layout does not affect (or get affected by) anything outside it. Floats, counters, and baseline alignment are contained.</li>
+        <li><strong><code>contain: paint</code></strong> &mdash; descendants are never displayed outside the element's bounds (similar to <code>overflow: hidden</code>), and the element becomes a containing block for positioned descendants. Also creates a new stacking context.</li>
+        <li><strong><code>contain: size</code></strong> &mdash; the element's size is determined without considering its children. You must set an explicit size, or it collapses to zero. Use with caution.</li>
+        <li><strong><code>contain: style</code></strong> &mdash; CSS counters and <code>counter-increment</code>/<code>counter-reset</code> are scoped to this element.</li>
+        <li><strong><code>contain: content</code></strong> &mdash; shorthand for <code>layout paint style</code>. A safe, commonly used combination.</li>
+        <li><strong><code>contain: strict</code></strong> &mdash; shorthand for <code>size layout paint style</code>. Maximum containment, but requires explicit sizing.</li>
+      </ul>
+
+      <div class="code-block">
+        <h3>CSS Containment</h3>
+        <pre><code>/* Contain a card component — safe for most cases */
+.card {
+  contain: content;    /* layout + paint + style */
+}
+
+/* Strict containment for performance-critical widgets */
+.virtualized-row {
+  contain: strict;     /* size + layout + paint + style */
+  height: 48px;        /* must set explicit size with contain: size */
+}
+
+/* Targeted containment */
+.sidebar-widget {
+  contain: layout paint;
+}</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Learn Containment Now?</h3>
+        <p>CSS containment is a layout optimization that becomes increasingly important as your pages grow in complexity. Understanding it at a basic level now helps you recognize why some properties (like <code>contain: paint</code>) create containing blocks and stacking contexts &mdash; effects you have already seen in this module. Module 27 covers containment in depth, including <code>content-visibility</code> for lazy rendering of off-screen content. For now, know that <code>contain: content</code> is a safe default you can apply to independent UI components to help the browser render faster.</p>
+      </div>
+    </section>
+
     <!-- ===== EXERCISE ===== -->
     <section class="exercise" id="exercise">
       <h2>Exercise: Fixed Nav &amp; Sticky Sidebar</h2>
