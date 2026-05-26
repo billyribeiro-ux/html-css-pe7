@@ -2,7 +2,7 @@
 	import '../app.css';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { lessons, levelSubtitles, lessonIndex, getLesson } from '$lib/lessons';
+	import { lessons, levelSubtitles, lessonIndex, getLesson, type Level } from '$lib/lessons';
 	import { progress } from '$lib/progress.svelte';
 
 	let { children } = $props();
@@ -112,7 +112,7 @@
 <nav class="sidebar" class:open={sidebarOpen}>
 	{#each grouped as [level, items] (level)}
 		<div class="sidebar-group g{level}">
-			<div class="sidebar-group-title">{levelSubtitles[level as 1 | 2 | 3 | 4 | 5]}</div>
+			<div class="sidebar-group-title">{levelSubtitles[level as Level]}</div>
 			{#each items as lesson (lesson.slug)}
 				<a
 					class="sidebar-link"

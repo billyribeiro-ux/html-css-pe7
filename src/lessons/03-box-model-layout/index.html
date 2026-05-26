@@ -99,6 +99,76 @@
   /* Or: margin: 10px; (all sides) */
 }</code></pre>
       </div>
+
+      <h3>Margin Collapse</h3>
+
+      <p><strong>Margin collapse</strong> is one of the most counterintuitive behaviors in CSS. When two vertical margins meet, they do not add together &mdash; instead, they <em>collapse</em> into a single margin equal to the larger of the two. This only happens with vertical (top/bottom) margins in block layout; horizontal margins never collapse.</p>
+
+      <p>There are three situations where margin collapse occurs:</p>
+
+      <p><strong>Adjacent siblings:</strong> When two block-level elements are stacked vertically, the bottom margin of the first and the top margin of the second collapse into one. If the first element has <code>margin-bottom: 30px</code> and the second has <code>margin-top: 20px</code>, the space between them is 30px (not 50px).</p>
+
+      <p><strong>Parent and first/last child:</strong> If there is no padding, border, or inline content separating a parent's top margin from its first child's top margin, those margins collapse. The child's margin effectively "leaks out" of the parent. The same applies to the bottom margin of a parent and its last child.</p>
+
+      <p><strong>Empty blocks:</strong> If a block element has no height, padding, border, or content, its own top and bottom margins collapse into a single margin.</p>
+
+      <div class="code-block">
+        <h3>Margin Collapse in Action</h3>
+        <pre><code>/* Adjacent sibling collapse */
+.paragraph {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+/* Two .paragraphs stacked: gap between them is 30px, not 50px */
+
+/* Parent-child collapse: the h2 margin leaks out of .card */
+.card {
+  /* no padding or border on top */
+}
+.card h2 {
+  margin-top: 24px;
+  /* This 24px pushes the entire .card down, not the h2 inside it */
+}
+
+/* Empty block collapse */
+.spacer {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  /* With no content/padding/border, total space contributed is 40px */
+}</code></pre>
+      </div>
+
+      <p>There are several reliable ways to <strong>prevent margin collapse</strong>:</p>
+
+      <div class="code-block">
+        <h3>Preventing Margin Collapse</h3>
+        <pre><code>/* 1. Add padding or border to the parent */
+.card {
+  padding-top: 1px;       /* even 1px prevents collapse */
+  /* or: border-top: 1px solid transparent; */
+}
+
+/* 2. Use overflow (creates a new block formatting context) */
+.wrapper {
+  overflow: hidden;        /* or overflow: auto */
+}
+
+/* 3. Use display: flow-root (modern, purpose-built) */
+.container {
+  display: flow-root;     /* creates BFC without side effects */
+}
+
+/* 4. Flexbox/Grid parents never have collapsing margins */
+.flex-parent {
+  display: flex;
+  flex-direction: column;  /* children's margins won't collapse */
+}</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Does Margin Collapse Exist?</h3>
+        <p>Margin collapse was designed for document flow &mdash; paragraphs of text. Without it, the spacing between two paragraphs that each have <code>margin: 1em 0</code> would be 2em, which looks too wide. Collapsing gives you consistent 1em gaps. However, when building component-based layouts, this behavior often causes unexpected spacing. That is why many developers use padding or flexbox gaps instead of margins for component spacing &mdash; these never collapse.</p>
+      </div>
     </section>
 
     <!-- ===== 2. DISPLAY TYPES ===== -->
@@ -158,6 +228,58 @@
 
 /* None: completely removed from layout */
 .hidden { display: none; }</code></pre>
+      </div>
+
+      <h3>Additional Display Values</h3>
+
+      <p>Beyond the three foundational values, CSS offers several more specialized <code>display</code> types that solve specific layout problems:</p>
+
+      <p><strong><code>display: flow-root</code></strong> creates a new <strong>block formatting context</strong> (BFC). The element itself behaves like a normal block, but its internals are isolated: margins inside it will not collapse with outside margins, and it will fully contain any floated children. Before <code>flow-root</code> existed, developers used <code>overflow: hidden</code> for the same effect, but that had the side effect of clipping content. <code>flow-root</code> was designed specifically for this purpose with no side effects.</p>
+
+      <p><strong><code>display: contents</code></strong> is unusual: it makes the element's own box disappear while keeping all its children in the document. The children behave as if they were direct children of the element's parent. This is useful in flex or grid layouts when you need a semantic wrapper (like a <code>&lt;div&gt;</code> for grouping) but do not want it to create an extra box that disrupts the grid or flex flow.</p>
+
+      <p><strong><code>display: inline-flex</code></strong> creates a flex container that participates in inline flow rather than block flow. The element's children are laid out using flexbox rules internally, but the container itself sits inline with surrounding text and elements, rather than taking up a full row. This is handy for small inline components like tag groups or button sets within a paragraph.</p>
+
+      <p><strong><code>display: inline-grid</code></strong> works the same way but with grid layout internally. The element behaves as an inline-level container whose children are arranged according to CSS Grid rules. Use it when you need a grid-based component to sit within a line of text or alongside other inline elements.</p>
+
+      <div class="code-block">
+        <h3>Advanced Display Values</h3>
+        <pre><code>/* flow-root: contain floats, prevent margin collapse */
+.clearfix-modern {
+  display: flow-root;
+}
+
+/* contents: remove the wrapper box, keep children */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.semantic-group {
+  display: contents; /* children act as direct grid items */
+}
+
+/* inline-flex: flex container that flows inline */
+.tag-list {
+  display: inline-flex;
+  gap: 4px;
+}
+.tag-list .tag {
+  padding: 2px 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+/* inline-grid: grid container that flows inline */
+.mini-grid {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>When to Reach for These Values</h3>
+        <p>Use <code>flow-root</code> whenever you need a block formatting context &mdash; typically to stop margin collapse at a component boundary or to contain legacy floats. Use <code>contents</code> sparingly: it is powerful for grid/flex subgrouping, but be cautious with interactive elements like <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code> because removing the box can break accessibility in some browsers. Prefer <code>inline-flex</code> or <code>inline-grid</code> over hacking flex containers into inline behavior with other tricks.</p>
       </div>
     </section>
 
@@ -235,6 +357,104 @@
 .sidebar-title {
   position: sticky;
   top: 0;
+}</code></pre>
+      </div>
+
+      <h3>Sticky Positioning Gotchas</h3>
+
+      <p><code>position: sticky</code> is powerful but has several common pitfalls. The most frequent issue: <strong>sticky will not work if any ancestor has <code>overflow: hidden</code>, <code>overflow: scroll</code>, or <code>overflow: auto</code></strong> (unless that ancestor is the intended scroll container). Sticky elements need to find a scrollable ancestor to stick within, and <code>overflow</code> values other than <code>visible</code> on intermediate elements break this chain.</p>
+
+      <p>Another gotcha: a sticky element only sticks within the bounds of its <strong>parent container</strong>. Once the parent scrolls out of view, the sticky child goes with it. This is actually useful &mdash; it means sticky section headers naturally unstick when their section ends &mdash; but it surprises developers who expect the element to stay fixed indefinitely.</p>
+
+      <p>You must also specify at least one of <code>top</code>, <code>right</code>, <code>bottom</code>, or <code>left</code> for sticky to activate. Without a threshold, the browser does not know when to start sticking.</p>
+
+      <div class="code-block">
+        <h3>Sticky Positioning Pitfalls</h3>
+        <pre><code>/* This will NOT work — parent has overflow: hidden */
+.parent {
+  overflow: hidden;    /* breaks sticky for all descendants */
+}
+.parent .sticky-header {
+  position: sticky;
+  top: 0;              /* will be ignored */
+}
+
+/* Fix: remove overflow from the parent, or restructure */
+.parent {
+  overflow: visible;   /* sticky now works */
+}
+
+/* Sticky within a specific section */
+.section {
+  min-height: 600px;   /* sticky child unsticks when section ends */
+}
+.section-heading {
+  position: sticky;
+  top: 60px;           /* e.g., below a fixed navbar */
+}</code></pre>
+      </div>
+
+      <h3>Containing Blocks &amp; Absolute Positioning</h3>
+
+      <p>When you use <code>position: absolute</code>, the element is positioned relative to its <strong>containing block</strong>. For most cases, the containing block is the nearest ancestor that has <code>position</code> set to anything other than <code>static</code> (i.e., <code>relative</code>, <code>absolute</code>, <code>fixed</code>, or <code>sticky</code>).</p>
+
+      <p>However, there are other properties that establish a containing block for absolutely positioned descendants: <code>transform</code>, <code>filter</code>, <code>perspective</code>, <code>will-change</code> (when referencing transform/filter/perspective), and <code>contain: paint</code> or <code>contain: layout</code>. This catches many developers off guard &mdash; adding a simple <code>transform: translateZ(0)</code> to an ancestor for performance reasons can suddenly change where your absolutely positioned elements anchor.</p>
+
+      <p>If no positioned ancestor exists at all, the absolutely positioned element is placed relative to the <strong>initial containing block</strong>, which corresponds to the viewport (specifically, the <code>&lt;html&gt;</code> element's content area).</p>
+
+      <div class="code-block">
+        <h3>Containing Block Behavior</h3>
+        <pre><code>/* Standard containing block: nearest positioned ancestor */
+.card {
+  position: relative;   /* containing block for .badge */
+}
+.card .badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+}
+
+/* Surprise containing block: transform on an ancestor */
+.animated-wrapper {
+  transform: scale(1);  /* this now acts as containing block! */
+}
+.animated-wrapper .tooltip {
+  position: absolute;   /* positioned relative to .animated-wrapper */
+  /* NOT relative to a position:relative ancestor further up */
+}</code></pre>
+      </div>
+
+      <h3>The <code>inset</code> Shorthand</h3>
+
+      <p>The <code>inset</code> property is a shorthand for setting <code>top</code>, <code>right</code>, <code>bottom</code>, and <code>left</code> in a single declaration. It follows the same clockwise order as <code>margin</code> and <code>padding</code>: top, right, bottom, left. A single value sets all four sides equally, which is especially useful for full-coverage overlays.</p>
+
+      <div class="code-block">
+        <h3>The inset Shorthand</h3>
+        <pre><code>/* Without inset */
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* With inset — identical result */
+.overlay {
+  position: fixed;
+  inset: 0;            /* all four sides set to 0 */
+}
+
+/* inset with different values: top right bottom left */
+.panel {
+  position: absolute;
+  inset: 10px 20px 10px 20px;
+}
+
+/* Two values: vertical | horizontal */
+.centered-box {
+  position: absolute;
+  inset: 2rem 4rem;   /* top/bottom: 2rem, left/right: 4rem */
 }</code></pre>
       </div>
     </section>
@@ -372,6 +592,58 @@
   position: fixed;
   z-index: var(--z-modal);
 }</code></pre>
+      </div>
+
+      <h3>What Creates a Stacking Context?</h3>
+
+      <p>Many CSS properties silently create new stacking contexts. When a new stacking context is formed, all descendants are stacked within it &mdash; their z-index values only compete with siblings inside that context, not with elements outside it. This is the root cause of most "my z-index is not working" bugs.</p>
+
+      <p>The following properties and conditions create a new stacking context:</p>
+
+      <ul>
+        <li><code>position: absolute</code> or <code>position: relative</code> with a <code>z-index</code> value other than <code>auto</code></li>
+        <li><code>position: fixed</code> or <code>position: sticky</code> (always)</li>
+        <li><code>opacity</code> with a value less than <code>1</code></li>
+        <li><code>transform</code> with any value other than <code>none</code></li>
+        <li><code>filter</code> with any value other than <code>none</code></li>
+        <li><code>will-change</code> specifying <code>transform</code>, <code>opacity</code>, or similar properties</li>
+        <li><code>isolation: isolate</code> (explicitly creates a stacking context)</li>
+        <li>Flex and grid children with a <code>z-index</code> value other than <code>auto</code></li>
+        <li><code>mix-blend-mode</code> with any value other than <code>normal</code></li>
+        <li><code>contain: layout</code> or <code>contain: paint</code></li>
+      </ul>
+
+      <div class="code-block">
+        <h3>Stacking Context Traps</h3>
+        <pre><code>/* TRAP: opacity creates a stacking context */
+.parent {
+  position: relative;
+  opacity: 0.99;        /* new stacking context! */
+}
+.parent .dropdown {
+  position: absolute;
+  z-index: 9999;        /* only competes within .parent's context */
+  /* Cannot appear above elements outside .parent with z-index >= 1 */
+}
+
+/* TRAP: transform creates a stacking context */
+.card {
+  transform: translateY(0); /* new stacking context */
+}
+
+/* FIX: use isolation to intentionally scope stacking */
+.component {
+  isolation: isolate;   /* explicit, self-documenting */
+}
+/* Now z-index values inside .component are scoped to it */
+
+/* Debugging tip: if z-index isn't working, check ALL ancestors
+   for any property from the list above */</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why Stacking Contexts Matter for Component Design</h3>
+        <p>In component-based architectures, stacking contexts can be both a problem and a tool. An unintended stacking context on a card component can trap its dropdown menus beneath other cards. But <em>intentional</em> stacking contexts (using <code>isolation: isolate</code>) let you scope a component's z-index values so they do not leak out and conflict with the rest of the page. When building reusable components, consider adding <code>isolation: isolate</code> to the component root &mdash; it is the most explicit and side-effect-free way to create a stacking context.</p>
       </div>
     </section>
 

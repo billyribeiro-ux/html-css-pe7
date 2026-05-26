@@ -26,7 +26,7 @@
     <!-- ============================================================
          SECTION 1: Inline SVG Styling with CSS
          ============================================================ -->
-    <section class="concept" id="inline-svg-styling">
+    <section class="concept-section" id="inline-svg-styling">
       <h2>1. Inline SVG Styling with CSS</h2>
 
       <p>SVG elements embedded directly in HTML &mdash; inline SVG &mdash; are part of the DOM. That means they are fully accessible to CSS selectors, class names, pseudo-classes, and the cascade. This is the single most important thing to understand about SVG and CSS integration: inline SVG elements are just DOM nodes. You style them the same way you style a <code>&lt;div&gt;</code> or a <code>&lt;span&gt;</code>, with the caveat that SVG uses a different set of visual properties inherited from its own specification.</p>
@@ -130,7 +130,7 @@
     <!-- ============================================================
          SECTION 2: currentColor in SVG
          ============================================================ -->
-    <section class="concept" id="currentcolor-svg">
+    <section class="concept-section" id="currentcolor-svg">
       <h2>2. currentColor in SVG</h2>
 
       <p>The CSS keyword <code>currentColor</code> resolves to whatever the element's computed <code>color</code> property is. This seemingly simple mechanism is profoundly powerful when applied to SVG icons. By setting <code>fill: currentColor</code> on your SVG paths, the icon automatically inherits the text color of its parent element. Place the icon inside a paragraph and it matches the paragraph color. Place it inside a button and it matches the button text. Change the parent's <code>color</code> on hover and the icon changes too &mdash; with zero additional CSS.</p>
@@ -225,7 +225,7 @@
     <!-- ============================================================
          SECTION 3: Custom Properties in SVG
          ============================================================ -->
-    <section class="concept" id="custom-properties-svg">
+    <section class="concept-section" id="custom-properties-svg">
       <h2>3. Custom Properties in SVG</h2>
 
       <p>CSS custom properties work inside SVG just as they do in HTML. You can reference <code>var(--color)</code> in <code>fill</code>, <code>stroke</code>, <code>stroke-width</code>, and any other SVG presentation property. This makes custom properties the most flexible mechanism for SVG theming &mdash; more flexible than <code>currentColor</code>, which is limited to a single color channel (the inherited <code>color</code>). With custom properties you can control multiple independent colors, stroke widths, opacities, and transforms from a single location.</p>
@@ -330,7 +330,7 @@
     <!-- ============================================================
          SECTION 4: SVG Animations with CSS
          ============================================================ -->
-    <section class="concept" id="svg-animations">
+    <section class="concept-section" id="svg-animations">
       <h2>4. SVG Animations with CSS</h2>
 
       <p>CSS <code>@keyframes</code> animations work on SVG elements exactly as they do on HTML elements. You can animate <code>fill</code>, <code>stroke</code>, <code>stroke-dashoffset</code>, <code>opacity</code>, <code>transform</code>, and any other animatable SVG property. This is the modern approach to SVG animation &mdash; it replaces the older SMIL (<code>&lt;animate&gt;</code>) syntax with a system that is more familiar to web developers, integrates with the rest of CSS, and respects <code>prefers-reduced-motion</code>.</p>
@@ -433,7 +433,7 @@
     <!-- ============================================================
          SECTION 5: SVG as Backgrounds vs Inline
          ============================================================ -->
-    <section class="concept" id="svg-backgrounds">
+    <section class="concept-section" id="svg-backgrounds">
       <h2>5. SVG as Backgrounds vs Inline</h2>
 
       <p>You have two fundamentally different ways to use SVG on the web: inline (embedded in the HTML DOM) and external (referenced via <code>&lt;img&gt;</code>, <code>background-image</code>, or <code>object</code>). The choice between them is not a matter of preference &mdash; it is a technical decision with real consequences for styling, performance, accessibility, and caching.</p>
@@ -493,7 +493,7 @@
     <!-- ============================================================
          SECTION 6: SVG Filters & Blend Modes
          ============================================================ -->
-    <section class="concept" id="svg-filters">
+    <section class="concept-section" id="svg-filters">
       <h2>6. SVG Filters &amp; Blend Modes</h2>
 
       <p>SVG has its own powerful filter system that predates the CSS <code>filter</code> property by over a decade. While CSS filters (<code>blur()</code>, <code>brightness()</code>, <code>grayscale()</code>) are convenient shorthands, SVG filters offer granular, composable primitives that can create effects impossible with CSS alone. An SVG filter is defined inside a <code>&lt;filter&gt;</code> element and applied to any element (SVG or HTML) using <code>filter: url(#filter-id)</code>.</p>
@@ -604,7 +604,7 @@
     <!-- ============================================================
          SECTION 7: Practical Patterns
          ============================================================ -->
-    <section class="concept" id="practical-patterns">
+    <section class="concept-section" id="practical-patterns">
       <h2>7. Practical Patterns</h2>
 
       <p>The techniques covered in this module combine into powerful production patterns. Animated icon systems, scroll-triggered line drawings, SVG decorative elements, and interactive charts are not hypothetical &mdash; they are features you will build in real projects. This section brings everything together with patterns you can adapt immediately.</p>

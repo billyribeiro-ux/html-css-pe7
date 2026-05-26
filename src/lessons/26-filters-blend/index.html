@@ -26,7 +26,7 @@
     <!-- ============================================================
          SECTION 1: CSS Filter Functions
          ============================================================ -->
-    <section class="concept" id="css-filters">
+    <section class="concept-section" id="css-filters">
       <h2>CSS Filter Functions</h2>
 
       <p>The <code>filter</code> property applies graphical effects to an element's rendering before it is composited into the page. Think of filters as Instagram-style adjustments you can apply to any element &mdash; not just images, but also text, containers, SVGs, videos, and even entire sections of your layout. The browser processes these effects on the GPU when possible, making them surprisingly performant for the visual impact they deliver.</p>
@@ -121,7 +121,7 @@
     <!-- ============================================================
          SECTION 2: backdrop-filter & Glassmorphism
          ============================================================ -->
-    <section class="concept" id="backdrop-filter">
+    <section class="concept-section" id="backdrop-filter">
       <h2>backdrop-filter &amp; Glassmorphism</h2>
 
       <p>While <code>filter</code> applies effects to the element itself, <code>backdrop-filter</code> applies them to the area <em>behind</em> the element. The element must have a semi-transparent or transparent background for the effect to be visible &mdash; the browser composites whatever is rendered beneath the element, applies the filter to that composited image, and then draws the element on top. The most common use is <code>backdrop-filter: blur()</code>, which creates a frosted-glass effect where background content is visible but blurred and diffused.</p>
@@ -217,7 +217,7 @@
     <!-- ============================================================
          SECTION 3: mix-blend-mode
          ============================================================ -->
-    <section class="concept" id="mix-blend-mode">
+    <section class="concept-section" id="mix-blend-mode">
       <h2>mix-blend-mode</h2>
 
       <p>The <code>mix-blend-mode</code> property controls how an element's content blends with whatever is painted directly beneath it &mdash; its parent's background, sibling elements, or any overlapping layers. If you have ever used blend modes in Photoshop, Figma, or After Effects, CSS blend modes work on exactly the same principles. Each mode defines a mathematical formula for combining the color values of the top layer (the element) and the bottom layer (what is behind it).</p>
@@ -356,7 +356,7 @@
     <!-- ============================================================
          SECTION 4: background-blend-mode & isolation
          ============================================================ -->
-    <section class="concept" id="bg-blend-isolation">
+    <section class="concept-section" id="bg-blend-isolation">
       <h2>background-blend-mode &amp; isolation</h2>
 
       <p><code>background-blend-mode</code> blends multiple background layers <em>within the same element</em>. While <code>mix-blend-mode</code> blends an element against whatever is behind it in the stacking order, <code>background-blend-mode</code> operates entirely within a single element's own background stack. CSS allows an element to have multiple backgrounds (comma-separated in the <code>background</code> shorthand), and <code>background-blend-mode</code> controls how those layers composite together.</p>
@@ -443,7 +443,7 @@
     <!-- ============================================================
          SECTION 5: Practical Patterns
          ============================================================ -->
-    <section class="concept" id="practical-patterns">
+    <section class="concept-section" id="practical-patterns">
       <h2>Practical Patterns</h2>
 
       <p>The real value of filters and blend modes emerges when you combine them into practical, production-ready patterns. These are not edge-case curiosities &mdash; they are the exact techniques used in modern design systems to create hero sections, interactive image galleries, loading states, and premium-feeling UI chrome. Each pattern below is something you will encounter (or should consider) in real-world projects.</p>
@@ -547,7 +547,7 @@
     <!-- ============================================================
          SECTION 6: Advanced Techniques
          ============================================================ -->
-    <section class="concept" id="advanced-techniques">
+    <section class="concept-section" id="advanced-techniques">
       <h2>Advanced Techniques</h2>
 
       <p>With a solid understanding of the fundamentals, you can push filters and blend modes into more sophisticated territory. These advanced patterns combine multiple properties &mdash; filter chains, backdrop-filter, mix-blend-mode, custom properties, and animations &mdash; to create effects that rival dedicated image editing software, all rendered live in the browser and fully responsive.</p>
