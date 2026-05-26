@@ -115,6 +115,14 @@
           </div>
         </div>
       </div>
+
+      <div class="why">
+        <h3>When to Reach for @property vs JavaScript Animation</h3>
+        <p>A principal engineer's decision here comes down to three factors: performance budget, type safety needs, and runtime dynamism.</p>
+        <p><strong>Compositor-friendly vs main-thread:</strong> CSS transitions on <code>transform</code> and <code>opacity</code> run on the compositor thread, meaning they do not block JavaScript execution or layout recalculations. When you use <code>@property</code> to animate a typed custom property that feeds into <code>transform</code> or <code>opacity</code>, you preserve this compositor advantage. JavaScript animation via <code>requestAnimationFrame</code> always runs on the main thread. For 60fps UI animations that must survive heavy JS workloads (think: a data dashboard fetching and rendering simultaneously), CSS-driven <code>@property</code> animations are strictly better.</p>
+        <p><strong>When <code>syntax: "*"</code> is fine:</strong> If you are not animating a property and only need a custom property as a cascading design token (a spacing unit, a font-family name, a z-index strategy), there is no reason to register it with a specific type. The universal <code>*</code> syntax avoids the overhead of registration and keeps your code simpler. Reserve typed syntax for properties you actually need to interpolate or validate.</p>
+        <p><strong>When to use <code>CSS.registerProperty()</code> from JavaScript instead:</strong> The JS API exists for cases where registration must happen dynamically: component libraries that register properties on mount, properties whose initial values depend on runtime state (user preferences, feature flags), or when you need to register properties conditionally based on detected capabilities. The trade-off is that <code>CSS.registerProperty()</code> runs on the main thread at parse time and cannot be duplicated (calling it twice with the same name throws an error), so you need guard code. The CSS <code>@property</code> rule is idempotent and declarative, making it the better default choice for static registrations.</p>
+      </div>
     </section>
 
     <!-- ============================================ -->
@@ -196,6 +204,14 @@
 
       <div class="info-box">
         <strong>Key Insight:</strong> The real power here is indirection. You are not animating <code>background</code> directly&mdash;you are animating a variable that feeds into background, border, shadow, text color, or anything else. One animated variable can drive dozens of visual changes simultaneously.
+      </div>
+
+      <div class="why">
+        <h3>Which @property Animations Are Actually Performant</h3>
+        <p>This is the critical knowledge gap between senior engineers and principal engineers working with <code>@property</code>: not all typed custom property animations are created equal in terms of rendering performance.</p>
+        <p><strong>The compositor distinction:</strong> When a registered custom property feeds into <code>transform</code> or <code>opacity</code>, the browser can hand that animation to the compositor thread. The compositor operates on already-painted GPU textures and can update them without touching the main thread at all. These animations remain silky at 60fps even when the main thread is busy parsing JSON, running React reconciliation, or processing event handlers.</p>
+        <p><strong>The main-thread trap:</strong> When a registered custom property feeds into <code>background</code> (including gradient stops), <code>box-shadow</code>, <code>border-color</code>, <code>filter</code>, or any paint-triggering property, every frame of that animation forces a main-thread repaint. The browser must recalculate the gradient, re-rasterize the pixels, and upload the new texture to the GPU. A color-cycling gradient on a hero section looks spectacular in a demo, but on a page with complex DOM and heavy scripting, it can cause visible jank. Profile with DevTools' Performance panel before shipping these to production.</p>
+        <p><strong>The practical rule of thumb:</strong> Use <code>@property</code> animations freely for properties that map to compositor-friendly operations (transform, opacity, and clip-path on promoted layers). Use them cautiously for paint-triggering properties, especially on large elements or pages with significant JavaScript workloads. When you need a smooth gradient animation on a performance-sensitive page, consider animating a smaller pseudo-element and scaling it up, or using <code>will-change</code> to promote the element to its own compositing layer (but be aware this consumes GPU memory).</p>
       </div>
     </section>
 
@@ -292,6 +308,14 @@
 
       <div class="info-box">
         <strong>Key Insight:</strong> The gradient-border technique works by placing a larger gradient element behind a slightly smaller solid element. The visible "border" is the gradient peeking out around the edges. This is achieved with pseudo-elements or nested divs. The <code>@property</code> rule makes the gradient animatable, completing the illusion.
+      </div>
+
+      <div class="why">
+        <h3>Architectural Patterns: @property in Design Systems</h3>
+        <p><strong>Type-safe design tokens:</strong> In a large design system, <code>@property</code> gives you something that unregistered custom properties cannot: validation at the browser level. If you register <code>--spacing-unit</code> as <code>&lt;length&gt;</code> with an initial value of <code>1rem</code>, then any component that accidentally sets <code>--spacing-unit: blue</code> will get the initial value instead of a broken layout. This is the CSS equivalent of a type system for your tokens. In codebases with dozens of contributors, this kind of guardrail prevents an entire class of visual regressions without requiring build-time tooling.</p>
+        <p><strong>Preventing invalid values from cascading:</strong> With <code>inherits: false</code>, you get component-level isolation. A parent setting <code>--card-radius: 50%</code> will not bleed into child components that define their own <code>@property --card-radius</code> with a different initial value. This is powerful for design systems where teams own different component subtrees, but it requires careful documentation because the behavior is the opposite of how unregistered custom properties work.</p>
+        <p><strong>The global scope constraint:</strong> Here is the trade-off that bites teams in production: <code>@property</code> rules cannot be defined inside <code>@media</code>, <code>@supports</code>, <code>@layer</code>, or any other conditional at-rule. They are always global. This means you cannot register a property differently for mobile vs desktop, or scope a registration to a specific cascade layer. In a large codebase with multiple teams, this creates a coordination problem: two teams cannot register the same custom property name with different syntax types. The first registration wins and the second is silently ignored. Establish a naming convention early (e.g., prefix with component names like <code>--nav-hue</code>, <code>--card-progress</code>) and maintain a registry of <code>@property</code> declarations in your design system documentation.</p>
+        <p><strong>When to centralize vs distribute:</strong> For shared tokens (colors, spacing, typography scales), register them in a single shared stylesheet that loads early. For component-specific animation properties, register them in the component's own stylesheet. This mirrors the same centralize-shared/distribute-owned pattern used in JavaScript module architecture.</p>
       </div>
     </section>
 
@@ -734,6 +758,26 @@ registerPaint('circles', CirclesPainter);</code></pre>
 
       <div class="info-box">
         <strong>Key Insight:</strong> The beauty of <code>@property</code> progressive enhancement is that it degrades gracefully by design. If a browser ignores <code>@property</code>, the custom properties still work as untyped variables&mdash;they just will not animate. Your layout and colors remain correct; you only lose the animation. This makes <code>@property</code> one of the safest modern CSS features to adopt.
+      </div>
+
+      <div class="why">
+        <h3>Production Gotcha: The Silent Inheritance Fallback</h3>
+        <p>There is a subtle and dangerous failure mode with <code>@property</code> that you will only encounter in production at scale, and it is worth understanding deeply.</p>
+        <p><strong>The problem:</strong> When you register a property with <code>inherits: false</code>, you are telling the browser that child elements should not inherit this value from their parent. But in a browser that does not support <code>@property</code>, the registration is ignored entirely. The custom property still works (it is just an unregistered custom property), but it reverts to the default behavior of custom properties: <em>they inherit</em>. This means your carefully scoped, non-inheriting property quietly becomes an inheriting property. If a parent sets <code>--card-bg: red</code> and you expected children to use their own initial value, they will instead inherit red. The layout does not break. The page does not error. It just looks subtly wrong in ways that are difficult to debug.</p>
+        <p><strong>Defensive CSS pattern:</strong> Always explicitly set the custom property value on the elements that use it, rather than relying on the initial-value fallback from <code>@property</code>. This way, even if the registration is ignored, every element has an explicit value and inheritance does not matter.</p>
+        <pre><code>/* Fragile: relies on @property initial-value */
+.child {
+  background: var(--card-bg);
+  /* If @property is ignored and parent sets --card-bg,
+     child inherits the parent's value instead of initial-value */
+}
+
+/* Defensive: works with or without @property */
+.child {
+  --card-bg: #1a1d27;  /* explicit value on every element that uses it */
+  background: var(--card-bg);
+}</code></pre>
+        <p><strong>Testing strategy:</strong> To verify your <code>@property</code> usage is resilient, temporarily comment out all <code>@property</code> rules and check whether the page still renders acceptably. If removing the registrations causes visible breakage (not just lost animations, but wrong colors, broken spacing, or layout shifts), your code is relying on <code>@property</code> for correctness rather than enhancement. Refactor until the registrations are purely additive. This is the same mindset as testing your site with JavaScript disabled: the baseline must be functional.</p>
       </div>
     </section>
 

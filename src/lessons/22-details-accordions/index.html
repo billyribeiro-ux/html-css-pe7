@@ -89,6 +89,12 @@
       <div class="info-box">
         <strong>Key Insight:</strong> The <code>&lt;details&gt;</code> element fires a <code>toggle</code> event when it opens or closes. You can listen for this in JavaScript, but you never need JavaScript just to make the toggle work. The browser handles it natively.
       </div>
+
+      <div class="why">
+        <h3>Why Native &lt;details&gt; Over JS Accordions</h3>
+        <p>A JavaScript accordion component can do everything <code>&lt;details&gt;</code> can do and more. So why reach for the native element? Because of what you get without writing or shipping anything: keyboard interaction (Enter, Space, Tab), screen reader announcements (expanded/collapsed state), and browser find-in-page that searches inside collapsed content. A JS accordion must reimplement all of this, and most implementations get at least one of those wrong.</p>
+        <p>The trade-off is real, though. Native <code>&lt;details&gt;</code> has historically had no animation support at all -- content snapped open and closed instantly. The <code>::details-content</code> pseudo-element and <code>interpolate-size: allow-keywords</code> fix this, but they are recent additions (widespread browser support arrived in 2024-2025). If your project requires smooth animation in older browsers, you face a genuine decision. A PE7 weighs these factors honestly: native semantics and free accessibility on one side, animation fidelity on the other. In most cases the native element wins, because the animation is a progressive enhancement -- the accordion still works perfectly without it. But if your design system mandates animated transitions as a hard requirement across all supported browsers, a custom component with proper ARIA attributes may be the right call. The key is making that choice deliberately, not defaulting to a JS library out of habit.</p>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -231,6 +237,12 @@
 
       <div class="info-box">
         <strong>Key Insight:</strong> The <code>name</code> attribute works across sibling <code>&lt;details&gt;</code> elements regardless of wrapper elements between them. The group is scoped to the document, not to a parent container. This means <code>&lt;details name="faq"&gt;</code> elements will form one group even if they are separated by <code>&lt;div&gt;</code> wrappers or other markup.
+      </div>
+
+      <div class="why">
+        <h3>Exclusive Accordions and the UX Trade-Off</h3>
+        <p>The <code>name</code> attribute is deceptively simple: add the same string to a group of <code>&lt;details&gt;</code> elements and the browser enforces mutual exclusion. No event listeners, no state management, no "close all siblings" loop. This is the kind of feature that eliminates an entire category of bugs -- the accordion that sometimes leaves two panels open, the race condition when users click quickly, the forgotten cleanup when panels are added dynamically.</p>
+        <p>But before you add <code>name</code> to every accordion, consider the user's mental model. Exclusive accordions work well for FAQ pages, where users typically want one answer at a time, and for settings panels, where screen real estate is limited. They are the wrong choice when users need to compare content across panels -- API documentation where someone is cross-referencing two endpoints, or a product comparison where multiple spec sections should stay open. Omitting the <code>name</code> attribute gives you independent toggles, which is sometimes exactly what the user needs. A PE7 does not default to exclusive behavior because it is clever; they choose it when the interaction model calls for it, and they leave it off when users benefit from having multiple panels open simultaneously.</p>
       </div>
     </section>
 
@@ -909,6 +921,12 @@ details[open] &gt; summary::after {
 
       <div class="info-box">
         <strong>Key Insight:</strong> When using <code>:has(details[open])</code>, remember that <code>:has()</code> is a live selector -- it responds instantly to state changes. Combined with CSS transitions on the parent, you get reactive container styling that responds to the accordion state without any JavaScript observers or event listeners.
+      </div>
+
+      <div class="why">
+        <h3>When &lt;details&gt; Is the Right Tool -- and When It Is Not</h3>
+        <p><code>&lt;details&gt;</code> is the right element when the interaction is genuinely "show me more about this item." FAQ pages, settings panels, specification tables, mobile navigation menus, collapsible sidebar sections, release notes -- these are all natural fits. The content is secondary or supplementary, the user chooses what to reveal, and the page makes sense even with everything collapsed.</p>
+        <p>It is the wrong element when the content sections are peers that the user must choose between as part of a workflow. Tabbed interfaces are the classic example: tabs imply that exactly one panel is always visible and the content areas are parallel alternatives, not progressive disclosure. A stepper or wizard implies sequential progression. A carousel implies browsing. These patterns share surface-level similarity with accordions (you see one thing at a time), but they carry different semantics and user expectations. Wrapping tabs in <code>&lt;details&gt;</code> elements would confuse screen readers, break expected keyboard patterns (tabs use arrow keys, not Enter/Space), and misrepresent the relationship between panels. A PE7 does not use <code>&lt;details&gt;</code> just because it avoids JavaScript -- they match the HTML element to the actual interaction model.</p>
       </div>
     </section>
 

@@ -336,6 +336,12 @@ li::before {
       <div class="info-box">
         <strong>Key Insight:</strong> Counter scoping is automatic. When a <code>counter-reset</code> appears on a parent element and <code>counter-increment</code> appears on its children, CSS creates nested counter instances for you. Each nested <code>&lt;ol&gt;</code> gets its own scope of the counter, which is why <code>counters(item, ".")</code> can produce "1.2.3" style numbering without any JavaScript tracking state.
       </div>
+
+      <div class="why">
+        <h3>When Counters Beat JavaScript</h3>
+        <p>CSS counters are pure CSS. They work in print stylesheets without a runtime. They update automatically when DOM order changes &mdash; drag-and-drop reordering, dynamic insertion, conditional rendering &mdash; without event listeners, without re-rendering, without state management. For document-like content (legal contracts, technical specifications, tables of contents, academic papers), CSS counters are architecturally superior to JavaScript-based numbering because they are declarative: you describe the counting rules, and the browser applies them to whatever content exists at render time.</p>
+        <p>But know the boundary. Counter values live entirely in the presentation layer. You cannot read a counter's value from JavaScript. You cannot display a counter value inside an element's text content &mdash; only in <code>::before</code>, <code>::after</code>, and <code>::marker</code>. You cannot use a counter value in a conditional expression or pass it to an API. If your numbering needs to be part of the data model (order numbers, IDs, values submitted in forms), counters are the wrong tool. The PE7 decision: if the number is for humans reading a document, use CSS counters. If the number is for machines or application logic, use JavaScript.</p>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -932,6 +938,12 @@ article {
 
       <div class="info-box">
         <strong>Key Insight:</strong> The golden rule of generated content accessibility: if removing all <code>::before</code> and <code>::after</code> content from your page makes information disappear that a user needs, you have put critical content in the wrong place. Generated content is a <em>presentation</em> layer. The information layer lives in HTML. Always.
+      </div>
+
+      <div class="why">
+        <h3>Generated Content and Accessibility</h3>
+        <p>The accessibility behavior of <code>content</code> in <code>::before</code> and <code>::after</code> has improved significantly. Most modern screen readers (NVDA, JAWS, VoiceOver) now announce generated text content by default. This is actually a problem in the other direction &mdash; decorative separators, arrows, and fancy bullets <em>will</em> be read aloud unless you suppress them with the <code>/ ""</code> alt text syntax or <code>aria-hidden</code> on the parent.</p>
+        <p>But "most modern screen readers" is not "all screen readers in all configurations." Assistive technology is diverse: refreshable braille displays, older screen reader versions, mobile accessibility services, and custom enterprise setups all behave differently. A PE7 never puts essential information solely in generated content. The rule is straightforward: use <code>aria-label</code> or visible HTML text for anything a user needs to understand the page. Use generated content for decorative and supplementary text that enhances the visual experience. If you are generating a warning icon via <code>::before</code>, the word "Warning" should also exist in the HTML (or in an <code>aria-label</code>), not only in CSS.</p>
       </div>
     </section>
 

@@ -35,6 +35,11 @@
         <strong>Why Native Nesting Matters:</strong> Preprocessor nesting requires a build tool, adds a compilation step, and produces flat CSS anyway. Native nesting works directly in the browser, is debuggable in DevTools with the actual nested structure, and reduces the cognitive gap between what you write and what runs.
       </div>
 
+      <div class="why">
+        <h3>Nesting Depth Limits</h3>
+        <p>Nesting more than 2&ndash;3 levels deep is a code smell. Each level of nesting increases the specificity of the generated selector and couples your CSS tightly to the DOM structure. A rule like <code>.page .sidebar .nav .list .item .link:hover</code> is fragile &mdash; any refactor to the HTML hierarchy breaks it, and overriding it requires matching or exceeding that specificity. The practical rule: if you are nesting more than 3 levels, your CSS architecture has a problem. Flatten the structure, introduce meaningful class names at the component boundary, or break the component into smaller composable pieces. Deep nesting turns your stylesheet into a mirror of your markup, and when the markup changes (and it will), the CSS breaks in cascade.</p>
+      </div>
+
       <h3>Flat CSS vs Nested CSS</h3>
       <p>Compare these two approaches. They produce the same result, but the nested version is shorter and easier to scan:</p>
 
@@ -311,6 +316,11 @@
 
       <div class="why">
         <strong>Why :has() Changes Everything:</strong> Before <code>:has()</code>, showing a "form is valid" indicator required JavaScript to check all inputs and toggle a class. Now, <code>form:has(input:invalid)</code> does it in pure CSS. Interactive UIs that previously needed JS event listeners can now be declarative CSS rules.
+      </div>
+
+      <div class="why">
+        <h3>:has() Performance Considerations</h3>
+        <p>The <code>:has()</code> selector is the first CSS selector that looks <em>up</em> the DOM tree &mdash; selecting a parent based on its children. This reversal of direction required browser engines to implement entirely new optimization strategies, since traditional selector matching works right-to-left from the innermost element outward. In practice, <code>:has()</code> with simple selectors (<code>.card:has(img)</code>, <code>form:has(:invalid)</code>) is fast and well-optimized in modern browsers. However, <code>:has()</code> with complex combinators like <code>:has(.a .b .c)</code> or deeply nested descendant checks can be slow on large DOMs because the browser must search through more of the subtree for each candidate element. A PE7 profiles before using complex <code>:has()</code> selectors in performance-critical paths &mdash; particularly in components rendered hundreds of times on a page, such as table rows or list items. Keep the argument to <code>:has()</code> as simple and direct as possible.</p>
       </div>
 
       <pre><code>/* Select a card that contains an image */

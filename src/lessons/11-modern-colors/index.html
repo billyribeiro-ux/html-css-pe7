@@ -214,6 +214,12 @@ color: oklch(0.7 0.15 145 / 0.5);  /* 50% transparent */</code></pre>
           </div>
         </div>
       </div>
+
+      <div class="why">
+        <h3>Why OKLCH Over HSL/RGB for Design Systems</h3>
+        <p>The real argument for OKLCH is not "perceptually uniform" as an academic property -- it is that OKLCH makes your color system <strong>composable</strong>. When you build a design system, you need to programmatically generate color scales: take a brand blue and produce 10 tints, 5 shades, hover states, disabled states, dark-mode variants. In HSL, this breaks down immediately. HSL's "50% lightness" produces a yellow that looks blazing bright and a blue that looks nearly dark -- your generated scales will look inconsistent, and designers will override them with hand-picked values, defeating the purpose of a system.</p>
+        <p>With OKLCH, <code>L = 0.6</code> looks like the same perceived brightness whether the hue is blue, yellow, or red. This means a single formula like "lighten by 0.15 for hover" works across every color in your palette without per-hue exceptions. At PE7 level, you pick color spaces that reduce the number of manual overrides in your system. Fewer overrides means fewer maintenance points, fewer bugs when brand colors change, and faster onboarding for new engineers who can trust the formulas instead of memorizing magic values.</p>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -273,6 +279,13 @@ color: color-mix(in srgb, black 20%, currentColor); /* darken any color by 20% *
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="why">
+        <h3>color-mix() vs Custom Properties: When to Use Which</h3>
+        <p>You might wonder: why not just pre-compute every color as a custom property and skip <code>color-mix()</code> entirely? The trade-off comes down to flexibility versus inspectability. Pre-computed tokens like <code>--blue-300: oklch(0.78 0.12 250)</code> are fully visible in DevTools -- you can see the exact resolved value, copy it, and reason about it. This matters when debugging visual issues at 2 AM.</p>
+        <p><code>color-mix()</code> shines when the inputs are dynamic. If your brand color is a custom property that can change (theming, white-labeling, user preferences), then <code>color-mix(in oklch, var(--brand) 30%, white)</code> automatically recomputes every derived shade when <code>--brand</code> changes. Pre-computed tokens cannot do this -- you would need JavaScript to recalculate every value in the scale. However, <code>color-mix()</code> results currently show as opaque computed values in most DevTools, making debugging harder.</p>
+        <p>The PE7 approach: use pre-computed OKLCH tokens for your base palette (the values that do not change per-theme), and use <code>color-mix()</code> for values that must react to runtime changes -- theme switching, user-configurable brand colors, or contextual adjustments like "20% lighter than whatever the parent's background is." Do not default to one approach for everything.</p>
       </div>
     </section>
 
@@ -574,6 +587,12 @@ body {
           </div>
         </div>
       </div>
+
+      <div class="why">
+        <h3>Gamut and Production Reality: Design in sRGB First</h3>
+        <p>Wide-gamut colors are seductive in demos -- those hyper-vivid P3 reds and greens look incredible on a MacBook Pro. But in production, your users are on a mix of sRGB office monitors, budget Android phones, projectors in conference rooms, and older laptops. When a P3 color lands on an sRGB display, the browser <strong>clips</strong> it to the nearest sRGB value. That clipping is not perceptually uniform -- it can shift hues, crush details in gradients, and make carefully tuned color relationships fall apart.</p>
+        <p>The PE7 rule: <strong>design your entire system in sRGB first</strong>, ensure it works and meets contrast requirements on standard displays, and then layer in wide-gamut enhancements using <code>@media (color-gamut: p3)</code> or <code>@supports</code>. This is the same progressive enhancement mindset you apply everywhere else. The <code>color()</code> function with explicit gamut mapping (<code>color(display-p3 ...)</code>) gives browsers instructions for how to handle out-of-gamut situations, but you should never rely on a P3-only color for conveying meaning or meeting accessibility thresholds. If your error state only looks red enough on P3 displays, you have a production bug on every sRGB screen.</p>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -665,6 +684,12 @@ body {
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="why">
+        <h3>forced-colors and the Colors You Cannot Control</h3>
+        <p>Windows High Contrast mode (and its modern successor, forced-colors) is not a niche concern -- it is used by millions of people with low vision, migraines, light sensitivity, and cognitive disabilities. When <code>forced-colors: active</code> is in effect, the browser <strong>overrides nearly all of your color declarations</strong> with system colors. Your carefully crafted oklch palette, your color-mix scales, your light-dark toggles -- all of it gets replaced. This is by design, and fighting it is the wrong approach.</p>
+        <p>What a PE7 engineer does instead: ensure your UI is understandable through <strong>structure, not color alone</strong>. Borders, outlines, and text remain visible in forced-colors mode, but backgrounds, shadows, and gradients do not. If you rely on a colored background to indicate an error state, that signal disappears. Use <code>@media (forced-colors: active)</code> to add visible borders, ensure icons have <code>forced-color-adjust: auto</code> so they pick up system colors, and test with the "Emulate CSS media feature forced-colors" toggle in Chrome DevTools. The key insight: <code>forced-color-adjust: none</code> lets you opt specific elements out of forced-colors overrides, but use it sparingly and only when you can guarantee contrast yourself -- data visualizations and color swatches are valid cases, decorative gradients are not.</p>
       </div>
     </section>
 
