@@ -424,6 +424,11 @@
       <h2>4. Architecture Guide</h2>
       <p>Good CSS architecture is the difference between a project you can maintain and one that collapses under its own weight. Follow these guidelines for your capstone.</p>
 
+      <div class="why">
+        <h3>PE7 Principle: Progressive Enhancement Is Architecture, Not a Fallback Strategy</h3>
+        <p>This capstone specifies &ldquo;No JavaScript. Pure HTML and CSS.&rdquo; That is not a constraint imposed to make the project harder &mdash; it is a design philosophy. A PE7 engineer understands that each layer of the web platform owns specific responsibilities: <strong>HTML owns structure and semantics</strong>, <strong>CSS owns presentation and interaction feedback</strong>, and <strong>JavaScript owns behavior that neither layer can express</strong>. When you build the testimonials accordion with <code>&lt;details&gt;</code> and <code>::details-content</code>, that accordion works the instant the HTML parses &mdash; before a single stylesheet loads. The CSS makes it beautiful and animated, but the core functionality is already there. When you build the portfolio filter with <code>:has()</code> and checkbox state, that filter works because HTML checkboxes have built-in state and CSS can read it. You are not &ldquo;faking&rdquo; interactivity &mdash; you are building it in the right layer. This matters at scale. JavaScript fails silently in hostile environments: corporate proxies strip it, ad blockers break it, CDNs go down. HTML and CSS are resilient by default. A PE7 builds the core experience in the layers that cannot fail, then enhances with the layers that might. That is not pessimism. That is engineering.</p>
+      </div>
+
       <h3>Layer Order</h3>
       <p>Declare your layers at the very top of your CSS file, before any other rules:</p>
 
@@ -728,6 +733,11 @@
           <span class="grade-label">Not Yet</span>
           <p>Review the modules for missed techniques and resubmit.</p>
         </div>
+      </div>
+
+      <div class="why">
+        <h3>PE7 Principle: The Code Review Checklist You Should Internalize</h3>
+        <p>Before you submit this capstone, review your own CSS the way a PE7 reviews a pull request. Look for <strong>specificity creep</strong> &mdash; if you needed <code>!important</code> or a four-selector chain to override something, your layer architecture has a hole. Look for <strong>magic numbers</strong> &mdash; a <code>margin-block-start: 37px</code> with no comment explaining why 37 and not 36 or 40 is a maintenance trap waiting to break on a different screen. Look for <strong>undocumented z-index values</strong> &mdash; if your tooltip uses <code>z-index: 9999</code>, you have not thought about stacking contexts; define a z-index scale in your tokens (<code>--z-nav: 100</code>, <code>--z-tooltip: 200</code>, <code>--z-modal: 300</code>). Look for <strong>missing logical properties</strong> &mdash; every <code>margin-left</code> is a bug for RTL users; use <code>margin-inline-start</code>. Look for <strong>hard-coded colors</strong> outside your token system &mdash; a raw <code>#6c5ce7</code> in a component block means your dark/light theme switch will miss it. Look for <strong>animations that trigger layout</strong> &mdash; animating <code>width</code>, <code>height</code>, or <code>top</code> forces the browser to recalculate layout on every frame; use <code>transform</code> and <code>opacity</code> instead, which run on the compositor thread. This is not nitpicking. This is the difference between CSS that survives contact with a real team and CSS that becomes everyone&rsquo;s least favorite file in the repo.</p>
       </div>
     </section>
 

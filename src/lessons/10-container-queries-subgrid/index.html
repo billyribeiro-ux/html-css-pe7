@@ -39,6 +39,11 @@
         <p>This is the design philosophy behind every modern component framework &mdash; now CSS natively supports it.</p>
       </div>
 
+      <div class="why">
+        <h3>Container Queries vs Media Queries: An Architectural Shift</h3>
+        <p>Media queries are <em>page-aware</em>: they respond to the viewport, which is a global property shared by every component on the page. Container queries are <em>component-aware</em>: they respond to the size of the component's immediate container, which is local and independent. This distinction changes CSS architecture fundamentally. With media queries, a component's responsive behavior depends on where it is used &mdash; a card in a sidebar and a card in the main content area both react to the same viewport width, even though their available space is completely different. With container queries, components become truly portable, self-contained responsive units. You write the responsive rules once, and the component adapts correctly regardless of which layout context it lands in. In a design system, this eliminates entire categories of modifier classes, layout-specific overrides, and the JavaScript resize observers that were previously required to bridge the gap.</p>
+      </div>
+
       <p>Container queries landed in all major browsers in 2023 and have been stable since. Combined with container query units, they give components fine-grained control over their presentation based on the dimensions of their nearest containment context.</p>
 
       <div class="demo" id="demo-problem">
@@ -103,6 +108,11 @@
 }</code></pre>
 
       <p>Once a container is established, any descendant can use <code>@container</code> rules to query its dimensions. The browser walks up the DOM tree to find the nearest ancestor with containment and measures against that element.</p>
+
+      <div class="why">
+        <h3>The Containment Cost of Container Queries</h3>
+        <p>Setting <code>container-type: inline-size</code> is not free. It implicitly applies <code>contain: layout style inline-size</code> to the element. This containment means the element can no longer size itself based on its children's intrinsic inline size &mdash; it cannot "shrink-wrap" to fit its content width. The element's inline size must be determined by its own constraints (explicit width, grid/flex sizing, or the available space from its parent), never by measuring what is inside it. This is a deliberate trade-off: the browser needs this guarantee to avoid circular dependencies when evaluating container queries. In practice, this causes problems when you apply <code>container-type: inline-size</code> to elements that rely on intrinsic sizing &mdash; such as inline elements, absolutely positioned elements without explicit widths, or flex/grid items that use <code>fit-content</code>. A PE7 understands this constraint and chooses the containment context carefully, typically applying it to structural wrapper elements that already have an externally determined width rather than to content-driven elements.</p>
+      </div>
 
       <div class="demo" id="demo-container-setup">
         <h4>Container Setup Demo</h4>
@@ -362,6 +372,11 @@
       <div class="why">
         <h3>Why Subgrid Matters</h3>
         <p>Before subgrid, developers used workarounds like setting fixed heights on card sections, using Flexbox with <code>flex-grow</code> (which pushes content down but doesn't truly align), or resorting to JavaScript layout measurement. Subgrid provides a pure CSS solution that's responsive, accessible, and performant. It completes the Grid specification's promise of two-dimensional layout control.</p>
+      </div>
+
+      <div class="why">
+        <h3>Subgrid Adoption Trade-offs</h3>
+        <p>Subgrid is powerful, but it creates tight coupling between parent and child grid definitions. When a child uses <code>grid-template-rows: subgrid</code>, its internal layout is governed by the parent's row tracks. This means the child component cannot be independently deployed into a different grid context without ensuring the parent provides the same track structure. A PE7 uses subgrid strategically: it excels for alignment consistency in scenarios like form label/input grids, card grids where headers/bodies/footers must align, and data tables. But avoid subgrid when components need to be independently portable across different layout contexts &mdash; for example, a widget that might appear in a grid dashboard today but a flex sidebar tomorrow. In those cases, the component should own its own grid definition so it remains self-contained. The decision is architectural: subgrid trades component independence for cross-component visual alignment.</p>
       </div>
 
       <div class="demo" id="demo-subgrid-cards">
