@@ -851,6 +851,13 @@ article {
           </div>
         </div>
       </div>
+
+      <div class="why">
+        <h3>Production Patterns</h3>
+        <p>Nested counters are the backbone of documentation systems. Legal documents use multi-level numbering (Section 2.3.1), technical specifications use hierarchical clause numbering, and API documentation uses nested endpoint numbering. The <code>counters(item, ".")</code> function handles all of this by walking the counter scope chain. Each nested <code>&lt;ol&gt;</code> with <code>counter-reset</code> creates a new scope, and <code>counters()</code> joins every scope level with your separator. You define the structure in HTML, and CSS generates the correct numbering at every depth &mdash; no manual tracking.</p>
+        <p>Know the difference between <code>counter-reset</code> and <code>counter-set</code>. <code>counter-reset</code> creates a new counter instance in the current scope (or resets an existing one to a value). <code>counter-set</code>, which is newer and less widely known, sets the value of an existing counter <em>without</em> creating a new scope. Use <code>counter-reset</code> when you are establishing a counting context (the start of a chapter, a new list). Use <code>counter-set</code> when you need to jump to a specific value mid-sequence (resuming numbering after an interruption, starting a section at a nonstandard number).</p>
+        <p>The <code>reversed()</code> function in <code>counter-reset</code> creates countdown lists. The browser automatically determines the starting value based on how many elements will increment the counter, then counts down. This is useful for "top 10" lists, priority queues, and any ranking where the most important item comes last. Unlike manual numbering, adding or removing items automatically adjusts the countdown range.</p>
+      </div>
     </section>
 
     <!-- ============================== -->
@@ -907,6 +914,12 @@ article {
 .step::before {
   content: counter(step) / "Step " counter(step) ": ";
 }</code></pre>
+      </div>
+
+      <div class="why">
+        <h3>Why <code>content</code> Needs Alt Text</h3>
+        <p>The <code>content</code> property now supports alt text syntax: <code>content: url(icon.svg) / "Description"</code>. The forward slash separates the visual content (what the browser renders) from the accessible name (what assistive technology announces). This is not limited to images &mdash; it works with strings, counters, and <code>attr()</code> values too.</p>
+        <p>A PE7 uses this for every generated icon and decorative symbol. Without the alt text syntax, a decorative arrow (<code>content: "\2192"</code>) gets announced as "rightwards arrow" by screen readers, creating noise for users who gain nothing from hearing it. With <code>content: "\2192" / ""</code>, the arrow renders visually but is silent to assistive technology. Conversely, when a generated icon carries meaning &mdash; a warning triangle, an external link indicator &mdash; you provide a real description: <code>content: "\26A0" / "Warning"</code>. This eliminates the need for extra wrapper elements with <code>aria-hidden</code> and <code>aria-label</code> attributes. One line of CSS handles both the visual and the accessible name, keeping your HTML clean.</p>
       </div>
 
       <h3>When NOT to Use Generated Content</h3>

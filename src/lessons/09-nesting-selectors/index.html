@@ -414,6 +414,11 @@
         <strong>Practical Guideline:</strong> Use <code>:is()</code> when you want the grouped selectors to carry their natural specificity. Use <code>:where()</code> when you're writing defaults or base styles that should be easy to override without specificity battles.
       </div>
 
+      <div class="why">
+        <h3>:is() vs :where() in Design System Architecture</h3>
+        <p>The specificity difference between <code>:is()</code> and <code>:where()</code> is not academic &mdash; it is a critical architectural decision in design systems. Use <code>:where()</code> for resets, base layers, and default styles that consumers of your design system should be able to override with a single class. For example, <code>:where(article, section, aside) :where(h2, h3) { margin-top: 1.5em; }</code> sets sensible defaults at zero specificity, so any component-level override wins without needing <code>!important</code> or specificity hacks. Use <code>:is()</code> when you need the selector weight to prevent accidental overrides &mdash; for example, critical accessibility styles or layout-structural rules that should not be casually overridden. Getting this wrong at the foundation layer of a design system forces every consumer to fight specificity battles, generating <code>!important</code> chains that are nearly impossible to unwind at scale.</p>
+      </div>
+
       <pre><code>/* :is() - groups selectors, takes highest specificity */
 :is(h1, h2, h3, h4) {
   line-height: 1.2;

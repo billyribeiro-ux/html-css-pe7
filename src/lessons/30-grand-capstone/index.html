@@ -37,6 +37,11 @@
         <strong>What you are being evaluated on:</strong> Not pixel-perfect design &mdash; creative interpretation is encouraged. You are evaluated on <em>technique coverage</em>, <em>code architecture</em>, <em>accessibility</em>, and <em>performance awareness</em>. A visually simple page that demonstrates every technique correctly will score higher than a flashy page that skips half the checklist.
       </div>
 
+      <div class="why">
+        <h3>PE7 Principle: Leave a Trail of Reasoning, Not Just Code</h3>
+        <p>Before you write a single line of CSS, a PE7 engineer writes an <strong>architecture decision record</strong> &mdash; even if it is just comments at the top of the file. Why BEM-style naming over utility classes? Because your team has four people and readability at the component boundary matters more than terseness. Why <code>oklch()</code> over <code>hsl()</code>? Because perceptual uniformity means your programmatically generated tints actually look evenly spaced to human eyes, and you need relative color syntax for the hover states. Why container queries on the service cards but media queries on the page layout? Because the service cards get reused in a sidebar context where viewport width is irrelevant, but the overall page grid genuinely depends on the viewport. Every decision has a reason. A PE7 does not choose tools because they are new or trendy &mdash; they choose them because the constraints of the project make that tool the right one. Document those constraints. Six months from now, when someone asks &ldquo;why not Tailwind?&rdquo; or &ldquo;why not HSL?&rdquo;, the answer should already be in the codebase, not trapped in your memory.</p>
+      </div>
+
       <h3>The Agency</h3>
       <p>PE7 Creative Agency is a boutique digital studio that specializes in web experiences, brand identity, and motion design. They value clean aesthetics, bold typography, and subtle animation. Their brand colors are deep indigo (<code>#6c5ce7</code>), warm coral (<code>#ff6b6b</code>), and cool mint (<code>#00cec9</code>) against a dark canvas. The tone is confident but approachable &mdash; they let their work speak louder than their words.</p>
 
@@ -404,6 +409,11 @@
 
       <div class="info-box">
         <strong>Count:</strong> That is 40 individual technique requirements. Some requirements overlap with section-specific demands &mdash; that is intentional. Demonstrating a technique in its required section <em>and</em> checking it off the master list are the same action. No double-work needed.
+      </div>
+
+      <div class="why">
+        <h3>PE7 Principle: Set a Performance Budget Before You Build</h3>
+        <p>A PE7 engineer does not discover performance problems after launch &mdash; they define constraints before the first commit. Here is your budget: the total CSS for this landing page should stay under <strong>50KB compressed</strong>. Beyond that threshold, you are shipping styles that actively harm the user experience, because CSS is render-blocking &mdash; every byte of it delays first paint, even the bytes the current page never uses. That unused <code>.testimonial-card-variant-b</code> class you never deleted? It is still forcing the browser to parse and hold it in memory before painting a single pixel. This is why <code>@layer</code> is not just an organizational nicety &mdash; it is a performance architecture. Layers let you reason about what loads and in what order. For a single-page capstone, one file is fine. But on a production site, you would split critical above-the-fold CSS (your <code>reset</code>, <code>base</code>, and <code>layout</code> layers) into an inline <code>&lt;style&gt;</code> block, then load the <code>components</code> and <code>utilities</code> layers asynchronously. The point is not to prematurely optimize &mdash; it is to know the cost of every decision. <code>content-visibility: auto</code> on your below-fold sections is worth 3 rubric points, yes, but more importantly, it can cut rendering work by 50% on long pages. <code>contain: layout style paint</code> tells the browser a subtree is independent, enabling it to skip re-layout work. These are not tricks. They are how a PE7 thinks about CSS: every property has a rendering cost, and you should be able to justify paying it.</p>
       </div>
     </section>
 

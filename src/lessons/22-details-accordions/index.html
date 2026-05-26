@@ -1030,6 +1030,12 @@ details[open] &gt; summary::after {
       <div class="info-box">
         <strong>Key Insight:</strong> The browser's built-in accessibility for <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> is already excellent. The most common mistake is adding ARIA attributes that conflict with the native semantics. Trust the platform: use the elements correctly and the accessibility comes for free.
       </div>
+
+      <div class="why">
+        <h3>Progressive Enhancement as an Architectural Principle</h3>
+        <p><code>&lt;details&gt;</code> works with zero CSS and zero JavaScript. If your stylesheet fails to load, the accordion still functions -- users can still expand and collapse sections, read all the content, and navigate with the keyboard. If JavaScript is blocked or broken, nothing changes. This is not an accident; it is the defining property of a well-chosen HTML element.</p>
+        <p>Compare this to a JS accordion built with <code>&lt;div&gt;</code> elements and click handlers. If the script fails, the user sees either all panels at once (confusing) or no panels at all (broken). The JS accordion requires explicit work to degrade gracefully; the <code>&lt;details&gt;</code> element degrades gracefully by default. This is a PE7 architectural principle that extends beyond accordions: choose HTML elements that carry behavior, not just semantics. <code>&lt;details&gt;</code> for disclosure, <code>&lt;dialog&gt;</code> for modals, <code>&lt;input type="date"&gt;</code> for date pickers. Every native element you use is one fewer component that can break in production. CSS and JavaScript enhance the experience -- custom animations, styled markers, exclusive groups -- but the baseline functionality should never depend on them.</p>
+      </div>
     </section>
 
     <!-- ============================== -->
