@@ -349,10 +349,168 @@
     </section>
 
     <!-- ============================================================ -->
-    <!-- SECTION 4: TRIGONOMETRIC FUNCTIONS                           -->
+    <!-- SECTION 4: PREDICTABLE FLUID SIZING (round + clamp)          -->
+    <!-- ============================================================ -->
+    <section class="concept-section" id="fluid-sizing">
+      <h2>4. Predictable Fluid Sizing: round() Meets clamp()</h2>
+      <p>In the spirit of Ahmad Shadeed's visual CSS explorations, let us take a step back and study a problem that <code>clamp()</code> alone cannot solve. Fluid typography with <code>clamp()</code> is wonderful &mdash; text grows smoothly between a minimum and a maximum as the viewport changes. But <em>smooth</em> also means <em>continuous</em>, and continuous means <em>unpredictable</em>. At 1024px your heading might compute to <code>31.18px</code>; at 1025px it becomes <code>31.21px</code>. Every intermediate viewport produces a slightly different, sub-pixel, never-quite-round number. Your carefully designed type scale dissolves into an infinite gradient of values.</p>
+
+      <p>The now well-supported <code>round()</code> function fixes this. By wrapping a fluid expression in <code>round()</code>, you keep the responsiveness of <code>clamp()</code> while snapping every computed result onto a clean, predictable grid. The text still grows with the viewport &mdash; it just does so in deliberate steps you control, instead of an unbounded smear of fractional pixels.</p>
+
+      <div class="info-box">
+        <strong>The core idea:</strong> <code>clamp()</code> answers <em>"how big, between these bounds?"</em> &mdash; <code>round()</code> answers <em>"snapped to which step?"</em>. Composing them, <code>round(clamp(...), step)</code>, gives you fluid sizing that is also rhythmic and reproducible. This is the foundation of a type scale that looks intentional at <em>every</em> width, not just at your breakpoints.
+      </div>
+
+      <h3>The Problem with Raw clamp()</h3>
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Smooth, but every viewport yields a different
+   sub-pixel value: 31.18px, 31.21px, 31.24px... */
+.heading {
+  font-size: clamp(1.5rem, 1rem + 2.5vw, 2.5rem);
+}</code></pre>
+      </div>
+
+      <h3>Snapping the Fluid Result with round()</h3>
+      <p>Wrap the whole <code>clamp()</code> expression in <code>round()</code> and pick a snapping interval. A <code>0.125rem</code> (2px) grid keeps things fluid-feeling; a <code>0.5rem</code> grid produces visibly discrete jumps.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>/* Still fluid, but every result lands on a 2px grid */
+.heading {
+  font-size: round(
+    clamp(1.5rem, 1rem + 2.5vw, 2.5rem),
+    0.125rem
+  );
+}
+
+/* "Stepped fluid": the size visibly jumps in 0.5rem
+   increments as the viewport grows &mdash; no in-between values */
+.display {
+  font-size: round(
+    up,
+    clamp(2rem, 1rem + 4vw, 4rem),
+    0.5rem
+  );
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Key Insight:</strong> <code>round()</code> takes an optional strategy as its first argument, exactly as in Section 1. <code>round(nearest, ...)</code> keeps the value closest to the fluid curve, while <code>round(up, ...)</code> guarantees the text never dips below a step &mdash; useful when you want to protect a minimum legible size at any viewport. The interval is what decides how "steppy" versus "smooth" the fluidity feels.
+      </div>
+
+      <h3>A Cleaner Modular Type Scale</h3>
+      <p>Modular scales multiply a base size by a ratio for each step (Section 5 covers <code>pow()</code> in depth). The trouble is that <code>1rem &times; 1.25&sup3;</code> equals <code>1.953125rem</code> &mdash; an ugly, hard-to-reason-about number. Snapping each step with <code>round()</code> produces a scale that is both fluid (because the base is fluid) and clean (because every step is rounded to a shared grid).</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  /* A fluid base size drives the entire scale */
+  --base: clamp(1rem, 0.9rem + 0.4vw, 1.15rem);
+  --ratio: 1.25;
+  --snap: 0.125rem;  /* shared 2px grid */
+}
+
+/* Each step is fluid AND snapped to the grid */
+.text-0 { font-size: round(var(--base), var(--snap)); }
+.text-1 { font-size: round(calc(var(--base) * pow(var(--ratio), 1)), var(--snap)); }
+.text-2 { font-size: round(calc(var(--base) * pow(var(--ratio), 2)), var(--snap)); }
+.text-3 { font-size: round(calc(var(--base) * pow(var(--ratio), 3)), var(--snap)); }
+.text-4 { font-size: round(calc(var(--base) * pow(var(--ratio), 4)), var(--snap)); }</code></pre>
+      </div>
+
+      <div class="demo-container">
+        <h4>Demo: A Snapped, Fluid Type Scale</h4>
+        <p class="demo-note">Every line below is fluid &mdash; resize the window and the whole scale breathes with the viewport. But each size is also snapped to a shared <code>0.125rem</code> grid with <code>round()</code>, so the steps stay in tune with one another instead of drifting to arbitrary sub-pixel values.</p>
+
+        <div class="type-scale">
+          <div class="type-step" style="--level: 4;">
+            <span class="type-text">Predictable</span>
+            <code class="type-meta">round(base &times; ratio&#8308;)</code>
+          </div>
+          <div class="type-step" style="--level: 3;">
+            <span class="type-text">fluid type that</span>
+            <code class="type-meta">round(base &times; ratio&sup3;)</code>
+          </div>
+          <div class="type-step" style="--level: 2;">
+            <span class="type-text">snaps to a clean grid</span>
+            <code class="type-meta">round(base &times; ratio&sup2;)</code>
+          </div>
+          <div class="type-step" style="--level: 1;">
+            <span class="type-text">at every viewport width.</span>
+            <code class="type-meta">round(base &times; ratio&sup1;)</code>
+          </div>
+          <div class="type-step" style="--level: 0;">
+            <span class="type-text">Body copy stays in rhythm with the headings above it.</span>
+            <code class="type-meta">round(base)</code>
+          </div>
+        </div>
+      </div>
+
+      <h3>Continuous vs. Stepped &mdash; Side by Side</h3>
+      <p>The clearest way to feel the difference is to watch two fluid bars respond to the same viewport. The top bar uses raw <code>clamp()</code> and slides continuously. The bottom bar wraps that identical expression in <code>round()</code> and snaps to a <code>32px</code> grid &mdash; it advances in crisp, predictable steps that always land on the grid lines.</p>
+
+      <div class="demo-container">
+        <h4>Demo: Continuous clamp() vs. Stepped round(clamp())</h4>
+        <p class="demo-note">Resize your browser window. The top bar moves smoothly and stops at fractional pixels; the bottom bar jumps between the <code>32px</code> grid lines, never landing in between. Both are driven by the exact same fluid expression.</p>
+
+        <div class="stepped-fluid">
+          <div class="sf-row">
+            <span class="sf-label">clamp() &mdash; continuous</span>
+            <div class="sf-track">
+              <div class="sf-bar sf-bar--smooth"></div>
+            </div>
+          </div>
+          <div class="sf-row">
+            <span class="sf-label">round(clamp()) &mdash; stepped</span>
+            <div class="sf-track">
+              <div class="sf-steps"></div>
+              <div class="sf-bar sf-bar--stepped"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-block" style="margin-top: 1rem;">
+          <h4>CSS</h4>
+          <pre><code>/* Identical fluid expression, two behaviours */
+.sf-bar--smooth   { width: clamp(40px, 8vw + 40px, 320px); }
+.sf-bar--stepped  { width: round(clamp(40px, 8vw + 40px, 320px), 32px); }</code></pre>
+        </div>
+      </div>
+
+      <h3>Refined Responsive Layouts</h3>
+      <p>The same technique refines layout, not just type. Fluid gaps, paddings, and column widths computed from viewport units rarely land on your spacing grid. Snapping them with <code>round()</code> keeps an entire responsive layout aligned to a single baseline rhythm &mdash; no matter how the viewport flexes.</p>
+
+      <div class="code-block">
+        <h4>CSS</h4>
+        <pre><code>:root {
+  --grid-unit: 0.5rem;  /* 8px baseline rhythm */
+}
+
+.layout {
+  /* Fluid gap that always lands on the 8px baseline */
+  gap: round(clamp(1rem, 2vw, 2rem), var(--grid-unit));
+
+  /* Fluid padding snapped to the same rhythm */
+  padding-block: round(up, clamp(1.5rem, 4vw, 4rem), var(--grid-unit));
+}
+
+/* Fluid columns that snap to whole, predictable widths */
+.card {
+  inline-size: round(clamp(16rem, 30vw, 24rem), 1rem);
+}</code></pre>
+      </div>
+
+      <div class="info-box">
+        <strong>Browser support:</strong> <code>round()</code> is now well supported across every modern engine &mdash; Chrome 125+, Safari 15.4+, and Firefox 118+ &mdash; so pairing it with <code>clamp()</code> is production-ready today. For ancient browsers, the value simply falls back to the unrounded <code>clamp()</code> expression inside an <code>@supports (width: round(1px, 1px))</code> guard, which degrades gracefully to plain fluid sizing.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 5: TRIGONOMETRIC FUNCTIONS                           -->
     <!-- ============================================================ -->
     <section class="concept-section" id="trigonometry">
-      <h2>4. Trigonometric Functions</h2>
+      <h2>5. Trigonometric Functions</h2>
       <p>This is where CSS math gets genuinely exciting. The trigonometric functions <code>sin()</code>, <code>cos()</code>, <code>tan()</code>, and their inverses <code>asin()</code>, <code>acos()</code>, <code>atan()</code>, <code>atan2()</code> are fully supported in all major browsers since 2024. They unlock circular layouts, wave patterns, orbital animations, clock faces, and spiral arrangements &mdash; all in pure CSS.</p>
 
       <h3>The Core Functions</h3>
@@ -538,10 +696,10 @@
     </section>
 
     <!-- ============================================================ -->
-    <!-- SECTION 5: EXPONENTIAL FUNCTIONS                             -->
+    <!-- SECTION 6: EXPONENTIAL FUNCTIONS                             -->
     <!-- ============================================================ -->
     <section class="concept-section" id="exponential">
-      <h2>5. Exponential Functions</h2>
+      <h2>6. Exponential Functions</h2>
       <p>The exponential family &mdash; <code>pow()</code>, <code>sqrt()</code>, <code>hypot()</code>, <code>log()</code>, and <code>exp()</code> &mdash; opens the door to non-linear progressions, distance calculations, easing curves, and logarithmic scales. These are the tools you reach for when linear interpolation is not enough.</p>
 
       <h3>pow() and sqrt()</h3>
@@ -650,10 +808,10 @@
     </section>
 
     <!-- ============================================================ -->
-    <!-- SECTION 6: PRACTICAL PATTERNS                                -->
+    <!-- SECTION 7: PRACTICAL PATTERNS                                -->
     <!-- ============================================================ -->
     <section class="concept-section" id="practical-patterns">
-      <h2>6. Practical Patterns</h2>
+      <h2>7. Practical Patterns</h2>
       <p>Now that you have the full toolkit, let us see how these functions combine in real-world patterns. These are not academic exercises &mdash; these are patterns you will use in production to solve problems that previously required JavaScript.</p>
 
       <h3>Pattern 1: Orbital Animation</h3>
@@ -784,10 +942,10 @@
     </section>
 
     <!-- ============================================================ -->
-    <!-- SECTION 7: BROWSER SUPPORT & STRATEGY                       -->
+    <!-- SECTION 8: BROWSER SUPPORT & STRATEGY                       -->
     <!-- ============================================================ -->
     <section class="concept-section" id="browser-support">
-      <h2>7. Browser Support &amp; Feature Detection</h2>
+      <h2>8. Browser Support &amp; Feature Detection</h2>
       <p>CSS math functions have landed across all major browsers, but the rollout has been staggered. Here is where things stand and how to safely adopt these functions.</p>
 
       <h3>Support Timeline</h3>

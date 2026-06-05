@@ -313,7 +313,134 @@
 }
 
 /* =============================================
-   Section 4: Trigonometry Demos
+   Section 4: Predictable Fluid Sizing
+   (round() + clamp() type scale & stepped bars)
+   ============================================= */
+
+.type-scale {
+  --base: clamp(1rem, 0.9rem + 0.4vw, 1.15rem);
+  --ratio: 1.25;
+  --snap: 0.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.5rem 0;
+}
+
+.type-step {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Fluid (base grows with viewport) AND snapped to a shared grid */
+  font-size: round(
+    calc(var(--base) * pow(var(--ratio), var(--level))),
+    var(--snap)
+  );
+  line-height: 1.2;
+}
+
+.type-text {
+  color: var(--pe7-text);
+  font-weight: 700;
+}
+
+.type-step[style*="--level: 0"] .type-text {
+  font-weight: 400;
+  color: var(--pe7-text-muted);
+}
+
+.type-meta {
+  font-size: 0.72rem;
+  font-family: var(--pe7-font-mono);
+  color: var(--pe7-accent-light);
+  background: color-mix(in oklch, var(--pe7-accent) 12%, transparent);
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Fallback for engines without round(): plain fluid scale */
+@supports not (font-size: round(1px, 1px)) {
+  .type-step {
+    font-size: calc(var(--base) * pow(var(--ratio), var(--level)));
+  }
+}
+
+/* ---- Continuous vs. Stepped Fluid Bars ---- */
+.stepped-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sf-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
+}
+
+.sf-label {
+  font-size: 0.78rem;
+  color: var(--pe7-text-muted);
+  font-family: var(--pe7-font-mono);
+}
+
+.sf-track {
+  position: relative;
+  height: 28px;
+  background: var(--pe7-surface-2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sf-bar {
+  height: 100%;
+  border-radius: 6px;
+  min-width: 8px;
+}
+
+.sf-bar--smooth {
+  /* Continuous: lands on arbitrary sub-pixel widths */
+  width: clamp(40px, 8vw + 40px, 320px);
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-accent-light));
+  opacity: 0.55;
+}
+
+.sf-bar--stepped {
+  /* Identical expression, snapped to a 32px grid */
+  width: round(clamp(40px, 8vw + 40px, 320px), 32px);
+  background: linear-gradient(90deg, var(--pe7-accent), var(--pe7-accent-light));
+  position: relative;
+  z-index: 1;
+}
+
+/* 32px grid lines the stepped bar snaps to */
+.sf-steps {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 31px,
+    color-mix(in oklch, var(--pe7-text) 16%, transparent) 31px,
+    color-mix(in oklch, var(--pe7-text) 16%, transparent) 32px
+  );
+  pointer-events: none;
+}
+
+/* Fallback: without round() the stepped bar is just continuous */
+@supports not (width: round(1px, 1px)) {
+  .sf-bar--stepped {
+    width: clamp(40px, 8vw + 40px, 320px);
+  }
+}
+
+/* =============================================
+   Section 5: Trigonometry Demos
    ============================================= */
 
 /* ---- Circular Navigation Menu ---- */
@@ -573,7 +700,7 @@
 }
 
 /* =============================================
-   Section 5: Exponential Demo
+   Section 6: Exponential Demo
    ============================================= */
 
 .exp-demo {
@@ -653,7 +780,7 @@
 }
 
 /* =============================================
-   Section 6: Practical Patterns
+   Section 7: Practical Patterns
    ============================================= */
 
 /* ---- Orbital Animation ---- */
@@ -815,7 +942,7 @@
 }
 
 /* =============================================
-   Section 7: Browser Support Table
+   Section 8: Browser Support Table
    ============================================= */
 
 .support-table {

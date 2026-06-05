@@ -196,9 +196,9 @@ export const lessons: LessonMeta[] = [
 		num: '21',
 		title: 'Module 21: CSS Math Functions',
 		short: 'CSS Math Functions',
-		desc: 'The full math suite: round(), mod(), sin(), cos(), pow(), sqrt() — circular layouts, wave patterns, and more.',
+		desc: 'The full math suite: round(), mod(), sin(), cos(), pow(), sqrt() — predictable fluid type scales, circular layouts, wave patterns, and more.',
 		level: 7,
-		tags: ['sin()', 'round()', 'pow()']
+		tags: ['sin()', 'round()', 'clamp()', 'pow()']
 	},
 	{
 		slug: '22-details-accordions',
