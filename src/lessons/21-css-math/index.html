@@ -504,6 +504,90 @@
       <div class="info-box">
         <strong>Browser support:</strong> <code>round()</code> is now well supported across every modern engine &mdash; Chrome 125+, Safari 15.4+, and Firefox 118+ &mdash; so pairing it with <code>clamp()</code> is production-ready today. For ancient browsers, the value simply falls back to the unrounded <code>clamp()</code> expression inside an <code>@supports (width: round(1px, 1px))</code> guard, which degrades gracefully to plain fluid sizing.
       </div>
+
+      <h3>Try It Yourself: Build a Snapped Fluid Scale</h3>
+      <p>Put the idea into practice. The playground below wires up a fluid base size and a modular ratio, then snaps every step with <code>round()</code>. Resize the preview pane and watch the whole scale breathe together while staying on a clean grid &mdash; then experiment to feel each knob.</p>
+
+      <div class="exercise-requirements">
+        <h3>Things to try</h3>
+        <ul>
+          <li>Change <code>--snap</code> from <code>0.125rem</code> to <code>0.5rem</code> and notice how the steps become visibly chunkier &mdash; still fluid, but in bigger jumps.</li>
+          <li>Swap <code>round(...)</code> for <code>round(up, ...)</code> on <code>.stepped</code> so the bar never dips below a grid line.</li>
+          <li>Adjust <code>--ratio</code> (try <code>1.2</code> or <code>1.333</code>) and see the scale recompute, every step still landing on the shared grid.</li>
+          <li>Delete the <code>round()</code> wrapper from one step to compare a snapped size against a raw fractional one.</li>
+        </ul>
+      </div>
+
+      <div class="live-editor" data-mode="html-css">
+        <template class="starter-html">
+<div class="scale">
+  <h1 class="s4">Fluid &amp; snapped</h1>
+  <h2 class="s3">modular type scale</h2>
+  <h3 class="s2">built with round()</h3>
+  <p class="s1">Resize the preview &mdash; every step grows together and stays on a clean 2px grid.</p>
+  <p class="s0">Body copy holds the baseline rhythm beneath the headings.</p>
+</div>
+
+<div class="bars">
+  <span class="bar-label">clamp() &mdash; continuous</span>
+  <div class="bar smooth"></div>
+  <span class="bar-label">round(clamp()) &mdash; stepped</span>
+  <div class="bar stepped"></div>
+</div>
+        </template>
+        <template class="starter-css">
+.scale {
+  /* A fluid base size drives the whole scale */
+  --base: clamp(1rem, 0.85rem + 0.9vw, 1.4rem);
+  --ratio: 1.25;
+  --snap: 0.125rem; /* shared 2px grid */
+  background: #0f1117;
+  color: #e4e6ef;
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-family: system-ui, sans-serif;
+}
+
+.scale * { margin: 0 0 0.5rem; line-height: 1.2; }
+
+/* Each step: fluid (base) x ratio^n, snapped with round() */
+.s0 { font-size: round(var(--base), var(--snap)); color: #9aa0b4; }
+.s1 { font-size: round(calc(var(--base) * pow(var(--ratio), 1)), var(--snap)); }
+.s2 { font-size: round(calc(var(--base) * pow(var(--ratio), 2)), var(--snap)); }
+.s3 { font-size: round(calc(var(--base) * pow(var(--ratio), 3)), var(--snap)); }
+.s4 {
+  font-size: round(calc(var(--base) * pow(var(--ratio), 4)), var(--snap));
+  color: #a78bfa;
+}
+
+.bars {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-family: ui-monospace, monospace;
+}
+
+.bar { height: 24px; border-radius: 6px; }
+
+/* Same fluid expression, two behaviours */
+.smooth {
+  width: clamp(40px, 8vw + 40px, 320px);
+  background: linear-gradient(90deg, #6c5ce7, #a78bfa);
+  opacity: 0.5;
+}
+
+.stepped {
+  width: round(clamp(40px, 8vw + 40px, 320px), 32px);
+  background: linear-gradient(90deg, #6c5ce7, #a78bfa);
+}
+        </template>
+      </div>
     </section>
 
     <!-- ============================================================ -->
